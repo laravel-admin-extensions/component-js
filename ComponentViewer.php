@@ -10,31 +10,53 @@ use Illuminate\Http\Request;
 
 class ComponentViewer
 {
+    public static function makeAddFormAction(Grid\Tools $tools){
+        $url = Request::capture()->getPathInfo();
+        Admin::script(<<<EOF
+            $('.CAForm').click(function(){
+                componentForm('{$url}/create');
+            });
+EOF
+        );
+        $tools->append(new
+        class extends RowAction
+        {
+            public function render()
+            {
+                return <<<EOF
+<div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
+    <a href='javascript:void(0);' class="btn btn-sm btn-success CAForm" title="新增">
+        <i class="fa fa-plus"></i><span class="hidden-xs">&nbsp;&nbsp;新增</span>
+    </a>
+</div>
+EOF;
+            }
+        });
+    }
+
+    /**
+     * @param Grid $grid
+     */
     public static function makeEditFormAction(Grid &$grid)
     {
         $grid->actions(function ($actions) {
             $actions->disableEdit();
             $url = Request::capture()->getPathInfo();
             Admin::script(<<<EOF
-            componentForm.make = function () {
-                componentForm._clear();
-                componentForm._createModal();
-                let url = componentForm.url + '/'+this.getAttribute('data-id') + '/edit';
-                componentForm._createBox(url);
-            }
-            componentForm.apply('CEForm','{$url}');
+            $('.CEForm').click(function(){
+                let url = '{$url}' + '/'+this.getAttribute('data-id') + '/edit';
+                componentForm(url,'PUT');
+            });
 EOF
             );
 
             $actions->add(new
             class extends RowAction
             {
-                public $name = '修改';
-
                 public function render()
                 {
                     $id = $this->getKey();
-                    return "<a href='javascript:void(0);' class='CEForm' data-id='$id', class=>{$this->name()}</a>";
+                    return "<a href='javascript:void(0);' class='CEForm' data-id='$id'>修改</a>";
                 }
             });
         });
@@ -50,13 +72,10 @@ EOF
             $actions->disableEdit();
             $url = Request::capture()->getPathInfo();
             Admin::script(<<<EOF
-            componentForm.make = function () {
-                componentForm._clear();
-                componentForm._createModal();
-                let url = componentForm.url + '/'+this.getAttribute('data-id') + '/edit';
-                componentForm._createBox(url);
-            }
-            componentForm.apply('CEForm','{$url}');
+            $('.CEForm').click(function(){
+                let url = '{$url}' + '/'+this.getAttribute('data-id') + '/edit';
+                componentForm(url,'PUT');
+            });
 EOF
             );
             $id = $actions->getKey();

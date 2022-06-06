@@ -45,85 +45,6 @@ let _componentCommonBlock = {
         xhr.onerror = function (e) {
             console.log(e)
         };
-    },
-    _componentFormConstruct:function (obj) {
-        obj._createBox = function (url) {
-            let box = document.createElement("div");
-            box.className = "box grid-box";
-            let box_body = document.createElement("div");
-            box_body.className = "box-body table-responsive no-padding";
-
-            box.append(box_body);
-            this._boxNode = box;
-            this._boxBodyNode = box_body;
-            this._request(url);
-            return;
-        };
-        obj._loading = function(remove=false){
-            if(remove){
-                this._modalBodyNode.removeChild(this._loadingNode);
-                this._loadingNode = null;
-                return;
-            }
-            if(this._loadingNode instanceof HTMLElement){
-                return;
-            }
-            let svg = _componentCommonBlock._loadingSvg;
-            let loading = document.createElement('div');
-            loading.style = 'width: 100%;height: 100px;';
-            loading.innerHTML = svg;
-            this._loadingNode = loading;
-            let firstChild = this._modalBodyNode.childNodes[0];
-            if(firstChild  instanceof HTMLElement){
-                this._modalBodyNode.insertBefore(loading,firstChild);
-                return;
-            }
-            this._modalBodyNode.append(loading);
-        };
-        obj._createModal = function () {
-            //modal
-            let modal = document.createElement("div");
-            modal.setAttribute('class', 'modal grid-modal in');
-            modal.setAttribute('tabindex', '-1');
-            modal.setAttribute('role', 'dialog');
-            modal.style = 'display: block;';
-
-            //modal_dialog
-            let mod_dialog = document.createElement("div");
-            mod_dialog.setAttribute('class', 'modal-dialog modal-lg');
-            mod_dialog.setAttribute('role', 'document');
-            mod_dialog.style = 'width:'+window.innerWidth*0.8 + 'px';
-            //modal_content
-            let modal_content = document.createElement("div");
-            modal_content.className = "modal-content";
-
-            //header
-            let modal_header = document.createElement("div");
-            modal_header.className = 'modal-header';
-            modal_header.style = 'background-color:#ffffff;padding: 3px;display: flex;justify-content:flex-end;';
-            //X
-            let X = document.createElement('i');
-            X.setAttribute('class','fa fa-close');
-            X.setAttribute('style','cursor: pointer');
-
-            X.addEventListener('click', function () {
-                document.body.removeChild(modal);
-            });
-
-            let modal_body = document.createElement('div');
-            modal_body.className = "modal-body";
-            modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;height:'+window.innerHeight*0.8 + 'px';
-
-            this._modalBodyNode = modal_body;
-            this._loading();
-            //create modal
-            modal_header.append(X);
-            modal_content.append(modal_header);
-            modal_content.append(modal_body);
-            mod_dialog.append(modal_content);
-            modal.appendChild(mod_dialog);
-            document.body.append(modal);
-        };
     }
 };
 
@@ -358,56 +279,131 @@ function componentJsonTable(name,columns,data) {
     dom.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
 }
 
-let componentForm = {
-    url: '',
-    apply:function(name,url){
-        this.url = url;
-        _componentCommonBlock._componentFormConstruct(this);
-        _componentCommonBlock._nodesBindEvent(document.getElementsByClassName(name),'click',this.make);
-    },
-    make:function () {
-        componentForm._clear();
-        componentForm._createModal();
-        componentForm._createBox(componentForm.url);
-    },
-    _clear:function(){
-        componentForm._modalBodyNode = null;
-        componentForm._boxNode = null;
-        componentForm._boxBodyNode = null;
-        componentForm._tableNode = null;
-        componentForm._loadingNode = null;
-    },
-    _modalBodyNode:null,
-    _boxNode:null,
-    _boxBodyNode: null,
-    _tableNode: null,
-    _loadingNode:null,
-    _request: function (url) {
-        this._loading();
-        _componentCommonBlock._request(url,'GET',{},function (response) {
-            componentForm._loading(true);
-            $('.modal-body').append(response);
-            $('.modal-body button[type="submit"]').click(function (){
-                componentForm._submitEvent(this,url)
+function componentForm(url,method='POST'){
+    let Form = {
+        make:function (url) {
+            this._clear();
+            this._createModal();
+            this._createBox(url);
+        },
+        _clear:function(){
+            this._modalBodyNode = null;
+            this._boxNode = null;
+            this._boxBodyNode = null;
+            this._tableNode = null;
+            this._loadingNode = null;
+        },
+        _modalBodyNode:null,
+        _boxNode:null,
+        _boxBodyNode: null,
+        _tableNode: null,
+        _loadingNode:null,
+        _request: function (url) {
+            this._loading();
+            _componentCommonBlock._request(url,'GET',{},function (response) {
+                Form._loading(true);
+                $('.modal-body').append(response);
+                $('.modal-body button[type="submit"]').click(function (){
+                    Form._submitEvent(this,url)
+                });
             });
-        });
-    },
-    _submitEvent:function (obj,url) {
-        obj.setAttribute('disabled','disabled');
-        obj.innerText = '提交中...';
-        let form = componentForm._modalBodyNode.getElementsByTagName('form')[0];
-        let data = {};
-        let formdata = new FormData(form);
-        formdata.forEach((value, key) => {
-            if (!data[key]) {
-                data[key] = formdata.getAll(key).length > 1 ? formdata.getAll(key) : formdata.get(key);
+        },
+        _submitEvent:function (obj,url) {
+            obj.setAttribute('disabled','disabled');
+            obj.innerText = '提交中...';
+            let form = Form._modalBodyNode.getElementsByTagName('form')[0];
+            let data = {};
+            let formdata = new FormData(form);
+            formdata.forEach((value, key) => {
+                if (!data[key]) {
+                    data[key] = formdata.getAll(key).length > 1 ? formdata.getAll(key) : formdata.get(key);
+                }
+            });
+
+            _componentCommonBlock._request(url,method,data,function (response) {
+                window.location.reload();
+            });
+        },
+        _createBox: function (url) {
+            let box = document.createElement("div");
+            box.className = "box grid-box";
+            let box_body = document.createElement("div");
+            box_body.className = "box-body table-responsive no-padding";
+
+            box.append(box_body);
+            this._boxNode = box;
+            this._boxBodyNode = box_body;
+            this._request(url);
+            return;
+        },
+        _loading: function (remove = false) {
+            if (remove && this._loadingNode) {
+                this._modalBodyNode.removeChild(this._loadingNode);
+                this._loadingNode = null;
+                return;
             }
-        });
-        _componentCommonBlock._request(url,'PUT',data,function (response) {
-            window.location.reload();
-        });
-    }
-};
+            if (this._loadingNode instanceof HTMLElement) {
+                return;
+            }
+            let svg = _componentCommonBlock._loadingSvg;
+            let loading = document.createElement('div');
+            loading.style = 'width: 100%;height: 100px;';
+            loading.innerHTML = svg;
+            this._loadingNode = loading;
+            let firstChild = this._modalBodyNode.childNodes[0];
+            if (firstChild instanceof HTMLElement) {
+                this._modalBodyNode.insertBefore(loading, firstChild);
+                return;
+            }
+            this._modalBodyNode.append(loading);
+        },
+        _createModal: function () {
+            //modal
+            let modal = document.createElement("div");
+            modal.setAttribute('class', 'modal grid-modal in');
+            modal.setAttribute('tabindex', '-1');
+            modal.setAttribute('role', 'dialog');
+            modal.style = 'display: block;';
+
+            //modal_dialog
+            let mod_dialog = document.createElement("div");
+            mod_dialog.setAttribute('class', 'modal-dialog modal-lg');
+            mod_dialog.setAttribute('role', 'document');
+            mod_dialog.style = 'width:' + window.innerWidth * 0.8 + 'px';
+            //modal_content
+            let modal_content = document.createElement("div");
+            modal_content.className = "modal-content";
+
+            //header
+            let modal_header = document.createElement("div");
+            modal_header.className = 'modal-header';
+            modal_header.style = 'background-color:#ffffff;padding: 3px;display: flex;justify-content:flex-end;';
+            //X
+            let X = document.createElement('i');
+            X.setAttribute('class', 'fa fa-close');
+            X.setAttribute('style', 'cursor: pointer');
+
+            X.addEventListener('click', function () {
+                document.body.removeChild(modal);
+            });
+
+            let modal_body = document.createElement('div');
+            modal_body.className = "modal-body";
+            modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;height:' + window.innerHeight * 0.8 + 'px';
+
+            this._modalBodyNode = modal_body;
+            this._loading();
+            //create modal
+            modal_header.append(X);
+            modal_content.append(modal_header);
+            modal_content.append(modal_body);
+            mod_dialog.append(modal_content);
+            modal.appendChild(mod_dialog);
+            document.body.append(modal);
+        }
+    };
+    Form.make(url)
+}
 
 
 

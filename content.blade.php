@@ -6,9 +6,6 @@
 </div>
 {!! Admin::script() !!}
 
-<script>
-    function LA() {}
-    LA.token = "{{ csrf_token() }}";
-</script>
+
 
 

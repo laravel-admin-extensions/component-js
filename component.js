@@ -48,6 +48,22 @@ let _componentCommonBlock = {
     }
 };
 
+function componentAlert(message,time=1,callback=function () {}) {
+    var div = document.createElement('div');
+    div.innerHTML = message;
+    let w = window.innerWidth/2 - 140;
+    let h = window.innerHeight/2 - 145;
+    div.style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
+        "width: 280px;height: 45px;line-height: 40px;border-radius: 3px;text-align: center;" +
+        "top:"+h+"px;left:"+w+"px;";
+    document.getElementsByTagName("BODY")[0].appendChild(div);
+    var task = setTimeout(function () {
+        clearTimeout(task);
+        div.parentNode.removeChild(div);
+        callback();
+    },time*1000);
+}
+
 function componentSelect(name,selected,options) {
     function tagSelect() {
         var cdom = this.cloneNode(true);
@@ -321,7 +337,14 @@ function componentForm(url,method='POST'){
             });
 
             _componentCommonBlock._request(url,method,data,function (response) {
-                window.location.reload();
+                if(response.code == 1) {
+                    window.location.reload();
+                }else{
+                    componentAlert(response.message,3,function () {
+                        obj.removeAttribute('disabled');
+                        obj.innerText = '提交';
+                    });
+                }
             });
         },
         _createBox: function (url) {

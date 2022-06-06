@@ -8,8 +8,16 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
+/**
+ * Class ComponentViewer
+ * @package App\Admin\Controllers
+ */
 class ComponentViewer
 {
+    /**
+     * 创建弹窗新增表单-按钮
+     * @param Grid\Tools $tools
+     */
     public static function makeAddFormAction(Grid\Tools $tools){
         $url = Request::capture()->getPathInfo();
         Admin::script(<<<EOF
@@ -35,6 +43,7 @@ EOF;
     }
 
     /**
+     * 创建弹窗修改表单-按钮
      * @param Grid $grid
      */
     public static function makeEditFormAction(Grid &$grid)
@@ -63,6 +72,7 @@ EOF
     }
 
     /**
+     * 创建弹窗修改表单-按钮
      * 旧版图标模式
      * @param Grid $grid
      */
@@ -83,11 +93,28 @@ EOF
         });
     }
 
+    /**
+     * 弹窗表单内容生成
+     * @param Content $content
+     * @return array|string
+     * @throws \Throwable
+     */
     public static function makeForm(Content $content)
     {
         $items = [
             '_content_' => str_replace('pjax-container', '', $content->build())
         ];
         return view('admin.content', $items)->render();
+    }
+
+    public static function result($success=true,$message='OK',$data=[])
+    {
+        return response()->json([
+            'code'=>$success?1:0,
+            'data'=>$data,
+            'message'=>$message
+        ],200)
+            ->header('Content-Type','application/json;charset=utf-8')
+            ->header('Access-Control-Allow-Origin', '*');
     }
 }

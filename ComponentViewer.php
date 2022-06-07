@@ -16,9 +16,9 @@ class ComponentViewer
 {
     /**
      * 创建弹窗新增表单-按钮
-     * @param Grid\Tools $tools
+     * @param Grid $grid
      */
-    public static function makeAddFormAction(Grid\Tools $tools){
+    public static function makeAddFormAction(Grid $grid){
         $url = Request::capture()->getPathInfo();
         Admin::script(<<<EOF
             $('.CAForm').click(function(){
@@ -26,7 +26,8 @@ class ComponentViewer
             });
 EOF
         );
-        $tools->append(new
+        $grid->disableCreateButton();
+        $grid->tools->append(new
         class extends RowAction
         {
             public function render()
@@ -46,7 +47,7 @@ EOF;
      * 创建弹窗修改表单-按钮
      * @param Grid $grid
      */
-    public static function makeEditFormAction(Grid &$grid)
+    public static function makeEditFormAction(Grid $grid)
     {
         $grid->actions(function ($actions) {
             $actions->disableEdit();

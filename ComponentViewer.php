@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Controllers;
+namespace App\Admin\Extensions;
 
 use Encore\Admin\Actions\RowAction;
 use Encore\Admin\Admin;
@@ -22,7 +22,7 @@ class ComponentViewer
         $url = Request::capture()->getPathInfo();
         Admin::script(<<<EOF
             $('.CAForm').click(function(){
-                componentForm('{$url}/create');
+                componentPlane('{$url}/create');
             });
 EOF
         );
@@ -55,7 +55,7 @@ EOF;
             Admin::script(<<<EOF
             $('.CEForm').click(function(){
                 let url = '{$url}' + '/'+this.getAttribute('data-id') + '/edit';
-                componentForm(url,'PUT');
+                componentPlane(url,'PUT');
             });
 EOF
             );
@@ -85,7 +85,7 @@ EOF
             Admin::script(<<<EOF
             $('.CEForm').click(function(){
                 let url = '{$url}' + '/'+this.getAttribute('data-id') + '/edit';
-                componentForm(url,'PUT');
+                componentPlane(url,'PUT');
             });
 EOF
             );
@@ -105,7 +105,7 @@ EOF
         $items = [
             '_content_' => str_replace('pjax-container', '', $content->build())
         ];
-        return view('admin.content', $items)->render();
+        return view('component.content', $items)->render();
     }
 
     public static function result($success=true,$message='OK',$data=[])

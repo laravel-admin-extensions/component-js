@@ -48,7 +48,7 @@ let _componentCommonBlock = {
     }
 };
 
-function componentAlert(message,time=1,callback=function () {}) {
+function _componentAlert(message,time=1,callback=function () {}) {
     var div = document.createElement('div');
     div.innerHTML = message;
     let w = window.innerWidth/2 - 140;
@@ -64,7 +64,7 @@ function componentAlert(message,time=1,callback=function () {}) {
     },time*1000);
 }
 
-function componentSelect(name,selected,options) {
+function componentDot(name,selected,options) {
     function tagSelect() {
         var cdom = this.cloneNode(true);
         cdom.addEventListener('click',tagCancel);
@@ -135,7 +135,7 @@ function componentSelect(name,selected,options) {
     });
 }
 
-function componentJsonTable(name,columns,data) {
+function componentLine(name,columns,data) {
     function selectTd(td,type,value,column) {
         switch (type) {
             case 'text':
@@ -295,7 +295,7 @@ function componentJsonTable(name,columns,data) {
     dom.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
 }
 
-function componentForm(url,method='POST'){
+function componentPlane(url,method='POST'){
     let Form = {
         make:function (url) {
             this._clear();
@@ -340,7 +340,7 @@ function componentForm(url,method='POST'){
                 if(response.code == 1) {
                     window.location.reload();
                 }else{
-                    componentAlert(response.message,3,function () {
+                    _componentAlert(response.message,3,function () {
                         obj.removeAttribute('disabled');
                         obj.innerText = '提交';
                     });

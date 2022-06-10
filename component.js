@@ -139,7 +139,7 @@ function componentLine(name,columns,data) {
     function selectTd(td,type,value,column) {
         switch (type) {
             case 'text':
-                td.innerHTML = '<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;">'+value+'</p>';
+                td.insertAdjacentHTML('afterbegin','<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;">'+value+'</p>');
                 break;
             case 'input':
                 let input = document.createElement('input');
@@ -158,7 +158,7 @@ function componentLine(name,columns,data) {
                 td.appendChild(input);
                 break;
             default:
-                td.innerHTML = '<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;">'+value+'</p>';
+                td.insertAdjacentHTML('afterbegin','<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;">'+value+'</p>');
                 break;
         }
     }
@@ -186,6 +186,7 @@ function componentLine(name,columns,data) {
     }
     /*head foot*/
     var dom = document.getElementById(name);
+    dom.style = 'overflow-x: auto;';
     var head = '<tr style="display:table;width:100%;table-layout:fixed;">';
     var foot = head;
     for (let column in columns){
@@ -195,19 +196,19 @@ function componentLine(name,columns,data) {
         if(columns[column].style){
             head += '<th style="'+columns[column].style+'">'+columns[column].name+'</th>';
             foot += '<th style="'+columns[column].style+'">' +
-                '<input class="form-control" data-column="'+column+'" placeholder="添加:'+columns[column].name+'"/></th>';
+                '<input class="form-control" data-column="'+column+'" placeholder=":'+columns[column].name+'"/></th>';
             continue;
         }
         head += '<th>'+columns[column].name+'</th>';
         foot += '<th>' +
-            '<input class="form-control" data-column="'+column+'" placeholder="添加:'+columns[column].name+'"/></th>';
+            '<input class="form-control" data-column="'+column+'" placeholder=":'+columns[column].name+'"/></th>';
     }
     head += '<th style="width: 30px"></th></tr>';
     foot += '<th style="width: 30px" class="JsonTableInsert"></th></tr>';
 
-    dom.insertAdjacentHTML('afterbegin','<style>#'+name+' tbody::-webkit-scrollbar { width: 0 !important }</style>' +
-        '<table class="table table-striped table-bordered table-hover table-responsive">'+
-        '<thead>'+head+'</thead></table>');
+    dom.insertAdjacentHTML('afterbegin',`<style>#${name} tbody::-webkit-scrollbar { width: 0 !important }
+        #${name} th,#${name} td{width: 100px}
+        </style><table class="table table-striped table-bordered table-hover table-responsive"><thead>${head}</thead></table>`);
     /*hidden data container*/
     var dataInput = document.createElement('input');
     dataInput.setAttribute('name',name);
@@ -233,6 +234,11 @@ function componentLine(name,columns,data) {
                 record[column] = value[column];
                 flag = true;
                 selectTd(td,columns[column].type,value[column],column);
+                if(columns[column].style){
+                    td.style = columns[column].style;
+                }
+            }else if(columns[column].type !== 'text'){
+                selectTd(td,columns[column].type,'',column);
                 if(columns[column].style){
                     td.style = columns[column].style;
                 }

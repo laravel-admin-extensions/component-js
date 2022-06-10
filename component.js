@@ -1,4 +1,5 @@
-let _componentCommonBlock = {
+
+let _componentMegaBlock = {
     _loadingSvg:"<svg version=\"1.1\" style='width: 100%;height:100px' xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
         "   width=\"40px\" height=\"40px\" viewBox=\"0 0 40 40\" enable-background=\"new 0 0 40 40\" xml:space=\"preserve\">\n" +
         "  <path opacity=\"0.2\" fill=\"#000\" d=\"M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946\n" +
@@ -25,16 +26,14 @@ let _componentCommonBlock = {
         xhr.open(method, url, true);
         xhr.timeout = 30000;
         var token= document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
         xhr.setRequestHeader("X-CSRF-TOKEN", token);
         if(method == 'GET'){
             xhr.responseType = "text";
             xhr.send(null);
         }else {
-            xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             xhr.responseType = "json";
-            xhr.send(JSON.stringify(data));
+            xhr.send(data);
         }
         xhr.onreadystatechange = function () {
             if (xhr.readyState == xhr.DONE && xhr.status == 200) {
@@ -49,7 +48,7 @@ let _componentCommonBlock = {
 };
 
 function _componentAlert(message,time=1,callback=function () {}) {
-    var div = document.createElement('div');
+    let div = document.createElement('div');
     div.innerHTML = message;
     let w = window.innerWidth/2 - 140;
     let h = window.innerHeight/2 - 145;
@@ -66,33 +65,33 @@ function _componentAlert(message,time=1,callback=function () {}) {
 
 function componentDot(name,selected,options) {
     function tagSelect() {
-        var cdom = this.cloneNode(true);
+        let cdom = this.cloneNode(true);
         cdom.addEventListener('click',tagCancel);
         document.getElementById(name+'-select').appendChild(cdom);
         this.remove();
         addVal();
     }
     function tagCancel() {
-        var cdom = this.cloneNode(true);
+        let cdom = this.cloneNode(true);
         cdom.addEventListener('click',tagSelect);
         document.getElementById(name+'-content').appendChild(cdom);
         this.remove();
         addVal();
     }
     function addVal() {
-        var val = '';
+        let val = '';
         document.getElementById(name+'-select').childNodes.forEach(function (n) {
             val += parseInt(n.getAttribute('data-id'))+",";
         });
         val = val.replace(/,$/g, '');
         dataInput.value = val
     }
-    var DOM = document.getElementById(name);
-    var selected_dom = '';
-    var options_dom = '';
-    var selected_tag = '';
+    let DOM = document.getElementById(name);
+    let selected_dom = '';
+    let options_dom = '';
+    let selected_tag = '';
 
-    for(var i in options){
+    for(let i in options){
         if(selected.indexOf(parseInt(i)) > -1){
             selected_dom+= "<div class='btn btn-success btn-sm v-tag' data-id='"+i+"'>"+options[i].name+"</div>";
             selected_tag+= i + ',';
@@ -101,7 +100,7 @@ function componentDot(name,selected,options) {
         options_dom+= "<div class='btn btn-primary btn-sm v-tag' data-id='"+i+"'>"+options[i].name+"</div>";
     }
 
-    var html = '<style>.v-tag{margin-right: 4px;margin-bottom: 4px}</style>'+
+    let html = '<style>.v-tag{margin-right: 4px;margin-bottom: 4px}</style>'+
         '<div style="width: 100%;display: grid; grid-template-rows: 42px 140px;border: 1px solid #ccc;border-radius: 5px">' +
         '<div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;">' +
         '<input id="'+name+'-search" type="text" class="form-control" placeholder="搜索名称"></div>' +
@@ -111,22 +110,23 @@ function componentDot(name,selected,options) {
         options_dom +
         '</div>' +
         '</div>';
-    DOM.innerHTML = html;
+    DOM.insertAdjacentHTML('afterbegin',html);
+
     /*hidden data container*/
-    var dataInput = document.createElement('input');
+    let dataInput = document.createElement('input');
     dataInput.setAttribute('name',name);
     dataInput.setAttribute('type','hidden');
     dataInput.value = '';
     DOM.appendChild(dataInput);
 
-    _componentCommonBlock._nodesBindEvent(document.getElementById(name+'-select').getElementsByClassName("v-tag"),'click',tagCancel);
-    _componentCommonBlock._nodesBindEvent(document.getElementById(name+'-content').getElementsByClassName("v-tag"),'click',tagSelect);
+    _componentMegaBlock._nodesBindEvent(document.getElementById(name+'-select').getElementsByClassName("v-tag"),'click',tagCancel);
+    _componentMegaBlock._nodesBindEvent(document.getElementById(name+'-content').getElementsByClassName("v-tag"),'click',tagSelect);
     document.getElementById(name+'-search').addEventListener('input',function () {
-        var search = this.value;
+        let search = this.value;
         if(search == ''){
             return;
         }
-        var contentDom = document.getElementById(name+'-content');
+        let contentDom = document.getElementById(name+'-content');
         for (let element of contentDom.getElementsByClassName("v-tag")){
             if(element.innerText.indexOf(search) != -1){
                 contentDom.insertBefore(element,contentDom.firstChild);
@@ -205,9 +205,9 @@ function componentLine(name,columns,data) {
     head += '<th style="width: 30px"></th></tr>';
     foot += '<th style="width: 30px" class="JsonTableInsert"></th></tr>';
 
-    dom.innerHTML = '<style>#'+name+' tbody::-webkit-scrollbar { width: 0 !important }</style>' +
+    dom.insertAdjacentHTML('afterbegin','<style>#'+name+' tbody::-webkit-scrollbar { width: 0 !important }</style>' +
         '<table class="table table-striped table-bordered table-hover table-responsive">'+
-        '<thead>'+head+'</thead></table>';
+        '<thead>'+head+'</thead></table>');
     /*hidden data container*/
     var dataInput = document.createElement('input');
     dataInput.setAttribute('name',name);
@@ -316,7 +316,7 @@ function componentPlane(url,method='POST'){
         _loadingNode:null,
         _request: function (url) {
             this._loading();
-            _componentCommonBlock._request(url,'GET',{},function (response) {
+            _componentMegaBlock._request(url,'GET',{},function (response) {
                 Form._loading(true);
                 $('.modal-body').append(response);
                 $('.modal-body button[type="submit"]').click(function (){
@@ -328,16 +328,10 @@ function componentPlane(url,method='POST'){
             obj.setAttribute('disabled','disabled');
             obj.innerText = '提交中...';
             let form = Form._modalBodyNode.getElementsByTagName('form')[0];
-            let data = {};
             let formdata = new FormData(form);
-            formdata.forEach((value, key) => {
-                if (!data[key]) {
-                    data[key] = formdata.getAll(key).length > 1 ? formdata.getAll(key) : formdata.get(key);
-                }
-            });
 
-            _componentCommonBlock._request(url,method,data,function (response) {
-                if(response.code == 1) {
+            _componentMegaBlock._request(url,method,formdata,function (response) {
+                if(response.code == 0) {
                     window.location.reload();
                 }else{
                     _componentAlert(response.message,3,function () {
@@ -368,7 +362,7 @@ function componentPlane(url,method='POST'){
             if (this._loadingNode instanceof HTMLElement) {
                 return;
             }
-            let svg = _componentCommonBlock._loadingSvg;
+            let svg = _componentMegaBlock._loadingSvg;
             let loading = document.createElement('div');
             loading.style = 'width: 100%;height: 100px;';
             loading.innerHTML = svg;
@@ -427,6 +421,7 @@ function componentPlane(url,method='POST'){
     };
     Form.make(url)
 }
+
 
 
 

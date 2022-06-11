@@ -1,5 +1,5 @@
 {
-    "name": "dot/component-js",
+    "name": "DLP/component-js",
     "description": "laravel_admin extension component js",
     "type": "library",
     "keywords": ["laravel", "admin","extension","component-js"],

@@ -163,7 +163,7 @@ EOF
         $items = [
             '_content_' => str_replace('pjax-container', '', $content->build())
         ];
-        return view('component.content', $items)->render();
+        return view('component::content', $items)->render();
     }
 
     public static function result($success=true,$message='OK',$data=[])

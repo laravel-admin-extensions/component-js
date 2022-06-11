@@ -27,24 +27,15 @@ class ComponentViewer
     {
         $select =self::safeJson($select);
         $selected=self::safeJson($selected);
-        $form->html(<<<EOF
-<div id="{$column}"></div>
-<script>
-new Promise((resolve, reject) => {
-    while (true){
-        if(document.getElementById('{$column}') instanceof HTMLElement){
-            return resolve();
-        }
-    }
-}).then(function() {
-   componentDot("{$column}",JSON.parse('$selected'),JSON.parse('$select'));
-});
-</script>
+        self::script(<<<EOF
+componentDot("{$column}",JSON.parse('$selected'),JSON.parse('$select'));
 EOF
-        ,$title);
+        );
+        $form->html("<div id='{$column}'></div>",$title);
     }
 
     /**
+     * 线
      * @param Form $form
      * @param $column
      * @param $title
@@ -55,21 +46,11 @@ EOF
     {
         $setting = self::safeJson($setting);
         $data = self::safeJson($data);
-        $form->html(<<<EOF
-<div id="{$column}"></div>
-<script>
-new Promise((resolve, reject) => {
-    while (true){
-        if(document.getElementById('{$column}') instanceof HTMLElement){
-            return resolve();
-        }
-    }
-}).then(function() {
-    componentLine("{$column}",JSON.parse('$setting'),JSON.parse('$data'));
-});
-</script>
+        self::script(<<<EOF
+componentLine("{$column}",JSON.parse('$setting'),JSON.parse('$data'));
 EOF
-            ,$title);
+        );
+        $form->html("<div id='{$column}'></div>",$title);
     }
 
     /**
@@ -166,6 +147,13 @@ EOF
         return view('component.content', $items)->render();
     }
 
+    /**
+     * 表单提交ajax返回数据格式
+     * @param bool $success
+     * @param string $message
+     * @param array $data
+     * @return \Illuminate\Http\JsonResponse
+     */
     public static function result($success=true,$message='OK',$data=[])
     {
         return response()->json([
@@ -177,8 +165,41 @@ EOF
             ->header('Access-Control-Allow-Origin', '*');
     }
 
-    private static function safeJson(array $data)
+    /**
+     * 表单代码段插入js片段代码
+     * @param $script
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public static function script($script)
     {
+        return Admin::script(<<<EOF
+new Promise((resolve, reject) => {
+    while (true){
+        if(document.getElementById('component') instanceof HTMLElement){
+            return resolve();
+        }
+    }
+}).then(function() {
+    {$script}
+});
+EOF
+        );
+    }
+
+    protected static function safeJson(array $data)
+    {
+        self::recursiveJsonArray($data);
         return strip_tags(json_encode($data,JSON_UNESCAPED_UNICODE|JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS));
+    }
+
+    private static function recursiveJsonArray(array &$data)
+    {
+        foreach ($data as &$d){
+            if(is_array($d)){
+                self::recursiveJsonArray($d);
+            }else{
+                $d = str_replace(['"','\'',':','\\','/','{','}','[',']'],'',$d);
+            }
+        }
     }
 }

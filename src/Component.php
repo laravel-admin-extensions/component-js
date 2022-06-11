@@ -1,6 +1,6 @@
 <?php
 
-namespace Dot\Component;
+namespace DLP\Component;
 
 use Encore\Admin\Actions\RowAction;
 use Encore\Admin\Admin;

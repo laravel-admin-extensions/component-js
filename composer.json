@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dot\\Component\\": "src/"
+            "DLP\\Component\\": "src/"
         }
     }
 }

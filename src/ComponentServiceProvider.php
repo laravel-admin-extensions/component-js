@@ -1,6 +1,6 @@
 <?php
 
-namespace Dot\Component;
+namespace DLP\Component;
 
 use Illuminate\Support\ServiceProvider;
 

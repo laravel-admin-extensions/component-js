@@ -10,10 +10,10 @@ use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
 /**
- * Class ComponentViewer
- * @package App\Admin\Controllers
+ * Class Viewer
+ * @package DLPComponent
  */
-class ComponentViewer
+class Viewer
 {
     /**
      * 点

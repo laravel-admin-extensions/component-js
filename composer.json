@@ -1,0 +1,23 @@
+{
+    "name": "dot/component-js",
+    "description": "laravel_admin extension component js",
+    "type": "library",
+    "keywords": ["laravel", "admin","extension","component-js"],
+    "homepage": "https://github.com/ydtg1993/laravel-admin-component-js",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hikki",
+            "email": "946818508@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "encore/laravel-admin": "~1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dot\\Component\\": "src/"
+        }
+    }
+}

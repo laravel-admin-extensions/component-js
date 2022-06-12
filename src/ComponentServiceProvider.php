@@ -11,7 +11,7 @@ class ComponentServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'component');
 
         $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/DPL/')
+            __DIR__.'/../resources/assets' => public_path('vendor/dpl/')
         ]);
     }
 }

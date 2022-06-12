@@ -325,9 +325,11 @@ function componentPlane(url,method='POST'){
             _componentMegaBlock._request(url,'GET',{},function (response) {
                 Form._loading(true);
                 $('.modal-body').append(response);
-                $('.modal-body button[type="submit"]').click(function (){
-                    Form._submitEvent(this,url)
-                });
+                if($('.modal-body button[type="submit"]')) {
+                    $('.modal-body button[type="submit"]').click(function () {
+                        Form._submitEvent(this, url)
+                    });
+                }
             });
         },
         _submitEvent:function (obj,url) {

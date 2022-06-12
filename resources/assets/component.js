@@ -101,16 +101,15 @@ function componentDot(name,selected,options) {
         options_dom+= "<div class='btn btn-primary btn-sm v-tag' data-id='"+i+"'>"+options[i]+"</div>";
     }
 
-    let html = '<style>.v-tag{margin-right: 4px;margin-bottom: 4px}</style>'+
-        '<div style="width: 100%;display: grid; grid-template-rows: 42px 140px;border: 1px solid #ccc;border-radius: 5px">' +
-        '<div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;">' +
-        '<input id="'+name+'-search" type="text" class="form-control" placeholder="搜索名称"></div>' +
-        '<div id="'+name+'-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;"></div> ' +
-        selected_dom+
-        '</div><div id="'+name+'-content" style="overflow-y: auto;padding: 3px;background: #e1ffa8bf;">' +
-        options_dom +
-        '</div>' +
-        '</div>';
+    let html = `<style>.v-tag{margin-right: 4px;margin-bottom: 4px}</style>
+        <div style="width: 100%;display: grid; grid-template-rows: 42px 140px;border: 1px solid #ccc;border-radius: 5px">
+        <div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;">
+        <input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div>
+        <div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div>
+        </div><div id="${name}-content" style="overflow-y: auto;padding: 3px;background: #e1ffa8bf;">
+        ${options_dom}
+        </div>
+        </div>`;
     DOM.insertAdjacentHTML('afterbegin',html);
 
     /*hidden data container*/

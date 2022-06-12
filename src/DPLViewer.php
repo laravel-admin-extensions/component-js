@@ -34,7 +34,7 @@ class DPLViewer
             $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
         }
         self::script(<<<EOF
-componentDot("{$column}",JSON.parse('$selected'),JSON.parse('$select'));
+componentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
         );
         $form->html("<div id='{$column}'></div>", $title);
@@ -54,10 +54,11 @@ EOF
         if($strict) {
             $data = self::safeJson($data);
         }else{
-            $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+            $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
+        $settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
         self::script(<<<EOF
-componentLine("{$column}",JSON.parse('$settings'),JSON.parse('$data'));
+componentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
 EOF
         );
         $form->html("<div id='{$column}'></div>", $title);
@@ -261,7 +262,7 @@ EOF
     protected static function safeJson(array $data)
     {
         self::recursiveJsonArray($data);
-        return strip_tags(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS));
+        return json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
     private static function recursiveJsonArray(array &$data)
@@ -270,7 +271,7 @@ EOF
             if (is_array($d)) {
                 self::recursiveJsonArray($d);
             } else {
-                $d = str_replace(['"', '\'', ':', '\\', '/', '{', '}', '[', ']'], '', $d);
+                $d = str_replace(['"', '\'', ':', '\\', '{', '}', '[', ']','`'], '', $d);
             }
         }
     }

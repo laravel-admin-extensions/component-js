@@ -93,12 +93,12 @@ function componentDot(name,selected,options) {
     let selected_tag = '';
 
     for(let i in options){
-        if(selected.indexOf(parseInt(i)) > -1){
-            selected_dom+= "<div class='btn btn-success btn-sm v-tag' data-id='"+i+"'>"+options[i].name+"</div>";
+        if(selected[i]){
+            selected_dom+= "<div class='btn btn-success btn-sm v-tag' data-id='"+i+"'>"+options[i]+"</div>";
             selected_tag+= i + ',';
             continue;
         }
-        options_dom+= "<div class='btn btn-primary btn-sm v-tag' data-id='"+i+"'>"+options[i].name+"</div>";
+        options_dom+= "<div class='btn btn-primary btn-sm v-tag' data-id='"+i+"'>"+options[i]+"</div>";
     }
 
     let html = '<style>.v-tag{margin-right: 4px;margin-bottom: 4px}</style>'+

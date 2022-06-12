@@ -28,6 +28,7 @@ let _componentMegaBlock = {
         var token= document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         xhr.setRequestHeader("X-CSRF-TOKEN", token);
         if(method == 'GET'){
+            xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
             xhr.responseType = "text";
             xhr.send(null);
         }else {

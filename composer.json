@@ -12,12 +12,12 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.0",
         "encore/laravel-admin": "~1.6"
     },
     "autoload": {
         "psr-4": {
-            "DLPComponent\\": "src/"
+            "DLP\\": "src/"
         }
     }
 }

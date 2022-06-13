@@ -1,6 +1,6 @@
 <?php
 
-namespace DLPComponent;
+namespace DLP;
 
 use Encore\Admin\Actions\RowAction;
 use Encore\Admin\Admin;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 /**
  * Class DLPViewer
- * @package DLPComponent
+ * @package DLP
  */
 class DLPViewer
 {

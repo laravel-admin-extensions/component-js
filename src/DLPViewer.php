@@ -10,10 +10,10 @@ use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
 /**
- * Class DPLViewer
+ * Class DLPViewer
  * @package DLPComponent
  */
-class DPLViewer
+class DLPViewer
 {
     /**
      * 点

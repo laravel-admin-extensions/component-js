@@ -65,6 +65,7 @@ EOF
     }
 
     /**
+     * 头部-自定义弹窗按钮
      * @param Grid $grid
      * @param string $document_id
      * @param string $title
@@ -91,8 +92,8 @@ EOF
             {
                 return <<<EOF
 <div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
-    <a href='javascript:void(0);' class="btn btn-sm btn-success" id="{$this->document_id}" title="{$this->title}">
-        <span class="hidden-xs">&nbsp;&nbsp;{$this->title}</span>
+    <a href='javascript:void(0);' class="btn btn-sm btn-primary" id="{$this->document_id}" title="{$this->title}">
+        <span class="hidden-xs">{$this->title}</span>
     </a>
 </div>
 EOF;
@@ -101,37 +102,76 @@ EOF;
     }
 
     /**
+     * 列-多按钮添加
      * @param Grid $grid
-     * @param string $document_class
-     * @param string $title
-     * @param string $url
+     * @param array $settings [setting,...]
+     *  setting.document_class 自定义类名  关键词:CEForm
+     *  setting.title 自定义按钮名
+     *  setting.url 加载页地址
+     *  setting.with_id 加载页面url附加id参数 url/{id}
+     *  setting.xhr_url ajax提交地址
+     *  setting.method ajax提交方法
      */
-    public static function makeRowPlaneAction(Grid $grid,string $document_class,string $title,string $url)
+    public static function makeRowPlaneAction(Grid $grid,array $settings = [
+        ['document_class'=>'','title'=>'','url'=>'','with_id'=>false,'xhr_url'=>'','method'=>'POST']
+    ])
     {
-        Admin::script(<<<EOF
-            $('#{$document_class}').click(function(){
-                componentPlane('{$url}');
+        $grid->actions(function ($actions)use($settings) {
+            $script = '';
+            foreach ($settings as $setting){
+                $url = Request::capture()->getPathInfo();
+                if($setting['document_class'] == 'CEForm'){
+                    $actions->disableEdit();
+                    $script.=<<<EOF
+            $('.CEForm').click(function(){
+                let url = '{$url}' + '/'+this.getAttribute('data-id')+'/edit';
+                componentPlane(url,url);
             });
-EOF
-        );
-        $grid->tools->append(new class($title,$document_class) extends RowAction {
-            private $title;
-            private $document_class;
-            public function __construct($title,$document_class)
-            {
-                parent::__construct();
-                $this->title = $title;
-                $this->document_class = $document_class;
+EOF;
+                    continue;
+                }
+                $url = $setting['url'];
+                $method = isset($setting['method']) ? $setting['method'] : 'POST';
+                $with_id = isset($setting['with_id']) ? $setting['with_id'] : false;
+                $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
+                if($with_id){
+                    $script.=<<<EOF
+            $('.{$setting['document_class']}').click(function(){
+            let url = '{$url}' + '/'+this.getAttribute('data-id');
+            componentPlane('{$url}','{$xhr_url}','{$method}');});
+EOF;
+                    continue;
+                }
+                $script.=<<<EOF
+            $('.{$setting['document_class']}').click(function(){componentPlane('{$url}','{$xhr_url}','{$method}');});
+EOF;
             }
-            public function render()
-            {
-                return "<a href='javascript:void(0);' class='{$this->document_class}' data-id='{$this->getKey()}'>{$this->title}</a>";
+            Admin::script($script);
+
+            foreach ($settings as $setting) {
+                $actions->add(new
+                class($setting['document_class'], $setting['title']) extends RowAction {
+                    private $title;
+                    private $document_class;
+
+                    public function __construct($document_class, $title)
+                    {
+                        parent::__construct();
+                        $this->document_class = $document_class;
+                        $this->title = $title;
+                    }
+
+                    public function render()
+                    {
+                        return "<a href='javascript:void(0);' class='{$this->document_class}' data-id='{$this->getKey()}'>{$this->title}</a>";
+                    }
+                });
             }
         });
     }
 
     /**
-     * 创建弹窗新增表单-按钮
+     * 新增表单-按钮
      * @param Grid $grid
      */
     public static function makeAddFormAction(Grid $grid)
@@ -160,7 +200,7 @@ EOF;
     }
 
     /**
-     * 创建弹窗修改表单-按钮
+     * 修改表单-按钮
      * @param Grid $grid
      */
     public static function makeEditFormAction(Grid $grid)
@@ -187,7 +227,7 @@ EOF
     }
 
     /**
-     * 创建弹窗修改表单-按钮  (旧版图标模式)
+     * 修改表单-按钮  (旧版图标模式)
      * @param Grid $grid
      */
     public static function _makeEditFormAction(Grid &$grid)
@@ -259,12 +299,19 @@ EOF
         );
     }
 
+    /**
+     * @param array $data
+     * @return false|string
+     */
     protected static function safeJson(array $data)
     {
         self::recursiveJsonArray($data);
         return json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * @param array $data
+     */
     private static function recursiveJsonArray(array &$data)
     {
         foreach ($data as &$d) {

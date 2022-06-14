@@ -139,7 +139,7 @@ EOF
         $url = Request::capture()->getPathInfo();
         Admin::script(<<<EOF
             $('.CAForm').click(function(){
-                componentPlane('{$url}/create','{$url}/store');
+                componentPlane('{$url}/create','{$url}');
             });
 EOF
         );
@@ -171,7 +171,7 @@ EOF;
             Admin::script(<<<EOF
             $('.CEForm').click(function(){
                 let url = '{$url}' + '/'+this.getAttribute('data-id');
-                componentPlane(url+'/edit',url,'PUT');
+                componentPlane(url+'/edit',url);
             });
 EOF
             );
@@ -198,7 +198,7 @@ EOF
             Admin::script(<<<EOF
             $('.CEForm').click(function(){
                 let url = '{$url}' + '/'+this.getAttribute('data-id');
-                componentPlane(url+'/edit',url,'PUT');
+                componentPlane(url+'/edit',url);
             });
 EOF
             );

@@ -301,12 +301,15 @@ function componentLine(name,columns,data) {
     dom.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
 }
 
-function componentPlane(url,method='POST'){
+function componentPlane(url,xhr_url='',method='POST'){
+    if(xhr_url==''){
+        xhr_url = url;
+    }
     let Form = {
-        make:function (url) {
+        make:function () {
             this._clear();
             this._createModal();
-            this._createBox(url);
+            this._createBox();
         },
         _clear:function(){
             this._modalBodyNode = null;
@@ -320,25 +323,25 @@ function componentPlane(url,method='POST'){
         _boxBodyNode: null,
         _tableNode: null,
         _loadingNode:null,
-        _request: function (url) {
+        _request: function () {
             this._loading();
             _componentMegaBlock._request(url,'GET',{},function (response) {
                 Form._loading(true);
                 $('.modal-body').append(response);
                 if($('.modal-body button[type="submit"]')) {
                     $('.modal-body button[type="submit"]').click(function () {
-                        Form._submitEvent(this, url)
+                        Form._submitEvent(this)
                     });
                 }
             });
         },
-        _submitEvent:function (obj,url) {
+        _submitEvent:function (obj) {
             obj.setAttribute('disabled','disabled');
             obj.innerText = '提交中...';
             let form = Form._modalBodyNode.getElementsByTagName('form')[0];
             let formdata = new FormData(form);
 
-            _componentMegaBlock._request(url,method,formdata,function (response) {
+            _componentMegaBlock._request(xhr_url,method,formdata,function (response) {
                 if(response.code == 0) {
                     window.location.reload();
                 }else{
@@ -349,7 +352,7 @@ function componentPlane(url,method='POST'){
                 }
             });
         },
-        _createBox: function (url) {
+        _createBox: function () {
             let box = document.createElement("div");
             box.className = "box grid-box";
             let box_body = document.createElement("div");
@@ -358,7 +361,7 @@ function componentPlane(url,method='POST'){
             box.append(box_body);
             this._boxNode = box;
             this._boxBodyNode = box_body;
-            this._request(url);
+            this._request();
             return;
         },
         _loading: function (remove = false) {
@@ -429,7 +432,3 @@ function componentPlane(url,method='POST'){
     };
     Form.make(url)
 }
-
-
-
-

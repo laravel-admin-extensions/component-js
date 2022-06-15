@@ -68,14 +68,14 @@ EOF
      * 头部-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义类名
+     *  setting.document_id 自定义节点ID
      *  setting.title 自定义按钮名
      *  setting.url 加载页地址
      *  setting.xhr_url ajax提交地址
      *  setting.method ajax提交方法
      */
     public static function makeHeadPlaneAction(Grid $grid,array $settings = [
-        ['document_class'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
+        ['document_id'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
     ])
     {
         $script = '';
@@ -117,8 +117,8 @@ EOF;
      * @param array $settings [setting,...]
      *  setting.document_class 自定义类名
      *  setting.title 自定义按钮名
-     *  setting.url 加载页地址
-     *  setting.xhr_url ajax提交地址
+     *  setting.url 加载页地址  url/{id}加参数匹配id
+     *  setting.xhr_url ajax提交地址 url/{id}加参数匹配id
      *  setting.method ajax提交方法
      * @param array $disable ['view','edit','delete']
      */
@@ -134,7 +134,8 @@ EOF;
             $script.=<<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
-                componentPlane(url,'{$xhr_url}','{$method}');
+                let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
+                componentPlane(url,xhr_url,'{$method}');
             });
 EOF;
         }

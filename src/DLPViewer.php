@@ -68,7 +68,7 @@ EOF
      * 头部-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_id 自定义节点ID
+     *  setting.document_id 自定义DOM节点ID
      *  setting.title 自定义按钮名
      *  setting.url 加载页地址
      *  setting.xhr_url ajax提交地址
@@ -115,7 +115,7 @@ EOF;
      * 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义类名
+     *  setting.document_class 自定义DOM节点CLASS
      *  setting.title 自定义按钮名
      *  setting.url 加载页地址  url/{id}加参数匹配id
      *  setting.xhr_url ajax提交地址 url/{id}加参数匹配id
@@ -170,7 +170,7 @@ EOF;
      * 列-多操作添加 (旧版图标按钮模式)
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义类名
+     *  setting.document_class 自定义DOM节点CLASS
      *  setting.title 自定义按钮名 (图标css类 fa-edit fa-...)
      *  setting.url 加载页地址
      *  setting.xhr_url ajax提交地址

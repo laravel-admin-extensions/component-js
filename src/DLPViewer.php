@@ -33,7 +33,7 @@ class DLPViewer
             $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
             $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
         }
-        self::script(<<<EOF
+        Admin::script(<<<EOF
 componentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
         );
@@ -57,7 +57,7 @@ EOF
             $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
         $settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
-        self::script(<<<EOF
+        Admin::script(<<<EOF
 componentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
 EOF
         );
@@ -68,7 +68,7 @@ EOF
      * 头部-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_id 自定义DOM节点ID
+     *  setting.document_id 自定义节点ID
      *  setting.title 自定义按钮名
      *  setting.url 加载页地址
      *  setting.xhr_url ajax提交地址
@@ -115,7 +115,7 @@ EOF;
      * 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义DOM节点CLASS
+     *  setting.document_class 自定义类名
      *  setting.title 自定义按钮名
      *  setting.url 加载页地址  url/{id}加参数匹配id
      *  setting.xhr_url ajax提交地址 url/{id}加参数匹配id
@@ -170,7 +170,7 @@ EOF;
      * 列-多操作添加 (旧版图标按钮模式)
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义DOM节点CLASS
+     *  setting.document_class 自定义类名
      *  setting.title 自定义按钮名 (图标css类 fa-edit fa-...)
      *  setting.url 加载页地址
      *  setting.xhr_url ajax提交地址
@@ -214,10 +214,22 @@ EOF;
      */
     public static function makeForm(Content $content)
     {
-        $items = [
+        return view('component.content', [
             '_content_' => str_replace('pjax-container', '', $content->build())
-        ];
-        return view('component.content', $items)->render();
+        ])->render();
+    }
+
+    /**
+     * 弹窗自定义视图生成
+     * @param string $html
+     * @return array|string
+     * @throws \Throwable
+     */
+    public static function makeHtml($html)
+    {
+        return view('component.content', [
+            '_content_' => $html
+        ])->render();
     }
 
     /**
@@ -239,30 +251,10 @@ EOF;
     }
 
     /**
-     * 表单代码段插入js片段代码
-     * @param $script
-     */
-    public static function script($script)
-    {
-        Admin::script(<<<EOF
-new Promise((resolve, reject) => {
-    while (true){
-        if(document.getElementById('component') instanceof HTMLElement){
-            return resolve();
-        }
-    }
-}).then(function() {
-    {$script}
-});
-EOF
-        );
-    }
-
-    /**
      * @param array $data
      * @return false|string
      */
-    protected static function safeJson(array $data)
+    public static function safeJson(array $data)
     {
         self::recursiveJsonArray($data);
         return json_encode($data, JSON_UNESCAPED_UNICODE);

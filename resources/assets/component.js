@@ -413,6 +413,9 @@ function componentPlane(url,xhr_url='',method='POST'){
 
             X.addEventListener('click', function () {
                 document.body.removeChild(modal);
+                if(document.getElementById('kvFileinputModal') instanceof HTMLElement) {
+                    document.body.removeChild(document.getElementById('kvFileinputModal'));
+                }
             });
 
             let modal_body = document.createElement('div');
@@ -432,3 +435,7 @@ function componentPlane(url,xhr_url='',method='POST'){
     };
     Form.make(url)
 }
+
+
+
+

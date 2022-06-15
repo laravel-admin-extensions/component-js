@@ -65,107 +65,102 @@ EOF
     }
 
     /**
-     * 头部-自定义弹窗按钮
+     * 头部-多操作添加
      * @param Grid $grid
-     * @param string $document_id
-     * @param string $title
-     * @param string $url
+     * @param array $settings [setting,...]
+     *  setting.document_class 自定义类名
+     *  setting.title 自定义按钮名
+     *  setting.url 加载页地址
+     *  setting.xhr_url ajax提交地址
+     *  setting.method ajax提交方法
      */
-    public static function makeHeadPlaneAction(Grid $grid,string $document_id,string $title,string $url)
+    public static function makeHeadPlaneAction(Grid $grid,array $settings = [
+        ['document_class'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
+    ])
     {
-        Admin::script(<<<EOF
-            $('#{$document_id}').click(function(){
-                componentPlane('{$url}');
+        $script = '';
+        foreach ($settings as $setting){
+            $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $setting['url'];
+            $method = isset($setting['method']) ? $setting['method'] : 'POST';
+            $script.=<<<EOF
+            $('#{$setting['document_id']}').click(function(){
+                componentPlane('{$setting['url']}','{$xhr_url}','{$method}');
             });
-EOF
-        );
-        $grid->tools->append(new class($title,$document_id) extends RowAction {
-            private $title;
-            private $document_id;
-            public function __construct($title,$document_id)
-            {
-                parent::__construct();
-                $this->title = $title;
-                $this->document_id = $document_id;
-            }
-            public function render()
-            {
-                return <<<EOF
+EOF;
+            Admin::script($script);
+            $grid->tools->append(new class($setting['title'],$setting['document_id']) extends RowAction {
+                private $title;
+                private $document_id;
+                public function __construct($title,$document_id)
+                {
+                    parent::__construct();
+                    $this->title = $title;
+                    $this->document_id = $document_id;
+                }
+                public function render()
+                {
+                    return <<<EOF
 <div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
     <a href='javascript:void(0);' class="btn btn-sm btn-primary" id="{$this->document_id}" title="{$this->title}">
         <span class="hidden-xs">{$this->title}</span>
     </a>
 </div>
 EOF;
-            }
-        });
+                }
+            });
+        }
     }
 
     /**
-     * 列-多按钮添加
+     * 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义类名  关键词:CEForm
+     *  setting.document_class 自定义类名
      *  setting.title 自定义按钮名
      *  setting.url 加载页地址
-     *  setting.with_id 加载页面url附加id参数 url/{id}
      *  setting.xhr_url ajax提交地址
      *  setting.method ajax提交方法
+     * @param array $disable ['view','edit','delete']
      */
     public static function makeRowPlaneAction(Grid $grid,array $settings = [
-        ['document_class'=>'','title'=>'','url'=>'','with_id'=>false,'xhr_url'=>'','method'=>'POST']
-    ])
+        ['document_class'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
+    ],array $disable=[])
     {
-        $grid->actions(function ($actions)use($settings) {
-            $script = '';
-            foreach ($settings as $setting){
-                $url = Request::capture()->getPathInfo();
-                if($setting['document_class'] == 'CEForm'){
-                    $actions->disableEdit();
-                    $script.=<<<EOF
-            $('.CEForm').click(function(){
-                let url = '{$url}' + '/'+this.getAttribute('data-id')+'/edit';
-                componentPlane(url,url);
+        $script = '';
+        foreach ($settings as $setting){
+            $url = $setting['url'];
+            $method = isset($setting['method']) ? $setting['method'] : 'POST';
+            $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
+            $script.=<<<EOF
+            $('.{$setting['document_class']}').click(function(){
+                let url = '$url'.replace('{id}',$(this).attr('data-id'));
+                componentPlane(url,'{$xhr_url}','{$method}');
             });
 EOF;
-                    continue;
-                }
-                $url = $setting['url'];
-                $method = isset($setting['method']) ? $setting['method'] : 'POST';
-                $with_id = isset($setting['with_id']) ? $setting['with_id'] : false;
-                $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
-                if($with_id){
-                    $script.=<<<EOF
-            $('.{$setting['document_class']}').click(function(){
-            let url = '{$url}' + '/'+this.getAttribute('data-id');
-            componentPlane('{$url}','{$xhr_url}','{$method}');});
-EOF;
-                    continue;
-                }
-                $script.=<<<EOF
-            $('.{$setting['document_class']}').click(function(){componentPlane('{$url}','{$xhr_url}','{$method}');});
-EOF;
-            }
-            Admin::script($script);
-
+        }
+        Admin::script($script);
+        $grid->actions(function ($actions)use($settings,$disable) {
             foreach ($settings as $setting) {
                 $actions->add(new
                 class($setting['document_class'], $setting['title']) extends RowAction {
                     private $title;
                     private $document_class;
-
                     public function __construct($document_class, $title)
                     {
                         parent::__construct();
                         $this->document_class = $document_class;
                         $this->title = $title;
                     }
-
                     public function render()
                     {
                         return "<a href='javascript:void(0);' class='{$this->document_class}' data-id='{$this->getKey()}'>{$this->title}</a>";
                     }
                 });
+            }
+            foreach ($disable as $dis){
+                $dis == 'view' && $actions->disableView();
+                $dis == 'edit' && $actions->disableEdit();
+                $dis == 'delete' && $actions->disableDelete();
             }
         });
     }

@@ -214,7 +214,7 @@ EOF;
      */
     public static function makeForm(Content $content)
     {
-        return view('component.content', [
+        return view('dlp::content', [
             '_content_' => str_replace('pjax-container', '', $content->build())
         ])->render();
     }
@@ -227,7 +227,7 @@ EOF;
      */
     public static function makeHtml($html)
     {
-        return view('component.content', [
+        return view('dlp::content', [
             '_content_' => $html
         ])->render();
     }

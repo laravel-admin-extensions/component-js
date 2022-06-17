@@ -7,3 +7,7 @@ composer require dlp/component-js
 ```shell script
 php artisan vendor:publish --provider="DLP\DLPServiceProvider"
 ```
+
+![弹窗组件](https://github.com/ydtg1993/laravel-admin-component-js/blob/main/example/img/1.gif)
+
+![点线组件](https://github.com/ydtg1993/laravel-admin-component-js/blob/main/example/img/2.gif)

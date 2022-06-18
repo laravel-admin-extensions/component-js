@@ -424,7 +424,7 @@ function componentPlane(url,xhr_url='',method='POST',callback=null){
 
             let modal_body = document.createElement('div');
             modal_body.className = "modal-body";
-            modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;height:' + window.innerHeight * 0.8 + 'px';
+            modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;max-height:' + window.innerHeight * 0.8 + 'px;min-height:'+ window.innerHeight * 0.4 + 'px;';
 
             this._modalBodyNode = modal_body;
             this._loading();

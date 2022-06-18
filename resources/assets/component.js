@@ -301,7 +301,7 @@ function componentLine(name,columns,data) {
     dom.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
 }
 
-function componentPlane(url,xhr_url='',method='POST'){
+function componentPlane(url,xhr_url='',method='POST',callback=null){
     if(xhr_url==''){
         xhr_url = url;
     }
@@ -342,6 +342,10 @@ function componentPlane(url,xhr_url='',method='POST'){
             let formdata = new FormData(form);
 
             _componentMegaBlock._request(xhr_url,method,formdata,function (response) {
+                if(typeof callback == 'function'){
+                    callback(response);
+                    return;
+                }
                 if(response.code == 0) {
                     window.location.reload();
                 }else{
@@ -386,14 +390,14 @@ function componentPlane(url,xhr_url='',method='POST'){
             this._modalBodyNode.append(loading);
         },
         _createModal: function () {
-            //modal
+            /*modal*/
             let modal = document.createElement("div");
             modal.setAttribute('class', 'modal grid-modal in');
             modal.setAttribute('tabindex', '-1');
             modal.setAttribute('role', 'dialog');
             modal.style = 'display: block;';
 
-            //modal_dialog
+            /*modal_dialog*/
             let mod_dialog = document.createElement("div");
             mod_dialog.setAttribute('class', 'modal-dialog modal-lg');
             mod_dialog.setAttribute('role', 'document');
@@ -402,11 +406,11 @@ function componentPlane(url,xhr_url='',method='POST'){
             let modal_content = document.createElement("div");
             modal_content.className = "modal-content";
 
-            //header
+            /*header*/
             let modal_header = document.createElement("div");
             modal_header.className = 'modal-header';
             modal_header.style = 'background-color:#ffffff;padding: 3px;display: flex;justify-content:flex-end;';
-            //X
+            /*X*/
             let X = document.createElement('i');
             X.setAttribute('class', 'fa fa-close');
             X.setAttribute('style', 'cursor: pointer');
@@ -424,7 +428,7 @@ function componentPlane(url,xhr_url='',method='POST'){
 
             this._modalBodyNode = modal_body;
             this._loading();
-            //create modal
+            /*create modal*/
             modal_header.append(X);
             modal_content.append(modal_header);
             modal_content.append(modal_body);
@@ -435,7 +439,3 @@ function componentPlane(url,xhr_url='',method='POST'){
     };
     Form.make(url)
 }
-
-
-
-

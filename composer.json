@@ -19,5 +19,12 @@
         "psr-4": {
             "DLP\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DLP\\DLPServiceProvider"
+            ]
+        }
     }
 }

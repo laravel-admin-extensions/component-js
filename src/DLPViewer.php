@@ -22,16 +22,16 @@ class DLPViewer
      * @param string $title   名称
      * @param array $select   全部选项
      * @param array $selected 已选择选项
-     * @param bool $strict    json严格模式
+     * @param bool $strict    json严格模式 消除json敏感字符问题
      */
-    public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [],bool $strict = true)
+    public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [],bool $strict = false)
     {
         if ($strict) {
             $select = self::safeJson($select);
             $selected = self::safeJson($selected);
         } else {
-            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
-            $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+            $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
         Admin::script(<<<EOF
 componentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
@@ -47,16 +47,16 @@ EOF
      * @param string $title   名称
      * @param array $settings  设置项
      * @param array $data     数据
-     * @param bool $strict    json严格模式
+     * @param bool $strict    json严格模式 消除json敏感字符问题
      */
-    public static function makeComponentLine(Form $form, string $column, string $title, array $settings = [], array $data = [], bool $strict = true)
+    public static function makeComponentLine(Form $form, string $column, string $title, array $settings = [], array $data = [], bool $strict = false)
     {
         if($strict) {
             $data = self::safeJson($data);
         }else{
             $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
-        $settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
+        $settings = json_encode($settings, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
 componentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
 EOF

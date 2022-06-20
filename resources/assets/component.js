@@ -139,7 +139,7 @@ function componentLine(name,columns,data) {
     function selectTd(td,type,value,column) {
         switch (type) {
             case 'text':
-                td.insertAdjacentHTML('afterbegin','<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;">'+value+'</p>');
+                td.insertAdjacentHTML('afterbegin','<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;" title="'+value+'">'+value+'</p>');
                 break;
             case 'input':
                 let input = document.createElement('input');

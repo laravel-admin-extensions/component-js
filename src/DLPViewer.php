@@ -27,8 +27,8 @@ class DLPViewer
     public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [],bool $strict = false)
     {
         if ($strict) {
-            $select = self::safeJson($select);
-            $selected = self::safeJson($selected);
+            $select = DLPHelper::safeJson($select);
+            $selected = DLPHelper::safeJson($selected);
         } else {
             $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
             $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -52,7 +52,7 @@ EOF
     public static function makeComponentLine(Form $form, string $column, string $title, array $settings = [], array $data = [], bool $strict = false)
     {
         if($strict) {
-            $data = self::safeJson($data);
+            $data = DLPHelper::safeJson($data);
         }else{
             $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
@@ -248,29 +248,5 @@ EOF;
         ], 200)
             ->header('Content-Type', 'application/json;charset=utf-8')
             ->header('Access-Control-Allow-Origin', '*');
-    }
-
-    /**
-     * @param array $data
-     * @return false|string
-     */
-    public static function safeJson(array $data)
-    {
-        self::recursiveJsonArray($data);
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
-     * @param array $data
-     */
-    private static function recursiveJsonArray(array &$data)
-    {
-        foreach ($data as &$d) {
-            if (is_array($d)) {
-                self::recursiveJsonArray($d);
-            } else {
-                $d = str_replace(['"', '\'', ':', '\\', '{', '}', '[', ']','`'], '', $d);
-            }
-        }
     }
 }

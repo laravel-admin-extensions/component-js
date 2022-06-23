@@ -10,62 +10,14 @@ use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
 /**
- * Class DLPViewer
+ * 面
+ * Class Plane
  * @package DLP
  */
-class DLPViewer
+class Plane
 {
     /**
-     * 点
-     * @param Form $form
-     * @param string $column  字段名
-     * @param string $title   名称
-     * @param array $select   全部选项
-     * @param array $selected 已选择选项
-     * @param bool $strict    json严格模式 消除json敏感字符问题
-     */
-    public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [],bool $strict = false)
-    {
-        if ($strict) {
-            $select = DLPHelper::safeJson($select);
-            $selected = DLPHelper::safeJson($selected);
-        } else {
-            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-            $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        }
-        Admin::script(<<<EOF
-componentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
-EOF
-        );
-        $form->html("<div id='{$column}'></div>", $title);
-    }
-
-    /**
-     * 线
-     * @param Form $form
-     * @param string $column  字段名
-     * @param string $title   名称
-     * @param array $settings  设置项
-     * @param array $data     数据
-     * @param bool $strict    json严格模式 消除json敏感字符问题
-     */
-    public static function makeComponentLine(Form $form, string $column, string $title, array $settings = [], array $data = [], bool $strict = false)
-    {
-        if($strict) {
-            $data = DLPHelper::safeJson($data);
-        }else{
-            $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        }
-        $settings = json_encode($settings, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        Admin::script(<<<EOF
-componentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
-EOF
-        );
-        $form->html("<div id='{$column}'></div>", $title);
-    }
-
-    /**
-     * 头部-多操作添加
+     * 列表页 头部-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
      *  setting.document_id 自定义节点ID
@@ -112,7 +64,7 @@ EOF;
     }
 
     /**
-     * 列-多操作添加
+     * 列表页 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
      *  setting.document_class 自定义类名
@@ -167,7 +119,7 @@ EOF;
     }
 
     /**
-     * 列-多操作添加 (旧版图标按钮模式)
+     * 列表页 列-多操作添加 (旧版图标按钮模式)
      * @param Grid $grid
      * @param array $settings [setting,...]
      *  setting.document_class 自定义类名

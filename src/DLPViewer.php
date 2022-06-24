@@ -20,8 +20,8 @@ class DLPViewer
      * @param Form $form
      * @param string $column  字段名
      * @param string $title   名称
-     * @param array $select   全部选项
-     * @param array $selected 已选择选项
+     * @param array $select   [[id=>value],[id=>value]...],    所有选择项
+     * @param array $selected [[id=>value],[id=>value]...],    已选择选项
      * @param bool $strict    json严格模式 消除json敏感字符问题
      */
     public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [],bool $strict = false)
@@ -43,17 +43,23 @@ EOF
     /**
      * 线
      * @param Form $form
-     * @param string $column  字段名
-     * @param string $title   名称
-     * @param array $settings  设置项
-     * @param array $data     数据
-     * @param bool $strict    json严格模式 消除json敏感字符问题
+     * @param string $column 字段名
+     * @param string $title 名称
+     * @param array $settings 配置项
+     * $settings = [
+     *     'column1'=> ['name' => 'name1', 'type' => 'input', 'style' => 'width:60px'],
+     *     'column2'=> ['name' => 'name2', 'type' => 'text'],
+     *     'column3'=> ['name' => 'name3', 'type' => 'hidden'],
+     *      ...
+     * ]
+     * @param array $data 数据
+     * @param bool $strict json严格模式 消除json敏感字符问题
      */
     public static function makeComponentLine(Form $form, string $column, string $title, array $settings = [], array $data = [], bool $strict = false)
     {
-        if($strict) {
+        if ($strict) {
             $data = DLPHelper::safeJson($data);
-        }else{
+        } else {
             $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
         $settings = json_encode($settings, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -74,29 +80,31 @@ EOF
      *  setting.xhr_url ajax提交地址
      *  setting.method ajax提交方法
      */
-    public static function makeHeadPlaneAction(Grid $grid,array $settings = [
-        ['document_id'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
+    public static function makeHeadPlaneAction(Grid $grid, array $settings = [
+        ['document_id' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST']
     ])
     {
         $script = '';
-        foreach ($settings as $setting){
+        foreach ($settings as $setting) {
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
-            $script.=<<<EOF
+            $script .= <<<EOF
             $('#{$setting['document_id']}').click(function(){
                 new ComponentPlane('{$setting['url']}','{$xhr_url}','{$method}');
             });
 EOF;
             Admin::script($script);
-            $grid->tools->append(new class($setting['title'],$setting['document_id']) extends RowAction {
+            $grid->tools->append(new class($setting['title'], $setting['document_id']) extends RowAction {
                 private $title;
                 private $document_id;
-                public function __construct($title,$document_id)
+
+                public function __construct($title, $document_id)
                 {
                     parent::__construct();
                     $this->title = $title;
                     $this->document_id = $document_id;
                 }
+
                 public function render()
                 {
                     return <<<EOF
@@ -122,16 +130,16 @@ EOF;
      *  setting.method ajax提交方法
      * @param array $disable ['view','edit','delete']
      */
-    public static function makeRowPlaneAction(Grid $grid,array $settings = [
-        ['document_class'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
-    ],array $disable=[])
+    public static function makeRowPlaneAction(Grid $grid, array $settings = [
+        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST']
+    ], array $disable = [])
     {
         $script = '';
-        foreach ($settings as $setting){
+        foreach ($settings as $setting) {
             $url = $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
-            $script.=<<<EOF
+            $script .= <<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
                 let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
@@ -140,25 +148,27 @@ EOF;
 EOF;
         }
         Admin::script($script);
-        $grid->actions(function ($actions)use($settings,$disable) {
+        $grid->actions(function ($actions) use ($settings, $disable) {
             foreach ($settings as $setting) {
                 $actions->add(new
                 class($setting['document_class'], $setting['title']) extends RowAction {
                     private $title;
                     private $document_class;
+
                     public function __construct($document_class, $title)
                     {
                         parent::__construct();
                         $this->document_class = $document_class;
                         $this->title = $title;
                     }
+
                     public function render()
                     {
                         return "<a href='javascript:void(0);' class='{$this->document_class}' data-id='{$this->getKey()}'>{$this->title}</a>";
                     }
                 });
             }
-            foreach ($disable as $dis){
+            foreach ($disable as $dis) {
                 $dis == 'view' && $actions->disableView();
                 $dis == 'edit' && $actions->disableEdit();
                 $dis == 'delete' && $actions->disableDelete();
@@ -177,16 +187,16 @@ EOF;
      *  setting.method ajax提交方法
      * @param array $disable ['view','edit','delete']
      */
-    public static function _makeRowPlaneAction(Grid $grid,array $settings = [
-        ['document_class'=>'','title'=>'','url'=>'','xhr_url'=>'','method'=>'POST']
-    ],array $disable=[])
+    public static function _makeRowPlaneAction(Grid $grid, array $settings = [
+        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST']
+    ], array $disable = [])
     {
         $script = '';
-        foreach ($settings as $setting){
+        foreach ($settings as $setting) {
             $url = $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
-            $script.=<<<EOF
+            $script .= <<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
                 new ComponentPlane(url,'{$xhr_url}','{$method}');
@@ -194,11 +204,11 @@ EOF;
 EOF;
         }
         Admin::script($script);
-        $grid->actions(function ($actions)use($settings,$disable) {
+        $grid->actions(function ($actions) use ($settings, $disable) {
             foreach ($settings as $setting) {
                 $actions->append("<a data-id='{$actions->getKey()}' href='javascript:void(0);' class='{$setting['document_class']}'><i class='fa {$setting['title']}'></i></a>");
             }
-            foreach ($disable as $dis){
+            foreach ($disable as $dis) {
                 $dis == 'view' && $actions->disableView();
                 $dis == 'edit' && $actions->disableEdit();
                 $dis == 'delete' && $actions->disableDelete();

@@ -34,7 +34,7 @@ class DLPViewer
             $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
         Admin::script(<<<EOF
-componentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
+new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
         );
         $form->html("<div id='{$column}'></div>", $title);
@@ -58,7 +58,7 @@ EOF
         }
         $settings = json_encode($settings, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
-componentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
+new ComponentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
 EOF
         );
         $form->html("<div id='{$column}'></div>", $title);
@@ -84,7 +84,7 @@ EOF
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $script.=<<<EOF
             $('#{$setting['document_id']}').click(function(){
-                componentPlane('{$setting['url']}','{$xhr_url}','{$method}');
+                new ComponentPlane('{$setting['url']}','{$xhr_url}','{$method}');
             });
 EOF;
             Admin::script($script);
@@ -135,7 +135,7 @@ EOF;
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
                 let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
-                componentPlane(url,xhr_url,'{$method}');
+                new ComponentPlane(url,xhr_url,'{$method}');
             });
 EOF;
         }
@@ -189,7 +189,7 @@ EOF;
             $script.=<<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
-                componentPlane(url,'{$xhr_url}','{$method}');
+                new ComponentPlane(url,'{$xhr_url}','{$method}');
             });
 EOF;
         }

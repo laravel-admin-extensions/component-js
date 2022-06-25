@@ -18,14 +18,22 @@ class DLPViewer
     /**
      * 点
      * @param Form $form
-     * @param string $column  字段名
-     * @param string $title   名称
-     * @param array $select   [[id=>value],[id=>value]...],    所有选择项
-     * @param array $selected [[id=>value],[id=>value]...],    已选择选项
-     * @param bool $strict    json严格模式 消除json敏感字符问题
+     * @param string $column 数据字段名
+     * @param string $title 名称
+     * @param array $select 全部选项
+     * @param array $selected 已选择选项
+     * @param array $settings 配置项
+     * $settings = [
+     *      'strict'=>false,   boolean json严格模式消除json敏感字符问题
+     *      'width'=>'100%'    string 容器宽度设置
+     *      'height'=>'200px', string 容器高度设置
+     * ]
      */
-    public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [],bool $strict = false)
+    public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [], array $settings = [])
     {
+        $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
+        $width = isset($settings['width']) ? $settings['width'] : '100%';
+        $hight = isset($settings['height']) ? $settings['height'] : '200px';
         if ($strict) {
             $select = DLPHelper::safeJson($select);
             $selected = DLPHelper::safeJson($selected);
@@ -37,37 +45,45 @@ class DLPViewer
 new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
         );
-        $form->html("<div id='{$column}'></div>", $title);
+        $form->html("<div id='{$column}' style='width:{$width};height: {$hight};'></div>", $title);
     }
 
     /**
      * 线
      * @param Form $form
-     * @param string $column 字段名
+     * @param string $column 数据字段名
      * @param string $title 名称
+     * @param array $data 数据
      * @param array $settings 配置项
      * $settings = [
-     *     'column1'=> ['name' => 'name1', 'type' => 'input', 'style' => 'width:60px'],
-     *     'column2'=> ['name' => 'name2', 'type' => 'text'],
-     *     'column3'=> ['name' => 'name3', 'type' => 'hidden'],
-     *      ...
+     *      'columns'=>[
+     *          'name' => ['name' => '名称', 'type' => 'input'],
+     *          'name1' => ['name1' => '名称1', 'type' => 'text', style=>'width:50px'],
+     *          'name2' => ['name2' => '名称2', 'type' => 'hidden'],
+     *          ...],               array  多列配置项 (必须填)
+     *      'strict'=>false,        boolean json严格模式消除json敏感字符问题 (选填)
+     *      'width'=>'100%',        string 容器宽度设置 (选填)
+     *      'height'=>'450px',      string 容器高度设置 (选填)
      * ]
-     * @param array $data 数据
-     * @param bool $strict json严格模式 消除json敏感字符问题
      */
-    public static function makeComponentLine(Form $form, string $column, string $title, array $settings = [], array $data = [], bool $strict = false)
+    public static function makeComponentLine(Form $form, string $column, string $title, array $data = [], array $settings = [])
     {
+        $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
+        $width = isset($settings['width']) ? $settings['width'] : '100%';
+        $hight = isset($settings['height']) ? $settings['height'] : '450px';
+        if (!isset($settings['columns'])) return;
+        $columns = $settings['columns'];
         if ($strict) {
             $data = DLPHelper::safeJson($data);
         } else {
             $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
-        $settings = json_encode($settings, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
-new ComponentLine("{$column}",JSON.parse('{$settings}'),JSON.parse('{$data}'));
+new ComponentLine("{$column}",JSON.parse('{$columns}'),JSON.parse('{$data}'));
 EOF
         );
-        $form->html("<div id='{$column}'></div>", $title);
+        $form->html("<div id='{$column}' style='width:{$width};height:{$hight};'></div>", $title);
     }
 
     /**

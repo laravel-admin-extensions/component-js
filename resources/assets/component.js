@@ -72,7 +72,7 @@ class ComponentDot {
         let select_str = JSON.stringify(this.select_data);
         this.insert_data = [];
         this.delete_data = [];
-        let html = `<div style="width: 100%;display: grid; grid-template-rows: 42px 140px;border: 1px solid #ccc;border-radius: 5px">
+        let html = `<div style="width: 100%;height:100%;display: grid; grid-template-rows: 42px auto;border: 1px solid #ccc;border-radius: 5px">
         <div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;">
         <input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div>
         <div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div>
@@ -89,10 +89,10 @@ class ComponentDot {
         this.deleteDOM = document.querySelector(`input[name='${name}[delete]']`);
 
         for (let element of document.getElementById(name + '-select').getElementsByClassName("v-tag")) {
-            element.addEventListener('click', this.tagCancel.bind(this, element));
+            element.addEventListener('click', this.tagCancel.bind(this, element),false);
         }
         for (let element of document.getElementById(name + '-content').getElementsByClassName("v-tag")) {
-            element.addEventListener('click', this.tagSelect.bind(this, element));
+            element.addEventListener('click', this.tagSelect.bind(this, element),false);
         }
         document.getElementById(name + '-search').addEventListener('input', function () {
             let search = this.value;
@@ -105,12 +105,12 @@ class ComponentDot {
                     contentDom.insertBefore(element, contentDom.firstChild);
                 }
             }
-        });
+        },false);
     }
 
     tagSelect(element) {
         let cdom = element.cloneNode(true);
-        cdom.addEventListener('click', this.tagCancel.bind(this, cdom));
+        cdom.addEventListener('click', this.tagCancel.bind(this, cdom),false);
         this.SELECT_DOM.appendChild(cdom);
         element.remove();
         this.tagCal(cdom, 'insert');
@@ -118,7 +118,7 @@ class ComponentDot {
 
     tagCancel(element) {
         let cdom = element.cloneNode(true);
-        cdom.addEventListener('click', this.tagSelect.bind(this, cdom));
+        cdom.addEventListener('click', this.tagSelect.bind(this, cdom),false);
         this.CONTENT_DOM.appendChild(cdom);
         element.remove();
         this.tagCal(cdom, 'delete');
@@ -171,14 +171,19 @@ class ComponentLine {
     NAME;
     COLUMNS;
     DATA;
+    SETTINGS;
     DATA_INPUT;
+    SORTABLE;
 
-    constructor(name, columns, data) {
+    constructor(name, columns, data, settings) {
         this.DOM = document.getElementById(name);
-        this.DOM.style = 'overflow-x: auto;';
         this.NAME = name;
         this.COLUMNS = columns;
         this.DATA = data;
+        this.SETTINGS = Object.assign({
+            sortable: true,
+            delete: true,
+        }, settings || {});
         /*head foot*/
         let foot = this.makeHead();
         /*hidden data container*/
@@ -191,6 +196,8 @@ class ComponentLine {
         this.makeBody();
         /*foot*/
         this.makeFoot(foot);
+        /*sort*/
+        this.sortAble();
     }
 
     makeHead() {
@@ -209,12 +216,11 @@ class ComponentLine {
             head += '<th>' + columns[column].name + '</th>';
             foot += `<th><input class="form-control" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
         }
-        head += '<th style="width: 45px"></th></tr>';
-        foot += '<th style="width: 45px" class="JsonTableInsert"></th></tr>';
+        head += '<th style="width: 50px"></th></tr>';
+        foot += '<th style="width: 50px" class="JsonTableInsert"></th></tr>';
 
-        this.DOM.insertAdjacentHTML('afterbegin', `<style>#${this.NAME} tbody::-webkit-scrollbar { width: 0 !important }
-        #${this.NAME} th,#${this.NAME} td{width: 100px}</style>
-        <table class="table table-striped table-bordered table-hover table-responsive"><thead>${head}</thead></table>`);
+        this.DOM.insertAdjacentHTML('afterbegin', `<style>#${this.NAME} tbody::-webkit-scrollbar { width: 0 !important }</style>
+        <table class="table table-striped table-bordered table-hover table-responsive" style="height: 100%"><thead>${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
         return foot;
     }
@@ -226,6 +232,7 @@ class ComponentLine {
         var columns = this.COLUMNS;
         this.DATA.forEach(function (value, key) {
             let tr = document.createElement('tr');
+            tr.setAttribute('sortable-item','sortable-item');
             let record = {};
             for (let column in columns) {
                 if (columns[column].type == 'hidden') {
@@ -254,14 +261,15 @@ class ComponentLine {
             }
 
             let td = document.createElement('td');
-            object.deleteButton(td);
+            object.operateButton(td);
             tr.appendChild(td);
-            tbody.setAttribute('style', 'display:block;max-height:270px;overflow-y:scroll');
+            tbody.setAttribute('style', 'display:block;height:100%;overflow-y:scroll');
             tbody.appendChild(tr);
             records.push(record);
             object.DATA = records;
             object.DATA_INPUT.value = JSON.stringify(records);
         });
+        tbody.setAttribute('sortable-list','sortable-list');
         this.TBODY_DOM = tbody;
         this.TABLE_DOM.appendChild(tbody);
     }
@@ -281,6 +289,7 @@ class ComponentLine {
             let insert = {};
             let tr = document.createElement('tr');
             tr.style = 'display:table;width:100%;table-layout:fixed';
+            tr.setAttribute('sortable-item','sortable-item');
             tr.setAttribute('data-key', object.DATA.length);
             for (let input in inputs) {
                 if (inputs.hasOwnProperty(input)) {
@@ -296,13 +305,14 @@ class ComponentLine {
                 }
             }
             let td = document.createElement('td');
-            object.deleteButton(td);
+            object.operateButton(td);
             tr.appendChild(td);
             object.TBODY_DOM.appendChild(tr);
             object.DATA.push(insert);
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
             object.TBODY_DOM.scrollTop = object.TBODY_DOM.scrollHeight;
-        });
+            object.SORTABLE.resetContainer();
+        },false);
         this.DOM.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
     }
 
@@ -328,7 +338,7 @@ class ComponentLine {
                         object.DATA[key][column] = this.value;
                         object.DATA_INPUT.value = JSON.stringify(object.DATA);
                     }
-                });
+                },false);
                 td.appendChild(input);
                 break;
             default:
@@ -337,27 +347,44 @@ class ComponentLine {
         }
     }
 
-    deleteButton(td) {
+    operateButton(td) {
         var object = this;
-        let i = document.createElement('i');
-        i.setAttribute('class', 'fa fa-trash');
-        i.setAttribute('style', 'cursor: pointer');
-        i.addEventListener('click', function () {
-            let tr = this.parentNode.parentNode;
-            let tbody = tr.parentNode;
-            let key = tr.getAttribute('data-key');
+        if(this.SETTINGS.sortable) {
+            let M = document.createElement('i');
+            M.setAttribute('class', 'fa fa-arrows');
+            M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
+            M.setAttribute('sortable-handle', 'sortable-handle');
+            td.appendChild(M);
+        }
 
-            object.DATA.splice(key, 1);
-            tbody.removeChild(tr);
-            object.DATA_INPUT.value = JSON.stringify(object.DATA);
-            for (let node in tbody.childNodes) {
-                if (tbody.childNodes[node] instanceof HTMLElement) {
-                    tbody.childNodes[node].setAttribute('data-key', node);
+        if(this.SETTINGS.delete) {
+            let D = document.createElement('i');
+            D.setAttribute('class', 'fa fa-trash');
+            D.setAttribute('style', 'cursor: pointer');
+            D.addEventListener('click', function () {
+                let tr = this.parentNode.parentNode;
+                let tbody = tr.parentNode;
+                let key = tr.getAttribute('data-key');
+
+                object.DATA.splice(key, 1);
+                tbody.removeChild(tr);
+                object.DATA_INPUT.value = JSON.stringify(object.DATA);
+                for (let node in tbody.childNodes) {
+                    if (tbody.childNodes[node] instanceof HTMLElement) {
+                        tbody.childNodes[node].setAttribute('data-key', node);
+                    }
                 }
-            }
+            }, false);
+            td.appendChild(D);
+        }
+        td.style = 'width:50px';
+    }
+
+    sortAble(){
+        var object = this;
+        setTimeout(function () {
+            object.SORTABLE = new Sortable(object.TBODY_DOM);
         });
-        td.style = 'width:45px';
-        td.appendChild(i);
     }
 }
 
@@ -401,6 +428,7 @@ class ComponentPlane {
         let mod_dialog = document.createElement("div");
         mod_dialog.setAttribute('class', 'modal-dialog modal-lg');
         mod_dialog.setAttribute('role', 'document');
+        mod_dialog.style = `width:${window.innerWidth*0.8}px`;
         /*modal_content*/
         let modal_content = document.createElement("div");
         modal_content.className = "modal-content";
@@ -417,7 +445,7 @@ class ComponentPlane {
             if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
                 document.getElementById('kvFileinputModal').remove();
             }
-        });
+        },false);
         let modal_body = document.createElement('div');
         modal_body.className = "modal-body";
         modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;max-height:' + window.innerHeight * 0.8 + 'px;min-height:' + window.innerHeight * 0.4 + 'px;';
@@ -440,7 +468,7 @@ class ComponentPlane {
             $('.modal-body').append(response);
             let submit = document.querySelector('.modal-body button[type="submit"]');
             if (submit instanceof HTMLElement) {
-                submit.addEventListener('click', object.submitEvent.bind(object,submit));
+                submit.addEventListener('click', object.submitEvent.bind(object,submit),false);
             }
         });
     }
@@ -489,143 +517,154 @@ class ComponentPlane {
 }
 
 class Sortable {
-
+    list_height;
     constructor(list, options) {
         this.list = (typeof list === 'string')
             ? document.querySelector(list)
-            : list
+            : list;
 
-        this.items = Array.from(this.list.children)
-        this.animation = false
-
+        this.items = Array.from(this.list.children);
+        this.animation = false;
+        if(this.items.length<2){
+            return;
+        }
         this.options = Object.assign({
             animationSpeed: 200,
             animationEasing: 'ease-out',
-        }, options || {})
+        }, options || {});
 
-        this.dragStart = this.dragStart.bind(this)
-        this.dragMove = this.dragMove.bind(this)
-        this.dragEnd = this.dragEnd.bind(this)
+        this.dragStart = this.dragStart.bind(this);
+        this.dragMove = this.dragMove.bind(this);
+        this.dragEnd = this.dragEnd.bind(this);
+        if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
+            this.list_height = this.list.scrollHeight;
+        }else {
+            this.list_height = this.items[this.items.length-1].offsetTop;
+        }
+        this.list.addEventListener('touchstart', this.dragStart, false);
+        this.list.addEventListener('mousedown', this.dragStart, false);
+    }
 
-        this.list.addEventListener('touchstart', this.dragStart, false)
-        this.list.addEventListener('mousedown', this.dragStart, false)
+    resetContainer(){
+        this.items = Array.from(this.list.children);
+        if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
+            this.list_height = this.list.scrollHeight;
+        }else {
+            this.list_height = this.items[this.items.length-1].offsetTop;
+        }
+        this.list.addEventListener('touchstart', this.dragStart, false);
+        this.list.addEventListener('mousedown', this.dragStart, false);
     }
 
     dragStart(e) {
-        if (this.animation) return
-        if (e.type === 'mousedown' && e.which !== 1) return
-        if (e.type === 'touchstart' && e.touches.length > 1) return
+        if (this.animation) return;
+        if (e.type === 'mousedown' && e.which !== 1) return;
+        if (e.type === 'touchstart' && e.touches.length > 1) return;
 
-        this.handle = null
+        this.handle = null;
 
         let el = e.target;
         while (el) {
-            if (el.hasAttribute('sortable-handle')) this.handle = el
-            if (el.hasAttribute('sortable-item')) this.item = el
+            if (el.hasAttribute('sortable-handle')) this.handle = el;
+            if (el.hasAttribute('sortable-item')) this.item = el;
             if (el.hasAttribute('sortable-list')) break;
             el = el.parentElement;
         }
 
-        if (!this.handle) return
-
-        this.list.style.position = 'relative'
-        this.list.style.height = this.list.offsetHeight + 'px'
-
+        if (!this.handle) return;
+        this.list.style.position = 'relative';
         this.item.classList.add('is-dragging')
 
-        this.itemHeight = this.items[1].offsetTop
-        this.listHeight = this.list.offsetHeight
-        this.startTouchY = this.getDragY(e)
-        this.startTop = this.item.offsetTop
+        this.itemHeight = this.items[1].offsetTop;
+        this.listHeight = this.list_height;
+        this.startTouchY = this.getDragY(e);
+        this.startTop = this.item.offsetTop;
 
-        const offsetsTop = this.items.map(item => item.offsetTop)
+        const offsetsTop = this.items.map(item => item.offsetTop);
 
         this.items.forEach((item, index) => {
-            item.style.position = 'absolute'
-            item.style.top = 0
-            item.style.left = 0
-            item.style.width = '100%'
-            item.style.transform = `translateY(${offsetsTop[index]}px)`
-            item.style.zIndex = (item == this.item) ? 2 : 1
+            item.style.position = 'absolute';
+            item.style.top = 0;
+            item.style.left = 0;
+            item.style.transform = `translateY(${offsetsTop[index]}px)`;
+            item.style.zIndex = (item == this.item) ? 2 : 1;
         })
 
         setTimeout(() => {
             this.items.forEach(item => {
-                if (this.item == item) return
-                item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`
+                if (this.item == item) return;
+                item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
             })
         })
 
-        this.positions = this.items.map((item, index) => index)
-        this.position = Math.round((this.startTop / this.listHeight) * this.items.length)
+        this.positions = this.items.map((item, index) => index);
+        this.position = Math.round((this.startTop / this.listHeight) * this.items.length);
 
-        this.touch = e.type == 'touchstart'
-        window.addEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove, {passive: false})
-        window.addEventListener((this.touch ? 'touchend' : 'mouseup'), this.dragEnd, false)
+        this.touch = e.type == 'touchstart';
+        window.addEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove);
+        window.addEventListener((this.touch ? 'touchend' : 'mouseup'), this.dragEnd, false);
     }
 
     dragMove(e) {
-        if (this.animation) return
+        if (this.animation) return;
 
-        const top = this.startTop + this.getDragY(e) - this.startTouchY
-        const newPosition = Math.round((top / this.listHeight) * this.items.length)
+        const top = this.startTop + this.getDragY(e) - this.startTouchY;
+        const newPosition = Math.round((top / this.listHeight) * this.items.length);
 
-        this.item.style.transform = `translateY(${top}px)`
+        this.item.style.transform = `translateY(${top}px)`;
 
         this.positions.forEach(index => {
-            if (index == this.position || index != newPosition) return
-            this.swapElements(this.positions, this.position, index)
-            this.position = index
+            if (index == this.position || index != newPosition) return;
+            this.swapElements(this.positions, this.position, index);
+            this.position = index;
         })
 
         this.items.forEach((item, index) => {
-            if (item == this.item) return
-            item.style.transform = `translateY(${this.positions.indexOf(index) * this.itemHeight}px)`
+            if (item == this.item) return;
+            item.style.transform = `translateY(${this.positions.indexOf(index) * this.itemHeight}px)`;
         })
 
-        e.preventDefault()
+        e.preventDefault();
     }
 
     dragEnd(e) {
-        this.animation = true
+        this.animation = true;
 
-        this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`
-        this.item.style.transform = `translateY(${this.position * this.itemHeight}px)`
+        this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
+        this.item.style.transform = `translateY(${this.position * this.itemHeight}px)`;
 
-        this.item.classList.remove('is-dragging')
+        this.item.classList.remove('is-dragging');
 
         setTimeout(() => {
-            this.list.style.position = ''
-            this.list.style.height = ''
+            this.list.style.position = '';
 
             this.items.forEach(item => {
-                item.style.top = ''
-                item.style.left = ''
-                item.style.right = ''
-                item.style.position = ''
-                item.style.transform = ''
-                item.style.transition = ''
-                item.style.width = ''
-                item.style.zIndex = ''
+                item.style.top = '';
+                item.style.left = '';
+                item.style.right = '';
+                item.style.position = '';
+                item.style.transform = '';
+                item.style.transition = '';
+                item.style.zIndex = '';
             })
 
-            this.positions.map(i => this.list.appendChild(this.items[i]))
-            this.items = Array.from(this.list.children)
+            this.positions.map(i => this.list.appendChild(this.items[i]));
+            this.items = Array.from(this.list.children);
 
-            this.animation = false
-        }, this.options.animationSpeed)
+            this.animation = false;
+        }, this.options.animationSpeed);
 
-        window.removeEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove, {passive: false})
-        window.removeEventListener((this.touch ? 'touchend' : 'mouseup'), this.dragEnd, false)
+        window.removeEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove, {passive: false});
+        window.removeEventListener((this.touch ? 'touchend' : 'mouseup'), this.dragEnd, false);
     }
 
     swapElements(array, a, b) {
-        const temp = array[a]
-        array[a] = array[b]
-        array[b] = temp
+        const temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
     }
 
     getDragY(e) {
-        return e.touches ? (e.touches[0] || e.changedTouches[0]).pageY : e.pageY
+        return e.touches ? (e.touches[0] || e.changedTouches[0]).pageY : e.pageY;
     }
 }

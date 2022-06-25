@@ -544,9 +544,7 @@ class ComponentSortable {
 
     resetListHeight(){
         this.items = Array.from(this.list.children);
-        if(this.items.length<1){
-            return;
-        }
+        if(this.items.length<1)return;
         if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
             this.list_height = this.list.scrollHeight;
         }else {
@@ -556,6 +554,7 @@ class ComponentSortable {
 
     dragStart(e) {
         if (this.animation) return;
+        if(this.items.length<2)return;
         if (e.type === 'mousedown' && e.which !== 1) return;
         if (e.type === 'touchstart' && e.touches.length > 1) return;
 
@@ -605,7 +604,7 @@ class ComponentSortable {
 
     dragMove(e) {
         if (this.animation) return;
-
+        if(this.items.length<2)return;
         const top = this.startTop + this.getDragY(e) - this.startTouchY;
         const newPosition = Math.round((top / this.listHeight) * this.items.length);
 
@@ -627,7 +626,7 @@ class ComponentSortable {
 
     dragEnd(e) {
         this.animation = true;
-
+        if(this.items.length<2)return;
         this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         this.item.style.transform = `translateY(${this.position * this.itemHeight}px)`;
 

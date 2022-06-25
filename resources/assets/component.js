@@ -55,16 +55,16 @@ class ComponentDot {
     insert_data;
     delete_data;
 
-    constructor(name, selected, options) {
+    constructor(name, selected, select) {
         this.DOM = document.getElementById(name);
         let selected_dom = '';
-        let options_dom = '';
-        for (let i in options) {
+        let select_dom = '';
+        for (let i in select) {
             if (selected[i]) {
-                selected_dom += `<div class='btn btn-success btn-sm v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${options[i]}</div>`;
+                selected_dom += `<div class='btn btn-success btn-sm v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
                 continue;
             }
-            options_dom += `<div class='btn btn-primary btn-sm v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${options[i]}</div>`;
+            select_dom += `<div class='btn btn-primary btn-sm v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
         }
 
         this.selected_data = Object.keys(selected);
@@ -77,7 +77,7 @@ class ComponentDot {
         <input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div>
         <div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div>
         </div><div id="${name}-content" style="overflow-y: auto;padding: 3px;background: #e1ffa8bf;">
-        ${options_dom}</div></div>
+        ${select_dom}</div></div>
         <input name="${name}[data]" value='${select_str}' type="hidden">
         <input name="${name}[insert]" value="[]" type="hidden">
         <input name="${name}[delete]" value="[]" type="hidden">`;
@@ -131,9 +131,7 @@ class ComponentDot {
                 this.select_data.push(id);
                 this.dataDOM.value = JSON.stringify(this.select_data);
             }
-            console.log(this.selected_data.indexOf(id))
             if (this.selected_data.indexOf(id) == -1 && this.insert_data.indexOf(id) == -1) {
-                console.log(9)
                 this.insert_data.push(id);
                 this.insertDOM.value = JSON.stringify(this.insert_data);
             }
@@ -171,19 +169,19 @@ class ComponentLine {
     NAME;
     COLUMNS;
     DATA;
-    SETTINGS;
+    OPTIONS;
     DATA_INPUT;
     SORTABLE;
 
-    constructor(name, columns, data, settings) {
+    constructor(name, columns, data, options) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
         this.COLUMNS = columns;
         this.DATA = data;
-        this.SETTINGS = Object.assign({
+        this.OPTIONS = Object.assign({
             sortable: true,
             delete: true,
-        }, settings || {});
+        }, options || {});
         /*head foot*/
         let foot = this.makeHead();
         /*hidden data container*/
@@ -263,12 +261,12 @@ class ComponentLine {
             let td = document.createElement('td');
             object.operateButton(td);
             tr.appendChild(td);
-            tbody.setAttribute('style', 'display:block;height:100%;overflow-y:scroll');
             tbody.appendChild(tr);
             records.push(record);
             object.DATA = records;
             object.DATA_INPUT.value = JSON.stringify(records);
         });
+        tbody.setAttribute('style', 'display:block;height:100%;overflow-y:scroll');
         tbody.setAttribute('sortable-list','sortable-list');
         this.TBODY_DOM = tbody;
         this.TABLE_DOM.appendChild(tbody);
@@ -311,7 +309,11 @@ class ComponentLine {
             object.DATA.push(insert);
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
             object.TBODY_DOM.scrollTop = object.TBODY_DOM.scrollHeight;
-            object.SORTABLE.resetContainer();
+            if(object.DATA.length==2){
+                object.SORTABLE = new ComponentSortable(object.TBODY_DOM);
+            }else if(object.DATA.length>2) {
+                object.SORTABLE.action();
+            }
         },false);
         this.DOM.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
     }
@@ -349,7 +351,7 @@ class ComponentLine {
 
     operateButton(td) {
         var object = this;
-        if(this.SETTINGS.sortable) {
+        if(this.OPTIONS.sortable) {
             let M = document.createElement('i');
             M.setAttribute('class', 'fa fa-arrows');
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
@@ -357,7 +359,7 @@ class ComponentLine {
             td.appendChild(M);
         }
 
-        if(this.SETTINGS.delete) {
+        if(this.OPTIONS.delete) {
             let D = document.createElement('i');
             D.setAttribute('class', 'fa fa-trash');
             D.setAttribute('style', 'cursor: pointer');
@@ -374,6 +376,7 @@ class ComponentLine {
                         tbody.childNodes[node].setAttribute('data-key', node);
                     }
                 }
+                object.SORTABLE.action();
             }, false);
             td.appendChild(D);
         }
@@ -383,7 +386,7 @@ class ComponentLine {
     sortAble(){
         var object = this;
         setTimeout(function () {
-            object.SORTABLE = new Sortable(object.TBODY_DOM);
+            object.SORTABLE = new ComponentSortable(object.TBODY_DOM);
         });
     }
 }
@@ -395,7 +398,7 @@ class ComponentPlane {
     URL;
     XHR_URL;
     METHOD;
-    SETTINGS;
+    OPTIONS;
     CALLBACK;
     _loadingSvg=`<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
     width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
@@ -406,12 +409,15 @@ class ComponentPlane {
     C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
    type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`;
 
-    constructor(url, xhr_url = '', method = 'POST', callback = null,settings = []) {
+    constructor(url, xhr_url = '', method = 'POST', callback = null,options = {}) {
         this.URL = url;
         this.XHR_URL = xhr_url;
         this.METHOD = method;
         this.CALLBACK = callback;
-        this.SETTINGS = settings;
+        this.OPTIONS = Object.assign({
+            W: 0.8,
+            H: 0.8,
+        }, options);
 
         this.makeModal();
         this.makeContent();
@@ -428,7 +434,7 @@ class ComponentPlane {
         let mod_dialog = document.createElement("div");
         mod_dialog.setAttribute('class', 'modal-dialog modal-lg');
         mod_dialog.setAttribute('role', 'document');
-        mod_dialog.style = `width:${window.innerWidth*0.8}px`;
+        mod_dialog.style = `width:${window.innerWidth*this.OPTIONS.W}px`;
         /*modal_content*/
         let modal_content = document.createElement("div");
         modal_content.className = "modal-content";
@@ -448,7 +454,8 @@ class ComponentPlane {
         },false);
         let modal_body = document.createElement('div');
         modal_body.className = "modal-body";
-        modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;max-height:' + window.innerHeight * 0.8 + 'px;min-height:' + window.innerHeight * 0.4 + 'px;';
+        modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;max-height:' +
+            window.innerHeight * this.OPTIONS.H + 'px;min-height:' + window.innerHeight * this.OPTIONS.H / 2 + 'px;';
 
         this.MODEL_BODY_DOM = modal_body;
         /*create modal*/
@@ -516,7 +523,8 @@ class ComponentPlane {
     }
 }
 
-class Sortable {
+/*拖拽排序控件*/
+class ComponentSortable {
     list_height;
     constructor(list, options) {
         this.list = (typeof list === 'string')
@@ -533,27 +541,20 @@ class Sortable {
             animationEasing: 'ease-out',
         }, options || {});
 
+        this.resetContainer();
         this.dragStart = this.dragStart.bind(this);
         this.dragMove = this.dragMove.bind(this);
         this.dragEnd = this.dragEnd.bind(this);
-        if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
-            this.list_height = this.list.scrollHeight;
-        }else {
-            this.list_height = this.items[this.items.length-1].offsetTop;
-        }
         this.list.addEventListener('touchstart', this.dragStart, false);
         this.list.addEventListener('mousedown', this.dragStart, false);
     }
 
     resetContainer(){
-        this.items = Array.from(this.list.children);
         if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
             this.list_height = this.list.scrollHeight;
         }else {
             this.list_height = this.items[this.items.length-1].offsetTop;
         }
-        this.list.addEventListener('touchstart', this.dragStart, false);
-        this.list.addEventListener('mousedown', this.dragStart, false);
     }
 
     dragStart(e) {
@@ -574,7 +575,7 @@ class Sortable {
         if (!this.handle) return;
         this.list.style.position = 'relative';
         this.item.classList.add('is-dragging')
-
+        if(!this.items[1])return;
         this.itemHeight = this.items[1].offsetTop;
         this.listHeight = this.list_height;
         this.startTouchY = this.getDragY(e);

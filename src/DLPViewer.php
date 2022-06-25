@@ -54,7 +54,7 @@ EOF
      * @param string $column 数据字段名
      * @param string $title 名称
      * @param array $data 数据
-     * @param array $settings 配置项
+     * @param array $settings 配置项[setting,...]
      * $settings = [
      *      'columns'=>[
      *          'name' => ['name' => '名称', 'type' => 'input'],
@@ -64,6 +64,10 @@ EOF
      *      'strict'=>false,        boolean json严格模式消除json敏感字符问题 (选填)
      *      'width'=>'100%',        string 容器宽度设置 (选填)
      *      'height'=>'450px',      string 容器高度设置 (选填)
+     *      'options'=>[
+     *          'sortable'=>true,
+     *          'delete'=>true
+     *      ]                       array 多列操作设置 (选填)
      * ]
      */
     public static function makeComponentLine(Form $form, string $column, string $title, array $data = [], array $settings = [])
@@ -71,6 +75,7 @@ EOF
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
         $hight = isset($settings['height']) ? $settings['height'] : '450px';
+        $options = isset($settings['options']) ? json_encode($settings['options']) : '[]';
         if (!isset($settings['columns'])) return;
         $columns = $settings['columns'];
         if ($strict) {
@@ -80,7 +85,7 @@ EOF
         }
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
-new ComponentLine("{$column}",JSON.parse('{$columns}'),JSON.parse('{$data}'));
+new ComponentLine("{$column}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));
 EOF
         );
         $form->html("<div id='{$column}' style='width:{$width};height:{$hight};'></div>", $title);
@@ -89,24 +94,27 @@ EOF
     /**
      * 头部-多操作添加
      * @param Grid $grid
-     * @param array $settings [setting,...]
-     *  setting.document_id 自定义节点ID
-     *  setting.title 自定义按钮名
-     *  setting.url 加载页地址
-     *  setting.xhr_url ajax提交地址
-     *  setting.method ajax提交方法
+     * @param array $settings 配置项[setting,...]
+     *  settings.document_id    dom节点id      (必须填)
+     *  settings.title          自定义按钮名   (必须填)
+     *  settings.url            加载页地址  url/{id}加参数匹配id (必须填)
+     *  settings.xhr_url        ajax提交地址 url/{id}加参数匹配id (选填)
+     *  settings.method         ajax提交方法 (选填)
+     *  settings.options        弹窗配置项 (选填)
+     *           options = ['W'=>0.8,'H'=>0.8]
      */
     public static function makeHeadPlaneAction(Grid $grid, array $settings = [
-        ['document_id' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST']
+        ['document_id' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST', 'options' => []]
     ])
     {
         $script = '';
         foreach ($settings as $setting) {
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
+            $options = isset($setting['options']) ? json_encode($setting['options']) : '[]';
             $script .= <<<EOF
             $('#{$setting['document_id']}').click(function(){
-                new ComponentPlane('{$setting['url']}','{$xhr_url}','{$method}');
+                new ComponentPlane('{$setting['url']}','{$xhr_url}','{$method}',null,JSON.parse('{$options}'));
             });
 EOF;
             Admin::script($script);
@@ -139,15 +147,17 @@ EOF;
      * 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义类名
-     *  setting.title 自定义按钮名
-     *  setting.url 加载页地址  url/{id}加参数匹配id
-     *  setting.xhr_url ajax提交地址 url/{id}加参数匹配id
-     *  setting.method ajax提交方法
+     *  setting.document_class dom节点classname (必须填)
+     *  setting.title          自定义按钮名 (必须填)
+     *  setting.url            加载页地址  url/{id}加参数匹配id (必须填)
+     *  setting.xhr_url        ajax提交地址 url/{id}加参数匹配id (选填)
+     *  setting.method         ajax提交方法 (选填)
+     *  setting.options        弹窗配置项 (选填)
+     *           options = ['W'=>0.8,'H'=>0.8]
      * @param array $disable ['view','edit','delete']
      */
     public static function makeRowPlaneAction(Grid $grid, array $settings = [
-        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST']
+        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST', 'options' => []]
     ], array $disable = [])
     {
         $script = '';
@@ -155,11 +165,12 @@ EOF;
             $url = $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
+            $options = isset($setting['options']) ? json_encode($setting['options']) : '[]';
             $script .= <<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
                 let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
-                new ComponentPlane(url,xhr_url,'{$method}');
+                new ComponentPlane(url,xhr_url,'{$method}',null,JSON.parse('{$options}'));
             });
 EOF;
         }
@@ -193,18 +204,20 @@ EOF;
     }
 
     /**
-     * 列-多操作添加 (旧版图标按钮模式)
+     * 列-多操作添加  (旧版图标按钮模式)
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class 自定义类名
-     *  setting.title 自定义按钮名 (图标css类 fa-edit fa-...)
-     *  setting.url 加载页地址
-     *  setting.xhr_url ajax提交地址
-     *  setting.method ajax提交方法
+     *  setting.document_class dom节点classname (必须填)
+     *  setting.title          自定义按钮名 (必须填)
+     *  setting.url            加载页地址  url/{id}加参数匹配id (必须填)
+     *  setting.xhr_url        ajax提交地址 url/{id}加参数匹配id (选填)
+     *  setting.method         ajax提交方法 (选填)
+     *  setting.options        弹窗配置项 (选填)
+     *           options = ['W'=>0.8,'H'=>0.8]
      * @param array $disable ['view','edit','delete']
      */
     public static function _makeRowPlaneAction(Grid $grid, array $settings = [
-        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST']
+        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST', 'options' => []]
     ], array $disable = [])
     {
         $script = '';
@@ -212,10 +225,12 @@ EOF;
             $url = $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
+            $options = isset($setting['options']) ? json_encode($setting['options']) : '[]';
             $script .= <<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
-                new ComponentPlane(url,'{$xhr_url}','{$method}');
+                let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
+                new ComponentPlane(url,xhr_url,'{$method}',null,JSON.parse('{$options}'));
             });
 EOF;
         }

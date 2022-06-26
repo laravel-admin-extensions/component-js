@@ -20,8 +20,8 @@ class DLPViewer
      * @param Form $form
      * @param string $column 数据字段名
      * @param string $title 名称
-     * @param array $select 全部选项
-     * @param array $selected 已选择选项
+     * @param array $select 全部选项 [[value=>text],[value=>text]...]
+     * @param array $selected 已选择选项 [[value=>text],[value=>text]...]
      * @param array $settings 配置项
      * $settings = [
      *      'strict'=>false,   boolean json严格模式消除json敏感字符问题
@@ -95,17 +95,15 @@ EOF
      * 头部-多操作添加
      * @param Grid $grid
      * @param array $settings 配置项[setting,...]
-     *  settings.document_id    dom节点id      (必须填)
-     *  settings.title          自定义按钮名   (必须填)
-     *  settings.url            加载页地址  url/{id}加参数匹配id (必须填)
-     *  settings.xhr_url        ajax提交地址 url/{id}加参数匹配id (选填)
-     *  settings.method         ajax提交方法 (选填)
-     *  settings.options        弹窗配置项 (选填)
-     *           options = ['W'=>0.8,'H'=>0.8]
+     *  setting.document_id    dom节点id                      string(必须填)
+     *  setting.title          自定义按钮名                    string(必须填)
+     *  setting.url            加载页地址:url/{id}参数匹配id    string(必须填)
+     *  setting.xhr_url        ajax提交地址rl/{id}参数匹配id    string(选填)
+     *  setting.method         ajax提交方法:POST PUT...        string(选填)
+     *  setting.options        弹窗配置项                      array(选填)
+     *          options = ['W'=>0.8,'H'=>0.8]  W宽 H高
      */
-    public static function makeHeadPlaneAction(Grid $grid, array $settings = [
-        ['document_id' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST', 'options' => []]
-    ])
+    public static function makeHeadPlaneAction(Grid $grid, array $settings = [])
     {
         $script = '';
         foreach ($settings as $setting) {
@@ -147,18 +145,16 @@ EOF;
      * 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class dom节点classname (必须填)
-     *  setting.title          自定义按钮名 (必须填)
-     *  setting.url            加载页地址  url/{id}加参数匹配id (必须填)
-     *  setting.xhr_url        ajax提交地址 url/{id}加参数匹配id (选填)
-     *  setting.method         ajax提交方法 (选填)
-     *  setting.options        弹窗配置项 (选填)
-     *           options = ['W'=>0.8,'H'=>0.8]
-     * @param array $disable ['view','edit','delete']
+     *  setting.document_class dom节点classname                 string(必须填)
+     *  setting.title          自定义按钮名                      string(必须填)
+     *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
+     *  setting.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
+     *  setting.method         ajax提交方法:POST PUT...         string(选填)
+     *  setting.options        弹窗配置项                       array(选填)
+     *          options = ['W'=>0.8,'H'=>0.8]   W宽 H高
+     * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
-    public static function makeRowPlaneAction(Grid $grid, array $settings = [
-        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST', 'options' => []]
-    ], array $disable = [])
+    public static function makeRowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
     {
         $script = '';
         foreach ($settings as $setting) {
@@ -207,18 +203,16 @@ EOF;
      * 列-多操作添加  (旧版图标按钮模式)
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class dom节点classname (必须填)
-     *  setting.title          自定义按钮名 (必须填)
-     *  setting.url            加载页地址  url/{id}加参数匹配id (必须填)
-     *  setting.xhr_url        ajax提交地址 url/{id}加参数匹配id (选填)
-     *  setting.method         ajax提交方法 (选填)
-     *  setting.options        弹窗配置项 (选填)
-     *           options = ['W'=>0.8,'H'=>0.8]
-     * @param array $disable ['view','edit','delete']
+     *  setting.document_class dom节点classname                 string(必须填)
+     *  setting.title          自定义按钮名                      string(必须填)
+     *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
+     *  setting.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
+     *  setting.method         ajax提交方法:POST PUT...         string(选填)
+     *  setting.options        弹窗配置项                       array(选填)
+     *          options = ['W'=>0.8,'H'=>0.8]   W宽 H高
+     * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
-    public static function _makeRowPlaneAction(Grid $grid, array $settings = [
-        ['document_class' => '', 'title' => '', 'url' => '', 'xhr_url' => '', 'method' => 'POST', 'options' => []]
-    ], array $disable = [])
+    public static function _makeRowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
     {
         $script = '';
         foreach ($settings as $setting) {

@@ -42,7 +42,6 @@ function _componentAlert(message, time = 1, callback = function () {
     }, time * 1000);
 }
 
-/*点选器*/
 class ComponentDot {
     DOM;
     SELECT_DOM;
@@ -161,7 +160,6 @@ class ComponentDot {
     }
 }
 
-/*数组列表修改器*/
 class ComponentLine {
     DOM;
     TBODY_DOM;
@@ -389,7 +387,6 @@ class ComponentLine {
     }
 }
 
-/*弹出层控件*/
 class ComponentPlane {
     MODEL_BODY_DOM;
     LOADING_DOM;
@@ -521,7 +518,6 @@ class ComponentPlane {
     }
 }
 
-/*拖拽排序控件*/
 class ComponentSortable {
     list_height;
     constructor(list, options) {
@@ -585,14 +581,14 @@ class ComponentSortable {
             item.style.left = 0;
             item.style.transform = `translateY(${offsetsTop[index]}px)`;
             item.style.zIndex = (item == this.item) ? 2 : 1;
-        })
+        });
 
         setTimeout(() => {
             this.items.forEach(item => {
                 if (this.item == item) return;
                 item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
             })
-        })
+        });
 
         this.positions = this.items.map((item, index) => index);
         this.position = Math.round((this.startTop / this.listHeight) * this.items.length);
@@ -614,12 +610,12 @@ class ComponentSortable {
             if (index == this.position || index != newPosition) return;
             this.swapElements(this.positions, this.position, index);
             this.position = index;
-        })
+        });
 
         this.items.forEach((item, index) => {
             if (item == this.item) return;
             item.style.transform = `translateY(${this.positions.indexOf(index) * this.itemHeight}px)`;
-        })
+        });
 
         e.preventDefault();
     }
@@ -643,7 +639,7 @@ class ComponentSortable {
                 item.style.transform = '';
                 item.style.transition = '';
                 item.style.zIndex = '';
-            })
+            });
 
             this.positions.map(i => this.list.appendChild(this.items[i]));
             this.items = Array.from(this.list.children);

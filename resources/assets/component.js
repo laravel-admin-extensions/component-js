@@ -387,7 +387,6 @@ class ComponentPlane {
     }
 
     makeModal() {
-        console.log(this.OPTIONS.W)
         let html = `<div id="dlp" class="modal" style="display: block;">
 <div class="modal-dialog modal-lg" style="width: ${window.innerWidth*this.OPTIONS.W}px;">
 <div class="modal-content">

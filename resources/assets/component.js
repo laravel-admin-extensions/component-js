@@ -60,7 +60,10 @@ class ComponentDot {
         let select_str = JSON.stringify(this.select_data);
         this.insert_data = [];
         this.delete_data = [];
-        let html = `<div style="width: 100%;height:100%;display: grid; grid-template-rows: 42px auto;border: 1px solid #ccc;border-radius: 5px">
+        let html = `<style>#${name}-select::-webkit-scrollbar,#${name}-content::-webkit-scrollbar{width: 4px;height: 4px;}
+#${name}-select::-webkit-scrollbar-thumb,#${name}-content::-webkit-scrollbar-thumb {border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: rgba(0,0,0,0.2);}
+#${name}-select::-webkit-scrollbar-track,#${name}-content::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: rgba(0,0,0,0.1);}</style>
+<div style="width: 100%;height:100%;display: grid; grid-template-rows: 42px auto;border: 1px solid #ccc;border-radius: 5px">
         <div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;">
         <input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div>
         <div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div>
@@ -384,47 +387,28 @@ class ComponentPlane {
     }
 
     makeModal() {
-        /*modal*/
-        let modal = document.createElement("div");
-        modal.setAttribute('class', 'modal grid-modal in');
-        modal.setAttribute('tabindex', '-1');
-        modal.setAttribute('role', 'dialog');
-        modal.style = 'display: block;';
-        /*modal_dialog*/
-        let mod_dialog = document.createElement("div");
-        mod_dialog.setAttribute('class', 'modal-dialog modal-lg');
-        mod_dialog.setAttribute('role', 'document');
-        mod_dialog.style = `width:${window.innerWidth*this.OPTIONS.W}px`;
-        /*modal_content*/
-        let modal_content = document.createElement("div");
-        modal_content.className = "modal-content";
-        /*header*/
-        let modal_header = document.createElement("div");
-        modal_header.className = 'modal-header';
-        modal_header.style = 'background-color:#ffffff;padding: 3px;display: flex;justify-content:flex-end;';
+        console.log(this.OPTIONS.W)
+        let html = `<div id="dlp" class="modal" style="display: block;">
+<div class="modal-dialog modal-lg" style="width: ${window.innerWidth*this.OPTIONS.W}px;">
+<div class="modal-content">
+    <div class="modal-header" style="background-color: rgb(255, 255, 255); padding: 3px; display: flex; justify-content: flex-end;"></div>
+    <div class="modal-body" style="background-color: rgb(244, 244, 244); padding: 0px; overflow-y: auto; max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div>
+</div></div></div>`;
+        document.body.insertAdjacentHTML('beforeEnd', html);
         /*X*/
         let X = document.createElement('i');
         X.setAttribute('class', 'fa fa-close');
         X.setAttribute('style', 'cursor: pointer');
         X.addEventListener('click', function () {
-            document.body.removeChild(modal);
+            if (document.getElementById('dlp') instanceof HTMLElement) {
+                document.getElementById('dlp').remove();
+            }
             if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
                 document.getElementById('kvFileinputModal').remove();
             }
         },false);
-        let modal_body = document.createElement('div');
-        modal_body.className = "modal-body";
-        modal_body.style = 'background-color:#f4f4f4;padding:0;overflow-y:auto;max-height:' +
-            window.innerHeight * this.OPTIONS.H + 'px;min-height:' + window.innerHeight * this.OPTIONS.H / 2 + 'px;';
-
-        this.MODEL_BODY_DOM = modal_body;
-        /*create modal*/
-        modal_header.append(X);
-        modal_content.append(modal_header);
-        modal_content.append(modal_body);
-        mod_dialog.append(modal_content);
-        modal.appendChild(mod_dialog);
-        document.body.append(modal);
+        document.getElementsByClassName('modal-header')[0].append(X);
+        this.MODEL_BODY_DOM = document.getElementsByClassName('modal-body')[0];
     }
 
     makeContent() {

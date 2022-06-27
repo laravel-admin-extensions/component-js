@@ -171,7 +171,7 @@ class ComponentLine {
     DATA_INPUT;
     SORTABLE;
 
-    constructor(name, columns, data, options) {
+    constructor(name, columns, data, options={}) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
         this.COLUMNS = columns;
@@ -179,7 +179,7 @@ class ComponentLine {
         this.OPTIONS = Object.assign({
             sortable: true,
             delete: true,
-        }, options || {});
+        }, options);
         /*head foot*/
         let foot = this.makeHead();
         /*hidden data container*/
@@ -193,7 +193,7 @@ class ComponentLine {
         /*foot*/
         this.makeFoot(foot);
         /*sort*/
-        this.sortable();
+        if(this.OPTIONS.sortable) this.sortable();
     }
 
     makeHead() {

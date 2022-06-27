@@ -490,10 +490,11 @@ class ComponentPlane {
             }
             if (response.code == 0) {
                 window.location.reload();
+                return;
             } else {
                 _componentAlert(response.message, 3, function () {
-                    obj.removeAttribute('disabled');
-                    obj.innerText = '提交';
+                    element.removeAttribute('disabled');
+                    element.innerText = '提交';
                 });
             }
         });

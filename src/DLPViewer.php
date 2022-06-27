@@ -53,7 +53,7 @@ EOF
      * @param Form $form
      * @param string $column 数据字段名
      * @param string $title 名称
-     * @param array $data 数据
+     * @param string $data json数据
      * @param array $settings 配置项[setting,...]
      * $settings = [
      *      'columns'=>[
@@ -70,7 +70,7 @@ EOF
      *      ]                       array 多列操作设置 (选填)
      * ]
      */
-    public static function makeComponentLine(Form $form, string $column, string $title, array $data = [], array $settings = [])
+    public static function makeComponentLine(Form $form, string $column, string $title, string $data, array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
@@ -79,9 +79,8 @@ EOF
         if (!isset($settings['columns'])) return;
         $columns = $settings['columns'];
         if ($strict) {
+            $data = (array)json_decode($data, true);
             $data = DLPHelper::safeJson($data);
-        } else {
-            $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF

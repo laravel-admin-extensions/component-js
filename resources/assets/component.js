@@ -193,7 +193,7 @@ class ComponentLine {
         /*foot*/
         this.makeFoot(foot);
         /*sort*/
-        this.sortAble();
+        this.sortable();
     }
 
     makeHead() {
@@ -308,7 +308,6 @@ class ComponentLine {
             object.DATA.push(insert);
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
             object.TBODY_DOM.scrollTop = object.TBODY_DOM.scrollHeight;
-            object.SORTABLE.resetListHeight();
         },false);
         this.DOM.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
     }
@@ -371,18 +370,21 @@ class ComponentLine {
                         tbody.childNodes[node].setAttribute('data-key', node);
                     }
                 }
-
-                object.SORTABLE.resetListHeight();
             }, false);
             td.appendChild(D);
         }
         td.style = 'width:50px';
     }
 
-    sortAble(){
+    sortable(){
         var object = this;
-        setTimeout(function () {
-            object.SORTABLE = new ComponentSortable(object.TBODY_DOM);
+        this.SORTABLE = new ComponentSortable(this.TBODY_DOM,function (sort) {
+            let data = [];
+            sort.forEach(function (k) {
+                data.push(object.DATA[k]);
+            });
+            object.DATA = data;
+            object.DATA_INPUT.value = JSON.stringify(object.DATA);
         });
     }
 }
@@ -519,18 +521,16 @@ class ComponentPlane {
 }
 
 class ComponentSortable {
-    list_height;
-    constructor(list, options) {
+    constructor(list, callback=null) {
         this.list = (typeof list === 'string')
             ? document.querySelector(list)
             : list;
-        this.options = Object.assign({
+        this.options = {
             animationSpeed: 200,
             animationEasing: 'ease-out',
-        }, options || {});
-
+        };
+        this.callback = callback;
         this.animation = false;
-        this.resetListHeight();
         this.dragStart = this.dragStart.bind(this);
         this.dragMove = this.dragMove.bind(this);
         this.dragEnd = this.dragEnd.bind(this);
@@ -538,22 +538,19 @@ class ComponentSortable {
         this.list.addEventListener('mousedown', this.dragStart, false);
     }
 
-    resetListHeight(){
+    reset(){
         this.items = Array.from(this.list.children);
-        if(this.items.length<1)return;
         if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
-            this.list_height = this.list.scrollHeight;
+            this.listHeight = this.list.scrollHeight;
         }else {
-            this.list_height = this.items[this.items.length-1].offsetTop;
+            this.listHeight = this.items[this.items.length-1].offsetTop;
         }
     }
 
     dragStart(e) {
+        this.reset();
         if (this.animation) return;
         if(this.items.length<2)return;
-        if (e.type === 'mousedown' && e.which !== 1) return;
-        if (e.type === 'touchstart' && e.touches.length > 1) return;
-
         this.handle = null;
 
         let el = e.target;
@@ -567,9 +564,7 @@ class ComponentSortable {
         if (!this.handle) return;
         this.list.style.position = 'relative';
         this.item.classList.add('is-dragging')
-        if(!this.items[1])return;
         this.itemHeight = this.items[1].offsetTop;
-        this.listHeight = this.list_height;
         this.startTouchY = this.getDragY(e);
         this.startTop = this.item.offsetTop;
 
@@ -581,13 +576,6 @@ class ComponentSortable {
             item.style.left = 0;
             item.style.transform = `translateY(${offsetsTop[index]}px)`;
             item.style.zIndex = (item == this.item) ? 2 : 1;
-        });
-
-        setTimeout(() => {
-            this.items.forEach(item => {
-                if (this.item == item) return;
-                item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
-            })
         });
 
         this.positions = this.items.map((item, index) => index);
@@ -611,10 +599,10 @@ class ComponentSortable {
             this.swapElements(this.positions, this.position, index);
             this.position = index;
         });
-
         this.items.forEach((item, index) => {
             if (item == this.item) return;
             item.style.transform = `translateY(${this.positions.indexOf(index) * this.itemHeight}px)`;
+            item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         });
 
         e.preventDefault();
@@ -625,8 +613,8 @@ class ComponentSortable {
         if(this.items.length<2)return;
         this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         this.item.style.transform = `translateY(${this.position * this.itemHeight}px)`;
-
         this.item.classList.remove('is-dragging');
+        if(typeof this.callback == 'function') this.callback(this.positions);
 
         setTimeout(() => {
             this.list.style.position = '';
@@ -641,9 +629,11 @@ class ComponentSortable {
                 item.style.zIndex = '';
             });
 
-            this.positions.map(i => this.list.appendChild(this.items[i]));
-            this.items = Array.from(this.list.children);
-
+            this.positions.map(i => {
+                if(this.items[i]) {
+                    this.list.appendChild(this.items[i]);
+                }
+            });
             this.animation = false;
         }, this.options.animationSpeed);
 

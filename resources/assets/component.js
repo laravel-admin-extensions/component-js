@@ -43,17 +43,6 @@ function _componentAlert(message, time = 1, callback = function () {
 }
 
 class ComponentDot {
-    DOM;
-    SELECT_DOM;
-    CONTENT_DOM;
-    dataDOM;
-    insertDOM;
-    deleteDOM;
-    selected_data;
-    select_data;
-    insert_data;
-    delete_data;
-
     constructor(name, selected, select) {
         this.DOM = document.getElementById(name);
         let selected_dom = '';
@@ -161,16 +150,6 @@ class ComponentDot {
 }
 
 class ComponentLine {
-    DOM;
-    TBODY_DOM;
-    TABLE_DOM;
-    NAME;
-    COLUMNS;
-    DATA;
-    OPTIONS;
-    DATA_INPUT;
-    SORTABLE;
-
     constructor(name, columns, data, options={}) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
@@ -390,13 +369,6 @@ class ComponentLine {
 }
 
 class ComponentPlane {
-    MODEL_BODY_DOM;
-    LOADING_DOM;
-    URL;
-    XHR_URL;
-    METHOD;
-    OPTIONS;
-    CALLBACK;
     _loadingSvg=`<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
     width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
     <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946

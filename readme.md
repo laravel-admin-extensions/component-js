@@ -1,4 +1,4 @@
-## laravel-admin 弹窗多组件扩展
+## laravel-admin 前端组件扩展
 
     laravel-admin弹出层组件 支持唤出:自定义页 表单修改页
     标签选择器控件

@@ -17,11 +17,11 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
     xhr.onreadystatechange = function () {
         if (xhr.readyState == xhr.DONE && xhr.status == 200) {
             var response = xhr.response;
-            callback(response)
+            callback(response);
         }
     };
     xhr.onerror = function (e) {
-        console.log(e)
+        console.log(e);
     };
 }
 
@@ -60,18 +60,8 @@ class ComponentDot {
         let select_str = JSON.stringify(this.select_data);
         this.insert_data = [];
         this.delete_data = [];
-        let html = `<style>#${name}-select::-webkit-scrollbar,#${name}-content::-webkit-scrollbar{width: 4px;height: 4px;}
-#${name}-select::-webkit-scrollbar-thumb,#${name}-content::-webkit-scrollbar-thumb {border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: rgba(0,0,0,0.2);}
-#${name}-select::-webkit-scrollbar-track,#${name}-content::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: rgba(0,0,0,0.1);}</style>
-<div style="width: 100%;height:100%;display: grid; grid-template-rows: 42px auto;border: 1px solid #ccc;border-radius: 5px">
-        <div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;">
-        <input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div>
-        <div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div>
-        </div><div id="${name}-content" style="overflow-y: auto;padding: 3px;background: #e1ffa8bf;">
-        ${select_dom}</div></div>
-        <input name="${name}[data]" value='${select_str}' type="hidden">
-        <input name="${name}[insert]" value="[]" type="hidden">
-        <input name="${name}[delete]" value="[]" type="hidden">`;
+        let html = `<style>#${name}-select::-webkit-scrollbar,#${name}-content::-webkit-scrollbar{width: 4px;height: 4px;} #${name}-select::-webkit-scrollbar-thumb,#${name}-content::-webkit-scrollbar-thumb {border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: rgba(0,0,0,0.2);} #${name}-select::-webkit-scrollbar-track,#${name}-content::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: rgba(0,0,0,0.1);}</style>
+<div style="width: 100%;height:100%;display: grid; grid-template-rows: 42px auto;border: 1px solid #ccc;border-radius: 5px"><div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;"><input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div><div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div></div><div id="${name}-content" style="overflow-y: auto;padding: 3px;background: #e1ffa8bf;">${select_dom}</div></div><input name="${name}[data]" value='${select_str}' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECT_DOM = document.getElementById(name + '-select');
         this.CONTENT_DOM = document.getElementById(name + '-content');
@@ -387,12 +377,7 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp" class="modal" style="display: block;">
-<div class="modal-dialog modal-lg" style="width: ${window.innerWidth*this.OPTIONS.W}px;">
-<div class="modal-content">
-    <div class="modal-header" style="background-color: rgb(255, 255, 255); padding: 3px; display: flex; justify-content: flex-end;"></div>
-    <div class="modal-body" style="background-color: rgb(244, 244, 244); padding: 0px; overflow-y: auto; max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div>
-</div></div></div>`;
+        let html = `<div id="dlp" class="modal" style="display: block;"><div class="modal-dialog modal-lg" style="width: ${window.innerWidth*this.OPTIONS.W}px;"><div class="modal-content"><div class="modal-header" style="background-color: rgb(255, 255, 255); padding: 3px; display: flex; justify-content: flex-end;"></div><div class="modal-body" style="background-color: rgb(244, 244, 244); padding: 0px; overflow-y: auto; max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         /*X*/
         let X = document.createElement('i');
@@ -458,30 +443,23 @@ class ComponentPlane {
         this.LOADING_DOM = document.createElement('div');
         this.LOADING_DOM.style = 'width: 100%;height: 100px;';
         this.LOADING_DOM.insertAdjacentHTML('afterbegin', `<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-    width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-    <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-    s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-    c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
-    <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-    C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
-   type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`);
-        let firstChild = this.MODEL_BODY_DOM.childNodes[0];
-        if (firstChild instanceof HTMLElement) {
-            this.MODEL_BODY_DOM.insertBefore(loading, firstChild);
-            return;
-        }
+width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+<path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+<path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
+type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`);
         this.MODEL_BODY_DOM.append(this.LOADING_DOM);
     }
 }
 
 class ComponentSortable {
     constructor(list, callback=null) {
-        this.list = (typeof list === 'string')
-            ? document.querySelector(list)
-            : list;
+        this.list = (typeof list === 'string') ? document.querySelector(list) : list;
         this.options = {
             animationSpeed: 200,
-            animationEasing: 'ease-out',
+            animationEasing: 'ease-out'
         };
         this.callback = callback;
         this.animation = false;

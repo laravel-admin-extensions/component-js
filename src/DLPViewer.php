@@ -22,18 +22,16 @@ class DLPViewer
      * @param string $title 名称
      * @param array $select 全部选项 [[value=>text],[value=>text]...]
      * @param array $selected 已选择选项 [[value=>text],[value=>text]...]
-     * @param array $settings 配置项
-     * $settings = [
-     *      'strict'=>false,   boolean json严格模式消除json敏感字符问题
-     *      'width'=>'100%'    string 容器宽度设置
-     *      'height'=>'200px', string 容器高度设置
-     * ]
+     * @param array $settings 配置项[setting,...]
+     * settings.strict      boolean json严格模式消除json敏感字符问题
+     * settings.width       string 容器宽度设置
+     * settings.height      string 容器高度设置
      */
     public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [], array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
-        $hight = isset($settings['height']) ? $settings['height'] : '200px';
+        $height = isset($settings['height']) ? $settings['height'] : '200px';
         if ($strict) {
             $select = DLPHelper::safeJson($select);
             $selected = DLPHelper::safeJson($selected);
@@ -45,7 +43,7 @@ class DLPViewer
 new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
         );
-        $form->html("<div id='{$column}' style='width:{$width};height: {$hight};'></div>", $title);
+        $form->html("<div id='{$column}' style='width:{$width};height: {$height};'></div>", $title);
     }
 
     /**
@@ -55,26 +53,26 @@ EOF
      * @param string $title 名称
      * @param string $data json数据
      * @param array $settings 配置项[setting,...]
-     * $settings = [
-     *      'columns'=>[
+     * settings.columns   array  多列配置项 (必须填)
+     *          columns = [
      *          'name' => ['name' => '名称', 'type' => 'input'],
      *          'name1' => ['name1' => '名称1', 'type' => 'text', style=>'width:50px'],
      *          'name2' => ['name2' => '名称2', 'type' => 'hidden'],
-     *          ...],               array  多列配置项 (必须填)
-     *      'strict'=>false,        boolean json严格模式消除json敏感字符问题 (选填)
-     *      'width'=>'100%',        string 容器宽度设置 (选填)
-     *      'height'=>'450px',      string 容器高度设置 (选填)
-     *      'options'=>[
-     *          'sortable'=>true,
-     *          'delete'=>true
-     *      ]                       array 多列操作设置 (选填)
-     * ]
+     *          ...]
+     * settings.strict      boolean json严格模式消除json敏感字符问题 (选填)
+     * settings.width       string 容器宽度设置 (选填)
+     * settings.height      string 容器高度设置 (选填)
+     * settings.options     array 多列操作设置 (选填)
+     *          options = [
+     *              'sortable'=>true,  排序操作
+     *              'delete'=>true     删除操作
+     *          ]
      */
     public static function makeComponentLine(Form $form, string $column, string $title, string $data, array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
-        $hight = isset($settings['height']) ? $settings['height'] : '450px';
+        $height = isset($settings['height']) ? $settings['height'] : '450px';
         $options = isset($settings['options']) ? json_encode($settings['options']) : '[]';
         if (!isset($settings['columns'])) return;
         $columns = $settings['columns'];
@@ -87,21 +85,21 @@ EOF
 new ComponentLine("{$column}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));
 EOF
         );
-        $form->html("<div id='{$column}' style='width:{$width};height:{$hight};'></div>", $title);
+        $form->html("<div id='{$column}' style='width:{$width};height:{$height};'></div>", $title);
     }
 
     /**
      * 头部-多操作添加
      * @param Grid $grid
      * @param array $settings 配置项[setting,...]
-     *  setting.document_id    dom节点id                        string(必须填)
-     *  setting.title          自定义按钮名                     string(必须填)
-     *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
-     *  setting.xhr_url        ajax提交地址rl/{id}参数匹配id     string(选填)
-     *  setting.method         ajax提交方法:POST PUT...         string(选填)
-     *  setting.callback       ajax提交回调方法                  string(选填)
-     *  setting.options        弹窗配置项                        array(选填)
-     *          options = ['W'=>0.8,'H'=>0.8]  W宽 H高
+     *  settings.document_id    dom节点id                        string(必须填)
+     *  settings.title          自定义按钮名                     string(必须填)
+     *  settings.url            加载页地址:url/{id}参数匹配id     string(必须填)
+     *  settings.xhr_url        ajax提交地址rl/{id}参数匹配id     string(选填)
+     *  settings.method         ajax提交方法:POST PUT...         string(选填)
+     *  settings.callback       ajax提交回调方法                  string(选填)
+     *  settings.options        弹窗配置项                        array(选填)
+     *           options = ['W'=>0.8,'H'=>0.8]  W宽 H高
      */
     public static function makeHeadPlaneAction(Grid $grid, array $settings = [])
     {
@@ -146,14 +144,14 @@ EOF;
      * 列-多操作添加
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class dom节点classname                 string(必须填)
-     *  setting.title          自定义按钮名                      string(必须填)
-     *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
-     *  setting.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
-     *  setting.method         ajax提交方法:POST PUT...         string(选填)
-     *  setting.callback       ajax提交回调方法                  string(选填)
-     *  setting.options        弹窗配置项                       array(选填)
-     *          options = ['W'=>0.8,'H'=>0.8]   W宽 H高
+     *  settings.document_class dom节点classname                 string(必须填)
+     *  settings.title          自定义按钮名                      string(必须填)
+     *  settings.url            加载页地址:url/{id}参数匹配id     string(必须填)
+     *  settings.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
+     *  settings.method         ajax提交方法:POST PUT...         string(选填)
+     *  settings.callback       ajax提交回调方法                  string(选填)
+     *  settings.options        弹窗配置项                       array(选填)
+     *           options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
     public static function makeRowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
@@ -206,14 +204,14 @@ EOF;
      * 列-多操作添加  (旧版图标按钮模式)
      * @param Grid $grid
      * @param array $settings [setting,...]
-     *  setting.document_class dom节点classname                 string(必须填)
-     *  setting.title          自定义按钮名                      string(必须填)
-     *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
-     *  setting.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
-     *  setting.method         ajax提交方法:POST PUT...         string(选填)
-     *  setting.callback       ajax提交回调方法                  string(选填)
-     *  setting.options        弹窗配置项                       array(选填)
-     *          options = ['W'=>0.8,'H'=>0.8]   W宽 H高
+     *  settings.document_class dom节点classname                 string(必须填)
+     *  settings.title          自定义按钮名                      string(必须填)
+     *  settings.url            加载页地址:url/{id}参数匹配id     string(必须填)
+     *  settings.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
+     *  settings.method         ajax提交方法:POST PUT...         string(选填)
+     *  settings.callback       ajax提交回调方法                  string(选填)
+     *  settings.options        弹窗配置项                       array(选填)
+     *           options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
     public static function _makeRowPlaneAction(Grid $grid, array $settings = [], array $disable = [])

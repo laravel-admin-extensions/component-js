@@ -94,12 +94,13 @@ EOF
      * 头部-多操作添加
      * @param Grid $grid
      * @param array $settings 配置项[setting,...]
-     *  setting.document_id    dom节点id                      string(必须填)
-     *  setting.title          自定义按钮名                    string(必须填)
-     *  setting.url            加载页地址:url/{id}参数匹配id    string(必须填)
-     *  setting.xhr_url        ajax提交地址rl/{id}参数匹配id    string(选填)
-     *  setting.method         ajax提交方法:POST PUT...        string(选填)
-     *  setting.options        弹窗配置项                      array(选填)
+     *  setting.document_id    dom节点id                        string(必须填)
+     *  setting.title          自定义按钮名                     string(必须填)
+     *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
+     *  setting.xhr_url        ajax提交地址rl/{id}参数匹配id     string(选填)
+     *  setting.method         ajax提交方法:POST PUT...         string(选填)
+     *  setting.callback       ajax提交回调方法                  string(选填)
+     *  setting.options        弹窗配置项                        array(选填)
      *          options = ['W'=>0.8,'H'=>0.8]  W宽 H高
      */
     public static function makeHeadPlaneAction(Grid $grid, array $settings = [])
@@ -108,10 +109,11 @@ EOF
         foreach ($settings as $setting) {
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $setting['url'];
             $method = isset($setting['method']) ? $setting['method'] : 'POST';
+            $callback = isset($setting['callback']) ? $setting['callback'] : 'null';
             $options = isset($setting['options']) ? json_encode($setting['options']) : '[]';
             $script .= <<<EOF
             $('#{$setting['document_id']}').click(function(){
-                new ComponentPlane('{$setting['url']}','{$xhr_url}','{$method}',null,JSON.parse('{$options}'));
+                new ComponentPlane('{$setting['url']}','{$xhr_url}','{$method}',{$callback},JSON.parse('{$options}'));
             });
 EOF;
             Admin::script($script);
@@ -149,6 +151,7 @@ EOF;
      *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
      *  setting.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
      *  setting.method         ajax提交方法:POST PUT...         string(选填)
+     *  setting.callback       ajax提交回调方法                  string(选填)
      *  setting.options        弹窗配置项                       array(选填)
      *          options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
@@ -158,14 +161,15 @@ EOF;
         $script = '';
         foreach ($settings as $setting) {
             $url = $setting['url'];
-            $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
+            $method = isset($setting['method']) ? $setting['method'] : 'POST';
+            $callback = isset($setting['callback']) ? $setting['callback'] : 'null';
             $options = isset($setting['options']) ? json_encode($setting['options']) : '[]';
             $script .= <<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
                 let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
-                new ComponentPlane(url,xhr_url,'{$method}',null,JSON.parse('{$options}'));
+                new ComponentPlane(url,xhr_url,'{$method}',{$callback},JSON.parse('{$options}'));
             });
 EOF;
         }
@@ -207,6 +211,7 @@ EOF;
      *  setting.url            加载页地址:url/{id}参数匹配id     string(必须填)
      *  setting.xhr_url        ajax提交地址:url/{id}加参数匹配id string(选填)
      *  setting.method         ajax提交方法:POST PUT...         string(选填)
+     *  setting.callback       ajax提交回调方法                  string(选填)
      *  setting.options        弹窗配置项                       array(选填)
      *          options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
@@ -216,14 +221,15 @@ EOF;
         $script = '';
         foreach ($settings as $setting) {
             $url = $setting['url'];
-            $method = isset($setting['method']) ? $setting['method'] : 'POST';
             $xhr_url = isset($setting['xhr_url']) ? $setting['xhr_url'] : $url;
+            $method = isset($setting['method']) ? $setting['method'] : 'POST';
+            $callback = isset($setting['callback']) ? $setting['callback'] : 'null';
             $options = isset($setting['options']) ? json_encode($setting['options']) : '[]';
             $script .= <<<EOF
             $('.{$setting['document_class']}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
                 let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
-                new ComponentPlane(url,xhr_url,'{$method}',null,JSON.parse('{$options}'));
+                new ComponentPlane(url,xhr_url,'{$method}',{$callback},JSON.parse('{$options}'));
             });
 EOF;
         }

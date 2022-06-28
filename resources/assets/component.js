@@ -391,7 +391,7 @@ class ComponentPlane {
 <div class="modal-dialog modal-lg" style="width: ${window.innerWidth*this.OPTIONS.W}px;">
 <div class="modal-content">
     <div class="modal-header" style="background-color: rgb(255, 255, 255); padding: 3px; display: flex; justify-content: flex-end;"></div>
-    <div class="modal-body" style="background-color: rgb(244, 244, 244); padding: 0px; overflow-y: auto; max-height:${window.innerHeight * this.OPTIONS.H} px; min-height: ${window.innerHeight * this.OPTIONS.H / 2} px;"></div>
+    <div class="modal-body" style="background-color: rgb(244, 244, 244); padding: 0px; overflow-y: auto; max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div>
 </div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         /*X*/

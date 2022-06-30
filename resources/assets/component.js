@@ -198,6 +198,7 @@ class ComponentLine {
         var tbody = document.createElement('tbody');
         var object = this;
         var columns = this.COLUMNS;
+        if(Array.isArray(this.DATA) == false)return;
         this.DATA.forEach(function (value, key) {
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item','sortable-item');
@@ -350,7 +351,7 @@ class ComponentLine {
 
     sortable(){
         var object = this;
-        this.SORTABLE = new ComponentSortable(this.TBODY_DOM,function (sort) {
+        new ComponentSortable(this.TBODY_DOM,function (sort) {
             let data = [];
             sort.forEach(function (k) {
                 data.push(object.DATA[k]);

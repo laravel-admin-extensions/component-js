@@ -233,9 +233,9 @@ class ComponentLine {
             tr.appendChild(td);
             tbody.appendChild(tr);
             records.push(record);
-            object.DATA = records;
-            object.DATA_INPUT.value = JSON.stringify(records);
         });
+        object.DATA = records;
+        object.DATA_INPUT.value = JSON.stringify(records);
         tbody.setAttribute('style', 'display:block;height:100%;overflow-y:scroll');
         tbody.setAttribute('sortable-list','sortable-list');
         this.TBODY_DOM = tbody;

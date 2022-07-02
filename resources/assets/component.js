@@ -49,10 +49,10 @@ class ComponentDot {
         let select_dom = '';
         for (let i in select) {
             if (selected[i]) {
-                selected_dom += `<div class='btn btn-success btn-sm v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
+                selected_dom += `<div class='dlp-button v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
                 continue;
             }
-            select_dom += `<div class='btn btn-primary btn-sm v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
+            select_dom += `<div class='dlp-button v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
         }
 
         this.selected_data = Object.keys(selected);

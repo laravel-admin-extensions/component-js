@@ -1,19 +1,84 @@
-.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;}
-.dlp-button {
-    margin: 0;
-    display: inline-block;
+.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size: 12px;}
+.dlp-label {
     cursor: pointer;
-    background: #EEE;
+    display: inline-block;
+    min-width: 6em;
+    max-width: 9em;
+    min-height: 1em;
+    outline: 0;
+    border: none;
+    vertical-align: baseline;
+    background: #e0e1e2 none;
+    color: rgba(0,0,0,.6);
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    margin: 0 0.25em 0;
+    padding: 0.2em 0.4em 0.2em;
+    text-transform: none;
+    text-shadow: none;
+    line-height: 1em;
+    font-style: normal;
     text-align: center;
-    border-radius: 4px;
-    font-size: 1rem;
-    text-transform: uppercase;
-    height: 30px;
-    line-height: 30px;
-    font-weight: 600;
-    letter-spacing: .1rem;
+    text-decoration: none;
+    border-radius: 0.14rem;
+    -webkit-box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
+    box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: opacity .1s ease,background-color .1s ease,color .1s ease,background .1s ease,-webkit-box-shadow .1s ease;
+    transition: opacity .1s ease,background-color .1s ease,color .1s ease,background .1s ease,-webkit-box-shadow .1s ease;
+    -webkit-tap-highlight-color: transparent;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
-.dlp-button:hover {
-
+.dlp-label:hover {
+    background-color: #cacbcd;
+    background-image: none;
+    -webkit-box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
+    box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
+    color: rgba(0,0,0,.8);
 }
+
+.dlp-scroll{overflow: auto}
+.dlp-scroll::-webkit-scrollbar{width: 4px;height: 4px;}
+.dlp-scroll::-webkit-scrollbar-thumb{border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: rgba(0,0,0,0.2);}
+.dlp-scroll::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: rgba(0,0,0,0.1);}
+.dlp-dot{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 30px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: rgb(0 0 0 / 80%);
+    color: rgba(255,255,255,.9);
+}
+.dlp-dot .dot-search{
+    width: 110px;
+    border: none;
+    color: inherit;
+    border-color: transparent!important;
+    background-color: transparent!important;
+    padding: 0!important;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    text-align: left;
+    -webkit-appearance: none;
+}
+.dot-search:focus{
+    outline:none;
+    border: none;
+}
+.dlp-top{
+    padding: 5px;
+    display: flex;
+    border-top: 1px solid rgba(34,36,38,.15);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.dot-selected{width: 100%}
+.dot-selected>.dlp-label{background: white}
+.dot-select{padding: 5px;}

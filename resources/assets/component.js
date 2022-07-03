@@ -49,10 +49,10 @@ class ComponentDot {
         let select_dom = '';
         for (let i in select) {
             if (selected[i]) {
-                selected_dom += `<div class='dlp-button v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
+                selected_dom += `<div class='dlp dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
                 continue;
             }
-            select_dom += `<div class='dlp-button v-tag' style='margin-right: 4px;margin-bottom: 4px' data-id='${i}'>${select[i]}</div>`;
+            select_dom += `<div class='dlp dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
         }
 
         this.selected_data = Object.keys(selected);
@@ -60,30 +60,30 @@ class ComponentDot {
         let select_str = JSON.stringify(this.select_data);
         this.insert_data = [];
         this.delete_data = [];
-        let html = `<style>#${name}-select::-webkit-scrollbar,#${name}-content::-webkit-scrollbar{width: 4px;height: 4px;} #${name}-select::-webkit-scrollbar-thumb,#${name}-content::-webkit-scrollbar-thumb {border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: rgba(0,0,0,0.2);} #${name}-select::-webkit-scrollbar-track,#${name}-content::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: rgba(0,0,0,0.1);}</style>
-<div style="width: 100%;height:100%;display: grid; grid-template-rows: 42px auto;border: 1px solid #ccc;border-radius: 5px"><div style="display:flex;background: #e1ffa8bf;"><div style="width:120px;background: #e1ffa8bf;"><input id="${name}-search" type="text" class="form-control" placeholder="搜索名称"></div><div id="${name}-select" style="width:100%;overflow: auto;border-bottom: 1px solid #ccc;padding: 3px;border-radius: 0 0 0 14px;background: #ffffffbf;">${selected_dom}</div></div><div id="${name}-content" style="overflow-y: auto;padding: 3px;background: #e1ffa8bf;">${select_dom}</div></div><input name="${name}[data]" value='${select_str}' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`;
+        let html = `<div class="dlp-dot" ><div class="dlp-top"><input type="text" class="dot-search" placeholder="搜索名称"><div id="${name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
+<input name="${name}[data]" value='${select_str}' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
-        this.SELECT_DOM = document.getElementById(name + '-select');
-        this.CONTENT_DOM = document.getElementById(name + '-content');
+        this.SELECT_DOM = document.querySelector(`#${name} .dot-selected`);
+        this.CONTENT_DOM = document.querySelector(`#${name} .dot-select`);
         this.dataDOM = document.querySelector(`input[name='${name}[data]']`);
         this.insertDOM = document.querySelector(`input[name='${name}[insert]']`);
         this.deleteDOM = document.querySelector(`input[name='${name}[delete]']`);
 
-        for (let element of document.getElementById(name + '-select').getElementsByClassName("v-tag")) {
+        for (let element of this.SELECT_DOM.getElementsByClassName("dlp-label")) {
             element.addEventListener('click', this.tagCancel.bind(this, element),false);
         }
-        for (let element of document.getElementById(name + '-content').getElementsByClassName("v-tag")) {
+        for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
             element.addEventListener('click', this.tagSelect.bind(this, element),false);
         }
-        document.getElementById(name + '-search').addEventListener('input', function () {
+        var object = this;
+        document.querySelector(`#${name} .dot-search`).addEventListener('input', function () {
             let search = this.value;
             if (search == '') {
                 return;
             }
-            let contentDom = document.getElementById(name + '-content');
-            for (let element of contentDom.getElementsByClassName("v-tag")) {
+            for (let element of object.CONTENT_DOM.getElementsByClassName("dlp-label")) {
                 if (element.innerText.indexOf(search) != -1) {
-                    contentDom.insertBefore(element, contentDom.firstChild);
+                    object.CONTENT_DOM.insertBefore(element, object.CONTENT_DOM.firstChild);
                 }
             }
         },false);

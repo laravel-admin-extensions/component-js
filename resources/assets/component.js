@@ -60,7 +60,7 @@ class ComponentDot {
         let select_str = JSON.stringify(this.select_data);
         this.insert_data = [];
         this.delete_data = [];
-        let html = `<div class="dlp-dot" ><div class="dlp-top"><input type="text" class="dot-search" placeholder="搜索名称"><div id="${name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
+        let html = `<div class="dlp-dot" ><div class="dlp-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
 <input name="${name}[data]" value='${select_str}' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECT_DOM = document.querySelector(`#${name} .dot-selected`);

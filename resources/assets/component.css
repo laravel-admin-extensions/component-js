@@ -1,4 +1,4 @@
-.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size: 12px;}
+.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size: 12px;border-spacing: 0!important;}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .dlp-label {
     cursor: pointer;
@@ -41,9 +41,9 @@
 }
 
 .dlp-scroll{overflow: auto}
-.dlp-scroll::-webkit-scrollbar{width: 4px;height: 4px;}
-.dlp-scroll::-webkit-scrollbar-thumb{border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: rgba(0,0,0,0.2);}
-.dlp-scroll::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: rgba(0,0,0,0.1);}
+.dlp-scroll::-webkit-scrollbar{width: 3px;}
+.dlp-scroll::-webkit-scrollbar-thumb{border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: #fff8eb;}
+.dlp-scroll::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 0;background: #cacbcd7a;}
 .dlp-dot{
     width: 100%;
     height: 100%;
@@ -69,8 +69,8 @@
     outline:none;
     border: none;
 }
-.dlp-top{
-    padding: 5px;
+.dot-top{
+    padding: 5px 0 5px 5px;
     display: flex;
     border-radius: 5px 5px 0 0;
     background: rgb(0 0 0 / 80%);
@@ -111,11 +111,12 @@
 }
 
 .dlp-table tbody{display:block;height:100%;overflow-y:scroll}
-.dlp-table tbody::-webkit-scrollbar { width: 0 !important }
 
 .dlp-table tr{display:table;width:100%;table-layout:fixed;}
-.dlp-table th,td{overflow: hidden}
+.dlp-table th,td{overflow: hidden;padding: 3px;}
+.dlp-table thead>tr{height: 45px}
 .dlp-table tbody>tr{background:rgb(64 64 64);}
 .dlp-table tbody>tr:nth-child(even){background:#2b2b2b;}
 .dlp-table tbody>tr:hover{background:rgba(255,255,255,.08)!important;color:#fff!important}
 .dlp-table .operate-column{width:45px;text-align: center}
+.dlp-table tfoot>tr{height: 40px}

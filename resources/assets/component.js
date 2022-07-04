@@ -74,7 +74,7 @@ class ComponentDot {
         let select_str = JSON.stringify(this.select_data);
         this.insert_data = [];
         this.delete_data = [];
-        let html = `<div class="dlp-dot" ><div class="dlp-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
 <input name="${name}[data]" value='${select_str}' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECT_DOM = document.querySelector(`#${name} .dot-selected`);
@@ -199,8 +199,8 @@ class ComponentLine {
             head += '<th>' + columns[column].name + '</th>';
             foot += `<th><input class="dlp-input" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
         }
-        head += '<th class="operate-column"></th></tr>';
-        foot += '<th class="insert_handel operate-column"></th></tr>';
+        head += '<th class="operate-column" style="width: 48px;"></th></tr>';
+        foot += '<th class="insert_handel operate-column" style="width: 48px;"></th></tr>';
 
         this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead>${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
@@ -251,6 +251,7 @@ class ComponentLine {
         object.DATA = records;
         object.DATA_INPUT.value = JSON.stringify(records);
         tbody.setAttribute('sortable-list','sortable-list');
+        tbody.className = 'dlp-scroll';
         this.TBODY_DOM = tbody;
         this.TABLE_DOM.appendChild(tbody);
     }

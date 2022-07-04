@@ -87,7 +87,7 @@
     vertical-align: middle;
     display: inline-block;
     width: 100%;
-    height: 20px;
+    height: 25px;
     padding-left: 4px;
     padding-right: 4px;
     background: #fff;
@@ -109,7 +109,7 @@
     border-radius: 5px;
     box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
     text-align: left;
-    background: #000000;
+    background: #1c1c1c;
     color: rgba(255,255,255,.9);
 }
 

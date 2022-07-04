@@ -1,3 +1,17 @@
+var _componentSvg = {
+    'trash':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+</svg>`,
+    'move':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/>
+</svg>`,
+    'write':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+</svg>`
+};
+
 function _componentRequest(url, method = "GET", data = {}, callback = function () {
 }) {
     var xhr = new XMLHttpRequest();
@@ -49,10 +63,10 @@ class ComponentDot {
         let select_dom = '';
         for (let i in select) {
             if (selected[i]) {
-                selected_dom += `<div class='dlp dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
+                selected_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
                 continue;
             }
-            select_dom += `<div class='dlp dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
+            select_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
         }
 
         this.selected_data = Object.keys(selected);
@@ -95,6 +109,7 @@ class ComponentDot {
         this.SELECT_DOM.appendChild(cdom);
         element.remove();
         this.tagCal(cdom, 'insert');
+        this.SELECT_DOM.scrollTop = this.SELECT_DOM.scrollHeight;
     }
 
     tagCancel(element) {
@@ -169,7 +184,7 @@ class ComponentLine {
     }
 
     makeHead() {
-        let head = '<tr style="display:table;width:100%;table-layout:fixed;">';
+        let head = '<tr>';
         let foot = head;
         let columns = this.COLUMNS;
         for (let column in columns) {
@@ -178,17 +193,16 @@ class ComponentLine {
             }
             if (columns[column].style) {
                 head += `<th style="${columns[column].style}">${columns[column].name}</th>`;
-                foot += `<th style="${columns[column].style}"><input class="form-control" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
+                foot += `<th style="${columns[column].style}"><input class="dlp-input" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
                 continue;
             }
             head += '<th>' + columns[column].name + '</th>';
-            foot += `<th><input class="form-control" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
+            foot += `<th><input class="dlp-input" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
         }
-        head += '<th style="width: 50px"></th></tr>';
-        foot += '<th style="width: 50px" class="JsonTableInsert"></th></tr>';
+        head += '<th class="operate-column"></th></tr>';
+        foot += '<th class="insert_handel operate-column"></th></tr>';
 
-        this.DOM.insertAdjacentHTML('afterbegin', `<style>#${this.NAME} tbody::-webkit-scrollbar { width: 0 !important }</style>
-        <table class="table table-striped table-bordered table-hover table-responsive" style="height: 100%"><thead>${head}</thead></table>`);
+        this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead>${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
         return foot;
     }
@@ -224,8 +238,7 @@ class ComponentLine {
                         td.style = columns[column].style;
                     }
                 }
-                tr.setAttribute('style', 'display:table;width:100%;table-layout:fixed');
-                tr.setAttribute('data-key', key);
+                tr.setAttribute('data-key', key.toString());
                 tr.appendChild(td);
             }
 
@@ -237,7 +250,6 @@ class ComponentLine {
         });
         object.DATA = records;
         object.DATA_INPUT.value = JSON.stringify(records);
-        tbody.setAttribute('style', 'display:block;height:100%;overflow-y:scroll');
         tbody.setAttribute('sortable-list','sortable-list');
         this.TBODY_DOM = tbody;
         this.TABLE_DOM.appendChild(tbody);
@@ -245,21 +257,19 @@ class ComponentLine {
 
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
-        tfoot.style = 'background:#f3ffdb';
         tfoot.insertAdjacentHTML('afterbegin', foot);
         this.TABLE_DOM.appendChild(tfoot);
         /*insert action*/
         var object = this;
         var i = document.createElement('i');
-        i.setAttribute('class', 'fa fa-edit');
         i.style = 'cursor: pointer';
+        i.insertAdjacentHTML('afterbegin',_componentSvg.write);
         i.addEventListener('click', function () {
             let inputs = object.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
             let insert = {};
             let tr = document.createElement('tr');
-            tr.style = 'display:table;width:100%;table-layout:fixed';
             tr.setAttribute('sortable-item','sortable-item');
-            tr.setAttribute('data-key', object.DATA.length);
+            tr.setAttribute('data-key', object.DATA.length.toString());
             for (let input in inputs) {
                 if (inputs.hasOwnProperty(input)) {
                     let td = document.createElement('td');
@@ -282,21 +292,20 @@ class ComponentLine {
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
             object.TBODY_DOM.scrollTop = object.TBODY_DOM.scrollHeight;
         },false);
-        this.DOM.getElementsByClassName('JsonTableInsert')[0].appendChild(i);
+        this.DOM.getElementsByClassName('insert_handel')[0].appendChild(i);
     }
 
     makeTd(td, type, value, column, attributes) {
         var object = this;
         switch (type) {
             case 'text':
-                td.insertAdjacentHTML('afterbegin', `<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;" title="${value}">${value}</p>`);
+                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp-text" title="${value}">${value}</p>`);
                 break;
             case 'input':
                 let input = document.createElement('input');
-                input.setAttribute('class', 'form-control');
+                input.setAttribute('class', 'dlp-input');
                 input.setAttribute('data-column', column);
                 input.value = value;
-                input.style = 'width:100%;padding:1px';
                 for (let attribute in attributes) {
                     input.setAttribute(attribute, attributes[attribute]);
                 }
@@ -311,7 +320,7 @@ class ComponentLine {
                 td.appendChild(input);
                 break;
             default:
-                td.insertAdjacentHTML('afterbegin', `<p style="text-overflow: ellipsis;overflow: hidden;display: block;white-space: nowrap;" title="${value}">${value}</p>`);
+                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp-text" title="${value}">${value}</p>`);
                 break;
         }
     }
@@ -320,16 +329,16 @@ class ComponentLine {
         var object = this;
         if(this.OPTIONS.sortable) {
             let M = document.createElement('i');
-            M.setAttribute('class', 'fa fa-arrows');
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
             M.setAttribute('sortable-handle', 'sortable-handle');
+            M.insertAdjacentHTML('afterbegin',_componentSvg.move);
             td.appendChild(M);
         }
 
         if(this.OPTIONS.delete) {
-            let D = document.createElement('i');
-            D.setAttribute('class', 'fa fa-trash');
-            D.setAttribute('style', 'cursor: pointer');
+            let D = document.createElement('span');
+            D.setAttribute('style', 'cursor: pointer;display: inline-block;');
+            D.insertAdjacentHTML('afterbegin',_componentSvg.trash);
             D.addEventListener('click', function () {
                 let tr = this.parentNode.parentNode;
                 let tbody = tr.parentNode;
@@ -346,7 +355,7 @@ class ComponentLine {
             }, false);
             td.appendChild(D);
         }
-        td.style = 'width:50px';
+        td.className = 'operate-column';
     }
 
     sortable(){

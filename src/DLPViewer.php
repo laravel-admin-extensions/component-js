@@ -72,7 +72,7 @@ EOF
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
-        $height = isset($settings['height']) ? $settings['height'] : '450px';
+        $height = isset($settings['height']) ? $settings['height'] : '330px';
         $options = isset($settings['options']) ? json_encode($settings['options']) : '[]';
         if (!isset($settings['columns'])) return;
         $columns = $settings['columns'];

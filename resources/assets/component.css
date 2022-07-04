@@ -1,5 +1,6 @@
-.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size: 12px;border-spacing: 0!important;}
-.dlp i{cursor: pointer}
+.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size: 12px!important;;border-spacing: 0!important;}
+.dlp i{cursor: pointer!important;}
+.dlp p{margin: 0!important;}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .dlp-label {
     cursor: pointer;
@@ -111,16 +112,16 @@
     color: rgba(255,255,255,.9);
 }
 
-.dlp-table tbody{display:block;height:100%;overflow-y:scroll}
+.dlp-table tbody{display:block!important;height:100%!important;overflow-y:scroll!important}
 
-.dlp-table tr{display:table;width:100%;table-layout:fixed;}
-.dlp-table th,td{overflow: hidden;padding: 3px;}
-.dlp-table thead>tr{height: 45px}
-.dlp-table tbody>tr{background:rgb(64 64 64);}
-.dlp-table tbody>tr:nth-child(even){background:#2b2b2b;}
+.dlp-table tr{display:table!important;width:100%!important;table-layout:fixed!important;}
+.dlp-table th,td{overflow: hidden!important;padding: 3px!important;}
+.dlp-table thead>tr{height: 45px!important}
+.dlp-table tbody>tr{background:rgb(64 64 64)!important;}
+.dlp-table tbody>tr:nth-child(even){background:#2b2b2b!important;}
 .dlp-table tbody>tr:hover{background:rgba(255,255,255,.08)!important;color:#fff!important}
+.dlp-table tfoot>tr{height: 40px!important}
 .dlp-table .operate-column{width:45px;text-align: center}
-.dlp-table tfoot>tr{height: 40px}
 
 .dlp-plane{
     position: relative;

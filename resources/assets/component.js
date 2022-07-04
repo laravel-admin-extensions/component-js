@@ -9,7 +9,16 @@ var _componentSvg = {
     'write':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-</svg>`
+</svg>`,
+    'close':`<svg style="vertical-align: middle;" width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="white" stroke-width="2.5" d="M16,16 L4,4"></path><path fill="none" stroke="white" stroke-width="2.5" d="M16,4 L4,16"></path></svg>`,
+    'loading':`<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+<path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+<path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
+type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`
 };
 
 function _componentRequest(url, method = "GET", data = {}, callback = function () {
@@ -17,7 +26,10 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.timeout = 30000;
-    var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    let token = '';
+    if(document.querySelector('meta[name="csrf-token"]')) {
+        token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
     xhr.setRequestHeader("X-CSRF-TOKEN", token);
     if (method == 'GET') {
         xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
@@ -388,22 +400,23 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp" class="modal" style="display: block;"><div class="modal-dialog modal-lg" style="width: ${window.innerWidth*this.OPTIONS.W}px;"><div class="modal-content"><div class="modal-header" style="background-color: rgb(255, 255, 255); padding: 3px; display: flex; justify-content: flex-end;"></div><div class="modal-body" style="background-color: rgb(244, 244, 244); padding: 0px; overflow-y: auto; max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div></div>`;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth*this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body" style="max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
+        this.DOM = document.getElementById('dlp-plane');
         /*X*/
         let X = document.createElement('i');
-        X.setAttribute('class', 'fa fa-close');
-        X.setAttribute('style', 'cursor: pointer');
+        X.insertAdjacentHTML('afterbegin',_componentSvg.close);
+        let object = this;
         X.addEventListener('click', function () {
-            if (document.getElementById('dlp') instanceof HTMLElement) {
-                document.getElementById('dlp').remove();
+            if (object.DOM instanceof HTMLElement) {
+                object.DOM.remove();
             }
             if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
                 document.getElementById('kvFileinputModal').remove();
             }
         },false);
-        document.getElementsByClassName('modal-header')[0].append(X);
-        this.MODEL_BODY_DOM = document.getElementsByClassName('modal-body')[0];
+        object.DOM.querySelector('.plane-header').append(X);
+        this.MODEL_BODY_DOM = object.DOM.querySelector('.plane-body');
     }
 
     makeContent() {
@@ -412,7 +425,7 @@ class ComponentPlane {
         _componentRequest(this.URL, 'GET', {}, function (response) {
             object.loading(true);
             $('.modal-body').append(response);
-            let submit = document.querySelector('.modal-body button[type="submit"]');
+            let submit = object.MODEL_BODY_DOM.querySelector('button[type="submit"]');
             if (submit instanceof HTMLElement) {
                 submit.addEventListener('click', object.submitEvent.bind(object,submit),false);
             }
@@ -453,14 +466,7 @@ class ComponentPlane {
         }
         this.LOADING_DOM = document.createElement('div');
         this.LOADING_DOM.style = 'width: 100%;height: 100px;';
-        this.LOADING_DOM.insertAdjacentHTML('afterbegin', `<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-<path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
-<path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
-type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`);
+        this.LOADING_DOM.insertAdjacentHTML('afterbegin', _componentSvg.loading);
         this.MODEL_BODY_DOM.append(this.LOADING_DOM);
     }
 }

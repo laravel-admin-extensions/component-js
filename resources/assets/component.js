@@ -400,7 +400,7 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth*this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body" style="max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth*this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/
@@ -424,7 +424,8 @@ class ComponentPlane {
         var object = this;
         _componentRequest(this.URL, 'GET', {}, function (response) {
             object.loading(true);
-            $('.modal-body').append(response);
+            /*object.MODEL_BODY_DOM.innerHTML = response;*/
+            $('#dlp-plane .plane-body').append(response);
             let submit = object.MODEL_BODY_DOM.querySelector('button[type="submit"]');
             if (submit instanceof HTMLElement) {
                 submit.addEventListener('click', object.submitEvent.bind(object,submit),false);

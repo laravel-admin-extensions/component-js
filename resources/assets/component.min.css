@@ -119,7 +119,7 @@
 .dlp-table thead>tr{height: 45px!important}
 .dlp-table tbody>tr{background:rgb(64 64 64)!important;}
 .dlp-table tbody>tr:nth-child(even){background:#2b2b2b!important;}
-.dlp-table tbody>tr:hover{background:rgba(255,255,255,.08)!important;color:#fff!important}
+.dlp-table tbody>tr:hover{background:rgba(255,255,255,.1)!important;color:#fff!important}
 .dlp-table tfoot>tr{height: 40px!important}
 .dlp-table .operate-column{width:45px;text-align: center}
 

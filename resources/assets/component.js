@@ -204,7 +204,7 @@ class ComponentCascadeDot {
     makeSelect(){
         this.dimensional_data = [];
         this.makeDimensional(this.select_data);
-        console.log(this.dimensional_data);
+        console.log(this.dimensional_data)
         for (let stack in this.dimensional_data){
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
@@ -214,7 +214,11 @@ class ComponentCascadeDot {
                 div.className='dlp dlp-text dlp-label';
                 div.setAttribute('data-id',v.key);
                 div.textContent = v.val;
-                div.addEventListener('click',this.select.bind(this, div));
+                if(v.hasOwnProperty('nodes')){
+                    let nodes = v.nodes.map((n)=>n.key);
+                    div.setAttribute('data-nodes-id',JSON.stringify(nodes));
+                }
+                div.addEventListener('click',this.select.bind(this, div,stack));
                 stackDom.append(div);
             });
             this.CONTENT_DOM.append(stackDom);
@@ -242,8 +246,10 @@ class ComponentCascadeDot {
         }
     }
 
-    select(div){
-        div.parentNode.childNodes.forEach((D)=>{
+    select(div,stack){
+        let stacks = div.parentNode.parentNode.childNodes;
+        console.log(stack)
+        div.parentNode.childNodes.forEach((D) => {
             D.classList.remove('dlp-label-active');
         });
         div.classList.add('dlp-label-active');

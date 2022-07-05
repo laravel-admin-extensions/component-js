@@ -204,7 +204,6 @@ class ComponentCascadeDot {
     makeSelect(){
         this.dimensional_data = [];
         this.makeDimensional(this.select_data);
-        console.log(this.dimensional_data)
         for (let stack in this.dimensional_data){
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
@@ -218,6 +217,7 @@ class ComponentCascadeDot {
                     let nodes = v.nodes.map((n)=>n.key);
                     div.setAttribute('data-nodes-id',JSON.stringify(nodes));
                 }
+                div.setAttribute('data-parent-nodes-id',JSON.stringify(v.parentNodes));
                 div.addEventListener('click',this.select.bind(this, div,stack));
                 stackDom.append(div);
             });
@@ -225,13 +225,16 @@ class ComponentCascadeDot {
         }
     }
 
-    makeDimensional(data,dimension=0){
+    makeDimensional(data,dimension=0,parentNodes=[]){
         if(Array.isArray(data)){
             for (let k in data){
-                this.makeDimensional(data[k],dimension);
+                let parents = parentNodes.slice(0);
+                parents.push(data[k].key);
+                this.makeDimensional(data[k],dimension,parents);
             }
             return;
         }
+        data.parentNodes = parentNodes;
         if(!Array.isArray(this.dimensional_data[dimension])){
             this.dimensional_data[dimension] = [data];
         }else {
@@ -242,17 +245,24 @@ class ComponentCascadeDot {
         }
         if(Array.isArray(data.nodes) == true && data.nodes.length > 0){
             dimension++;
-            this.makeDimensional(data.nodes,dimension);
+            this.makeDimensional(data.nodes,dimension,parentNodes);
         }
     }
 
     select(div,stack){
         let stacks = div.parentNode.parentNode.childNodes;
-        console.log(stack)
         div.parentNode.childNodes.forEach((D) => {
             D.classList.remove('dlp-label-active');
         });
         div.classList.add('dlp-label-active');
+    }
+
+    selectToParent(){
+
+    }
+
+    selectToChildren(){
+        
     }
 }
 

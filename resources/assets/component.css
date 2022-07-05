@@ -90,7 +90,7 @@
     height: 25px;
     padding-left: 4px;
     padding-right: 4px;
-    background: #fff;
+    background: #ededed;;
     color: #666;
     border: 1px solid #e5e5e5;
     transition: .2s ease-in-out;
@@ -113,14 +113,14 @@
     color: rgba(255,255,255,.9);
 }
 
-.dlp-table tbody{display:block!important;height:100%!important;overflow-y:scroll!important}
+.dlp-table tbody{display:block!important;height:100%!important;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);}
 
 .dlp-table tr{display:table!important;width:100%!important;table-layout:fixed!important;}
-.dlp-table th,td{overflow: hidden!important;padding: 3px!important;}
+.dlp-table th,.dlp-table td{overflow: hidden!important;padding:  7px 3px 7px 3px!important;}
 .dlp-table thead>tr{height: 45px!important}
-.dlp-table tbody>tr{background:rgb(64 64 64)!important;}
+.dlp-table tbody>tr{background:rgb(0 0 0)!important}
 .dlp-table tbody>tr:nth-child(even){background:#2b2b2b!important;}
-.dlp-table tbody>tr:hover{background:rgba(255,255,255,.1)!important;color:#fff!important}
+.dlp-table tbody>tr:hover{background:rgba(255,255,255,.07)!important;color:#fff!important}
 .dlp-table tfoot>tr{height: 40px!important}
 .dlp-table .operate-column{width:45px;text-align: center}
 

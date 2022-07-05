@@ -7,11 +7,13 @@
     <script src="../resources/assets/component.js"></script>
 </head>
 <body>
-<div id="test" style="width: 400px;height: 220px"></div>
+<div id="test" style="width: 400px;height: 200px"></div>
 <div style="height: 30px"></div>
-<div id="test2" style="width: 650px;height: 320px"></div>
+<div id="test2" style="width: 650px;height: 360px"></div>
 <div style="height: 30px"></div>
 <div id="test3">点击</div>
+<div style="height: 30px"></div>
+<div id="test4" style="width: 500px;height: 320px"></div>
 </body>
 <script>
     new ComponentDot('test',{1:'a',2:'b',3:'c'},{1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h321321312312313',9:'i'});
@@ -21,5 +23,7 @@
     document.getElementById('test3').addEventListener('click',function () {
         new ComponentPlane();
     });
+
+    new ComponentCascadeDot('test4',{1:'a',2:'b',3:'c'},{1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h321321312312313',9:'i'});
 </script>
 </html>

@@ -18,7 +18,10 @@ s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.
 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
 <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
 C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
-type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`
+type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`,
+    'check':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+</svg>`
 };
 
 function _componentRequest(url, method = "GET", data = {}, callback = function () {
@@ -187,7 +190,7 @@ class ComponentCascadeDot {
     }
 
     make(){
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-select dlp-scroll"></div></div>
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-select dot-select-cascade dlp-scroll"></div></div>
 <input name="${this.name}[data]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECT_DOM = document.querySelector(`#${this.name} .dot-selected`);
@@ -199,12 +202,23 @@ class ComponentCascadeDot {
     }
 
     makeSelect(){
-        this.dimensional = 0;
-        this.dimensional_data = {};
-
+        this.dimensional_data = [];
         this.makeDimensional(this.select_data);
         console.log(this.dimensional_data);
-        console.log(this.dimensional)
+        for (let stack in this.dimensional_data){
+            let data = this.dimensional_data[stack];
+            let stackDom = document.createElement('div');
+            stackDom.className = 'dot-cascade-stack dlp-scroll';
+            data.forEach((v)=>{
+                let div = document.createElement('div');
+                div.className='dlp dlp-text dlp-label';
+                div.setAttribute('data-id',v.key);
+                div.textContent = v.val;
+                div.addEventListener('click',this.select.bind(this, div));
+                stackDom.append(div);
+            });
+            this.CONTENT_DOM.append(stackDom);
+        }
     }
 
     makeDimensional(data,dimension=0){
@@ -214,19 +228,25 @@ class ComponentCascadeDot {
             }
             return;
         }
-        if(!Array.isArray(this.dimensional_data[dimension.toString()])){
-            this.dimensional_data[dimension.toString()] = [data];
+        if(!Array.isArray(this.dimensional_data[dimension])){
+            this.dimensional_data[dimension] = [data];
         }else {
-            this.dimensional_data[dimension.toString()].push(data);
+            this.dimensional_data[dimension].push(data);
         }
         if(!data.hasOwnProperty('nodes')){
-            if(dimension>this.dimensional)this.dimensional=dimension;
             return;
         }
         if(Array.isArray(data.nodes) == true && data.nodes.length > 0){
             dimension++;
             this.makeDimensional(data.nodes,dimension);
         }
+    }
+
+    select(div){
+        div.parentNode.childNodes.forEach((D)=>{
+            D.classList.remove('dlp-label-active');
+        });
+        div.classList.add('dlp-label-active');
     }
 }
 

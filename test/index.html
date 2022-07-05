@@ -9,21 +9,28 @@
 <body>
 <div id="test" style="width: 400px;height: 200px"></div>
 <div style="height: 30px"></div>
-<div id="test2" style="width: 650px;height: 360px"></div>
+<div id="test4" style="width: 650px;height: 360px"></div>
 <div style="height: 30px"></div>
 <div id="test3">点击</div>
 <div style="height: 30px"></div>
-<div id="test4" style="width: 500px;height: 320px"></div>
+<div id="test2" style="width: 500px;height: 320px"></div>
 </body>
 <script>
     new ComponentDot('test',{1:'a',2:'b',3:'c'},{1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h321321312312313',9:'i'});
 
     new ComponentLine("test2",JSON.parse('{"name":{"name":"名称","type":"input"},"meta":{"name":"信息","type":"input"},"url":{"name":"链接","type":"input"},"time":{"name":"更新时间","type":"text"},"is-small":{"name":"高清[1是 2否]","type":"input","style":"width:60px"},"is-warning":{"name":"含字幕[1是 2否]","type":"input","style":"width:60px"},"tooltip":{"name":"可下载[1是 2否]","type":"input","style":"width:60px"}}'),JSON.parse('[{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.SD.MP4-KLEENEX","url":"magnet?xt=urnbtih1b771980c465052d1c96eade30be1297e1f73cff&dn=HDouban.comTushyRaw.21.04.28.Penelope.Kay.XXX.SD.MP4-KLEENEX","meta":"(246MB,3個文件)","tooltip":"2","time":"2021-05-14 000000","is-small":"2","is-warning":"2"},{"name":"T1080","url":"magnet?xt=urn tih20244eea8bafa94c27699ada817638f0a01fdbea&dn=HDouban.com TushyRaw.21.04.28.Penelope.Kay.XXX.1080p.MP4-NBQrarbg","meta":"","tooltip":"2","time":"2021-05-15 000000","is-small":"1","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.720p.HEVC.x265.PRT","url":"magnet?xt=urnbtih0c647fd1acb9e6c3bf617c117e60c86b29fa233c&dn=HDouban.com TushyRaw.21.04.28.Penelope.Kay.XXX.720p.HEVC.x265.PRT","meta":"(236MB,2個文件)","tooltip":"2","time":"2021-05-14 000000","is-small":"2","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.480p.MP4-XXX","url":"magnet?xt=urnbtih7DE13EF7EE22D9780F7DE6C459D6DD33F64D126C","meta":"251.82M","tooltip":"2","time":"2021-12-14 132446","is-small":"2","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.1080p.MP4-NBQrarbg","url":"magnet?xt=urnbtih20244EEA8BAFA94C27699ADA817638F0A01FDBEA","meta":"2.65G","tooltip":"2","time":"2021-12-14 132446","is-small":"2","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.SD.MP4-KLEENEX","url":"magnet?xt=urnbtih1B771980C465052D1C96EADE30BE1297E1F73CFF","meta":"246.64M","tooltip":"2","time":"2021-12-14 132446","is-small":"2","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.720p.HEVC.x265.PRT","url":"magnet?xt=urnbtih0C647FD1ACB9E6C3BF617C117E60C86B29FA233C","meta":"236.12M","tooltip":"2","time":"2021-12-14 132446","is-small":"2","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.1080p.HEVC.x265.PRT","url":"magnet?xt=urnbtihA4B92AFFB6A39E2B3F69064EF174598CA2D6C630","meta":"412.77M","tooltip":"2","time":"2021-12-14 132446","is-small":"2","is-warning":"2"},{"name":"TushyRaw.21.04.28.Penelope.Kay.XXX.1080p.MP4-NBQrarbg","url":"magnet?xt=urnbtih20244eea8bafa94c27699ada817638f0a01fdbea&dn=TushyRaw.21.04.28.Penelope.Kay.XXX.1080p.MP4-NBQrarbg","meta":"","tooltip":"2","time":"2022-02-08 102237","is-small":"2","is-warning":"2"}]'),JSON.parse('[]'));
 
-    document.getElementById('test3').addEventListener('click',function () {
+    /*document.getElementById('test3').addEventListener('click',function () {
         new ComponentPlane();
-    });
+    });*/
 
-    new ComponentCascadeDot('test4',{1:'a',2:'b',3:'c'},{1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h321321312312313',9:'i'});
+    new ComponentCascadeDot('test4',{1:'a',2:'b',3:'c'},[{'key':1,'val':'a'},
+        {'key':2,'val':'b','nodes':[{'key':11,'val':'b1'},{'key':12,'val':'b2'},{'key':13,'val':'b3'},{'key':14,'val':'b4'}]},
+        {'key':3,'val':'c'},
+        {'key':4,'val':'d','nodes':[]},
+        {'key':5,'val':'e','nodes':[{'key':21,'val':'e1'},{'key':22,'val':'e2'},{'key':23,'val':'e3'},{'key':24,'val':'e4'},{'key':25,'val':'e5'}
+                ,{'key':26,'val':'e6'},{'key':27,'val':'e7'},{'key':28,'val':'e8'},{'key':29,'val':'e9'},{'key':20,'val':'e0','nodes':[{'key':120,'val':'e00'},{'key':121,'val':'e01'}]}]},
+        {'key':6,'val':'f','nodes':[{'key':31,'val':'f1'},{'key':32,'val':'f2'}]}
+        ]);
 </script>
 </html>

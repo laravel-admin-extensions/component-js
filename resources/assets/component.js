@@ -70,7 +70,24 @@ function _componentAlert(message, time = 1, callback = function () {
 
 class ComponentDot {
     constructor(name, selected, select) {
+        this.name = name;
         this.DOM = document.getElementById(name);
+        this.make(selected, select);
+        this.selected_data = Object.keys(selected);
+        this.select_data = this.selected_data.map((x) => x);
+        this.insert_data = [];
+        this.delete_data = [];
+
+        for (let element of this.SELECT_DOM.getElementsByClassName("dlp-label")) {
+            element.addEventListener('click', this.tagCancel.bind(this, element),false);
+        }
+        for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
+            element.addEventListener('click', this.tagSelect.bind(this, element),false);
+        }
+        this.search();
+    }
+
+    make(selected, select){
         let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
@@ -81,38 +98,14 @@ class ComponentDot {
             select_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
         }
 
-        this.selected_data = Object.keys(selected);
-        this.select_data = this.selected_data.map((x) => x);
-        let select_str = JSON.stringify(this.select_data);
-        this.insert_data = [];
-        this.delete_data = [];
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
-<input name="${name}[data]" value='${select_str}' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`;
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
+<input name="${this.name}[data]" value='${JSON.stringify(this.select_data)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
-        this.SELECT_DOM = document.querySelector(`#${name} .dot-selected`);
-        this.CONTENT_DOM = document.querySelector(`#${name} .dot-select`);
-        this.dataDOM = document.querySelector(`input[name='${name}[data]']`);
-        this.insertDOM = document.querySelector(`input[name='${name}[insert]']`);
-        this.deleteDOM = document.querySelector(`input[name='${name}[delete]']`);
-
-        for (let element of this.SELECT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagCancel.bind(this, element),false);
-        }
-        for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagSelect.bind(this, element),false);
-        }
-        var object = this;
-        document.querySelector(`#${name} .dot-search`).addEventListener('input', function () {
-            let search = this.value;
-            if (search == '') {
-                return;
-            }
-            for (let element of object.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-                if (element.innerText.indexOf(search) != -1) {
-                    object.CONTENT_DOM.insertBefore(element, object.CONTENT_DOM.firstChild);
-                }
-            }
-        },false);
+        this.SELECT_DOM = document.querySelector(`#${this.name} .dot-selected`);
+        this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
+        this.dataDOM = document.querySelector(`input[name='${this.name}[data]']`);
+        this.insertDOM = document.querySelector(`input[name='${this.name}[insert]']`);
+        this.deleteDOM = document.querySelector(`input[name='${this.name}[delete]']`);
     }
 
     tagSelect(element) {
@@ -165,6 +158,74 @@ class ComponentDot {
                 this.insert_data.splice(index, 1);
                 this.insertDOM.value = JSON.stringify(this.insert_data);
             }
+        }
+    }
+
+    search(){
+        var object = this;
+        document.querySelector(`#${this.name} .dot-search`).addEventListener('input', function () {
+            let search = this.value;
+            if (search == '') {
+                return;
+            }
+            for (let element of object.CONTENT_DOM.getElementsByClassName("dlp-label")) {
+                if (element.innerText.indexOf(search) != -1) {
+                    object.CONTENT_DOM.insertBefore(element, object.CONTENT_DOM.firstChild);
+                }
+            }
+        },false);
+    }
+}
+
+class ComponentCascadeDot {
+    constructor(name, selected, select) {
+        this.name = name;
+        this.DOM = document.getElementById(name);
+        this.selected_data = selected;
+        this.select_data = select;
+        this.make().makeSelect();
+    }
+
+    make(){
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-select dlp-scroll"></div></div>
+<input name="${this.name}[data]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
+        this.DOM.insertAdjacentHTML('afterbegin', html);
+        this.SELECT_DOM = document.querySelector(`#${this.name} .dot-selected`);
+        this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
+        this.dataDOM = document.querySelector(`input[name='${this.name}[data]']`);
+        this.insertDOM = document.querySelector(`input[name='${this.name}[insert]']`);
+        this.deleteDOM = document.querySelector(`input[name='${this.name}[delete]']`);
+        return this;
+    }
+
+    makeSelect(){
+        this.dimensional = 0;
+        this.dimensional_data = {};
+
+        this.makeDimensional(this.select_data);
+        console.log(this.dimensional_data);
+        console.log(this.dimensional)
+    }
+
+    makeDimensional(data,dimension=0){
+        if(Array.isArray(data)){
+            for (let k in data){
+                this.makeDimensional(data[k],dimension);
+            }
+            return;
+        }
+        if(!Array.isArray(this.dimensional_data[dimension.toString()])){
+            this.dimensional_data[dimension.toString()] = [data];
+        }else {
+            this.dimensional_data[dimension.toString()].push(data);
+        }
+        if(!data.hasOwnProperty('nodes')){
+            if(dimension>this.dimensional)this.dimensional=dimension;
+            return;
+        }
+        if(Array.isArray(data.nodes) == true && data.nodes.length > 0){
+            dimension++;
+            this.makeDimensional(data.nodes,dimension);
         }
     }
 }

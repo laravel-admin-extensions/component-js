@@ -262,11 +262,11 @@ class ComponentCascadeDot {
         });
     }
 
-    selectToParent(element,stack){
+    selectToParent(node){
 
     }
 
-    selectToChildren(){
+    selectToChildren(nodes){
 
     }
 }

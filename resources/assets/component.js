@@ -251,17 +251,15 @@ class ComponentCascadeDot {
     }
 
     select(element, stack) {
+        let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
+        this.selectToChildren(stack + 1, nodes);
+
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let key = parseInt(element.getAttribute('data-id'));
         currentStackDocuments.forEach((D, index) => {
-            if (key == D.key) {
-                currentStackDocuments[index].classList.add('dlp-label-active');
-                return;
-            }
             currentStackDocuments[index].classList.remove('dlp-label-active');
         });
-        let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
-        this.selectToChildren(stack + 1, nodes);
+        element.classList.add('dlp-label-active');
     }
 
     selectToParent(node) {

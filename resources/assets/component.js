@@ -1,17 +1,17 @@
 var _componentSvg = {
-    'trash':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+    'trash': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
   <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
 </svg>`,
-    'move':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move" viewBox="0 0 16 16">
+    'move': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/>
 </svg>`,
-    'write':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+    'write': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
 </svg>`,
-    'close':`<svg style="vertical-align: middle;" width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="white" stroke-width="2.5" d="M16,16 L4,4"></path><path fill="none" stroke="white" stroke-width="2.5" d="M16,4 L4,16"></path></svg>`,
-    'loading':`<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    'close': `<svg style="vertical-align: middle;" width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="white" stroke-width="2.5" d="M16,16 L4,4"></path><path fill="none" stroke="white" stroke-width="2.5" d="M16,4 L4,16"></path></svg>`,
+    'loading': `<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
 <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
@@ -19,7 +19,7 @@ c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26
 <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
 C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
 type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`,
-    'check':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+    'check': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
 </svg>`
 };
@@ -30,7 +30,7 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
     xhr.open(method, url, true);
     xhr.timeout = 30000;
     let token = '';
-    if(document.querySelector('meta[name="csrf-token"]')) {
+    if (document.querySelector('meta[name="csrf-token"]')) {
         token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     }
     xhr.setRequestHeader("X-CSRF-TOKEN", token);
@@ -82,15 +82,15 @@ class ComponentDot {
         this.delete_data = [];
 
         for (let element of this.SELECT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagCancel.bind(this, element),false);
+            element.addEventListener('click', this.tagCancel.bind(this, element), false);
         }
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagSelect.bind(this, element),false);
+            element.addEventListener('click', this.tagSelect.bind(this, element), false);
         }
         this.search();
     }
 
-    make(selected, select){
+    make(selected, select) {
         let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
@@ -113,7 +113,7 @@ class ComponentDot {
 
     tagSelect(element) {
         let cdom = element.cloneNode(true);
-        cdom.addEventListener('click', this.tagCancel.bind(this, cdom),false);
+        cdom.addEventListener('click', this.tagCancel.bind(this, cdom), false);
         this.SELECT_DOM.appendChild(cdom);
         element.remove();
         this.tagCal(cdom, 'insert');
@@ -122,7 +122,7 @@ class ComponentDot {
 
     tagCancel(element) {
         let cdom = element.cloneNode(true);
-        cdom.addEventListener('click', this.tagSelect.bind(this, cdom),false);
+        cdom.addEventListener('click', this.tagSelect.bind(this, cdom), false);
         this.CONTENT_DOM.appendChild(cdom);
         element.remove();
         this.tagCal(cdom, 'delete');
@@ -164,7 +164,7 @@ class ComponentDot {
         }
     }
 
-    search(){
+    search() {
         var object = this;
         document.querySelector(`#${this.name} .dot-search`).addEventListener('input', function () {
             let search = this.value;
@@ -176,7 +176,7 @@ class ComponentDot {
                     object.CONTENT_DOM.insertBefore(element, object.CONTENT_DOM.firstChild);
                 }
             }
-        },false);
+        }, false);
     }
 }
 
@@ -189,7 +189,7 @@ class ComponentCascadeDot {
         this.make().makeSelect();
     }
 
-    make(){
+    make() {
         let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-select dot-select-cascade dlp-scroll"></div></div>
 <input name="${this.name}[data]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
@@ -201,24 +201,24 @@ class ComponentCascadeDot {
         return this;
     }
 
-    makeSelect(){
+    makeSelect() {
         this.dimensional_data = [];
         this.makeDimensional(this.select_data);
-        for (let stack in this.dimensional_data){
+        for (let stack in this.dimensional_data) {
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
-            data.forEach((v)=>{
+            data.forEach((v) => {
                 let div = document.createElement('div');
-                div.className='dlp dlp-text dlp-label';
-                div.setAttribute('data-id',v.key);
+                div.className = 'dlp dlp-text dlp-label';
+                div.setAttribute('data-id', v.key);
                 div.textContent = v.val;
-                if(v.hasOwnProperty('nodes')){
-                    let nodes = v.nodes.map((n)=>n.key);
-                    div.setAttribute('data-nodes-id',JSON.stringify(nodes));
+                if (v.hasOwnProperty('nodes')) {
+                    let nodes = v.nodes.map((n) => n.key);
+                    div.setAttribute('data-nodes-id', JSON.stringify(nodes));
                 }
-                div.setAttribute('data-parent-nodes-id',JSON.stringify(v.parentNodes));
-                div.addEventListener('click',this.select.bind(this, div,stack));
+                div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
+                div.addEventListener('click', this.select.bind(this, div, parseInt(stack)));
                 stackDom.append(div);
             });
             this.CONTENT_DOM.append(stackDom);
@@ -226,53 +226,90 @@ class ComponentCascadeDot {
         this.STACKS = this.CONTENT_DOM.childNodes;
     }
 
-    makeDimensional(data,dimension=0,parentNodes=[]){
-        if(Array.isArray(data)){
-            for (let k in data){
+    makeDimensional(data, dimension = 0, parentNodes = []) {
+        if (Array.isArray(data)) {
+            for (let k in data) {
                 let parents = parentNodes.slice(0);
                 parents.push(data[k].key);
-                this.makeDimensional(data[k],dimension,parents);
+                this.makeDimensional(data[k], dimension, parents);
             }
             return;
         }
         data.parentNodes = parentNodes;
-        if(!Array.isArray(this.dimensional_data[dimension])){
+        if (!Array.isArray(this.dimensional_data[dimension])) {
             this.dimensional_data[dimension] = [data];
-        }else {
+        } else {
             this.dimensional_data[dimension].push(data);
         }
-        if(!data.hasOwnProperty('nodes')){
+        if (!data.hasOwnProperty('nodes')) {
             return;
         }
-        if(Array.isArray(data.nodes) == true && data.nodes.length > 0){
+        if (Array.isArray(data.nodes) == true && data.nodes.length > 0) {
             dimension++;
-            this.makeDimensional(data.nodes,dimension,parentNodes);
+            this.makeDimensional(data.nodes, dimension, parentNodes);
         }
     }
 
-    select(element,stack){
-        let currentStack = this.STACKS[stack].childNodes;
+    select(element, stack) {
+        let currentStackDocuments = this.STACKS[stack].childNodes;
         let key = parseInt(element.getAttribute('data-id'));
-        this.dimensional_data[stack].forEach((D,index)=>{
-            if(key == D.key){
-                currentStack[index].classList.add('dlp-label-active');
+        currentStackDocuments.forEach((D, index) => {
+            if (key == D.key) {
+                currentStackDocuments[index].classList.add('dlp-label-active');
                 return;
             }
-            currentStack[index].classList.remove('dlp-label-active');
+            currentStackDocuments[index].classList.remove('dlp-label-active');
         });
+        let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
+        this.selectToChildren(stack + 1, nodes);
     }
 
-    selectToParent(node){
+    selectToParent(node) {
 
     }
 
-    selectToChildren(nodes){
+    selectToChildren(stack, nodes) {
+        if(stack > (this.dimensional_data.length-1))return;
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        let children = [];
+        if(!Array.isArray(nodes) || (nodes.length == 0)){
+            currentStackDocuments.forEach((D) => {
+                D.classList.remove('dlp-label-active');
+                D.classList.add('dlp-label-silence');
+                let child = JSON.parse(D.getAttribute('data-nodes-id'));
+                if(Array.isArray(child)){
+                    child.forEach((c)=>{
+                        if(children.indexOf(child)==-1){
+                            children.push(c);
+                        }
+                    });
+                }
+            });
+            this.selectToChildren(stack+1,nodes);
+            return;
+        }
 
+        currentStackDocuments.forEach((D)=>{
+            if(nodes.indexOf(parseInt(D.getAttribute('data-id'))) != -1) {
+                D.classList.remove('dlp-label-silence');
+                let child = JSON.parse(D.getAttribute('data-nodes-id'));
+                if(Array.isArray(child)){
+                    child.forEach((c)=>{
+                        if(children.indexOf(child)==-1){
+                            children.push(c);
+                        }
+                    });
+                }
+            }else {
+                D.classList.add('dlp-label-silence');
+            }
+        });
+        this.selectToChildren(stack+1,children);
     }
 }
 
 class ComponentLine {
-    constructor(name, columns, data, options={}) {
+    constructor(name, columns, data, options = {}) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
         this.COLUMNS = columns;
@@ -294,7 +331,7 @@ class ComponentLine {
         /*foot*/
         this.makeFoot(foot);
         /*sort*/
-        if(this.OPTIONS.sortable) this.sortable();
+        if (this.OPTIONS.sortable) this.sortable();
     }
 
     makeHead() {
@@ -326,10 +363,10 @@ class ComponentLine {
         var tbody = document.createElement('tbody');
         var object = this;
         var columns = this.COLUMNS;
-        if(Array.isArray(this.DATA) == false)return;
+        if (Array.isArray(this.DATA) == false) return;
         this.DATA.forEach(function (value, key) {
             let tr = document.createElement('tr');
-            tr.setAttribute('sortable-item','sortable-item');
+            tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
             for (let column in columns) {
                 if (columns[column].type == 'hidden') {
@@ -364,7 +401,7 @@ class ComponentLine {
         });
         object.DATA = records;
         object.DATA_INPUT.value = JSON.stringify(records);
-        tbody.setAttribute('sortable-list','sortable-list');
+        tbody.setAttribute('sortable-list', 'sortable-list');
         tbody.className = 'dlp-scroll';
         this.TBODY_DOM = tbody;
         this.TABLE_DOM.appendChild(tbody);
@@ -378,12 +415,12 @@ class ComponentLine {
         var object = this;
         var i = document.createElement('i');
         i.style = 'cursor: pointer';
-        i.insertAdjacentHTML('afterbegin',_componentSvg.write);
+        i.insertAdjacentHTML('afterbegin', _componentSvg.write);
         i.addEventListener('click', function () {
             let inputs = object.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
             let insert = {};
             let tr = document.createElement('tr');
-            tr.setAttribute('sortable-item','sortable-item');
+            tr.setAttribute('sortable-item', 'sortable-item');
             tr.setAttribute('data-key', object.DATA.length.toString());
             for (let input in inputs) {
                 if (inputs.hasOwnProperty(input)) {
@@ -406,7 +443,7 @@ class ComponentLine {
             object.DATA.push(insert);
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
             object.TBODY_DOM.scrollTop = object.TBODY_DOM.scrollHeight;
-        },false);
+        }, false);
         this.DOM.getElementsByClassName('insert_handel')[0].appendChild(i);
     }
 
@@ -431,7 +468,7 @@ class ComponentLine {
                         object.DATA[key][column] = this.value;
                         object.DATA_INPUT.value = JSON.stringify(object.DATA);
                     }
-                },false);
+                }, false);
                 td.appendChild(input);
                 break;
             default:
@@ -442,18 +479,18 @@ class ComponentLine {
 
     operateButton(td) {
         var object = this;
-        if(this.OPTIONS.sortable) {
+        if (this.OPTIONS.sortable) {
             let M = document.createElement('i');
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
             M.setAttribute('sortable-handle', 'sortable-handle');
-            M.insertAdjacentHTML('afterbegin',_componentSvg.move);
+            M.insertAdjacentHTML('afterbegin', _componentSvg.move);
             td.appendChild(M);
         }
 
-        if(this.OPTIONS.delete) {
+        if (this.OPTIONS.delete) {
             let D = document.createElement('span');
             D.setAttribute('style', 'cursor: pointer;display: inline-block;');
-            D.insertAdjacentHTML('afterbegin',_componentSvg.trash);
+            D.insertAdjacentHTML('afterbegin', _componentSvg.trash);
             D.addEventListener('click', function () {
                 let tr = this.parentNode.parentNode;
                 let tbody = tr.parentNode;
@@ -473,9 +510,9 @@ class ComponentLine {
         td.className = 'operate-column';
     }
 
-    sortable(){
+    sortable() {
         var object = this;
-        new ComponentSortable(this.TBODY_DOM,function (sort) {
+        new ComponentSortable(this.TBODY_DOM, function (sort) {
             let data = [];
             sort.forEach(function (k) {
                 data.push(object.DATA[k]);
@@ -487,7 +524,7 @@ class ComponentLine {
 }
 
 class ComponentPlane {
-    constructor(url, xhr_url = '', method = 'POST', callback = null,options = {}) {
+    constructor(url, xhr_url = '', method = 'POST', callback = null, options = {}) {
         this.URL = url;
         this.XHR_URL = xhr_url;
         this.METHOD = method;
@@ -502,12 +539,12 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth*this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/
         let X = document.createElement('i');
-        X.insertAdjacentHTML('afterbegin',_componentSvg.close);
+        X.insertAdjacentHTML('afterbegin', _componentSvg.close);
         let object = this;
         X.addEventListener('click', function () {
             if (object.DOM instanceof HTMLElement) {
@@ -516,7 +553,7 @@ class ComponentPlane {
             if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
                 document.getElementById('kvFileinputModal').remove();
             }
-        },false);
+        }, false);
         object.DOM.querySelector('.plane-header').append(X);
         this.MODEL_BODY_DOM = object.DOM.querySelector('.plane-body');
     }
@@ -530,12 +567,12 @@ class ComponentPlane {
             $('#dlp-plane .plane-body').append(response);
             let submit = object.MODEL_BODY_DOM.querySelector('button[type="submit"]');
             if (submit instanceof HTMLElement) {
-                submit.addEventListener('click', object.submitEvent.bind(object,submit),false);
+                submit.addEventListener('click', object.submitEvent.bind(object, submit), false);
             }
         });
     }
 
-    submitEvent(element){
+    submitEvent(element) {
         element.setAttribute('disabled', 'disabled');
         element.innerText = '提交中...';
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
@@ -575,7 +612,7 @@ class ComponentPlane {
 }
 
 class ComponentSortable {
-    constructor(list, callback=null) {
+    constructor(list, callback = null) {
         this.list = (typeof list === 'string') ? document.querySelector(list) : list;
         this.options = {
             animationSpeed: 200,
@@ -590,19 +627,19 @@ class ComponentSortable {
         this.list.addEventListener('mousedown', this.dragStart, false);
     }
 
-    reset(){
+    reset() {
         this.items = Array.from(this.list.children);
-        if(this.items[this.items.length-1].offsetTop > this.list.offsetHeight){
+        if (this.items[this.items.length - 1].offsetTop > this.list.offsetHeight) {
             this.listHeight = this.list.scrollHeight;
-        }else {
-            this.listHeight = this.items[this.items.length-1].offsetTop;
+        } else {
+            this.listHeight = this.items[this.items.length - 1].offsetTop;
         }
     }
 
     dragStart(e) {
         this.reset();
         if (this.animation) return;
-        if(this.items.length<2)return;
+        if (this.items.length < 2) return;
         this.handle = null;
 
         let el = e.target;
@@ -640,7 +677,7 @@ class ComponentSortable {
 
     dragMove(e) {
         if (this.animation) return;
-        if(this.items.length<2)return;
+        if (this.items.length < 2) return;
         const top = this.startTop + this.getDragY(e) - this.startTouchY;
         const newPosition = Math.round((top / this.listHeight) * this.items.length);
 
@@ -662,11 +699,11 @@ class ComponentSortable {
 
     dragEnd(e) {
         this.animation = true;
-        if(this.items.length<2)return;
+        if (this.items.length < 2) return;
         this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         this.item.style.transform = `translateY(${this.position * this.itemHeight}px)`;
         this.item.classList.remove('is-dragging');
-        if(typeof this.callback == 'function') this.callback(this.positions);
+        if (typeof this.callback == 'function') this.callback(this.positions);
 
         setTimeout(() => {
             this.list.style.position = '';
@@ -682,7 +719,7 @@ class ComponentSortable {
             });
 
             this.positions.map(i => {
-                if(this.items[i]) {
+                if (this.items[i]) {
                     this.list.appendChild(this.items[i]);
                 }
             });

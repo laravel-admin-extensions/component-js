@@ -223,6 +223,7 @@ class ComponentCascadeDot {
             });
             this.CONTENT_DOM.append(stackDom);
         }
+        this.STACKS = this.CONTENT_DOM.childNodes;
     }
 
     makeDimensional(data,dimension=0,parentNodes=[]){
@@ -249,20 +250,24 @@ class ComponentCascadeDot {
         }
     }
 
-    select(div,stack){
-        let stacks = div.parentNode.parentNode.childNodes;
-        div.parentNode.childNodes.forEach((D) => {
-            D.classList.remove('dlp-label-active');
+    select(element,stack){
+        let currentStack = this.STACKS[stack].childNodes;
+        let key = parseInt(element.getAttribute('data-id'));
+        this.dimensional_data[stack].forEach((D,index)=>{
+            if(key == D.key){
+                currentStack[index].classList.add('dlp-label-active');
+                return;
+            }
+            currentStack[index].classList.remove('dlp-label-active');
         });
-        div.classList.add('dlp-label-active');
     }
 
-    selectToParent(){
+    selectToParent(element,stack){
 
     }
 
     selectToChildren(){
-        
+
     }
 }
 

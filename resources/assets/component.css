@@ -11,7 +11,7 @@
     outline: 0;
     border: none;
     vertical-align: baseline;
-    background: #e0e1e2 none;
+    background: #d6d6d6;
     color: rgba(0,0,0,.6);
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
     margin: 0 0.25em 0;
@@ -35,7 +35,7 @@
 }
 
 .dlp-label:hover {
-    background-color: #cacbcd;
+    background-color: #bfbfbf;
     background-image: none;
     -webkit-box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
     box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
@@ -134,7 +134,7 @@
     border-radius: 5px;
     box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
     text-align: left;
-    background: #1c1c1c;
+    background: #191919;
     color: rgba(255,255,255,.9);
 }
 
@@ -143,9 +143,9 @@
 .dlp-table tr{display:table!important;width:100%!important;table-layout:fixed!important;}
 .dlp-table th,.dlp-table td{overflow: hidden!important;padding:  7px 3px 7px 3px!important;}
 .dlp-table thead>tr{height: 45px!important}
-.dlp-table tbody>tr{background:rgb(0 0 0)!important}
-.dlp-table tbody>tr:nth-child(even){background:#2b2b2b!important;}
-.dlp-table tbody>tr:hover{background:rgba(255,255,255,.07)!important;color:#fff!important}
+.dlp-table tbody>tr{background:rgb(43 43 43)!important;}
+.dlp-table tbody>tr:nth-child(even){background:#0c0c0c!important;}
+.dlp-table tbody>tr:hover{background:rgb(255 255 255 / 5%)!important;color:#fff!important}
 .dlp-table tfoot>tr{height: 40px!important}
 .dlp-table .operate-column{width:45px;text-align: center}
 

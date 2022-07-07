@@ -312,7 +312,7 @@ class ComponentCascadeDot {
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
-                this.selectToParent(checked,parent_nodes[stack], stack, parent_nodes[stack - 1]);
+                this.selectToParent(checked,parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1],parent_nodes[stack + 1]);
             }
         }
     }
@@ -367,12 +367,19 @@ class ComponentCascadeDot {
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(checked,node, stack, parent_node) {
+    selectToParent(checked,node, stack, parent_node,child_nodes) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             if(checked == 'true'){
                 if (node == parseInt(D.getAttribute('data-id'))) {
-
+                    let check = false;
+                    console.log(stack)
+                    this.STACKS[stack+1].childNodes.forEach((D)=>{
+                        if(D.getAttribute('checked') == 'true'){
+                            check = true;
+                        }
+                    });
+                    !check && D.querySelector('i').remove();
                 }
                 return;
             }

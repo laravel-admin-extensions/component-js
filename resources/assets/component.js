@@ -72,12 +72,20 @@ function _componentAlert(message, time = 1, callback = function () {
 }
 
 class ComponentDot {
+    MODE={
+        insert:'insert',
+        delete:'delete'
+    };
     constructor(name, selected, select) {
         this.name = name;
         this.DOM = document.getElementById(name);
+        if(!Array.isArray(selected)){
+            console.error('Dot param selected is not array!');
+            return;
+        }
         this.make(selected, select);
         this.selected_data = selected;
-        this.select_data = this.selected_data.map((x) => x);
+        this.select_data = selected.slice(0);
         this.insert_data = [];
         this.delete_data = [];
 
@@ -102,7 +110,7 @@ class ComponentDot {
         }
 
         let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
-<input name="${this.name}[select]" value='${JSON.stringify(this.select_data)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
+<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name} .dot-selected`);
         this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
@@ -116,7 +124,7 @@ class ComponentDot {
         cdom.addEventListener('click', this.tagCancel.bind(this, cdom), false);
         this.SELECTED_DOM.appendChild(cdom);
         element.remove();
-        this.tagCal(cdom, 'insert');
+        this.tagCal(cdom, this.MODE.insert);
         this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
     }
 
@@ -125,12 +133,12 @@ class ComponentDot {
         cdom.addEventListener('click', this.tagSelect.bind(this, cdom), false);
         this.CONTENT_DOM.appendChild(cdom);
         element.remove();
-        this.tagCal(cdom, 'delete');
+        this.tagCal(cdom, this.MODE.delete);
     }
 
     tagCal(cdom, operate) {
-        let id = cdom.getAttribute('data-id');
-        if (operate == 'insert') {
+        let id = parseInt(cdom.getAttribute('data-id'));
+        if (operate == this.MODE.insert) {
             if (this.select_data.indexOf(id) == -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
@@ -146,7 +154,7 @@ class ComponentDot {
             }
             return;
         }
-        if (operate == 'delete') {
+        if (operate == this.MODE.delete) {
             let index = this.select_data.indexOf(id);
             if (index != -1) {
                 this.select_data.splice(index, 1);
@@ -181,14 +189,22 @@ class ComponentDot {
 }
 
 class ComponentCascadeDot {
+    MODE={
+        insert:'insert',
+        delete:'delete'
+    };
     constructor(name, selected, select, options) {
         this.name = name;
         this.DOM = document.getElementById(name);
         this.OPTIONS = Object.assign({
             select_dimensional: []
         }, options);
-        this.selected_data = Object.keys(selected);
-        this.select_data = this.selected_data.map((x) => x);
+        if(!Array.isArray(selected)){
+            console.error('CascadeDot param selected is not array!');
+            return;
+        }
+        this.selected_data = selected;
+        this.select_data = selected.slice(0);
         this.insert_data = [];
         this.delete_data = [];
         this.make().makeSelect(select);
@@ -279,6 +295,7 @@ class ComponentCascadeDot {
     }
 
     selectActive(stack,element){
+        this.tagCal(parseInt(element.getAttribute('data-id')),this.MODE.insert);
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
         currentStackDocuments.forEach((D, index) => {
@@ -361,7 +378,7 @@ class ComponentCascadeDot {
     }
 
     tagCal(id, operate) {
-        if (operate == 'insert') {
+        if (operate == this.MODE.insert) {
             if (this.select_data.indexOf(id) == -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
@@ -377,7 +394,7 @@ class ComponentCascadeDot {
             }
             return;
         }
-        if (operate == 'delete') {
+        if (operate == this.MODE.delete) {
             let index = this.select_data.indexOf(id);
             if (index != -1) {
                 this.select_data.splice(index, 1);

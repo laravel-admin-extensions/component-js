@@ -302,7 +302,8 @@ class ComponentCascadeDot {
         let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
         this.selectToChildren(stack + 1, nodes);
         /*current stack*/
-        if(element.getAttribute('checked') == 'false') {
+        let checked = element.getAttribute('checked');
+        if(checked == 'false') {
             this.selectActive(stack, element);
         }else {
             this.selectInactive(stack, element);
@@ -311,7 +312,7 @@ class ComponentCascadeDot {
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
-                this.selectToParent(parent_nodes[stack], stack, parent_nodes[stack - 1]);
+                this.selectToParent(checked,parent_nodes[stack], stack, parent_nodes[stack - 1]);
             }
         }
     }
@@ -330,6 +331,7 @@ class ComponentCascadeDot {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
         });
+        element.querySelector('i') && element.removeChild(element.querySelector('i'));
         element.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check}</i>`);
     }
 
@@ -365,16 +367,24 @@ class ComponentCascadeDot {
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(node, stack, parent_node) {
+    selectToParent(checked,node, stack, parent_node) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
+            if(checked == 'true'){
+                if (node == parseInt(D.getAttribute('data-id'))) {
+
+                }
+                return;
+            }
             let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
             currentStackDocuments[index].classList.remove('dlp-label-silence');
             if (parents.length > 0 && (parents[stack - 1] != parent_node)) {
-                currentStackDocuments[index].classList.add('dlp-label-silence');
+                let D = currentStackDocuments[index];
+                D.classList.add('dlp-label-silence');
             }
             if (node == parseInt(D.getAttribute('data-id'))) {
-                currentStackDocuments[index].classList.remove('dlp-label-silence');
+                if(D.getAttribute('checked') == 'true' || (D.querySelector('i') instanceof HTMLElement))return;
+                D.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check_circle}</i>`);
             }
         });
     }

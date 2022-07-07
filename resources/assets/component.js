@@ -76,7 +76,7 @@ class ComponentDot {
         this.name = name;
         this.DOM = document.getElementById(name);
         this.make(selected, select);
-        this.selected_data = Object.keys(selected);
+        this.selected_data = selected;
         this.select_data = this.selected_data.map((x) => x);
         this.insert_data = [];
         this.delete_data = [];
@@ -94,7 +94,7 @@ class ComponentDot {
         let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
-            if (selected[i]) {
+            if (selected.indexOf(parseInt(i)) != -1) {
                 selected_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
                 continue;
             }
@@ -181,12 +181,17 @@ class ComponentDot {
 }
 
 class ComponentCascadeDot {
-    constructor(name, selected, select,options) {
+    constructor(name, selected, select, options) {
         this.name = name;
         this.DOM = document.getElementById(name);
-        this.selected_data = selected;
-        this.select_data = select;
-        this.make().makeSelect();
+        this.OPTIONS = Object.assign({
+            select_dimensional: []
+        }, options);
+        this.selected_data = Object.keys(selected);
+        this.select_data = this.selected_data.map((x) => x);
+        this.insert_data = [];
+        this.delete_data = [];
+        this.make().makeSelect(select);
     }
 
     make() {
@@ -201,24 +206,30 @@ class ComponentCascadeDot {
         return this;
     }
 
-    makeSelect() {
+    makeSelect(select) {
         this.dimensional_data = [];
-        this.makeDimensional(this.select_data);
+        this.makeDimensional(select);
         for (let stack in this.dimensional_data) {
+            stack = parseInt(stack);
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
+            var allowSelect = true;
+            if (this.OPTIONS.select_dimensional.length > 0 && (this.OPTIONS.select_dimensional.indexOf(stack) == -1)) {
+                allowSelect = false;
+            }
             data.forEach((v) => {
                 let div = document.createElement('div');
                 div.className = 'dlp dlp-text dlp-label';
                 div.setAttribute('data-id', v.key);
+                div.setAttribute('allow-select', allowSelect);
                 div.textContent = v.val;
                 if (v.hasOwnProperty('nodes')) {
                     let nodes = v.nodes.map((n) => n.key);
                     div.setAttribute('data-nodes-id', JSON.stringify(nodes));
                 }
                 div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
-                div.addEventListener('click', this.select.bind(this, div, parseInt(stack)));
+                div.addEventListener('click', this.select.bind(this, div, stack));
                 stackDom.append(div);
             });
             this.CONTENT_DOM.append(stackDom);
@@ -257,36 +268,53 @@ class ComponentCascadeDot {
         let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
         this.selectToChildren(stack + 1, nodes);
         /*current stack*/
+        this.selectActive(stack,element);
+        /*parent nodes*/
+        let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
+        if (Array.isArray(parent_nodes)) {
+            for (let stack in parent_nodes) {
+                this.selectToParent(parent_nodes[stack], stack, parent_nodes[stack - 1]);
+            }
+        }
+    }
+
+    selectActive(stack,element){
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
         currentStackDocuments.forEach((D, index) => {
             currentStackDocuments[index].classList.remove('dlp-label-active');
             currentStackDocuments[index].classList.remove('dlp-label-silence');
             let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
-            if(parents[stack-1] != parentNode){
+            if (parents[stack - 1] != parentNode) {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
         });
         element.classList.add('dlp-label-active');
-        /*parent nodes*/
-        let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
-        if(Array.isArray(parent_nodes)){
-            for (let stack in parent_nodes){
-                this.selectToParent(parent_nodes[stack],stack,parent_nodes[stack-1]);
-            }
+        if(element.getAttribute('allow-select') == 'true'){
+            element.setAttribute('allow-select','false');
+            let div = document.createElement('div');
+            div.className = 'dlp dlp-text dlp-label';
+            div.setAttribute('data-id',element.getAttribute('data-id'));
+            div.setAttribute('stack',stack);
+            div.textContent = element.textContent;
+            div.addEventListener('click',function () {
+                element.setAttribute('allow-select','true');
+                this.remove();
+            });
+            this.SELECTED_DOM.append(div);
         }
     }
 
-    selectToParent(node,stack,parent_node) {
+    selectToParent(node, stack, parent_node) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
             currentStackDocuments[index].classList.remove('dlp-label-silence');
-            if(parents.length>0 && (parents[stack-1] != parent_node)) {
+            if (parents.length > 0 && (parents[stack - 1] != parent_node)) {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
             currentStackDocuments[index].classList.remove('dlp-label-active');
-            if(node == parseInt(D.getAttribute('data-id'))){
+            if (node == parseInt(D.getAttribute('data-id'))) {
                 currentStackDocuments[index].classList.add('dlp-label-active');
                 currentStackDocuments[index].classList.remove('dlp-label-silence');
             }
@@ -294,42 +322,77 @@ class ComponentCascadeDot {
     }
 
     selectToChildren(stack, nodes) {
-        if(stack > (this.dimensional_data.length-1))return;
+        if (stack > (this.dimensional_data.length - 1)) return;
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let children = [];
-        if(!Array.isArray(nodes) || (nodes.length == 0)){
+        if (!Array.isArray(nodes) || (nodes.length == 0)) {
             currentStackDocuments.forEach((D) => {
                 D.classList.remove('dlp-label-active');
                 D.classList.add('dlp-label-silence');
                 let child = JSON.parse(D.getAttribute('data-nodes-id'));
-                if(Array.isArray(child)){
-                    child.forEach((c)=>{
-                        if(children.indexOf(child)==-1){
+                if (Array.isArray(child)) {
+                    child.forEach((c) => {
+                        if (children.indexOf(child) == -1) {
                             children.push(c);
                         }
                     });
                 }
             });
-            this.selectToChildren(stack+1,nodes);
+            this.selectToChildren(stack + 1, nodes);
             return;
         }
 
-        currentStackDocuments.forEach((D)=>{
-            if(nodes.indexOf(parseInt(D.getAttribute('data-id'))) != -1) {
+        currentStackDocuments.forEach((D) => {
+            if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) != -1) {
                 D.classList.remove('dlp-label-silence');
                 let child = JSON.parse(D.getAttribute('data-nodes-id'));
-                if(Array.isArray(child)){
-                    child.forEach((c)=>{
-                        if(children.indexOf(child)==-1){
+                if (Array.isArray(child)) {
+                    child.forEach((c) => {
+                        if (children.indexOf(child) == -1) {
                             children.push(c);
                         }
                     });
                 }
-            }else {
+            } else {
                 D.classList.add('dlp-label-silence');
             }
         });
-        this.selectToChildren(stack+1,children);
+        this.selectToChildren(stack + 1, children);
+    }
+
+    tagCal(id, operate) {
+        if (operate == 'insert') {
+            if (this.select_data.indexOf(id) == -1) {
+                this.select_data.push(id);
+                this.selectInputDOM.value = JSON.stringify(this.select_data);
+            }
+            if (this.selected_data.indexOf(id) == -1 && this.insert_data.indexOf(id) == -1) {
+                this.insert_data.push(id);
+                this.insertInputDOM.value = JSON.stringify(this.insert_data);
+            }
+            let index = this.delete_data.indexOf(id);
+            if (index != -1) {
+                this.delete_data.splice(index, 1);
+                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+            }
+            return;
+        }
+        if (operate == 'delete') {
+            let index = this.select_data.indexOf(id);
+            if (index != -1) {
+                this.select_data.splice(index, 1);
+                this.selectInputDOM.value = JSON.stringify(this.select_data);
+            }
+            if (this.selected_data.indexOf(id) != -1 && this.delete_data.indexOf(id) == -1) {
+                this.delete_data.push(id);
+                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+            }
+            index = this.insert_data.indexOf(id);
+            if (index != -1) {
+                this.insert_data.splice(index, 1);
+                this.insertInputDOM.value = JSON.stringify(this.insert_data);
+            }
+        }
     }
 }
 

@@ -20,24 +20,24 @@ class DLPViewer
      * @param Form $form
      * @param string $column 数据字段名
      * @param string $title 名称
-     * @param array $select 全部选项 [[value=>text],[value=>text]...]
-     * @param array $selected 已选择选项 [[value=>text],[value=>text]...]
+     * @param array $selected 已选择选项 [value1,value2,...]
+     * @param array $select 全部选项  [[value=>text],[value=>text]...]
      * @param array $settings 配置项[setting,...]
      * settings.strict      boolean json严格模式消除json敏感字符问题
      * settings.width       string 容器宽度设置
      * settings.height      string 容器高度设置
      */
-    public static function makeComponentDot(Form $form, string $column, string $title, array $select = [], array $selected = [], array $settings = [])
+    public static function makeComponentDot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
         $height = isset($settings['height']) ? $settings['height'] : '200px';
         if ($strict) {
-            $select = DLPHelper::safeJson($select);
             $selected = DLPHelper::safeJson($selected);
+            $select = DLPHelper::safeJson($select);
         } else {
-            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
             $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         }
         Admin::script(<<<EOF
 new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));

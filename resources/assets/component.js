@@ -22,7 +22,7 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
     'check': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
 </svg>`,
-    'check_circle':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+    'check_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
 </svg>`
@@ -260,9 +260,18 @@ class ComponentCascadeDot {
                 if ((index !== -1) && allowSelect == false) {
                     this.selected_data.splice(index, 1);
                     this.select_data = this.selected_data.slice(0);
-                } else if((index !== -1) && allowSelect == true) {
-                    this.selectToSelected(div,stack);
-                    div.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check}</i>`);
+                } else if ((index !== -1) && allowSelect == true) {
+                    this.selectToSelected(div, stack);
+                    div.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
+                    /*parent nodes*/
+                    setTimeout(() => {
+                        let parent_nodes = v.parentNodes;
+                        if (Array.isArray(parent_nodes)) {
+                            parent_nodes.forEach((node, stack) => {
+                                this.selectToParent('false', node, stack, parent_nodes[stack - 1], parent_nodes[stack + 1]);
+                            });
+                        }
+                    });
                 }
             });
             this.CONTENT_DOM.append(stackDom);
@@ -303,24 +312,24 @@ class ComponentCascadeDot {
         this.selectToChildren(stack + 1, nodes);
         /*current stack*/
         let checked = element.getAttribute('checked');
-        if(checked == 'false') {
+        if (checked == 'false') {
             this.selectActive(stack, element);
-        }else {
+        } else {
             this.selectInactive(stack, element);
         }
         /*parent nodes*/
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
-                this.selectToParent(checked,parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1],parent_nodes[stack + 1]);
+                this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1], parent_nodes[stack + 1]);
             }
         }
     }
 
     selectActive(stack, element) {
-        if (element.getAttribute('allow-select') == 'false')return;
-        if (element.getAttribute('checked') == 'true')return;
-        this.selectToSelected(element,stack);
+        if (element.getAttribute('allow-select') == 'false') return;
+        if (element.getAttribute('checked') == 'true') return;
+        this.selectToSelected(element, stack);
         this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
@@ -332,19 +341,19 @@ class ComponentCascadeDot {
             }
         });
         element.querySelector('i') && element.removeChild(element.querySelector('i'));
-        element.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check}</i>`);
+        element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
     }
 
-    selectInactive(stack, element){
-        if (element.getAttribute('allow-select') == 'false')return;
-        if (element.getAttribute('checked') == 'false')return;
+    selectInactive(stack, element) {
+        if (element.getAttribute('allow-select') == 'false') return;
+        if (element.getAttribute('checked') == 'false') return;
         element.setAttribute('checked', 'false');
         let id = element.getAttribute('data-id');
         this.tagCal(parseInt(id), this.MODE.delete);
         element.removeChild(element.querySelector('i'));
-        for(let index in this.SELECTED_DOM.childNodes){
+        for (let index in this.SELECTED_DOM.childNodes) {
             let D = this.SELECTED_DOM.childNodes[index];
-            if((D instanceof HTMLElement) && (D.getAttribute('data-id') == id)){
+            if ((D instanceof HTMLElement) && (D.getAttribute('data-id') == id)) {
                 this.tagCal(parseInt(id), this.MODE.delete);
                 D.remove();
                 break;
@@ -352,7 +361,7 @@ class ComponentCascadeDot {
         }
     }
 
-    selectToSelected(element,stack){
+    selectToSelected(element, stack) {
         element.setAttribute('checked', 'true');
         let div = document.createElement('div');
         div.className = 'dlp dlp-text dlp-label';
@@ -367,15 +376,14 @@ class ComponentCascadeDot {
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(checked,node, stack, parent_node,child_nodes) {
+    selectToParent(checked, node, stack, parent_node, child_nodes) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
-            if(checked == 'true'){
+            if (checked == 'true') {
                 if (node == parseInt(D.getAttribute('data-id'))) {
                     let check = false;
-                    console.log(stack)
-                    this.STACKS[stack+1].childNodes.forEach((D)=>{
-                        if(D.getAttribute('checked') == 'true'){
+                    this.STACKS[stack + 1].childNodes.forEach((D) => {
+                        if (D.querySelector('i')) {
                             check = true;
                         }
                     });
@@ -390,8 +398,8 @@ class ComponentCascadeDot {
                 D.classList.add('dlp-label-silence');
             }
             if (node == parseInt(D.getAttribute('data-id'))) {
-                if(D.getAttribute('checked') == 'true' || (D.querySelector('i') instanceof HTMLElement))return;
-                D.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check_circle}</i>`);
+                if (D.getAttribute('checked') == 'true' || (D.querySelector('i') instanceof HTMLElement)) return;
+                D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
         });
     }

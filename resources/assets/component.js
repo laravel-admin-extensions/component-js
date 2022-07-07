@@ -235,7 +235,9 @@ class ComponentCascadeDot {
             }
             return;
         }
-        data.parentNodes = parentNodes;
+        let parent = parentNodes.slice(0);
+        parent.pop();
+        data.parentNodes = parent;
         if (!Array.isArray(this.dimensional_data[dimension])) {
             this.dimensional_data[dimension] = [data];
         } else {
@@ -251,19 +253,44 @@ class ComponentCascadeDot {
     }
 
     select(element, stack) {
+        /*nodes*/
         let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
         this.selectToChildren(stack + 1, nodes);
-
+        /*current stack*/
         let currentStackDocuments = this.STACKS[stack].childNodes;
-        let key = parseInt(element.getAttribute('data-id'));
+        let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
         currentStackDocuments.forEach((D, index) => {
             currentStackDocuments[index].classList.remove('dlp-label-active');
+            currentStackDocuments[index].classList.remove('dlp-label-silence');
+            let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
+            if(parents[stack-1] != parentNode){
+                currentStackDocuments[index].classList.add('dlp-label-silence');
+            }
         });
         element.classList.add('dlp-label-active');
+        /*parent nodes*/
+        let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
+        if(Array.isArray(parent_nodes)){
+            for (let stack in parent_nodes){
+                this.selectToParent(parent_nodes[stack],stack,parent_nodes[stack-1]);
+            }
+        }
     }
 
-    selectToParent(node) {
-
+    selectToParent(node,stack,parent_node) {
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        currentStackDocuments.forEach((D, index) => {
+            let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
+            currentStackDocuments[index].classList.remove('dlp-label-silence');
+            if(parents.length>0 && (parents[stack-1] != parent_node)) {
+                currentStackDocuments[index].classList.add('dlp-label-silence');
+            }
+            currentStackDocuments[index].classList.remove('dlp-label-active');
+            if(node == parseInt(D.getAttribute('data-id'))){
+                currentStackDocuments[index].classList.add('dlp-label-active');
+                currentStackDocuments[index].classList.remove('dlp-label-silence');
+            }
+        });
     }
 
     selectToChildren(stack, nodes) {

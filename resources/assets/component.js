@@ -21,6 +21,10 @@ C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"a
 type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`,
     'check': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+</svg>`,
+    'check_circle':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
 </svg>`
 };
 
@@ -72,14 +76,15 @@ function _componentAlert(message, time = 1, callback = function () {
 }
 
 class ComponentDot {
-    MODE={
-        insert:'insert',
-        delete:'delete'
+    MODE = {
+        insert: 'insert',
+        delete: 'delete'
     };
+
     constructor(name, selected, select) {
         this.name = name;
         this.DOM = document.getElementById(name);
-        if(!Array.isArray(selected)){
+        if (!Array.isArray(selected)) {
             console.error('Dot param selected is not array!');
             return;
         }
@@ -189,17 +194,18 @@ class ComponentDot {
 }
 
 class ComponentCascadeDot {
-    MODE={
-        insert:'insert',
-        delete:'delete'
+    MODE = {
+        insert: 'insert',
+        delete: 'delete'
     };
+
     constructor(name, selected, select, options) {
         this.name = name;
         this.DOM = document.getElementById(name);
         this.OPTIONS = Object.assign({
             select_dimensional: []
         }, options);
-        if(!Array.isArray(selected)){
+        if (!Array.isArray(selected)) {
             console.error('CascadeDot param selected is not array!');
             return;
         }
@@ -208,6 +214,7 @@ class ComponentCascadeDot {
         this.insert_data = [];
         this.delete_data = [];
         this.make().makeSelect(select);
+        this.selectInputDOM.value = JSON.stringify(this.select_data);
     }
 
     make() {
@@ -239,6 +246,7 @@ class ComponentCascadeDot {
                 div.className = 'dlp dlp-text dlp-label';
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('allow-select', allowSelect);
+                div.setAttribute('checked', 'false');
                 div.textContent = v.val;
                 if (v.hasOwnProperty('nodes')) {
                     let nodes = v.nodes.map((n) => n.key);
@@ -247,10 +255,20 @@ class ComponentCascadeDot {
                 div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
                 div.addEventListener('click', this.select.bind(this, div, stack));
                 stackDom.append(div);
+                /*selected append*/
+                let index = this.selected_data.indexOf(parseInt(v.key));
+                if ((index !== -1) && allowSelect == false) {
+                    this.selected_data.splice(index, 1);
+                    this.select_data = this.selected_data.slice(0);
+                } else if((index !== -1) && allowSelect == true) {
+                    this.selectToSelected(div,stack);
+                    div.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check}</i>`);
+                }
             });
             this.CONTENT_DOM.append(stackDom);
         }
         this.STACKS = this.CONTENT_DOM.childNodes;
+        return this;
     }
 
     makeDimensional(data, dimension = 0, parentNodes = []) {
@@ -284,7 +302,11 @@ class ComponentCascadeDot {
         let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
         this.selectToChildren(stack + 1, nodes);
         /*current stack*/
-        this.selectActive(stack,element);
+        if(element.getAttribute('checked') == 'false') {
+            this.selectActive(stack, element);
+        }else {
+            this.selectInactive(stack, element);
+        }
         /*parent nodes*/
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
         if (Array.isArray(parent_nodes)) {
@@ -294,32 +316,53 @@ class ComponentCascadeDot {
         }
     }
 
-    selectActive(stack,element){
-        this.tagCal(parseInt(element.getAttribute('data-id')),this.MODE.insert);
+    selectActive(stack, element) {
+        if (element.getAttribute('allow-select') == 'false')return;
+        if (element.getAttribute('checked') == 'true')return;
+        this.selectToSelected(element,stack);
+        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
         currentStackDocuments.forEach((D, index) => {
-            currentStackDocuments[index].classList.remove('dlp-label-active');
             currentStackDocuments[index].classList.remove('dlp-label-silence');
             let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
             if (parents[stack - 1] != parentNode) {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
         });
-        element.classList.add('dlp-label-active');
-        if(element.getAttribute('allow-select') == 'true'){
-            element.setAttribute('allow-select','false');
-            let div = document.createElement('div');
-            div.className = 'dlp dlp-text dlp-label';
-            div.setAttribute('data-id',element.getAttribute('data-id'));
-            div.setAttribute('stack',stack);
-            div.textContent = element.textContent;
-            div.addEventListener('click',function () {
-                element.setAttribute('allow-select','true');
-                this.remove();
-            });
-            this.SELECTED_DOM.append(div);
+        element.insertAdjacentHTML('beforeend',`<i>${_componentSvg.check}</i>`);
+    }
+
+    selectInactive(stack, element){
+        if (element.getAttribute('allow-select') == 'false')return;
+        if (element.getAttribute('checked') == 'false')return;
+        element.setAttribute('checked', 'false');
+        let id = element.getAttribute('data-id');
+        this.tagCal(parseInt(id), this.MODE.delete);
+        element.removeChild(element.querySelector('i'));
+        for(let index in this.SELECTED_DOM.childNodes){
+            let D = this.SELECTED_DOM.childNodes[index];
+            if((D instanceof HTMLElement) && (D.getAttribute('data-id') == id)){
+                this.tagCal(parseInt(id), this.MODE.delete);
+                D.remove();
+                break;
+            }
         }
+    }
+
+    selectToSelected(element,stack){
+        element.setAttribute('checked', 'true');
+        let div = document.createElement('div');
+        div.className = 'dlp dlp-text dlp-label';
+        let id = element.getAttribute('data-id');
+        div.setAttribute('data-id', id);
+        div.setAttribute('stack', stack);
+        div.textContent = element.textContent;
+        var object = this;
+        div.addEventListener('click', function () {
+            object.selectInactive(stack, element);
+        });
+        this.SELECTED_DOM.append(div);
     }
 
     selectToParent(node, stack, parent_node) {
@@ -330,9 +373,7 @@ class ComponentCascadeDot {
             if (parents.length > 0 && (parents[stack - 1] != parent_node)) {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
-            currentStackDocuments[index].classList.remove('dlp-label-active');
             if (node == parseInt(D.getAttribute('data-id'))) {
-                currentStackDocuments[index].classList.add('dlp-label-active');
                 currentStackDocuments[index].classList.remove('dlp-label-silence');
             }
         });
@@ -344,7 +385,6 @@ class ComponentCascadeDot {
         let children = [];
         if (!Array.isArray(nodes) || (nodes.length == 0)) {
             currentStackDocuments.forEach((D) => {
-                D.classList.remove('dlp-label-active');
                 D.classList.add('dlp-label-silence');
                 let child = JSON.parse(D.getAttribute('data-nodes-id'));
                 if (Array.isArray(child)) {

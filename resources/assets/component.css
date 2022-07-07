@@ -100,9 +100,12 @@
     height: 20px;
     line-height: 20px;
     margin-bottom: 3px;
+    position: relative;
 }
-.dot-cascade-stack>.dlp-label-active{
-    background: white;
+.dlp-label>i{
+    position: absolute!important;
+    right: 4px!important;
+    top: 4px!important;
 }
 .dot-cascade-stack>.dlp-label-silence{
     opacity: 0.5;

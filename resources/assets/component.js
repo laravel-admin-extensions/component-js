@@ -266,7 +266,7 @@ class ComponentCascadeDot {
                         let parent_nodes = v.parentNodes;
                         if (Array.isArray(parent_nodes)) {
                             parent_nodes.forEach((node, stack) => {
-                                this.selectToParent('false', node, stack, parent_nodes[stack - 1], parent_nodes[stack + 1]);
+                                this.selectToParent(node, stack, parent_nodes[stack - 1],'false');
                             });
                         }
                     });
@@ -322,7 +322,7 @@ class ComponentCascadeDot {
         /*parent nodes*/
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
-                this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1]);
+                this.selectToParent(parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1],checked);
             }
         }
     }
@@ -384,7 +384,7 @@ class ComponentCascadeDot {
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(checked, node, stack, parent_node) {
+    selectToParent(node, stack, parent_node,checked) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             if (checked == 'true') {

@@ -314,18 +314,11 @@ class ComponentCascadeDot {
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
         if(checked == 'false' || checked==null){
             this.selectActive(stack, element,end_node,checked);
-            /*nodes*/
-            this.selectToChildren(stack + 1, nodes,end_node);
-            /*parent nodes*/
-            if (Array.isArray(parent_nodes)) {
-                for (let stack in parent_nodes) {
-                    this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1]);
-                }
-            }
-            return;
+        }else {
+            this.selectInactive(stack, element, end_node, checked);
         }
-        /*current stack*/
-        this.selectInactive(stack, element,end_node,checked);
+        /*nodes*/
+        this.selectToChildren(stack + 1, nodes,end_node);
         /*parent nodes*/
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {

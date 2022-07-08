@@ -202,9 +202,6 @@ class ComponentCascadeDot {
     constructor(name, selected, select, options) {
         this.name = name;
         this.DOM = document.getElementById(name);
-        this.OPTIONS = Object.assign({
-            select_dimensional: []
-        }, options);
         if (!Array.isArray(selected)) {
             console.error('CascadeDot param selected is not array!');
             return;
@@ -237,30 +234,31 @@ class ComponentCascadeDot {
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
-            var allowSelect = true;
-            if (this.OPTIONS.select_dimensional.length > 0 && (this.OPTIONS.select_dimensional.indexOf(stack) == -1)) {
-                allowSelect = false;
-            }
             data.forEach((v) => {
                 let div = document.createElement('div');
                 div.className = 'dlp dlp-text dlp-label';
-                div.setAttribute('data-id', v.key);
-                div.setAttribute('allow-select', allowSelect);
-                div.setAttribute('checked', 'false');
                 div.textContent = v.val;
+                div.setAttribute('data-id', v.key);
+                div.setAttribute('checked', 'false');
+                div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
+                let allow_select = false;
                 if (v.hasOwnProperty('nodes')) {
                     let nodes = v.nodes.map((n) => n.key);
                     div.setAttribute('data-nodes-id', JSON.stringify(nodes));
+                }else {
+                    allow_select = true;
                 }
-                div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
                 div.addEventListener('click', this.select.bind(this, div, stack));
                 stackDom.append(div);
                 /*selected append*/
                 let index = this.selected_data.indexOf(parseInt(v.key));
-                if ((index !== -1) && allowSelect == false) {
-                    this.selected_data.splice(index, 1);
+                if(allow_select==false && index!==-1){
+                    this.selected_data.splice(index,1);
                     this.select_data = this.selected_data.slice(0);
-                } else if ((index !== -1) && allowSelect == true) {
+                    return;
+                }
+                if (index !== -1) {
+                    div.setAttribute('checked', 'true');
                     this.selectToSelected(div, stack);
                     div.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
                     /*parent nodes*/
@@ -307,18 +305,29 @@ class ComponentCascadeDot {
     }
 
     select(element, stack) {
-        /*nodes*/
-        let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
-        this.selectToChildren(stack + 1, nodes);
-        /*current stack*/
         let checked = element.getAttribute('checked');
-        if (checked == 'false') {
-            this.selectActive(stack, element);
-        } else {
-            this.selectInactive(stack, element);
+        let end_node = false;
+        let nodes = JSON.parse(element.getAttribute('data-nodes-id'));
+        if (!Array.isArray(nodes) || (nodes.length == 0)) {
+            end_node = true;
         }
-        /*parent nodes*/
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
+        if(checked == 'false'){
+            /*nodes*/
+            this.selectToChildren(stack + 1, nodes,end_node);
+            /*current stack*/
+            this.selectActive(stack, element,end_node);
+            /*parent nodes*/
+            if (Array.isArray(parent_nodes)) {
+                for (let stack in parent_nodes) {
+                    this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1], parent_nodes[stack + 1]);
+                }
+            }
+            return;
+        }
+        /*current stack*/
+        this.selectInactive(stack, element);
+        /*parent nodes*/
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
                 this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1], parent_nodes[stack + 1]);
@@ -326,10 +335,11 @@ class ComponentCascadeDot {
         }
     }
 
-    selectActive(stack, element) {
+    selectActive(stack, element,end_node) {
         if (element.getAttribute('allow-select') == 'false') return;
         if (element.getAttribute('checked') == 'true') return;
-        this.selectToSelected(element, stack);
+        element.setAttribute('checked', 'true');
+        !end_node && this.selectToSelected(element, stack);
         this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
@@ -340,8 +350,10 @@ class ComponentCascadeDot {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
         });
-        element.querySelector('i') && element.removeChild(element.querySelector('i'));
-        element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
+        element.querySelector('i') != null &&element.removeChild(element.querySelector('i'));
+        if(end_node){
+            element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
+        }
     }
 
     selectInactive(stack, element) {
@@ -362,7 +374,6 @@ class ComponentCascadeDot {
     }
 
     selectToSelected(element, stack) {
-        element.setAttribute('checked', 'true');
         let div = document.createElement('div');
         div.className = 'dlp dlp-text dlp-label';
         let id = element.getAttribute('data-id');
@@ -404,27 +415,15 @@ class ComponentCascadeDot {
         });
     }
 
-    selectToChildren(stack, nodes) {
+    selectToChildren(stack, nodes,end_node) {
         if (stack > (this.dimensional_data.length - 1)) return;
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let children = [];
-        if (!Array.isArray(nodes) || (nodes.length == 0)) {
-            currentStackDocuments.forEach((D) => {
-                D.classList.add('dlp-label-silence');
-                let child = JSON.parse(D.getAttribute('data-nodes-id'));
-                if (Array.isArray(child)) {
-                    child.forEach((c) => {
-                        if (children.indexOf(child) == -1) {
-                            children.push(c);
-                        }
-                    });
-                }
-            });
-            this.selectToChildren(stack + 1, nodes);
-            return;
-        }
-
         currentStackDocuments.forEach((D) => {
+            if(end_node){
+                D.classList.add('dlp-label-silence');
+                return;
+            }
             if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) != -1) {
                 D.classList.remove('dlp-label-silence');
                 let child = JSON.parse(D.getAttribute('data-nodes-id'));

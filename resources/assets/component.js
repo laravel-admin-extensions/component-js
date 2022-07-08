@@ -239,13 +239,13 @@ class ComponentCascadeDot {
                 div.className = 'dlp dlp-text dlp-label';
                 div.textContent = v.val;
                 div.setAttribute('data-id', v.key);
-                div.setAttribute('checked', 'false');
                 div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
                 let allow_select = false;
                 if (v.hasOwnProperty('nodes')) {
                     let nodes = v.nodes.map((n) => n.key);
                     div.setAttribute('data-nodes-id', JSON.stringify(nodes));
                 }else {
+                    div.setAttribute('checked', 'false');
                     allow_select = true;
                 }
                 div.addEventListener('click', this.select.bind(this, div, stack));
@@ -312,32 +312,30 @@ class ComponentCascadeDot {
             end_node = true;
         }
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
-        if(checked == 'false'){
+        if(checked == 'false' || checked==null){
+            this.selectActive(stack, element,end_node,checked);
             /*nodes*/
             this.selectToChildren(stack + 1, nodes,end_node);
-            /*current stack*/
-            this.selectActive(stack, element,end_node);
             /*parent nodes*/
             if (Array.isArray(parent_nodes)) {
                 for (let stack in parent_nodes) {
-                    this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1], parent_nodes[stack + 1]);
+                    this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1]);
                 }
             }
             return;
         }
         /*current stack*/
-        this.selectInactive(stack, element,end_node);
+        this.selectInactive(stack, element,end_node,checked);
         /*parent nodes*/
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
-                this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1], parent_nodes[stack + 1]);
+                this.selectToParent(checked, parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1]);
             }
         }
     }
 
-    selectActive(stack, element,end_node) {
-        if (element.getAttribute('checked') == 'true') return;
-        element.setAttribute('checked', 'true');
+    selectActive(stack, element,end_node,checked) {
+        checked != null && element.setAttribute('checked', 'true');
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
         currentStackDocuments.forEach((D, index) => {
@@ -355,9 +353,8 @@ class ComponentCascadeDot {
         }
     }
 
-    selectInactive(stack, element,end_node) {
-        if (element.getAttribute('checked') == 'false') return;
-        element.setAttribute('checked', 'false');
+    selectInactive(stack, element,end_node,checked) {
+        checked != null && element.setAttribute('checked', 'false');
         let id = element.getAttribute('data-id');
         this.tagCal(parseInt(id), this.MODE.delete);
         element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
@@ -389,12 +386,12 @@ class ComponentCascadeDot {
         div.textContent = element.textContent;
         var object = this;
         div.addEventListener('click', function () {
-            object.selectInactive(stack, element);
+            object.selectInactive(stack, element,'true','true');
         });
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(checked, node, stack, parent_node, child_nodes) {
+    selectToParent(checked, node, stack, parent_node) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             if (checked == 'true') {

@@ -241,10 +241,10 @@ class ComponentCascadeDot {
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('data-parent-nodes-id', JSON.stringify(v.parentNodes));
                 let allow_select = false;
-                if (v.hasOwnProperty('nodes')) {
+                if (v.hasOwnProperty('nodes') && v.nodes.length>0) {
                     let nodes = v.nodes.map((n) => n.key);
                     div.setAttribute('data-nodes-id', JSON.stringify(nodes));
-                }else {
+                } else {
                     div.setAttribute('checked', 'false');
                     allow_select = true;
                 }
@@ -252,8 +252,8 @@ class ComponentCascadeDot {
                 stackDom.append(div);
                 /*selected append*/
                 let index = this.selected_data.indexOf(parseInt(v.key));
-                if(allow_select==false && index!==-1){
-                    this.selected_data.splice(index,1);
+                if (allow_select == false && index !== -1) {
+                    this.selected_data.splice(index, 1);
                     this.select_data = this.selected_data.slice(0);
                     return;
                 }
@@ -266,7 +266,7 @@ class ComponentCascadeDot {
                         let parent_nodes = v.parentNodes;
                         if (Array.isArray(parent_nodes)) {
                             parent_nodes.forEach((node, stack) => {
-                                this.selectToParent(node, stack, parent_nodes[stack - 1],'false');
+                                this.selectToParent(node, stack, parent_nodes[stack - 1], 'false');
                             });
                         }
                     });
@@ -295,13 +295,11 @@ class ComponentCascadeDot {
         } else {
             this.dimensional_data[dimension].push(data);
         }
-        if (!data.hasOwnProperty('nodes')) {
+        if (!data.hasOwnProperty('nodes') || !Array.isArray(data.nodes) || data.nodes.length == 0) {
             return;
         }
-        if (Array.isArray(data.nodes) == true && data.nodes.length > 0) {
-            dimension++;
-            this.makeDimensional(data.nodes, dimension, parentNodes);
-        }
+        dimension++;
+        this.makeDimensional(data.nodes, dimension, parentNodes);
     }
 
     select(element, stack) {
@@ -312,22 +310,22 @@ class ComponentCascadeDot {
             end_node = true;
         }
         let parent_nodes = JSON.parse(element.getAttribute('data-parent-nodes-id'));
-        if(checked == 'false' || checked==null){
-            this.selectActive(stack, element,end_node,checked);
-        }else {
+        if (checked == 'false' || checked == null) {
+            this.selectActive(stack, element, end_node, checked);
+        } else {
             this.selectInactive(stack, element, end_node, checked);
         }
         /*nodes*/
-        this.selectToChildren(stack + 1, nodes,end_node);
+        this.selectToChildren(stack + 1, nodes, end_node);
         /*parent nodes*/
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
-                this.selectToParent(parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1],checked);
+                this.selectToParent(parent_nodes[stack], parseInt(stack), parent_nodes[stack - 1], checked);
             }
         }
     }
 
-    selectActive(stack, element,end_node,checked) {
+    selectActive(stack, element, end_node, checked) {
         checked != null && element.setAttribute('checked', 'true');
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
@@ -338,15 +336,15 @@ class ComponentCascadeDot {
                 currentStackDocuments[index].classList.add('dlp-label-silence');
             }
         });
-        element.querySelector('i') != null &&element.removeChild(element.querySelector('i'));
-        if(end_node){
+        element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
+        if (end_node) {
             this.selectToSelected(element, stack);
             this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
             element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
         }
     }
 
-    selectInactive(stack, element,end_node,checked) {
+    selectInactive(stack, element, end_node, checked) {
         checked != null && element.setAttribute('checked', 'false');
         let id = element.getAttribute('data-id');
         this.tagCal(parseInt(id), this.MODE.delete);
@@ -379,12 +377,12 @@ class ComponentCascadeDot {
         div.textContent = element.textContent;
         var object = this;
         div.addEventListener('click', function () {
-            object.selectInactive(stack, element,'true','true');
+            object.selectInactive(stack, element, 'true', 'true');
         });
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(node, stack, parent_node,checked) {
+    selectToParent(node, stack, parent_node, checked) {
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             if (checked == 'true') {
@@ -412,12 +410,12 @@ class ComponentCascadeDot {
         });
     }
 
-    selectToChildren(stack, nodes,end_node) {
+    selectToChildren(stack, nodes, end_node) {
         if (stack > (this.dimensional_data.length - 1)) return;
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let children = [];
         currentStackDocuments.forEach((D) => {
-            if(end_node){
+            if (end_node) {
                 D.classList.add('dlp-label-silence');
                 return;
             }

@@ -326,7 +326,7 @@ class ComponentCascadeDot {
             return;
         }
         /*current stack*/
-        this.selectInactive(stack, element);
+        this.selectInactive(stack, element,end_node);
         /*parent nodes*/
         if (Array.isArray(parent_nodes)) {
             for (let stack in parent_nodes) {
@@ -336,11 +336,8 @@ class ComponentCascadeDot {
     }
 
     selectActive(stack, element,end_node) {
-        if (element.getAttribute('allow-select') == 'false') return;
         if (element.getAttribute('checked') == 'true') return;
         element.setAttribute('checked', 'true');
-        !end_node && this.selectToSelected(element, stack);
-        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
         currentStackDocuments.forEach((D, index) => {
@@ -352,17 +349,18 @@ class ComponentCascadeDot {
         });
         element.querySelector('i') != null &&element.removeChild(element.querySelector('i'));
         if(end_node){
+            this.selectToSelected(element, stack);
+            this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
             element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
         }
     }
 
-    selectInactive(stack, element) {
-        if (element.getAttribute('allow-select') == 'false') return;
+    selectInactive(stack, element,end_node) {
         if (element.getAttribute('checked') == 'false') return;
         element.setAttribute('checked', 'false');
         let id = element.getAttribute('data-id');
         this.tagCal(parseInt(id), this.MODE.delete);
-        element.removeChild(element.querySelector('i'));
+        element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
         for (let index in this.SELECTED_DOM.childNodes) {
             let D = this.SELECTED_DOM.childNodes[index];
             if ((D instanceof HTMLElement) && (D.getAttribute('data-id') == id)) {
@@ -371,6 +369,15 @@ class ComponentCascadeDot {
                 break;
             }
         }
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        let parentNode = JSON.parse(element.getAttribute('data-parent-nodes-id')).pop();
+        currentStackDocuments.forEach((D, index) => {
+            currentStackDocuments[index].classList.remove('dlp-label-silence');
+            let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
+            if (parents[stack - 1] != parentNode) {
+                currentStackDocuments[index].classList.add('dlp-label-silence');
+            }
+        });
     }
 
     selectToSelected(element, stack) {
@@ -398,7 +405,7 @@ class ComponentCascadeDot {
                             check = true;
                         }
                     });
-                    !check && D.querySelector('i').remove();
+                    !check && D.querySelector('i') != null && D.querySelector('i').remove();
                 }
                 return;
             }

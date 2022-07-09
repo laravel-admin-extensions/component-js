@@ -359,7 +359,8 @@ class ComponentCascadeDot {
         let parentNode = nodes[stack-1];
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
-            let parents = this.dimensional_data[stack][index].parentNodes;
+            let data = this.dimensional_data[stack][index];
+            let parents = data.parentNodes;
             if(checked === true || checked === undefined) {
                 let D = currentStackDocuments[index];
                 if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
@@ -370,11 +371,24 @@ class ComponentCascadeDot {
                     D.classList.remove('dlp-label-silence');
                 }
             }
-            if (checked === true && node === parseInt(D.getAttribute('data-id')) && !(D.querySelector('i') instanceof HTMLElement)) {
+            if (checked === true && node === data.key && data.mark !== true) {
+                data.mark = true;
                 D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
-            if(checked === false){
+            if(checked === false && node === data.key){
                 let nodes = this.dimensional_data[stack][index].nodes;
+                let cancel = true;
+                for (let x in this.dimensional_data[stack+1]){
+                    let d = this.dimensional_data[stack+1][x];
+                    if(nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)){
+                        cancel = false;
+                        break;
+                    }
+                }
+                if(cancel && (D.querySelector('i') instanceof HTMLElement)){
+                    data.mark = false;
+                    D.querySelector('i').remove();
+                }
             }
         });
         if(nodes.length>0){

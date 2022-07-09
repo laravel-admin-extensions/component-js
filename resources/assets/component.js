@@ -307,6 +307,7 @@ class ComponentCascadeDot {
                 }
             });
             this.tagCal(id, this.MODE.insert);
+            element.classList.remove('dlp-label-silence');
             element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
             element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
             this.selectToChildren(stack + 1, data.nodes);
@@ -371,7 +372,7 @@ class ComponentCascadeDot {
                 D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
             if(checked === false){
-
+                let nodes = this.dimensional_data[stack][index].nodes;
             }
         });
         if(nodes.length>0){

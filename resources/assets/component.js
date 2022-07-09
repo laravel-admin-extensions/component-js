@@ -364,6 +364,8 @@ class ComponentCascadeDot {
                 let D = currentStackDocuments[index];
                 if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                     D.classList.add('dlp-label-silence');
+                }else if(parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node){
+                    D.classList.add('dlp-label-silence');
                 }else {
                     D.classList.remove('dlp-label-silence');
                 }

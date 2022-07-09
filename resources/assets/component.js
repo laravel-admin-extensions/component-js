@@ -367,7 +367,7 @@ class ComponentCascadeDot {
                     D.classList.remove('dlp-label-silence');
                 }
             }
-            if (checked === true && node === parseInt(D.getAttribute('data-id'))) {
+            if (checked === true && node === parseInt(D.getAttribute('data-id')) && !(D.querySelector('i') instanceof HTMLElement)) {
                 D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
             if(checked === false){

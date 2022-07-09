@@ -261,7 +261,6 @@ class ComponentCascadeDot {
             });
             this.CONTENT_DOM.append(stackDom);
         }
-        console.log(this.dimensional_data)
         this.STACKS = this.CONTENT_DOM.childNodes;
         return this;
     }

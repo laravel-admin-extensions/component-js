@@ -1,4 +1,4 @@
-var _componentSvg = {
+const _componentSvg = {
     'trash': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
   <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
@@ -38,7 +38,7 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
         token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     }
     xhr.setRequestHeader("X-CSRF-TOKEN", token);
-    if (method == 'GET') {
+    if (method === 'GET') {
         xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
         xhr.responseType = "text";
         xhr.send(null);
@@ -48,7 +48,7 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
         xhr.send(data);
     }
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == xhr.DONE && xhr.status == 200) {
+        if (xhr.readyState === xhr.DONE && xhr.status === 200) {
             var response = xhr.response;
             callback(response);
         }
@@ -107,7 +107,7 @@ class ComponentDot {
         let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
-            if (selected.indexOf(parseInt(i)) != -1) {
+            if (selected.indexOf(parseInt(i)) !== -1) {
                 selected_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
                 continue;
             }
@@ -143,34 +143,34 @@ class ComponentDot {
 
     tagCal(cdom, operate) {
         let id = parseInt(cdom.getAttribute('data-id'));
-        if (operate == this.MODE.insert) {
-            if (this.select_data.indexOf(id) == -1) {
+        if (operate === this.MODE.insert) {
+            if (this.select_data.indexOf(id) === -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
             }
-            if (this.selected_data.indexOf(id) == -1 && this.insert_data.indexOf(id) == -1) {
+            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                 this.insert_data.push(id);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
             let index = this.delete_data.indexOf(id);
-            if (index != -1) {
+            if (index !== -1) {
                 this.delete_data.splice(index, 1);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
             return;
         }
-        if (operate == this.MODE.delete) {
+        if (operate === this.MODE.delete) {
             let index = this.select_data.indexOf(id);
-            if (index != -1) {
+            if (index !== -1) {
                 this.select_data.splice(index, 1);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
             }
-            if (this.selected_data.indexOf(id) != -1 && this.delete_data.indexOf(id) == -1) {
+            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                 this.delete_data.push(id);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
             index = this.insert_data.indexOf(id);
-            if (index != -1) {
+            if (index !== -1) {
                 this.insert_data.splice(index, 1);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
@@ -181,11 +181,11 @@ class ComponentDot {
         var object = this;
         document.querySelector(`#${this.name} .dot-search`).addEventListener('input', function () {
             let search = this.value;
-            if (search == '') {
+            if (search === '') {
                 return;
             }
             for (let element of object.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-                if (element.innerText.indexOf(search) != -1) {
+                if (element.innerText.indexOf(search) !== -1) {
                     object.CONTENT_DOM.insertBefore(element, object.CONTENT_DOM.firstChild);
                 }
             }
@@ -332,10 +332,8 @@ class ComponentCascadeDot {
             });
             this.selectToChildren(stack + 1, data.nodes);
         }
-        if (Array.isArray(data.parentNodes)) {
-            for (let stack in data.parentNodes) {
-                this.selectToParent(data.parentNodes[stack], parseInt(stack), data.parentNodes[stack - 1]);
-            }
+        if (Array.isArray(data.parentNodes) && data.parentNodes.length>0) {
+            this.selectToParent(data.parentNodes);
         }
     }
 
@@ -352,29 +350,19 @@ class ComponentCascadeDot {
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(node, stack, parent_node, checked) {
+    selectToParent(nodes) {
+        let stack = nodes.length - 1;
+        let node = nodes.pop();
+        let parentNode = nodes[stack-1];
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
-            /*if (checked == 'true') {
-                if (node == parseInt(D.getAttribute('data-id'))) {
-                    let check = false;
-                    this.STACKS[stack + 1].childNodes.forEach((D) => {
-                        if (D.querySelector('i')) {
-                            check = true;
-                        }
-                    });
-                    !check && D.querySelector('i') != null && D.querySelector('i').remove();
-                }
-                return;
-            }*/
-            let parents = JSON.parse(D.getAttribute('data-parent-nodes-id'));
+            let parents = this.dimensional_data[stack][index].parentNodes;
             currentStackDocuments[index].classList.remove('dlp-label-silence');
-            if (parents.length > 0 && (parents[stack - 1] != parent_node)) {
+            if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                 let D = currentStackDocuments[index];
                 D.classList.add('dlp-label-silence');
             }
-            if (node == parseInt(D.getAttribute('data-id'))) {
-                if (D.getAttribute('checked') == 'true' || (D.querySelector('i') instanceof HTMLElement)) return;
+            if (node === parseInt(D.getAttribute('data-id'))) {
                 D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
         });
@@ -405,34 +393,34 @@ class ComponentCascadeDot {
     }
 
     tagCal(id, operate) {
-        if (operate == this.MODE.insert) {
-            if (this.select_data.indexOf(id) == -1) {
+        if (operate === this.MODE.insert) {
+            if (this.select_data.indexOf(id) === -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
             }
-            if (this.selected_data.indexOf(id) == -1 && this.insert_data.indexOf(id) == -1) {
+            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                 this.insert_data.push(id);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
             let index = this.delete_data.indexOf(id);
-            if (index != -1) {
+            if (index !== -1) {
                 this.delete_data.splice(index, 1);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
             return;
         }
-        if (operate == this.MODE.delete) {
+        if (operate === this.MODE.delete) {
             let index = this.select_data.indexOf(id);
-            if (index != -1) {
+            if (index !== -1) {
                 this.select_data.splice(index, 1);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
             }
-            if (this.selected_data.indexOf(id) != -1 && this.delete_data.indexOf(id) == -1) {
+            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                 this.delete_data.push(id);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
             index = this.insert_data.indexOf(id);
-            if (index != -1) {
+            if (index !== -1) {
                 this.insert_data.splice(index, 1);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }

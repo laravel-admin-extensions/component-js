@@ -330,10 +330,12 @@ class ComponentCascadeDot {
                     currentStackDocuments[index].classList.add('dlp-label-silence');
                 }
             });
+            element.classList.remove('dlp-label-silence');
             this.selectToChildren(stack + 1, data.nodes);
         }
         if (Array.isArray(data.parentNodes) && data.parentNodes.length>0) {
-            this.selectToParent(data.parentNodes);
+            let parentNodes = data.parentNodes.slice(0);
+            this.selectToParent(parentNodes,data.checked);
         }
     }
 
@@ -350,22 +352,31 @@ class ComponentCascadeDot {
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(nodes) {
+    selectToParent(nodes,checked) {
         let stack = nodes.length - 1;
         let node = nodes.pop();
         let parentNode = nodes[stack-1];
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             let parents = this.dimensional_data[stack][index].parentNodes;
-            currentStackDocuments[index].classList.remove('dlp-label-silence');
-            if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
+            if(checked === true || checked === undefined) {
                 let D = currentStackDocuments[index];
-                D.classList.add('dlp-label-silence');
+                if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
+                    D.classList.add('dlp-label-silence');
+                }else {
+                    D.classList.remove('dlp-label-silence');
+                }
             }
-            if (node === parseInt(D.getAttribute('data-id'))) {
+            if (checked === true && node === parseInt(D.getAttribute('data-id'))) {
                 D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
+            if(checked === false){
+
+            }
         });
+        if(nodes.length>0){
+            this.selectToParent(nodes,checked);
+        }
     }
 
     selectToChildren(stack, nodes) {

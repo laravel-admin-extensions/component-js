@@ -54,7 +54,7 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
         }
     };
     xhr.onerror = function (e) {
-        console.log(e);
+        console.error(e);
     };
 }
 

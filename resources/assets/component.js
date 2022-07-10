@@ -100,6 +100,7 @@ class ComponentDot {
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
             element.addEventListener('click', this.tagSelect.bind(this, element), false);
         }
+
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => this.search(search));
     }
@@ -177,9 +178,11 @@ class ComponentDot {
     search(search) {
         if (search.value === '') {
             if (this.SELECT_COVER_DOM instanceof HTMLElement) {
+                let elements = [];
                 this.SELECT_COVER_DOM.childNodes.forEach((D) => {
-                    this.CONTENT_DOM.appendChild(D);
+                    elements.push(D);
                 });
+                this.CONTENT_DOM.append(...elements);
                 this.SELECT_COVER_DOM.remove();
                 this.SELECT_COVER_DOM = null;
             }
@@ -190,15 +193,16 @@ class ComponentDot {
             this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
             this.CONTENT_DOM.appendChild(this.SELECT_COVER_DOM);
         }
+        let elements = [];
         for (let element of this.CONTENT_DOM.childNodes) {
             if (element.className.indexOf('dlp-label') === -1) {
                 continue;
             }
             if (element.innerText.indexOf(search.value) !== -1) {
-                this.SELECT_COVER_DOM.appendChild(element);
+                elements.push(element);
             }
         }
-
+        this.SELECT_COVER_DOM.append(...elements);
     }
 }
 

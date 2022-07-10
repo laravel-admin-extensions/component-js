@@ -374,6 +374,7 @@ class ComponentCascadeDot {
         let node = nodes.pop();
         let parentNode = nodes[stack - 1];
         let currentStackDocuments = this.STACKS[stack].childNodes;
+        let to_first_index = null;
         currentStackDocuments.forEach((D, index) => {
             let data = this.dimensional_data[stack][index];
             let parents = data.parentNodes;
@@ -385,6 +386,7 @@ class ComponentCascadeDot {
                     D.classList.add('dlp-label-silence');
                 } else {
                     D.classList.remove('dlp-label-silence');
+                    if (to_first_index === null)to_first_index=index;
                 }
             }
             if (checked === true && node === data.key && data.mark !== true) {
@@ -406,6 +408,7 @@ class ComponentCascadeDot {
                 }
             }
         });
+        if(to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index*28;
         if (nodes.length > 0) {
             this.selectToParent(nodes, checked);
         }
@@ -415,6 +418,7 @@ class ComponentCascadeDot {
         if (stack > (this.dimensional_data.length - 1)) return;
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let children = [];
+        let to_first_index = null;
         currentStackDocuments.forEach((D, index) => {
             if (nodes === null) {
                 D.classList.add('dlp-label-silence');
@@ -428,10 +432,12 @@ class ComponentCascadeDot {
                         if (children.indexOf(child) === -1) children.push(c);
                     });
                 }
+                if (to_first_index === null)to_first_index=index;
             } else {
                 D.classList.add('dlp-label-silence');
             }
         });
+        if(to_first_index!==null)this.STACKS[stack].scrollTop = to_first_index*28;
         this.selectToChildren(stack + 1, children);
     }
 

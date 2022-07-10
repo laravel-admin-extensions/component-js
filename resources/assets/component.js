@@ -274,9 +274,9 @@ class ComponentCascadeDot {
             }
             return;
         }
-        let parent = parentNodes.slice(0);
-        parent.pop();
-        data.parentNodes = parent;
+        let parents = parentNodes.slice(0);
+        parents.pop();
+        data.parentNodes = parents;
         if (!Array.isArray(this.dimensional_data[dimension])) {
             this.dimensional_data[dimension] = [data];
         } else {

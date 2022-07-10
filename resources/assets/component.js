@@ -100,7 +100,8 @@ class ComponentDot {
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
             element.addEventListener('click', this.tagSelect.bind(this, element), false);
         }
-        this.search();
+        let search = document.querySelector(`#${this.name} .dot-search`);
+        search.addEventListener('input', () => this.search(search));
     }
 
     make(selected, select) {
@@ -125,24 +126,20 @@ class ComponentDot {
     }
 
     tagSelect(element) {
-        let cdom = element.cloneNode(true);
-        cdom.addEventListener('click', this.tagCancel.bind(this, cdom), false);
-        this.SELECTED_DOM.appendChild(cdom);
-        element.remove();
-        this.tagCal(cdom, this.MODE.insert);
+        element.addEventListener('click', this.tagCancel.bind(this, element), false);
+        this.SELECTED_DOM.appendChild(element);
+        this.tagCal(element, this.MODE.insert);
         this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
     }
 
     tagCancel(element) {
-        let cdom = element.cloneNode(true);
-        cdom.addEventListener('click', this.tagSelect.bind(this, cdom), false);
-        this.CONTENT_DOM.appendChild(cdom);
-        element.remove();
-        this.tagCal(cdom, this.MODE.delete);
+        element.addEventListener('click', this.tagSelect.bind(this, element), false);
+        this.CONTENT_DOM.appendChild(element);
+        this.tagCal(element, this.MODE.delete);
     }
 
-    tagCal(cdom, operate) {
-        let id = parseInt(cdom.getAttribute('data-id'));
+    tagCal(element, operate) {
+        let id = parseInt(element.getAttribute('data-id'));
         if (operate === this.MODE.insert) {
             if (this.select_data.indexOf(id) === -1) {
                 this.select_data.push(id);
@@ -177,19 +174,31 @@ class ComponentDot {
         }
     }
 
-    search() {
-        var object = this;
-        document.querySelector(`#${this.name} .dot-search`).addEventListener('input', function () {
-            let search = this.value;
-            if (search === '') {
-                return;
+    search(search) {
+        if (search.value === '') {
+            if (this.SELECT_COVER_DOM instanceof HTMLElement) {
+                this.SELECT_COVER_DOM.childNodes.forEach((D) => {
+                    this.CONTENT_DOM.appendChild(D);
+                });
+                this.SELECT_COVER_DOM.remove();
+                this.SELECT_COVER_DOM = null;
             }
-            for (let element of object.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-                if (element.innerText.indexOf(search) !== -1) {
-                    object.CONTENT_DOM.insertBefore(element, object.CONTENT_DOM.firstChild);
-                }
+            return;
+        }
+        if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
+            this.SELECT_COVER_DOM = document.createElement('div');
+            this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
+            this.CONTENT_DOM.appendChild(this.SELECT_COVER_DOM);
+        }
+        for (let element of this.CONTENT_DOM.childNodes) {
+            if (element.className.indexOf('dlp-label') === -1) {
+                continue;
             }
-        }, false);
+            if (element.innerText.indexOf(search.value) !== -1) {
+                this.SELECT_COVER_DOM.appendChild(element);
+            }
+        }
+
     }
 }
 
@@ -235,9 +244,9 @@ class ComponentCascadeDot {
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
             data.forEach((v, k) => {
-                if(Array.isArray(v.nodes) && v.nodes.length !==0) {
+                if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
                     v.nodes = v.nodes.map((N) => N.key);
-                }else {
+                } else {
                     v.nodes = null;
                     v.checked = false;
                 }
@@ -301,7 +310,7 @@ class ComponentCascadeDot {
             currentStackDocuments.forEach((D, index) => {
                 if (this.dimensional_data[stack][index].parentNodes.indexOf(parentNode) !== -1) {
                     currentStackDocuments[index].classList.remove('dlp-label-silence');
-                }else {
+                } else {
                     currentStackDocuments[index].classList.add('dlp-label-silence');
                 }
             });
@@ -310,8 +319,8 @@ class ComponentCascadeDot {
             element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
             element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
             this.selectToChildren(stack + 1, data.nodes);
-            this.selectToSelected(element,stack);
-        } else if(data.checked === true){
+            this.selectToSelected(element, stack);
+        } else if (data.checked === true) {
             data.checked = false;
             this.tagCal(id, this.MODE.delete);
             element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
@@ -322,20 +331,20 @@ class ComponentCascadeDot {
                     break;
                 }
             }
-        }else {
+        } else {
             currentStackDocuments.forEach((D, index) => {
                 if (this.dimensional_data[stack][index].parentNodes.indexOf(parentNode) !== -1) {
                     currentStackDocuments[index].classList.remove('dlp-label-silence');
-                }else {
+                } else {
                     currentStackDocuments[index].classList.add('dlp-label-silence');
                 }
             });
             element.classList.remove('dlp-label-silence');
             this.selectToChildren(stack + 1, data.nodes);
         }
-        if (Array.isArray(data.parentNodes) && data.parentNodes.length>0) {
+        if (Array.isArray(data.parentNodes) && data.parentNodes.length > 0) {
             let parentNodes = data.parentNodes.slice(0);
-            this.selectToParent(parentNodes,data.checked);
+            this.selectToParent(parentNodes, data.checked);
         }
     }
 
@@ -347,26 +356,26 @@ class ComponentCascadeDot {
         div.textContent = element.textContent;
         var object = this;
         div.addEventListener('click', function () {
-            object.select(element,stack);
+            object.select(element, stack);
         });
         this.SELECTED_DOM.append(div);
     }
 
-    selectToParent(nodes,checked) {
+    selectToParent(nodes, checked) {
         let stack = nodes.length - 1;
         let node = nodes.pop();
-        let parentNode = nodes[stack-1];
+        let parentNode = nodes[stack - 1];
         let currentStackDocuments = this.STACKS[stack].childNodes;
         currentStackDocuments.forEach((D, index) => {
             let data = this.dimensional_data[stack][index];
             let parents = data.parentNodes;
-            if(checked === true || checked === undefined) {
+            if (checked === true || checked === undefined) {
                 let D = currentStackDocuments[index];
                 if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                     D.classList.add('dlp-label-silence');
-                }else if(parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node){
+                } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
                     D.classList.add('dlp-label-silence');
-                }else {
+                } else {
                     D.classList.remove('dlp-label-silence');
                 }
             }
@@ -374,24 +383,24 @@ class ComponentCascadeDot {
                 data.mark = true;
                 D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
             }
-            if(checked === false && node === data.key){
+            if (checked === false && node === data.key) {
                 let nodes = this.dimensional_data[stack][index].nodes;
                 let cancel = true;
-                for (let x in this.dimensional_data[stack+1]){
-                    let d = this.dimensional_data[stack+1][x];
-                    if(nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)){
+                for (let x in this.dimensional_data[stack + 1]) {
+                    let d = this.dimensional_data[stack + 1][x];
+                    if (nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)) {
                         cancel = false;
                         break;
                     }
                 }
-                if(cancel && (D.querySelector('i') instanceof HTMLElement)){
+                if (cancel && (D.querySelector('i') instanceof HTMLElement)) {
                     data.mark = false;
                     D.querySelector('i').remove();
                 }
             }
         });
-        if(nodes.length>0){
-            this.selectToParent(nodes,checked);
+        if (nodes.length > 0) {
+            this.selectToParent(nodes, checked);
         }
     }
 
@@ -399,8 +408,8 @@ class ComponentCascadeDot {
         if (stack > (this.dimensional_data.length - 1)) return;
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let children = [];
-        currentStackDocuments.forEach((D,index) => {
-            if(nodes===null){
+        currentStackDocuments.forEach((D, index) => {
+            if (nodes === null) {
                 D.classList.add('dlp-label-silence');
                 return;
             }

@@ -324,9 +324,8 @@ class ComponentCascadeDot {
             data.checked = false;
             this.tagCal(id, this.MODE.delete);
             element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
-            for (let index in this.SELECTED_DOM.childNodes) {
-                let D = this.SELECTED_DOM.childNodes[index];
-                if ((D instanceof HTMLElement) && (D.getAttribute('data-id') == id)) {
+            for (let D of this.SELECTED_DOM.childNodes) {
+                if (parseInt(D.getAttribute('data-id')) === id) {
                     D.remove();
                     break;
                 }
@@ -386,8 +385,7 @@ class ComponentCascadeDot {
             if (checked === false && node === data.key) {
                 let nodes = this.dimensional_data[stack][index].nodes;
                 let cancel = true;
-                for (let x in this.dimensional_data[stack + 1]) {
-                    let d = this.dimensional_data[stack + 1][x];
+                for (let d of this.dimensional_data[stack + 1]) {
                     if (nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)) {
                         cancel = false;
                         break;

@@ -270,6 +270,11 @@ class ComponentCascadeDot {
                 }
                 if (index !== -1) {
                     v.checked = true;
+                    let E = new Event('click');
+                    setTimeout(()=>{
+                        div.click();
+                        div.dispatchEvent(E);
+                    });
                 }
             });
             this.CONTENT_DOM.append(stackDom);

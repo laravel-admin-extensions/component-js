@@ -82,7 +82,7 @@
 .dot-selected{width: 100%}
 .dot-selected>.dlp-label{background: white}
 .dot-select{padding: 5px 0 5px 0;background: rgb(43 43 43);border-radius: 0 0 5px 5px;position: relative;}
-.dot-select-cover{position: absolute;width: 100%;height: calc(100% - 10px);top:0;left:0;z-index: 1050;}
+.dot-select-cover{position: absolute;top:0;left:0;bottom:0;right:0;z-index: 1050;}
 .dot-select-cascade{
     display: flex;
     flex-direction: row;

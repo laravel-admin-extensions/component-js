@@ -85,7 +85,7 @@ class ComponentDot {
         this.name = name;
         this.DOM = document.getElementById(name);
         if (!Array.isArray(selected) || !Array.isArray(select)) {
-            console.error('Dot param selected is not array!');
+            console.error('Dot param selected and select must be array!');
             return;
         }
         this.make(selected, select);
@@ -222,7 +222,7 @@ class ComponentCascadeDot {
         this.name = name;
         this.DOM = document.getElementById(name);
         if (!Array.isArray(selected) || !Array.isArray(select)) {
-            console.error('CascadeDot param selected is not array!');
+            console.error('CascadeDot param selected and select must be array!');
             return;
         }
         this.selected_data = selected;

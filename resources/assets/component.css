@@ -88,6 +88,10 @@
     flex-direction: row;
     align-items:stretch;
 }
+.dot-select-cascade>.dot-select-cover{
+    display: flex;
+    flex-direction: row;
+    align-items:stretch;}
 .dot-cascade-stack{
     width: 100%;
     padding: 2px 0 2px 5px;

@@ -30,7 +30,7 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
 
 function _componentRequest(url, method = "GET", data = {}, callback = function () {
 }) {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.timeout = 30000;
     let token = '';
@@ -49,7 +49,7 @@ function _componentRequest(url, method = "GET", data = {}, callback = function (
     }
     xhr.onreadystatechange = function () {
         if (xhr.readyState === xhr.DONE && xhr.status === 200) {
-            var response = xhr.response;
+            let response = xhr.response;
             callback(response);
         }
     };
@@ -192,6 +192,12 @@ class ComponentDot {
             this.SELECT_COVER_DOM = document.createElement('div');
             this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
             this.CONTENT_DOM.appendChild(this.SELECT_COVER_DOM);
+        } else {
+            let elements = [];
+            this.SELECT_COVER_DOM.childNodes.forEach((D) => {
+                elements.push(D);
+            });
+            this.CONTENT_DOM.append(...elements);
         }
         let elements = [];
         for (let element of this.CONTENT_DOM.childNodes) {
@@ -225,6 +231,8 @@ class ComponentCascadeDot {
         this.delete_data = [];
         this.make().makeSelect(select);
         this.selectInputDOM.value = JSON.stringify(this.select_data);
+        let search = document.querySelector(`#${this.name} .dot-search`);
+        search.addEventListener('input', () => this.search(search));
     }
 
     make() {
@@ -271,7 +279,7 @@ class ComponentCascadeDot {
                 if (index !== -1) {
                     v.checked = true;
                     let E = new Event('click');
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         div.click();
                         div.dispatchEvent(E);
                     });
@@ -354,6 +362,7 @@ class ComponentCascadeDot {
             let parentNodes = data.parentNodes.slice(0);
             this.selectToParent(parentNodes, data.checked);
         }
+        this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
     }
 
     selectToSelected(element, stack) {
@@ -386,7 +395,7 @@ class ComponentCascadeDot {
                     D.classList.add('dlp-label-silence');
                 } else {
                     D.classList.remove('dlp-label-silence');
-                    if (to_first_index === null)to_first_index=index;
+                    if (to_first_index === null) to_first_index = index;
                 }
             }
             if (checked === true && node === data.key && data.mark !== true) {
@@ -408,7 +417,7 @@ class ComponentCascadeDot {
                 }
             }
         });
-        if(to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index*28;
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 28;
         if (nodes.length > 0) {
             this.selectToParent(nodes, checked);
         }
@@ -432,12 +441,12 @@ class ComponentCascadeDot {
                         if (children.indexOf(child) === -1) children.push(c);
                     });
                 }
-                if (to_first_index === null)to_first_index=index;
+                if (to_first_index === null) to_first_index = index;
             } else {
                 D.classList.add('dlp-label-silence');
             }
         });
-        if(to_first_index!==null)this.STACKS[stack].scrollTop = to_first_index*28;
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 28;
         this.selectToChildren(stack + 1, children);
     }
 
@@ -474,6 +483,68 @@ class ComponentCascadeDot {
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
         }
+    }
+
+    search(search) {
+        if (search.value === '') {
+            if (this.SELECT_COVER_DOM instanceof HTMLElement) {
+                this.SELECT_COVER_DOM.remove();
+                this.SELECT_COVER_DOM = null;
+                this.COVER_STACK_HASH_DOM = [];
+            }
+            return;
+        }
+        if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
+            this.COVER_STACK_HASH_DOM = [];
+            this.SELECT_COVER_DOM = document.createElement('div');
+            this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
+            for (let stack = 1; stack <= this.dimensional_data.length; stack++) {
+                let div = document.createElement('div');
+                div.className = 'dot-cascade-stack dlp-scroll';
+                this.SELECT_COVER_DOM.append(div);
+            }
+            this.CONTENT_DOM.appendChild(this.SELECT_COVER_DOM);
+        }
+        this.dimensional_data.forEach((data, stack) => {
+            data.forEach((d, k) => {
+                if (d.val.indexOf(search.value) !== -1 &&
+                    (!Array.isArray(this.COVER_STACK_HASH_DOM[stack]) || this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) === -1)) {
+                    let div = document.createElement('div');
+                    div.className = 'dlp dlp-text dlp-label';
+                    div.textContent = d.val;
+                    div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
+                    this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
+                    if(!Array.isArray(this.COVER_STACK_HASH_DOM[stack])){
+                        this.COVER_STACK_HASH_DOM[stack] = [d.key];
+                        return;
+                    }
+                    this.COVER_STACK_HASH_DOM[stack].push(d.key);
+                }
+            });
+        });
+    }
+
+    searchCoverClick(stack, data, dom) {
+        if (data.nodes !== null) {
+            let nextStack = stack +1;
+            this.dimensional_data[nextStack].forEach((d,k) => {
+                if (data.nodes.indexOf(d.key) !== -1 &&
+                    (!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack]) || this.COVER_STACK_HASH_DOM[nextStack].indexOf(d.key) === -1)) {
+                    let div = document.createElement('div');
+                    div.className = 'dlp dlp-text dlp-label';
+                    div.textContent = d.val;
+                    div.addEventListener('click', () => this.searchCoverClick(nextStack, d, this.STACKS[nextStack].childNodes[k]));
+                    this.SELECT_COVER_DOM.childNodes[nextStack].appendChild(div);
+                    if(!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack])){
+                        this.COVER_STACK_HASH_DOM[nextStack] = [d.key];
+                        return;
+                    }
+                    this.COVER_STACK_HASH_DOM[nextStack].push(d.key);
+                }
+            });
+            return;
+        }
+        (dom instanceof HTMLElement) && dom.click();
     }
 }
 

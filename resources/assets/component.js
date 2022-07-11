@@ -84,8 +84,12 @@ class ComponentDot {
     constructor(name, selected, select) {
         this.name = name;
         this.DOM = document.getElementById(name);
-        if (!Array.isArray(selected) || !Array.isArray(select)) {
-            console.error('Dot param selected and select must be array!');
+        if (!Array.isArray(selected)) {
+            console.error('Dot param selected must be array!');
+            return;
+        }
+        if(Array.isArray(select) || typeof select !== 'object'){
+            console.error('Dot param select must be object such as {key:val,key2:val2,...} !');
             return;
         }
         this.make(selected, select);
@@ -417,7 +421,7 @@ class ComponentCascadeDot {
                 }
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 28;
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
         if (nodes.length > 0) {
             this.selectToParent(nodes, checked);
         }
@@ -446,7 +450,7 @@ class ComponentCascadeDot {
                 D.classList.add('dlp-label-silence');
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 28;
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
         this.selectToChildren(stack + 1, children);
     }
 

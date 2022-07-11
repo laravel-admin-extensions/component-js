@@ -15,7 +15,7 @@
     color: rgba(0,0,0,.6);
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
     margin: 0 0.25em 0;
-    padding: 0.2em 0.4em 0.2em;
+    padding: 2px 4px 2px 4px;
     text-transform: none;
     text-shadow: none;
     line-height: 1em;
@@ -82,7 +82,7 @@
 .dot-selected{width: 100%}
 .dot-selected>.dlp-label{background: white}
 .dot-select{padding: 5px 0 5px 0;background: rgb(43 43 43);border-radius: 0 0 5px 5px;position: relative;}
-.dot-select-cover{position: absolute;width: 100%;height: calc(100% - 10px);top:0;left:0;z-index: 9999;}
+.dot-select-cover{position: absolute;width: 100%;height: calc(100% - 10px);top:0;left:0;z-index: 1050;}
 .dot-select-cascade{
     display: flex;
     flex-direction: row;
@@ -103,7 +103,6 @@
     display: block;
     max-width: unset;
     min-width: unset;
-    height: 20px;
     line-height: 20px;
     margin-bottom: 3px;
     position: relative;
@@ -170,7 +169,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 9999;
+    z-index: 1050;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
     outline: 0;

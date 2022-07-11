@@ -84,7 +84,7 @@ class ComponentDot {
     constructor(name, selected, select) {
         this.name = name;
         this.DOM = document.getElementById(name);
-        if (!Array.isArray(selected)) {
+        if (!Array.isArray(selected) || !Array.isArray(select)) {
             console.error('Dot param selected is not array!');
             return;
         }
@@ -218,10 +218,10 @@ class ComponentCascadeDot {
         delete: 'delete'
     };
 
-    constructor(name, selected, select, options) {
+    constructor(name, selected, select) {
         this.name = name;
         this.DOM = document.getElementById(name);
-        if (!Array.isArray(selected)) {
+        if (!Array.isArray(selected) || !Array.isArray(select)) {
             console.error('CascadeDot param selected is not array!');
             return;
         }

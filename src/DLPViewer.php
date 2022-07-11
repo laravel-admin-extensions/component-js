@@ -21,7 +21,7 @@ class DLPViewer
      * @param string $column 数据字段名
      * @param string $title 名称
      * @param array $selected 已选择选项 [value1,value2,...]
-     * @param array $select 全部选项  [[value=>text],[value=>text]...]
+     * @param array $select 全部选项  [[value1=>text1],[value2=>text2]...]
      * @param array $settings 配置项[setting,...]
      * settings.strict      boolean json严格模式消除json敏感字符问题
      * settings.width       string 容器宽度设置
@@ -41,6 +41,40 @@ class DLPViewer
         }
         Admin::script(<<<EOF
 new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
+EOF
+        );
+        $form->html("<div id='{$column}' style='width:{$width};height: {$height};'></div>", $title);
+    }
+
+    /**
+     * 维度.点
+     * @param Form $form
+     * @param string $column 数据字段名
+     * @param string $title 名称
+     * @param array $selected 已选择选项 [value1,value2,...]
+     * @param array $select 全部选项  [[key=>key1,val=>value1,nodes=>[...]],...]
+     * select.node.key      integer 键
+     * select.node.val      string  值
+     * select.node.nodes    array   子节点[node,node,...]
+     * @param array $settings 配置项[setting,...]
+     * settings.strict      boolean json严格模式消除json敏感字符问题
+     * settings.width       string 容器宽度设置
+     * settings.height      string 容器高度设置
+     */
+    public static function makeComponentCascadeDot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
+    {
+        $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
+        $width = isset($settings['width']) ? $settings['width'] : '100%';
+        $height = isset($settings['height']) ? $settings['height'] : '200px';
+        if ($strict) {
+            $selected = DLPHelper::safeJson($selected);
+            $select = DLPHelper::safeJson($select);
+        } else {
+            $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        }
+        Admin::script(<<<EOF
+new ComponentCascadeDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
         );
         $form->html("<div id='{$column}' style='width:{$width};height: {$height};'></div>", $title);

@@ -83,7 +83,7 @@ class DLPHelper
             if (is_array($d)) {
                 self::recursiveJsonArray($d);
             } else {
-                $d = str_replace(['"', '\'', ':', '\\', '{', '}', '[', ']','`'], '', $d);
+                $d = str_replace(['"', '\'', '\\'], '', $d);
             }
         }
     }

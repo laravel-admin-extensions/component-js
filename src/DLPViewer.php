@@ -27,7 +27,7 @@ class DLPViewer
      * settings.width       string 容器宽度设置
      * settings.height      string 容器高度设置
      */
-    public static function makeComponentDot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
+    public static function dot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
@@ -61,7 +61,7 @@ EOF
      * settings.width       string 容器宽度设置
      * settings.height      string 容器高度设置
      */
-    public static function makeComponentCascadeDot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
+    public static function cascadeDot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
@@ -102,7 +102,7 @@ EOF
      *              'delete'=>true     删除操作
      *          ]
      */
-    public static function makeComponentLine(Form $form, string $column, string $title, array $data, array $settings = [])
+    public static function line(Form $form, string $column, string $title, array $data, array $settings = [])
     {
         $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
@@ -136,7 +136,7 @@ EOF
      *  settings.options        弹窗配置项                        array(选填)
      *           options = ['W'=>0.8,'H'=>0.8]  W宽 H高
      */
-    public static function makeHeadPlaneAction(Grid $grid, array $settings = [])
+    public static function headPlaneAction(Grid $grid, array $settings = [])
     {
         $script = '';
         foreach ($settings as $setting) {
@@ -189,7 +189,7 @@ EOF;
      *           options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
-    public static function makeRowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
+    public static function rowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
     {
         $script = '';
         foreach ($settings as $setting) {
@@ -249,7 +249,7 @@ EOF;
      *           options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
-    public static function _makeRowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
+    public static function _rowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
     {
         $script = '';
         foreach ($settings as $setting) {

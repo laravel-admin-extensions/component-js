@@ -1,4 +1,4 @@
-const _componentSvg = {
+const _component = {
     'trash': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
   <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
@@ -25,55 +25,51 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
     'check_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
-</svg>`
-};
-
-function _componentRequest(url, method = "GET", data = {}, callback = function () {
-}) {
-    let xhr = new XMLHttpRequest();
-    xhr.open(method, url, true);
-    xhr.timeout = 30000;
-    let token = '';
-    if (document.querySelector('meta[name="csrf-token"]')) {
-        token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    }
-    xhr.setRequestHeader("X-CSRF-TOKEN", token);
-    if (method === 'GET') {
-        xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
-        xhr.responseType = "text";
-        xhr.send(null);
-    } else {
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.responseType = "json";
-        xhr.send(data);
-    }
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === xhr.DONE && xhr.status === 200) {
-            let response = xhr.response;
-            callback(response);
+</svg>`,
+    request:function (url, method = "GET", data = {}, callback = null) {
+        let xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.timeout = 30000;
+        let token = '';
+        if (document.querySelector('meta[name="csrf-token"]')) {
+            token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         }
-    };
-    xhr.onerror = function (e) {
-        console.error(e);
-    };
-}
-
-function _componentAlert(message, time = 1, callback = function () {
-}) {
-    let div = document.createElement('div');
-    div.innerHTML = message;
-    let w = window.innerWidth / 2 - 140;
-    let h = window.innerHeight / 2 - 145;
-    div.style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
-        "width: 280px;height: 45px;line-height: 40px;border-radius: 3px;text-align: center;" +
-        "top:" + h + "px;left:" + w + "px;";
-    document.getElementsByTagName("BODY")[0].appendChild(div);
-    var task = setTimeout(function () {
-        clearTimeout(task);
-        div.parentNode.removeChild(div);
-        callback();
-    }, time * 1000);
-}
+        xhr.setRequestHeader("X-CSRF-TOKEN", token);
+        if (method === 'GET') {
+            xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
+            xhr.responseType = "text";
+            xhr.send(null);
+        } else {
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhr.responseType = "json";
+            xhr.send(data);
+        }
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+                let response = xhr.response;
+                if(typeof callback === 'function') callback(response);
+            }
+        };
+        xhr.onerror = function (e) {
+            console.error(e);
+        };
+    },
+    alert:function (message, time = 1, callback = null) {
+        let div = document.createElement('div');
+        div.innerHTML = message;
+        let w = window.innerWidth / 2 - 140;
+        let h = window.innerHeight / 2 - 145;
+        div.style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
+            "width: 280px;height: 45px;line-height: 40px;border-radius: 3px;text-align: center;" +
+            "top:" + h + "px;left:" + w + "px;";
+        document.getElementsByTagName("BODY")[0].appendChild(div);
+        var task = setTimeout(function () {
+            clearTimeout(task);
+            div.parentNode.removeChild(div);
+            if(typeof callback === 'function') callback();
+        }, time * 1000);
+    }
+};
 
 class ComponentDot {
     MODE = {
@@ -338,7 +334,7 @@ class ComponentCascadeDot {
             this.tagCal(id, this.MODE.insert);
             element.classList.remove('dlp-label-silence');
             element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
-            element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
+            element.insertAdjacentHTML('beforeend', `<i>${_component.check}</i>`);
             this.selectToChildren(stack + 1, data.nodes);
             this.selectToSelected(element, stack);
             this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
@@ -404,7 +400,7 @@ class ComponentCascadeDot {
             }
             if (checked === true && node === data.key && data.mark !== true) {
                 data.mark = true;
-                D.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check_circle}</i>`);
+                D.insertAdjacentHTML('beforeend', `<i>${_component.check_circle}</i>`);
             }
             if (checked === false && node === data.key) {
                 let nodes = this.dimensional_data[stack][index].nodes;
@@ -659,7 +655,7 @@ class ComponentLine {
         var object = this;
         var i = document.createElement('i');
         i.style = 'cursor: pointer';
-        i.insertAdjacentHTML('afterbegin', _componentSvg.write);
+        i.insertAdjacentHTML('afterbegin', _component.write);
         i.addEventListener('click', function () {
             let inputs = object.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
             let insert = {};
@@ -727,14 +723,14 @@ class ComponentLine {
             let M = document.createElement('i');
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
             M.setAttribute('sortable-handle', 'sortable-handle');
-            M.insertAdjacentHTML('afterbegin', _componentSvg.move);
+            M.insertAdjacentHTML('afterbegin', _component.move);
             td.appendChild(M);
         }
 
         if (this.OPTIONS.delete) {
             let D = document.createElement('span');
             D.setAttribute('style', 'cursor: pointer;display: inline-block;');
-            D.insertAdjacentHTML('afterbegin', _componentSvg.trash);
+            D.insertAdjacentHTML('afterbegin', _component.trash);
             D.addEventListener('click', function () {
                 let tr = this.parentNode.parentNode;
                 let tbody = tr.parentNode;
@@ -788,7 +784,7 @@ class ComponentPlane {
         this.DOM = document.getElementById('dlp-plane');
         /*X*/
         let X = document.createElement('i');
-        X.insertAdjacentHTML('afterbegin', _componentSvg.close);
+        X.insertAdjacentHTML('afterbegin', _component.close);
         let object = this;
         X.addEventListener('click', function () {
             if (object.DOM instanceof HTMLElement) {
@@ -805,7 +801,7 @@ class ComponentPlane {
     makeContent() {
         this.loading();
         var object = this;
-        _componentRequest(this.URL, 'GET', {}, function (response) {
+        _component.request(this.URL, 'GET', {}, function (response) {
             object.loading(true);
             /*object.MODEL_BODY_DOM.innerHTML = response;*/
             $('#dlp-plane .plane-body').append(response);
@@ -822,7 +818,7 @@ class ComponentPlane {
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
         var object = this;
-        _componentRequest(this.XHR_URL, this.METHOD, formdata, function (response) {
+        _component.request(this.XHR_URL, this.METHOD, formdata, function (response) {
             if (typeof object.CALLBACK == 'function') {
                 object.CALLBACK(response);
                 return;
@@ -831,7 +827,7 @@ class ComponentPlane {
                 window.location.reload();
                 return;
             } else {
-                _componentAlert(response.message, 3, function () {
+                _component.alert(response.message, 3, function () {
                     element.removeAttribute('disabled');
                     element.innerText = '提交';
                 });
@@ -850,7 +846,7 @@ class ComponentPlane {
         }
         this.LOADING_DOM = document.createElement('div');
         this.LOADING_DOM.style = 'width: 100%;height: 100px;';
-        this.LOADING_DOM.insertAdjacentHTML('afterbegin', _componentSvg.loading);
+        this.LOADING_DOM.insertAdjacentHTML('afterbegin', _component.loading);
         this.MODEL_BODY_DOM.append(this.LOADING_DOM);
     }
 }

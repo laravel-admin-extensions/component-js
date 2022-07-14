@@ -83,7 +83,7 @@
 .dot-selected>.dlp-label{background: white}
 .dot-body{padding:3px 0 3px 0;background: rgb(43 43 43);border-radius: 0 0 5px 5px;position: relative;}
 .dot-select{position: absolute;top:5px;left:0;bottom:5px;right:0;z-index: 1050;}
-.dot-select-cover{background: rgb(43 43 43);position: absolute;top:3px;left:0;bottom:3px;right:0;z-index: 1051;}
+.dot-select-cover{background: rgb(43 43 43);position: absolute;top:3px;left:0;bottom:3px;right:0;z-index: 1050;}
 .dot-select-cascade{
     display: flex;
     flex-direction: row;
@@ -91,11 +91,12 @@
 }
 .dot-cascade-stack{
     width: 100%;
-    padding: 2px 0 2px 5px;
     border-radius: 3px;
     flex-grow:1;
     text-align: center;
+    padding-left: 3px;
 }
+.dot-cascade-stack:first-child{padding: 0}
 .dot-cascade-stack>.dlp-label{
     display: block;
     max-width: unset;

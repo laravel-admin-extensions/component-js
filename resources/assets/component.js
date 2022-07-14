@@ -120,7 +120,7 @@ class ComponentDot {
             select_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
         }
 
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-select dlp-scroll">${select_dom}</div></div>
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name} .dot-selected`);
@@ -195,7 +195,7 @@ class ComponentDot {
         if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
             this.SELECT_COVER_DOM = document.createElement('div');
             this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
-            this.CONTENT_DOM.appendChild(this.SELECT_COVER_DOM);
+            this.CONTENT_DOM.parentNode.appendChild(this.SELECT_COVER_DOM);
         } else {
             let elements = [];
             this.SELECT_COVER_DOM.childNodes.forEach((D) => {
@@ -240,7 +240,7 @@ class ComponentCascadeDot {
     }
 
     make() {
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-select dot-select-cascade dlp-scroll"></div></div>
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade dlp-scroll"></div></div></div>
 <input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name} .dot-selected`);
@@ -341,6 +341,7 @@ class ComponentCascadeDot {
             element.insertAdjacentHTML('beforeend', `<i>${_componentSvg.check}</i>`);
             this.selectToChildren(stack + 1, data.nodes);
             this.selectToSelected(element, stack);
+            this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
         } else if (data.checked === true) {
             data.checked = false;
             this.tagCal(id, this.MODE.delete);
@@ -366,7 +367,6 @@ class ComponentCascadeDot {
             let parentNodes = data.parentNodes.slice(0);
             this.selectToParent(parentNodes, data.checked);
         }
-        this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
     }
 
     selectToSelected(element, stack) {
@@ -501,13 +501,13 @@ class ComponentCascadeDot {
         if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
             this.COVER_STACK_HASH_DOM = [];
             this.SELECT_COVER_DOM = document.createElement('div');
-            this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
+            this.SELECT_COVER_DOM.className = 'dot-select-cover dlp-scroll dot-select-cascade';
             for (let stack = 1; stack <= this.dimensional_data.length; stack++) {
                 let div = document.createElement('div');
                 div.className = 'dot-cascade-stack dlp-scroll';
                 this.SELECT_COVER_DOM.append(div);
             }
-            this.CONTENT_DOM.appendChild(this.SELECT_COVER_DOM);
+            this.CONTENT_DOM.parentNode.append(this.SELECT_COVER_DOM);
         }
         this.dimensional_data.forEach((data, stack) => {
             data.forEach((d, k) => {

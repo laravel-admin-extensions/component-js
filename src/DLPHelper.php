@@ -46,7 +46,7 @@ class DLPHelper
      * [[key=>integer,val=>string,par=>integer],...]
      * @param array $data
      */
-    public static function dimensionCalculate(array &$data)
+    public static function dimension(array &$data)
     {
         foreach ($data as $key=>&$d){
             $parent_node = $d['par'];

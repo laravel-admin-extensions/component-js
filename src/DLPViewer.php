@@ -136,7 +136,7 @@ EOF
      *  settings.options        弹窗配置项                        array(选填)
      *           options = ['W'=>0.8,'H'=>0.8]  W宽 H高
      */
-    public static function headPlaneAction(Grid $grid, array $settings = [])
+    public static function headAction(Grid $grid, array $settings = [])
     {
         $script = '';
         foreach ($settings as $setting) {
@@ -189,7 +189,7 @@ EOF;
      *           options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
-    public static function rowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
+    public static function rowAction(Grid $grid, array $settings = [], array $disable = [])
     {
         $script = '';
         foreach ($settings as $setting) {
@@ -249,7 +249,7 @@ EOF;
      *           options = ['W'=>0.8,'H'=>0.8]   W宽 H高
      * @param array $disable ['view','edit','delete']   禁止操作按钮
      */
-    public static function _rowPlaneAction(Grid $grid, array $settings = [], array $disable = [])
+    public static function _rowAction(Grid $grid, array $settings = [], array $disable = [])
     {
         $script = '';
         foreach ($settings as $setting) {

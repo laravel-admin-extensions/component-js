@@ -13,3 +13,5 @@ composer require dlp/component-js
 ```shell script
 php artisan vendor:publish --provider="DLP\DLPServiceProvider"
 ```
+
+[demo](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)

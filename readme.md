@@ -13,5 +13,3 @@ composer require dlp/component-js
 ```shell script
 php artisan vendor:publish --provider="DLP\DLPServiceProvider"
 ```
-
-![组件](https://github.com/ydtg1993/laravel-admin-component-js/blob/main/test/1.gif)

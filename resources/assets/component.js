@@ -551,7 +551,6 @@ class ComponentCascadeDot {
 class ComponentLine {
     constructor(name, columns, data, options = {}) {
         this.DOM = document.getElementById(name);
-        this.NAME = name;
         this.COLUMNS = columns;
         this.DATA = data;
         this.OPTIONS = Object.assign({
@@ -579,7 +578,7 @@ class ComponentLine {
         let foot = head;
         let columns = this.COLUMNS;
         for (let column in columns) {
-            if (columns[column].type == 'hidden') {
+            if (columns[column].type === 'hidden') {
                 continue;
             }
             if (columns[column].style) {
@@ -603,13 +602,13 @@ class ComponentLine {
         var tbody = document.createElement('tbody');
         var object = this;
         var columns = this.COLUMNS;
-        if (Array.isArray(this.DATA) == false) return;
+        if (Array.isArray(this.DATA) === false) return;
         this.DATA.forEach(function (value, key) {
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
             for (let column in columns) {
-                if (columns[column].type == 'hidden') {
+                if (columns[column].type === 'hidden') {
                     if (value[column]) {
                         record[column] = value[column];
                     }
@@ -779,7 +778,7 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px; min-height: ${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px;min-height:${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/
@@ -800,11 +799,11 @@ class ComponentPlane {
 
     makeContent() {
         this.loading();
-        var object = this;
+        let object = this;
         _component.request(this.URL, 'GET', {}, function (response) {
             object.loading(true);
-            /*object.MODEL_BODY_DOM.innerHTML = response;*/
-            $('#dlp-plane .plane-body').append(response);
+            let fragment = document.createRange().createContextualFragment(response);
+            document.querySelector('#dlp-plane .plane-body').appendChild(fragment);
             let submit = object.MODEL_BODY_DOM.querySelector('button[type="submit"]');
             if (submit instanceof HTMLElement) {
                 submit.addEventListener('click', object.submitEvent.bind(object, submit), false);
@@ -817,15 +816,14 @@ class ComponentPlane {
         element.innerText = '提交中...';
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
-        var object = this;
+        let object = this;
         _component.request(this.XHR_URL, this.METHOD, formdata, function (response) {
             if (typeof object.CALLBACK == 'function') {
                 object.CALLBACK(response);
                 return;
             }
-            if (response.code == 0) {
+            if (response.code === 0) {
                 window.location.reload();
-                return;
             } else {
                 _component.alert(response.message, 3, function () {
                     element.removeAttribute('disabled');
@@ -892,7 +890,7 @@ class ComponentSortable {
 
         if (!this.handle) return;
         this.list.style.position = 'relative';
-        this.item.classList.add('is-dragging')
+        this.item.classList.add('is-dragging');
         this.itemHeight = this.items[1].offsetTop;
         this.startTouchY = this.getDragY(e);
         this.startTop = this.item.offsetTop;
@@ -904,13 +902,13 @@ class ComponentSortable {
             item.style.top = 0;
             item.style.left = 0;
             item.style.transform = `translateY(${offsetsTop[index]}px)`;
-            item.style.zIndex = (item == this.item) ? 2 : 1;
+            item.style.zIndex = (item === this.item) ? 2 : 1;
         });
 
         this.positions = this.items.map((item, index) => index);
         this.position = Math.round((this.startTop / this.listHeight) * this.items.length);
 
-        this.touch = e.type == 'touchstart';
+        this.touch = e.type === 'touchstart';
         window.addEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove);
         window.addEventListener((this.touch ? 'touchend' : 'mouseup'), this.dragEnd, false);
     }
@@ -924,12 +922,12 @@ class ComponentSortable {
         this.item.style.transform = `translateY(${top}px)`;
 
         this.positions.forEach(index => {
-            if (index == this.position || index != newPosition) return;
+            if (index === this.position || index !== newPosition) return;
             this.swapElements(this.positions, this.position, index);
             this.position = index;
         });
         this.items.forEach((item, index) => {
-            if (item == this.item) return;
+            if (item === this.item) return;
             item.style.transform = `translateY(${this.positions.indexOf(index) * this.itemHeight}px)`;
             item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         });

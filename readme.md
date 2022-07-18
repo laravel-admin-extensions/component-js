@@ -15,3 +15,6 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
 ```
 
 [demo](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
+
+
+[样例](https://github.com/ydtg1993/laravel-admin-component-js/blob/main/test/example.php)

@@ -4,6 +4,7 @@ namespace DLP;
 
 use Illuminate\Support\ServiceProvider;
 use Encore\Admin\Admin;
+use Encore\Admin\Form;
 
 class DLPServiceProvider extends ServiceProvider
 {
@@ -16,8 +17,9 @@ class DLPServiceProvider extends ServiceProvider
         ]);
 
         Admin::booting(function () {
-            Admin::css('vendor/dlp/component.min.css?v20');
-            Admin::js('vendor/dlp/component.min.js?v20');
+            Admin::css('vendor/dlp/component.min.css?v21');
+            Admin::js('vendor/dlp/component.min.js?v21');
+            Form::extend('Dot', Dot::class);
         });
     }
 }

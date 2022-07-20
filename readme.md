@@ -25,7 +25,7 @@
         <td style="text-align:left;">级联标签选择器</td>
         <td style="text-align:left;">链表多维数组 <a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>参考结构</a>
         <br/>
-        <a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装函数</a><br/>
+        <a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">适用于无限分类 地区选择</td>
         <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L151'>调用CascadeDot</a></td>

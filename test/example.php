@@ -2,6 +2,8 @@
 
 namespace App\Admin\Controllers;
 
+use DLP\PlaneHeadAction;
+use DLP\PlaneRowAction;
 use Encore\Admin\Admin;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
@@ -33,18 +35,38 @@ class ExampleController extends AdminController
         $grid->column('name', '名称');
         $grid->column('created_at', __('创建时间'))->sortable();
         $grid->column('updated_at', __('更新时间'))->sortable();
+
         /*配置 禁用原生创建*/
         $grid->disableCreateButton();
+        $url = config('app.url') . Route::current()->uri;
+        /**
+         * 弹窗模式:设置列表-头部操作方法 PlaneHeadAction
+         * title    名称
+         * url      弹窗页地址
+         * xhr_url  表单提交地址
+         * method   提交方式 POST PUT GET ...
+         * callback ajax请求回调函数
+         *      function(response){
+         *          alert(response);
+         *      }
+         */
+        $grid->tools->append(new PlaneHeadAction('新增',  $url . '/create', $url, 'POST'));
 
-        $url = config('app.url') . Route::current()->uri;;
-        /*弹窗模式 设置列表-头部 操作方法*/
-        DLPViewer::headAction($grid, [
-            ['document_id' => 'CAF', 'title' => '新增', 'url' => $url . '/create', 'xhr_url' => $url]
-        ]);
-        /*设置列表-行 操作方法*/
-        DLPViewer::rowAction($grid, [
-            ['document_class' => 'CEF', 'title' => '编辑', 'url' => $url . '/{id}/edit', 'xhr_url' => $url . '/{id}', 'method' => 'POST']
-        ], ['edit']);
+        /**
+         * 弹窗模式:设置列表-行操作方法 PlaneRowAction
+         * title    名称
+         * url      弹窗页地址 {id}反向匹配当前行id
+         * xhr_url  表单提交地址 {id}反向匹配当前行id
+         * method   提交方式 POST PUT GET ...
+         * callback ajax请求回调函数
+         *      function(response){
+         *          alert(response);
+         *      }
+         */
+        $grid->actions(function ($actions)use($url){
+            $actions->disableEdit();
+            $actions->add(new PlaneRowAction('编辑',$url . '/{id}/edit',$url . '/{id}'));
+        });
         return $grid;
     }
 

@@ -84,7 +84,7 @@ class DLPHelper
         foreach ($data as &$d) {
             if (is_array($d)) {
                 self::recursiveArray($d,$tag);
-            } else {
+            } else if(is_string($d)) {
                 $d = str_replace($tag, '', $d);
             }
         }

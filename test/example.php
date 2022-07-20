@@ -128,7 +128,7 @@ class ExampleController extends AdminController
          * 点组件
          * options 设置数据集 一维数组 格式 [value1=>text1,value2=>text2...]
          * checked 已选择 一维数组 值类型integer
-         * attribute.height 设置高度 默认200
+         * attribute.height 设置高度 默认200px
          */
         $form->Dot('dot','标签选择器')
             ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',
@@ -145,7 +145,7 @@ class ExampleController extends AdminController
          *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
          *          DLPHelper::dimension($select);
          * checked 已选择 一维数组 值类型integer
-         * attribute.height 设置高度 默认200
+         * attribute.height 设置高度 默认200px
          */
         $form->CascadeDot('cascadeDot','级联标签选择器')
             ->options($this->cascadeData())
@@ -157,6 +157,8 @@ class ExampleController extends AdminController
          * 线组件
          * options 设置数据集 二维数组
          * attribute.columns 设置列表head名称 row字段输出格式input,text,hidden
+         * attribute.height  设置高度 默认360px
+         * attribute.options 设置操作列 默认开启['sortable'=>true,'delete'=>true]
          */
         $form->Linear('flux_linkage', '磁力链接')
             ->options([

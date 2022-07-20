@@ -66,24 +66,26 @@ class DLPHelper
 
     /**
      * @param array $data
-     * @return false|string
+     * @param array $tag
+     * @return array
      */
-    public static function safeJson(array $data)
+    public static function arrayFilterTag(array $data,$tag = ['"', '\'', '\\'])
     {
-        self::recursiveJsonArray($data);
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
+        self::recursiveArray($data,$tag);
+        return $data;
     }
 
     /**
      * @param array $data
+     * @param $tag
      */
-    private static function recursiveJsonArray(array &$data)
+    private static function recursiveArray(array &$data,$tag)
     {
         foreach ($data as &$d) {
             if (is_array($d)) {
-                self::recursiveJsonArray($d);
+                self::recursiveArray($d,$tag);
             } else {
-                $d = str_replace(['"', '\'', '\\'], '', $d);
+                $d = str_replace($tag, '', $d);
             }
         }
     }

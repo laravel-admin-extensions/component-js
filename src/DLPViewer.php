@@ -23,22 +23,16 @@ class DLPViewer
      * @param array $selected 已选择选项 [value1,value2,...]
      * @param array $select 全部选项  [[value1=>text1],[value2=>text2]...]
      * @param array $settings 配置项[setting,...]
-     * settings.strict      boolean json严格模式消除json敏感字符问题
      * settings.width       string 容器宽度设置
      * settings.height      string 容器高度设置
      */
     public static function dot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
     {
-        $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
         $height = isset($settings['height']) ? $settings['height'] : '200px';
-        if ($strict) {
-            $selected = DLPHelper::safeJson($selected);
-            $select = DLPHelper::safeJson($select);
-        } else {
-            $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        }
+
+        $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
 new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
@@ -57,22 +51,16 @@ EOF
      * select.node.val      string  值
      * select.node.nodes    array   子节点[node,node,...]
      * @param array $settings 配置项[setting,...]
-     * settings.strict      boolean json严格模式消除json敏感字符问题
      * settings.width       string 容器宽度设置
      * settings.height      string 容器高度设置
      */
     public static function cascadeDot(Form $form, string $column, string $title, array $selected = [], array $select = [], array $settings = [])
     {
-        $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
         $height = isset($settings['height']) ? $settings['height'] : '200px';
-        if ($strict) {
-            $selected = DLPHelper::safeJson($selected);
-            $select = DLPHelper::safeJson($select);
-        } else {
-            $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-            $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        }
+
+        $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
 new ComponentCascadeDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'));
 EOF
@@ -93,7 +81,6 @@ EOF
      *          'name1' => ['name1' => '名称1', 'type' => 'text', style=>'width:50px'],
      *          'name2' => ['name2' => '名称2', 'type' => 'hidden'],
      *          ...]
-     * settings.strict      boolean json严格模式消除json敏感字符问题 (选填)
      * settings.width       string 容器宽度设置 (选填)
      * settings.height      string 容器高度设置 (选填)
      * settings.options     array 多列操作设置 (选填)
@@ -104,17 +91,12 @@ EOF
      */
     public static function line(Form $form, string $column, string $title, array $data, array $settings = [])
     {
-        $strict = isset($settings['strict']) && $settings['strict'] ? true : false;
         $width = isset($settings['width']) ? $settings['width'] : '100%';
         $height = isset($settings['height']) ? $settings['height'] : '360px';
         $options = isset($settings['options']) ? json_encode($settings['options']) : '[]';
         if (!isset($settings['columns'])) return;
         $columns = $settings['columns'];
-        if ($strict) {
-            $data = DLPHelper::safeJson($data);
-        }else{
-            $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        }
+        $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         Admin::script(<<<EOF
 new ComponentLine("{$column}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));

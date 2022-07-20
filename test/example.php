@@ -102,28 +102,55 @@ class ExampleController extends AdminController
     {
         $form = new Form(new Model);
 
-        DLPViewer::dot($form,'dot','标签',[1,2,3],[1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',
-            6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣']);
+        /**
+         * 点组件
+         * options 设置数据集 一维数组 格式 [value1=>text1,value2=>text2...]
+         * checked 已选择 一维数组 值类型integer
+         * attribute.height 设置高度 默认200
+         */
+        $form->Dot('dot','标签选择器')
+            ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',
+            6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣'])
+            ->checked([1,2,3])
+            ->attribute(['height'=>'200px']);
 
-        DLPViewer::cascadeDot($form,'cascadeDot','级联标签',[614,377,550,543,544],$this->cascadeData());
+        /**
+         * 级联点组件
+         * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
+         *          链表结构数据辅助组装
+         *              1.倒排父节点查询
+         *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
+         *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
+         *          DLPHelper::dimension($select);
+         * checked 已选择 一维数组 值类型integer
+         * attribute.height 设置高度 默认200
+         */
+        $form->CascadeDot('cascadeDot','级联标签选择器')
+            ->options($this->cascadeData())
+            ->checked([614,377,550,543,544])
+            ->attribute(['height'=>'200px']);
 
-        DLPViewer::line($form, 'flux_linkage', '数据表',
-            [
-                ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-                ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-                ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-            ], [
+
+        /**
+         * 线组件
+         * options 设置数据集 二维数组
+         * attribute.columns 设置列表head名称 row字段输出格式input,text,hidden
+         */
+        $form->Linear('flux_linkage', '磁力链接')
+            ->options([
+            ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
+            ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
+            ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]])
+            ->attribute([
             'columns' => [
                 'name' => ['name' => '名称', 'type' => 'input'],
                 'meta' => ['name' => '信息', 'type' => 'input'],
                 'url' => ['name' => '链接', 'type' => 'input'],
                 'time' => ['name' => '更新时间', 'type' => 'text'],
                 'is-small' => ['name' => '高清[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
-                'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px']
-            ],
-            'strict' => true
+                'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
+                'tooltip' => ['name' => '可下载[1是 2否]', 'type' => 'input', 'style' => 'width:60px']]
         ]);
-
         return $form;
     }
 

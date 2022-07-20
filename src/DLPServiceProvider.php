@@ -17,9 +17,11 @@ class DLPServiceProvider extends ServiceProvider
         ]);
 
         Admin::booting(function () {
-            Admin::css('vendor/dlp/component.min.css?v21');
-            Admin::js('vendor/dlp/component.min.js?v21');
+            Admin::css('vendor/dlp/component.min.css');
+            Admin::js('vendor/dlp/component.min.js');
             Form::extend('Dot', Dot::class);
+            Form::extend('CascadeDot', CascadeDot::class);
+            Form::extend('Linear', Linear::class);
         });
     }
 }

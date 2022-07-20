@@ -10,7 +10,7 @@ class PlaneRowAction extends RowAction
     private $title;
     private $document_class;
 
-    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
+    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback='null',$options=[])
     {
         parent::__construct();
         $this->title = $title;

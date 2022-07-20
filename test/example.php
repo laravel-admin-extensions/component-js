@@ -66,6 +66,7 @@ class ExampleController extends AdminController
         $grid->actions(function ($actions)use($url){
             $actions->disableEdit();
             $actions->add(new PlaneRowAction('编辑',$url . '/{id}/edit',$url . '/{id}'));
+            $actions->add(new PlaneRowAction('自定义页',$url . '/{id}/blank'));
         });
         return $grid;
     }
@@ -176,6 +177,12 @@ class ExampleController extends AdminController
                 'tooltip' => ['name' => '可下载[1是 2否]', 'type' => 'input', 'style' => 'width:60px']]
         ]);
         return $form;
+    }
+
+    public function blank()
+    {
+        $html = '<h1>松下紗栄子</h1>';
+        return DLPViewer::makeHtml($html);
     }
 
     private function cascadeData()

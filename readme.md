@@ -18,7 +18,7 @@
         <td style="text-align:left;">标签选择器</td>
         <td style="text-align:left;">一维数组 [id=>value1,id2=>value2...]</td>
         <td style="text-align:left;">类似于复选框</td>
-        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L133'>调用Dot</a></td>
+        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L134'>调用Dot</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">CascadeDot</td>
@@ -28,14 +28,14 @@
         <a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装函数</a><br/>
         </td>
         <td style="text-align:left;">适用于无限分类 地区选择</td>
-        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L150'>调用CascadeDot</a></td>
+        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L151'>调用CascadeDot</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">Linear</td>
         <td style="text-align:left;">数据表单控件</td>
         <td style="text-align:left;">二维数组</td>
         <td style="text-align:left;">适用于无限分类 地区选择</td>
-        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>调用Linear</a></td>
+        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>调用Linear</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">plane</td>

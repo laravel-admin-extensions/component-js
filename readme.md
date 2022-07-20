@@ -51,12 +51,12 @@
             <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L68'>grid行创建修改按钮</a></li>
             <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L102'>edit渲染</a></li>
             <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L105'>数据处理update</a></li>
-        </il>
+        </ul>
         <ul>
             例.自定义页
             <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
             <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L185'>渲染</a></li>
-        </il>
+        </ul>
     </tr>
 </table>
 

@@ -14,24 +14,24 @@
     </tr>
     <tr>
         <td style="text-align:left;">标签选择器</td>
-        <td style="text-align:left;">一维数组 [id=>value1,id2=>value2...]</td>
-        <td style="text-align:left;">类似于复选框</td>
-        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L134'>调用Dot</a></td>
+        <td style="text-align:left;">一维数组 [id=>val,id2=>val2...]</td>
+        <td style="text-align:left;">多选择,快捷点选,高效查询</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L134'>调用Dot</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">级联标签选择器</td>
-        <td style="text-align:left;">链表多维数组 <a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>参考结构</a>
         <br/>
-        <a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
+        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
-        <td style="text-align:left;">适用于无限分类 地区选择</td>
-        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L151'>调用CascadeDot</a></td>
+        <td style="text-align:left;">多选择,快捷点选,高效查询 适用于无限分类,地区选择</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L151'>调用CascadeDot</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">数据表单控件</td>
-        <td style="text-align:left;">二维数组</td>
-        <td style="text-align:left;">适用于无限分类 地区选择</td>
-        <td style="text-align:left;"><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>调用Linear</a></td>
+        <td style="text-align:left;">二维数组 [[col=>val,col2=>val2,...],...]</td>
+        <td style="text-align:left;">支持拖拽排序</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>调用Linear</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">弹出层组件</td>
@@ -40,20 +40,20 @@
         <td style="text-align:left;">
          <ul>
             例.新增表单
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L53'>grid头部创建新增按钮</a></li>
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L79'>create渲染</a></li>
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L82'>数据处理store</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L53'>grid头部创建新增按钮</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L79'>create渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L82'>数据处理store</a></li>
         </ul>
         <ul>
             例.修改表单
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L68'>grid行创建修改按钮</a></li>
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L102'>edit渲染</a></li>
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L105'>数据处理update</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L68'>grid行创建修改按钮</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L102'>edit渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L105'>数据处理update</a></li>
         </ul>
         <ul>
             例.自定义页
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
-            <li><a href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L185'>渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L185'>渲染</a></li>
         </ul>
     </tr>
 </table>

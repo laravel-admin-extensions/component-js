@@ -5,6 +5,17 @@
     Linear      数据表单控件   
     plane       弹出层组件
 
+[demo](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
+    
+### 安装
+```shell script
+composer require dlp/component-js
+```
+### 发布
+```shell script
+php artisan vendor:publish --provider="DLP\DLPServiceProvider"
+```
+
 <table> 
     <tr>
         <th style="text-align:left;">名称</td>
@@ -30,7 +41,7 @@
     <tr>
         <td style="text-align:left;">数据表单控件</td>
         <td style="text-align:left;">二维数组 [[col=>val,col2=>val2,...],...]</td>
-        <td style="text-align:left;">支持拖拽排序</td>
+        <td style="text-align:left;">支持拖拽排序 弥补JSON组件对字段类型依赖不可排序问题</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>调用Linear</a></td>
     </tr>
     <tr>
@@ -57,15 +68,4 @@
         </ul>
     </tr>
 </table>
-
-[demo](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
-    
-### 安装
-```shell script
-composer require dlp/component-js
-```
-### 发布
-```shell script
-php artisan vendor:publish --provider="DLP\DLPServiceProvider"
-```
 

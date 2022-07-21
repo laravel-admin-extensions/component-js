@@ -102,7 +102,13 @@ class ComponentDot {
         }
 
         let search = document.querySelector(`#${this.name} .dot-search`);
-        search.addEventListener('input', () => this.search(search));
+        let object = this;
+        search.addEventListener('input', () => {
+            let timeout = setTimeout(function () {
+                clearTimeout(timeout);
+                object.search(search);
+            }, 500);
+        });
     }
 
     make(selected, select) {
@@ -232,7 +238,13 @@ class ComponentCascadeDot {
         this.make().makeSelect(select);
         this.selectInputDOM.value = JSON.stringify(this.select_data);
         let search = document.querySelector(`#${this.name} .dot-search`);
-        search.addEventListener('input', () => this.search(search));
+        let object = this;
+        search.addEventListener('input', () => {
+            let timeout = setTimeout(function () {
+                clearTimeout(timeout);
+                object.search(search);
+            }, 500);
+        });
     }
 
     make() {

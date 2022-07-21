@@ -790,7 +790,7 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div class="dlp-plane" style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px;min-height:${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px;min-height:${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/

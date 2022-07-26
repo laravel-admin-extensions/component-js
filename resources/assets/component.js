@@ -302,7 +302,6 @@ class ComponentCascadeDot {
             data.forEach((v, k) => {
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
                     v.nodes = v.nodes.map((N) => N.key);
-                    v.checkAll = false;
                 } else {
                     v.nodes = null;
                     v.checked = false;
@@ -316,16 +315,15 @@ class ComponentCascadeDot {
                 if(v.nodes !== null){
                     div.addEventListener("contextmenu", (e) => {
                         e.preventDefault();
+                        let k = parseInt(div.getAttribute('data-k'));
                         _component.contextmenu(e, {
                             '全选': () => {
-                                let k = parseInt(div.getAttribute('data-k'));
                                 object.checkAll(stack + 1,
-                                    this.dimensional_data[stack][k].nodes,v.checkAll);
-                                if(v.checkAll === true){
-                                    v.checkAll = false;
-                                }else {
-                                    v.checkAll = true;
-                                }
+                                    this.dimensional_data[stack][k].nodes,true);
+                            },
+                            '取消': () => {
+                                object.checkAll(stack + 1,
+                                    this.dimensional_data[stack][k].nodes,false);
                             }
                         });
                     });
@@ -622,12 +620,10 @@ class ComponentCascadeDot {
         currentStackDocuments.forEach((D, index) => {
             if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
                 let checked = this.dimensional_data[stack][index].checked;
-                if (check === false) {
+                if (check === true) {
                     checked === false && D.click();
-                    this.dimensional_data[stack][index].checkAll = true;
-                } else if (check === true) {
+                } else if (check === false) {
                     checked === true && D.click();
-                    this.dimensional_data[stack][index].checkAll = false;
                 }
                 let child = this.dimensional_data[stack][index].nodes;
                 if (Array.isArray(child)) {

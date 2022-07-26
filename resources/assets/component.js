@@ -1,28 +1,28 @@
 const _component = {
-    'trash': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+    'trash': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
   <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
 </svg>`,
-    'move': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move" viewBox="0 0 16 16">
+    'move': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/>
 </svg>`,
-    'write': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+    'write': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
 </svg>`,
     'close': `<svg style="vertical-align: middle;" width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="white" stroke-width="2.5" d="M16,16 L4,4"></path><path fill="none" stroke="white" stroke-width="2.5" d="M16,4 L4,16"></path></svg>`,
-    'loading': `<svg version="1.1" style='width: 100%;height:100px' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    'loading': `<svg version="1.1" style="width: 100%;height:100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
 <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
 <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml"attributeName="transform"
-type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></path></svg>`,
-    'check': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml" attributeName="transform"
+type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/></path></svg>`,
+    'check': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
 </svg>`,
-    'check_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+    'check_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
 </svg>`,
@@ -145,6 +145,7 @@ class ComponentDot {
         let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
+            if(!select.hasOwnProperty(i))continue;
             if (selected.indexOf(parseInt(i)) !== -1) {
                 selected_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
                 continue;
@@ -177,8 +178,9 @@ class ComponentDot {
 
     tagCal(element, operate) {
         let id = parseInt(element.getAttribute('data-id'));
+        let index = this.select_data.indexOf(id);
         if (operate === this.MODE.insert) {
-            if (this.select_data.indexOf(id) === -1) {
+            if (index === -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
             }
@@ -192,9 +194,7 @@ class ComponentDot {
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
             return;
-        }
-        if (operate === this.MODE.delete) {
-            let index = this.select_data.indexOf(id);
+        }else {
             if (index !== -1) {
                 this.select_data.splice(index, 1);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
@@ -297,6 +297,7 @@ class ComponentCascadeDot {
         this.makeDimensional(select);
         let object = this;
         for (let stack in this.dimensional_data) {
+            if(!this.dimensional_data.hasOwnProperty(stack)) continue;
             stack = parseInt(stack);
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
@@ -360,6 +361,7 @@ class ComponentCascadeDot {
     makeDimensional(data, dimension = 0, parentNodes = []) {
         if (Array.isArray(data)) {
             for (let k in data) {
+                if(!data.hasOwnProperty(k))continue;
                 let parents = parentNodes.slice(0);
                 parents.push(data[k].key);
                 this.makeDimensional(data[k], dimension, parents);
@@ -437,7 +439,7 @@ class ComponentCascadeDot {
         div.setAttribute('data-id', element.getAttribute('data-id'));
         div.setAttribute('stack', stack);
         div.textContent = element.textContent;
-        var object = this;
+        let object = this;
         div.addEventListener('click', function () {
             object.select(element, stack);
         });
@@ -572,45 +574,35 @@ class ComponentCascadeDot {
             this.CONTENT_DOM.parentNode.append(this.SELECT_COVER_DOM);
         }
         this.dimensional_data.forEach((data, stack) => {
-            data.forEach((d, k) => {
-                if (d.val.indexOf(search.value) !== -1 &&
-                    (!Array.isArray(this.COVER_STACK_HASH_DOM[stack]) || this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) === -1)) {
-                    let div = document.createElement('div');
-                    div.className = 'dlp dlp-text dlp-label';
-                    div.textContent = d.val;
-                    div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
-                    this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
-                    if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
-                        this.COVER_STACK_HASH_DOM[stack] = [d.key];
-                        return;
-                    }
-                    this.COVER_STACK_HASH_DOM[stack].push(d.key);
-                }
-            });
+            this.searchPushTag(search,data,stack);
         });
     }
 
     searchCoverClick(stack, data, dom) {
         if (data.nodes !== null) {
             let nextStack = stack + 1;
-            this.dimensional_data[nextStack].forEach((d, k) => {
-                if (data.nodes.indexOf(d.key) !== -1 &&
-                    (!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack]) || this.COVER_STACK_HASH_DOM[nextStack].indexOf(d.key) === -1)) {
-                    let div = document.createElement('div');
-                    div.className = 'dlp dlp-text dlp-label';
-                    div.textContent = d.val;
-                    div.addEventListener('click', () => this.searchCoverClick(nextStack, d, this.STACKS[nextStack].childNodes[k]));
-                    this.SELECT_COVER_DOM.childNodes[nextStack].appendChild(div);
-                    if (!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack])) {
-                        this.COVER_STACK_HASH_DOM[nextStack] = [d.key];
-                        return;
-                    }
-                    this.COVER_STACK_HASH_DOM[nextStack].push(d.key);
-                }
-            });
+            this.searchPushTag(this.dimensional_data[nextStack],data,nextStack);
             return;
         }
         (dom instanceof HTMLElement) && dom.click();
+    }
+
+    searchPushTag(search,data,stack){
+        data.forEach((d, k) => {
+            if (d.val.indexOf(search.value) !== -1 &&
+                (!Array.isArray(this.COVER_STACK_HASH_DOM[stack]) || this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) === -1)) {
+                let div = document.createElement('div');
+                div.className = 'dlp dlp-text dlp-label';
+                div.textContent = d.val;
+                div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
+                this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
+                if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
+                    this.COVER_STACK_HASH_DOM[stack] = [d.key];
+                    return;
+                }
+                this.COVER_STACK_HASH_DOM[stack].push(d.key);
+            }
+        });
     }
 
     checkAll(stack, nodes, check) {
@@ -674,16 +666,18 @@ class ComponentLine {
         let foot = head;
         let columns = this.COLUMNS;
         for (let column in columns) {
-            if (columns[column].type === 'hidden') {
+            if(!columns.hasOwnProperty(column)) continue;
+            let val = columns[column];
+            if (val.type === 'hidden') {
                 continue;
             }
-            if (columns[column].style) {
-                head += `<th style="${columns[column].style}">${columns[column].name}</th>`;
-                foot += `<th style="${columns[column].style}"><input class="dlp-input" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
+            if (val.style) {
+                head += `<th style="${val.style}">${val.name}</th>`;
+                foot += `<th style="${val.style}"><input class="dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                 continue;
             }
-            head += '<th>' + columns[column].name + '</th>';
-            foot += `<th><input class="dlp-input" data-column="${column}" placeholder=":${columns[column].name}"/></th>`;
+            head += '<th>' + val.name + '</th>';
+            foot += `<th><input class="dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
         foot += '<th class="insert_handel operate-column" style="width: 48px;"></th></tr>';
@@ -694,16 +688,17 @@ class ComponentLine {
     }
 
     makeBody() {
-        var records = [];
-        var tbody = document.createElement('tbody');
-        var object = this;
-        var columns = this.COLUMNS;
+        let records = [];
+        let tbody = document.createElement('tbody');
+        let object = this;
+        let columns = this.COLUMNS;
         if (Array.isArray(this.DATA) === false) return;
         this.DATA.forEach(function (value, key) {
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
             for (let column in columns) {
+                if(!columns.hasOwnProperty(column)) continue;
                 if (columns[column].type === 'hidden') {
                     if (value[column]) {
                         record[column] = value[column];
@@ -747,9 +742,9 @@ class ComponentLine {
         tfoot.insertAdjacentHTML('afterbegin', foot);
         this.TABLE_DOM.appendChild(tfoot);
         /*insert action*/
-        var object = this;
-        var i = document.createElement('i');
-        i.style = 'cursor: pointer';
+        let object = this;
+        let i = document.createElement('i');
+        i.style.cursor = 'pointer';
         i.insertAdjacentHTML('afterbegin', _component.write);
         i.addEventListener('click', function () {
             let inputs = object.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
@@ -794,6 +789,7 @@ class ComponentLine {
                 input.setAttribute('data-column', column);
                 input.value = value;
                 for (let attribute in attributes) {
+                    if(!attributes.hasOwnProperty(attribute)) continue;
                     input.setAttribute(attribute, attributes[attribute]);
                 }
                 input.addEventListener('input', function () {
@@ -835,6 +831,7 @@ class ComponentLine {
                 tbody.removeChild(tr);
                 object.DATA_INPUT.value = JSON.stringify(object.DATA);
                 for (let node in tbody.childNodes) {
+                    if(!tbody.childNodes.hasOwnProperty(node))continue;
                     if (tbody.childNodes[node] instanceof HTMLElement) {
                         tbody.childNodes[node].setAttribute('data-key', node);
                     }
@@ -846,7 +843,7 @@ class ComponentLine {
     }
 
     sortable() {
-        var object = this;
+        let object = this;
         new ComponentSortable(this.TBODY_DOM, function (sort) {
             let data = [];
             sort.forEach(function (k) {

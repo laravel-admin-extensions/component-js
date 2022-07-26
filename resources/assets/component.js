@@ -59,11 +59,12 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
         div.innerHTML = message;
         let w = window.innerWidth / 2 - 140;
         let h = window.innerHeight / 2 - 145;
-        div.style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
+        let style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
             "width: 280px;height: 45px;line-height: 40px;border-radius: 3px;text-align: center;" +
             "top:" + h + "px;left:" + w + "px;";
+        div.setAttribute('style',style);
         document.getElementsByTagName("BODY")[0].appendChild(div);
-        var task = setTimeout(function () {
+        let task = setTimeout(function () {
             clearTimeout(task);
             div.parentNode.removeChild(div);
             if (typeof callback === 'function') callback();
@@ -75,20 +76,21 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
         }, options);
         let ul = document.createElement('ul');
         ul.className = 'dlp dlp-contextmenu';
-        for (let k in list) {
+        list.forEach((v)=>{
             let li = document.createElement('li');
             li.className = 'dlp dlp-text';
-            li.textContent = k;
+            li.textContent = v.title;
             li.style.width = options.W;
-            if (typeof list[k] === 'function') {
+            if (typeof v.func === 'function') {
                 li.addEventListener('click', () => {
-                    list[k]();
+                    v.func();
                     ul.remove();
                 });
                 ul.append(li);
             }
-        }
-        ul.style = `top: ${event.pageY - 3}px;left: ${event.pageX - 3}px;`;
+        });
+        ul.style.top = `${event.pageY - 3}px`;
+        ul.style.left = `${event.pageX - 3}px`;
         ul.addEventListener('mouseleave', () => {
             ul.remove();
         });
@@ -153,8 +155,8 @@ class ComponentDot {
         let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
-        this.SELECTED_DOM = document.querySelector(`#${this.name} .dot-selected`);
-        this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
+        this.SELECTED_DOM = document.querySelector(`#${this.name}  .dot-selected`);
+        this.CONTENT_DOM = document.querySelector(`#${this.name}  .dot-select`);
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
@@ -316,16 +318,16 @@ class ComponentCascadeDot {
                     div.addEventListener("contextmenu", (e) => {
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
-                        _component.contextmenu(e, {
-                            '全选': () => {
+                        _component.contextmenu(e, [
+                            {title:'全选',func: () => {
                                 object.checkAll(stack + 1,
                                     this.dimensional_data[stack][k].nodes,true);
-                            },
-                            '取消': () => {
+                            }},
+                            {title:'取消',func: () => {
                                 object.checkAll(stack + 1,
                                     this.dimensional_data[stack][k].nodes,false);
-                            }
-                        });
+                            }}
+                        ]);
                     });
                 }else {
                     div.addEventListener("contextmenu", (e) => {
@@ -872,7 +874,7 @@ class ComponentPlane {
     }
 
     makeModal() {
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H}px;min-height:${window.innerHeight * this.OPTIONS.H / 2}px;"></div></div></div>`;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H + 'px'};min-height:${window.innerHeight * this.OPTIONS.H / 2 + 'px'};"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/
@@ -937,7 +939,8 @@ class ComponentPlane {
             return;
         }
         this.LOADING_DOM = document.createElement('div');
-        this.LOADING_DOM.style = 'width: 100%;height: 100px;';
+        this.LOADING_DOM.style.width = '100%';
+        this.LOADING_DOM.style.height = '100px';
         this.LOADING_DOM.insertAdjacentHTML('afterbegin', _component.loading);
         this.MODEL_BODY_DOM.append(this.LOADING_DOM);
     }
@@ -993,10 +996,10 @@ class ComponentSortable {
 
         this.items.forEach((item, index) => {
             item.style.position = 'absolute';
-            item.style.top = 0;
-            item.style.left = 0;
+            item.style.top = '0';
+            item.style.left = '0';
             item.style.transform = `translateY(${offsetsTop[index]}px)`;
-            item.style.zIndex = (item === this.item) ? 2 : 1;
+            item.style.zIndex = (item === this.item) ? '2' : '1';
         });
 
         this.positions = this.items.map((item, index) => index);
@@ -1058,7 +1061,7 @@ class ComponentSortable {
             this.animation = false;
         }, this.options.animationSpeed);
 
-        window.removeEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove, {passive: false});
+        window.removeEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove);
         window.removeEventListener((this.touch ? 'touchend' : 'mouseup'), this.dragEnd, false);
     }
 

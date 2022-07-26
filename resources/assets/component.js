@@ -26,7 +26,7 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
 </svg>`,
-    request:function (url, method = "GET", data = {}, callback = null) {
+    request: function (url, method = "GET", data = {}, callback = null) {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
         xhr.timeout = 30000;
@@ -47,14 +47,14 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
         xhr.onreadystatechange = function () {
             if (xhr.readyState === xhr.DONE && xhr.status === 200) {
                 let response = xhr.response;
-                if(typeof callback === 'function') callback(response);
+                if (typeof callback === 'function') callback(response);
             }
         };
         xhr.onerror = function (e) {
             console.error(e);
         };
     },
-    alert:function (message, time = 1, callback = null) {
+    alert: function (message, time = 1, callback = null) {
         let div = document.createElement('div');
         div.innerHTML = message;
         let w = window.innerWidth / 2 - 140;
@@ -66,8 +66,33 @@ type="rotate"from="0 20 20"to="360 20 20"dur="0.5s"repeatCount="indefinite"/></p
         var task = setTimeout(function () {
             clearTimeout(task);
             div.parentNode.removeChild(div);
-            if(typeof callback === 'function') callback();
+            if (typeof callback === 'function') callback();
         }, time * 1000);
+    },
+    contextmenu: function (event, list, options = {}) {
+        options = Object.assign({
+            W: '70px'
+        }, options);
+        let ul = document.createElement('ul');
+        ul.className = 'dlp dlp-contextmenu';
+        for (let k in list) {
+            let li = document.createElement('li');
+            li.className = 'dlp dlp-text';
+            li.textContent = k;
+            li.style.width = options.W;
+            if (typeof list[k] === 'function') {
+                li.addEventListener('click', () => {
+                    list[k]();
+                    ul.remove();
+                });
+                ul.append(li);
+            }
+        }
+        ul.style = `top: ${event.pageY - 3}px;left: ${event.pageX - 3}px;`;
+        ul.addEventListener('mouseleave', () => {
+            ul.remove();
+        });
+        document.getElementsByTagName("BODY")[0].appendChild(ul);
     }
 };
 
@@ -80,11 +105,14 @@ class ComponentDot {
     constructor(name, selected, select) {
         this.name = name;
         this.DOM = document.getElementById(name);
+        this.DOM.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+        });
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
         }
-        if(Array.isArray(select) || typeof select !== 'object'){
+        if (Array.isArray(select) || typeof select !== 'object') {
             console.error('Dot param select must be object such as {key:val,key2:val2,...} !');
             return;
         }
@@ -251,6 +279,9 @@ class ComponentCascadeDot {
         let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade dlp-scroll"></div></div></div>
 <input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
+        this.DOM.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+        });
         this.SELECTED_DOM = document.querySelector(`#${this.name} .dot-selected`);
         this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
@@ -262,6 +293,7 @@ class ComponentCascadeDot {
     makeSelect(select) {
         this.dimensional_data = [];
         this.makeDimensional(select);
+        let object = this;
         for (let stack in this.dimensional_data) {
             stack = parseInt(stack);
             let data = this.dimensional_data[stack];
@@ -270,6 +302,7 @@ class ComponentCascadeDot {
             data.forEach((v, k) => {
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
                     v.nodes = v.nodes.map((N) => N.key);
+                    v.checkAll = false;
                 } else {
                     v.nodes = null;
                     v.checked = false;
@@ -280,6 +313,27 @@ class ComponentCascadeDot {
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
+                if(v.nodes !== null){
+                    div.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                        _component.contextmenu(e, {
+                            '全选': () => {
+                                let k = parseInt(div.getAttribute('data-k'));
+                                object.checkAll(stack + 1,
+                                    this.dimensional_data[stack][k].nodes,v.checkAll);
+                                if(v.checkAll === true){
+                                    v.checkAll = false;
+                                }else {
+                                    v.checkAll = true;
+                                }
+                            }
+                        });
+                    });
+                }else {
+                    div.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                    });
+                }
                 stackDom.append(div);
                 /*selected append*/
                 let index = this.selected_data.indexOf(parseInt(v.key));
@@ -407,7 +461,7 @@ class ComponentCascadeDot {
                     D.classList.add('dlp-label-silence');
                 } else {
                     D.classList.remove('dlp-label-silence');
-                    if (to_first_index === null) to_first_index = index;
+                    if (to_first_index === null && parseInt(D.getAttribute('data-id')) === node) to_first_index = index;
                 }
             }
             if (checked === true && node === data.key && data.mark !== true) {
@@ -526,7 +580,7 @@ class ComponentCascadeDot {
                     div.textContent = d.val;
                     div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
                     this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
-                    if(!Array.isArray(this.COVER_STACK_HASH_DOM[stack])){
+                    if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
                         this.COVER_STACK_HASH_DOM[stack] = [d.key];
                         return;
                     }
@@ -538,8 +592,8 @@ class ComponentCascadeDot {
 
     searchCoverClick(stack, data, dom) {
         if (data.nodes !== null) {
-            let nextStack = stack +1;
-            this.dimensional_data[nextStack].forEach((d,k) => {
+            let nextStack = stack + 1;
+            this.dimensional_data[nextStack].forEach((d, k) => {
                 if (data.nodes.indexOf(d.key) !== -1 &&
                     (!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack]) || this.COVER_STACK_HASH_DOM[nextStack].indexOf(d.key) === -1)) {
                     let div = document.createElement('div');
@@ -547,7 +601,7 @@ class ComponentCascadeDot {
                     div.textContent = d.val;
                     div.addEventListener('click', () => this.searchCoverClick(nextStack, d, this.STACKS[nextStack].childNodes[k]));
                     this.SELECT_COVER_DOM.childNodes[nextStack].appendChild(div);
-                    if(!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack])){
+                    if (!Array.isArray(this.COVER_STACK_HASH_DOM[nextStack])) {
                         this.COVER_STACK_HASH_DOM[nextStack] = [d.key];
                         return;
                     }
@@ -558,11 +612,43 @@ class ComponentCascadeDot {
         }
         (dom instanceof HTMLElement) && dom.click();
     }
+
+    checkAll(stack, nodes, check) {
+        if (stack > (this.dimensional_data.length - 1)) return;
+        if (!Array.isArray(nodes) || nodes.length <= 0) return;
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        let children = [];
+        let to_first_index = null;
+        currentStackDocuments.forEach((D, index) => {
+            if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
+                let checked = this.dimensional_data[stack][index].checked;
+                if (check === false) {
+                    checked === false && D.click();
+                    this.dimensional_data[stack][index].checkAll = true;
+                } else if (check === true) {
+                    checked === true && D.click();
+                    this.dimensional_data[stack][index].checkAll = false;
+                }
+                let child = this.dimensional_data[stack][index].nodes;
+                if (Array.isArray(child)) {
+                    child.forEach((c) => {
+                        if (children.indexOf(child) === -1) children.push(c);
+                    });
+                }
+                if (to_first_index === null) to_first_index = index;
+            }
+        });
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        this.checkAll(stack + 1, children, check);
+    }
 }
 
 class ComponentLine {
     constructor(name, columns, data, options = {}) {
         this.DOM = document.getElementById(name);
+        this.DOM.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+        });
         this.COLUMNS = columns;
         this.DATA = data;
         this.OPTIONS = Object.assign({

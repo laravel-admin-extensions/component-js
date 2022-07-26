@@ -1,4 +1,17 @@
-.dlp{font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size: 12px!important;;border-spacing: 0!important;}
+.dlp{
+    font-family: "Raleway",
+    "HelveticaNeue",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+    font-size: 12px!important;
+    border-spacing: 0!important;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .dlp i{cursor: pointer!important;}
 .dlp p{margin: 0!important;}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
@@ -177,4 +190,25 @@
 }
 #dlp-plane .plane-body{
     background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
+}
+
+.dlp-contextmenu{
+    list-style:none;
+    margin:0;padding:0;
+    position: absolute;
+    color: #333;
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    display:block;
+}
+.dlp-contextmenu *{transition:color .4s, background .4s;}
+.dlp-contextmenu li{
+    text-align: center;
+    padding: 3px;
+    background-color: #fff;
+    border-bottom:1px solid #ecf0f1;
+}
+.dlp-contextmenu li:hover{
+    background-color: #ebebeb;
+    cursor: pointer;
 }

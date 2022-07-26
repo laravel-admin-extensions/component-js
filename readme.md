@@ -3,7 +3,7 @@
     Dot         标签选择器   
     CascadeDot  级联标签选择器
     Linear      数据表单控件   
-    plane       弹出层组件
+    plane       异步弹窗组件
 
 [demo](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
     
@@ -35,7 +35,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
-        <td style="text-align:left;">多选择,快捷点选,查询丝滑<br/>适用于无限分类,地区选择</td>
+        <td style="text-align:left;">多选择,快捷点选,查询丝滑<br/>右键全选,取消<br/>适用于无限分类,地区选择</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L151'>调用CascadeDot</a></td>
     </tr>
     <tr>
@@ -47,7 +47,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     <tr>
         <td style="text-align:left;">弹出层组件</td>
         <td style="text-align:left;"></td>
-        <td style="text-align:left;">支持唤出:表单页 自定义页</td>
+        <td style="text-align:left;">异步弹窗:表单页 自定义页</td>
         <td style="text-align:left;">
          <ul>
             例.新增表单

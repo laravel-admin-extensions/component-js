@@ -25,8 +25,8 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     </tr>
     <tr>
         <td style="text-align:left;">标签选择器</td>
-        <td style="text-align:left;">一维数组 [id=>val,id2=>val2...]</td>
-        <td style="text-align:left;">多选择,快捷点选,高效查询</td>
+        <td style="text-align:left;">一维数组<br/>[id=>val,id2=>val2...]</td>
+        <td style="text-align:left;">多选择,快捷点选,查询丝滑</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L134'>调用Dot</a></td>
     </tr>
     <tr>
@@ -35,13 +35,13 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
-        <td style="text-align:left;">多选择,快捷点选,高效查询 适用于无限分类,地区选择</td>
+        <td style="text-align:left;">多选择,快捷点选,查询丝滑<br/>适用于无限分类,地区选择</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L151'>调用CascadeDot</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">数据表单控件</td>
-        <td style="text-align:left;">二维数组 [[col=>val,col2=>val2,...],...]</td>
-        <td style="text-align:left;">支持拖拽排序 弥补JSON组件对字段类型依赖不可排序问题</td>
+        <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
+        <td style="text-align:left;">支持拖拽排序 弥补JSON组件<br/>对字段类型依赖不可排序问题</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>调用Linear</a></td>
     </tr>
     <tr>

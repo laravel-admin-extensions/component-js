@@ -11,7 +11,7 @@ const _component = {
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
 </svg>`,
     'close': `<svg style="vertical-align: middle;" width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="white" stroke-width="2.5" d="M16,16 L4,4"></path><path fill="none" stroke="white" stroke-width="2.5" d="M16,4 L4,16"></path></svg>`,
-    'loading': `<svg version="1.1" style="width: 100%;height:100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    'loading': `<svg style="width: 100%;height:100px" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
 <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
@@ -62,7 +62,7 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
         let style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
             "width: 280px;height: 45px;line-height: 40px;border-radius: 3px;text-align: center;" +
             "top:" + h + "px;left:" + w + "px;";
-        div.setAttribute('style',style);
+        div.setAttribute('style', style);
         document.getElementsByTagName("BODY")[0].appendChild(div);
         let task = setTimeout(function () {
             clearTimeout(task);
@@ -76,7 +76,7 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
         }, options);
         let ul = document.createElement('ul');
         ul.className = 'dlp dlp-contextmenu';
-        list.forEach((v)=>{
+        list.forEach((v) => {
             let li = document.createElement('li');
             li.className = 'dlp dlp-text';
             li.textContent = v.title;
@@ -145,12 +145,12 @@ class ComponentDot {
         let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
-            if(!select.hasOwnProperty(i))continue;
+            if (!select.hasOwnProperty(i)) continue;
             if (selected.indexOf(parseInt(i)) !== -1) {
-                selected_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
+                selected_dom += `<div class="dlp dlp-text dlp-label" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
                 continue;
             }
-            select_dom += `<div class='dlp dlp-text dlp-label' data-id='${i}' title="${select[i]}">${select[i]}</div>`;
+            select_dom += `<div class="dlp dlp-text dlp-label" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
         }
 
         let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
@@ -183,8 +183,7 @@ class ComponentDot {
             if (index === -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
+            } else if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                 this.insert_data.push(id);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
@@ -193,13 +192,11 @@ class ComponentDot {
                 this.delete_data.splice(index, 1);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
-            return;
-        }else {
+        } else {
             if (index !== -1) {
                 this.select_data.splice(index, 1);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
+            } else if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                 this.delete_data.push(id);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }
@@ -297,7 +294,7 @@ class ComponentCascadeDot {
         this.makeDimensional(select);
         let object = this;
         for (let stack in this.dimensional_data) {
-            if(!this.dimensional_data.hasOwnProperty(stack)) continue;
+            if (!this.dimensional_data.hasOwnProperty(stack)) continue;
             stack = parseInt(stack);
             let data = this.dimensional_data[stack];
             let stackDom = document.createElement('div');
@@ -315,22 +312,26 @@ class ComponentCascadeDot {
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
-                if(v.nodes !== null){
+                if (v.nodes !== null) {
                     div.addEventListener("contextmenu", (e) => {
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
                         _component.contextmenu(e, [
-                            {title:'全选',func: () => {
-                                object.checkAll(stack + 1,
-                                    this.dimensional_data[stack][k].nodes,true);
-                            }},
-                            {title:'取消',func: () => {
-                                object.checkAll(stack + 1,
-                                    this.dimensional_data[stack][k].nodes,false);
-                            }}
+                            {
+                                title: '全选', func: () => {
+                                    object.checkAll(stack + 1,
+                                        this.dimensional_data[stack][k].nodes, true);
+                                }
+                            },
+                            {
+                                title: '取消', func: () => {
+                                    object.checkAll(stack + 1,
+                                        this.dimensional_data[stack][k].nodes, false);
+                                }
+                            }
                         ]);
                     });
-                }else {
+                } else {
                     div.addEventListener("contextmenu", (e) => {
                         e.preventDefault();
                     });
@@ -361,7 +362,7 @@ class ComponentCascadeDot {
     makeDimensional(data, dimension = 0, parentNodes = []) {
         if (Array.isArray(data)) {
             for (let k in data) {
-                if(!data.hasOwnProperty(k))continue;
+                if (!data.hasOwnProperty(k)) continue;
                 let parents = parentNodes.slice(0);
                 parents.push(data[k].key);
                 this.makeDimensional(data[k], dimension, parents);
@@ -574,20 +575,20 @@ class ComponentCascadeDot {
             this.CONTENT_DOM.parentNode.append(this.SELECT_COVER_DOM);
         }
         this.dimensional_data.forEach((data, stack) => {
-            this.searchPushTag(search,data,stack);
+            this.searchPushTag(search, data, stack);
         });
     }
 
     searchCoverClick(stack, data, dom) {
         if (data.nodes !== null) {
             let nextStack = stack + 1;
-            this.searchPushTag(this.dimensional_data[nextStack],data,nextStack);
+            this.searchPushTag(this.dimensional_data[nextStack], data, nextStack);
             return;
         }
         (dom instanceof HTMLElement) && dom.click();
     }
 
-    searchPushTag(search,data,stack){
+    searchPushTag(search, data, stack) {
         data.forEach((d, k) => {
             if (d.val.indexOf(search.value) !== -1 &&
                 (!Array.isArray(this.COVER_STACK_HASH_DOM[stack]) || this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) === -1)) {
@@ -663,10 +664,10 @@ class ComponentLine {
 
     makeHead() {
         let head = '<tr>';
-        let foot = head;
+        let foot = '<tr>';
         let columns = this.COLUMNS;
         for (let column in columns) {
-            if(!columns.hasOwnProperty(column)) continue;
+            if (!columns.hasOwnProperty(column)) continue;
             let val = columns[column];
             if (val.type === 'hidden') {
                 continue;
@@ -676,7 +677,7 @@ class ComponentLine {
                 foot += `<th style="${val.style}"><input class="dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                 continue;
             }
-            head += '<th>' + val.name + '</th>';
+            head += `<th>${val.name}</th>`;
             foot += `<th><input class="dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
@@ -698,7 +699,7 @@ class ComponentLine {
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
             for (let column in columns) {
-                if(!columns.hasOwnProperty(column)) continue;
+                if (!columns.hasOwnProperty(column)) continue;
                 if (columns[column].type === 'hidden') {
                     if (value[column]) {
                         record[column] = value[column];
@@ -752,19 +753,17 @@ class ComponentLine {
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item', 'sortable-item');
             tr.setAttribute('data-key', object.DATA.length.toString());
-            for (let input in inputs) {
-                if (inputs.hasOwnProperty(input)) {
-                    let td = document.createElement('td');
-                    let column = inputs[input].getAttribute('data-column');
-                    insert[column] = inputs[input].value;
+            for (let input of inputs) {
+                let td = document.createElement('td');
+                let column = input.getAttribute('data-column');
+                insert[column] = input.value;
 
-                    object.makeTd(td, object.COLUMNS[column].type, inputs[input].value, column);
-                    if (object.COLUMNS[column].style) {
-                        td.style = object.COLUMNS[column].style;
-                    }
-                    tr.appendChild(td);
-                    inputs[input].value = '';
+                object.makeTd(td, object.COLUMNS[column].type, input.value, column);
+                if (object.COLUMNS[column].style) {
+                    td.style = object.COLUMNS[column].style;
                 }
+                tr.appendChild(td);
+                input.value = '';
             }
             let td = document.createElement('td');
             object.operateButton(td);
@@ -789,7 +788,7 @@ class ComponentLine {
                 input.setAttribute('data-column', column);
                 input.value = value;
                 for (let attribute in attributes) {
-                    if(!attributes.hasOwnProperty(attribute)) continue;
+                    if (!attributes.hasOwnProperty(attribute)) continue;
                     input.setAttribute(attribute, attributes[attribute]);
                 }
                 input.addEventListener('input', function () {
@@ -809,7 +808,7 @@ class ComponentLine {
     }
 
     operateButton(td) {
-        var object = this;
+        let object = this;
         if (this.OPTIONS.sortable) {
             let M = document.createElement('i');
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
@@ -831,7 +830,7 @@ class ComponentLine {
                 tbody.removeChild(tr);
                 object.DATA_INPUT.value = JSON.stringify(object.DATA);
                 for (let node in tbody.childNodes) {
-                    if(!tbody.childNodes.hasOwnProperty(node))continue;
+                    if (!tbody.childNodes.hasOwnProperty(node)) continue;
                     if (tbody.childNodes[node] instanceof HTMLElement) {
                         tbody.childNodes[node].setAttribute('data-key', node);
                     }
@@ -1029,7 +1028,7 @@ class ComponentSortable {
         e.preventDefault();
     }
 
-    dragEnd(e) {
+    dragEnd() {
         this.animation = true;
         if (this.items.length < 2) return;
         this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
@@ -1063,7 +1062,7 @@ class ComponentSortable {
     }
 
     swapElements(array, a, b) {
-        const temp = array[a];
+        let temp = array[a];
         array[a] = array[b];
         array[b] = temp;
     }

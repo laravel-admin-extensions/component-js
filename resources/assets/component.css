@@ -25,7 +25,7 @@
     border: none;
     vertical-align: baseline;
     background: #d6d6d6;
-    color: rgba(0,0,0,.6);
+    color: rgba(0,0,0,.7);
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
     margin: 0 0.25em 0;
     padding: 2px 4px 2px 4px;
@@ -52,7 +52,7 @@
     background-image: none;
     -webkit-box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
     box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
-    color: rgba(0,0,0,.8);
+    color: rgba(0,0,0,1);
 }
 
 .dlp-scroll{overflow-y: auto;overflow-x: hidden;}
@@ -95,7 +95,7 @@
 .dot-selected{width: 100%}
 .dot-selected>.dlp-label{background: white}
 .dot-body{padding:3px 0 3px 0;background: rgb(43 43 43);border-radius: 0 0 5px 5px;position: relative;}
-.dot-select{position: absolute;top:5px;left:0;bottom:5px;right:0;z-index: 1050;}
+.dot-select{position: absolute;top:3px;left:0;bottom:3px;right:0;z-index: 1050;}
 .dot-select-cover{background: rgb(43 43 43);position: absolute;top:3px;left:0;bottom:3px;right:0;z-index: 1050;}
 .dot-select-cascade{
     display: flex;
@@ -107,9 +107,9 @@
     border-radius: 3px;
     flex-grow:1;
     text-align: center;
-    padding-left: 3px;
+    margin:0 3px 0;
+    background: #222222;
 }
-.dot-cascade-stack:first-child{padding: 0}
 .dot-cascade-stack>.dlp-label{
     display: block;
     max-width: unset;
@@ -122,6 +122,10 @@
     position: absolute!important;
     right: 4px!important;
     top: 4px!important;
+}
+.dlp-label>i.left{
+    left: 0!important;
+    right: unset!important;
 }
 .dot-cascade-stack>.dlp-label-silence{
     opacity: 0.5;

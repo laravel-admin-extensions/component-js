@@ -26,6 +26,9 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
 </svg>`,
+    'caret_right': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+</svg>`,
     request: function (url, method = "GET", data = {}, callback = null) {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
@@ -84,10 +87,10 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
             if (typeof v.func === 'function') {
                 li.addEventListener('click', () => {
                     ul.remove();
-                    let sync = setTimeout(()=>{
+                    let sync = setTimeout(() => {
                         v.func();
                         clearTimeout(sync);
-                    },100);
+                    }, 100);
                 });
                 ul.append(li);
             }
@@ -98,6 +101,30 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
             ul.remove();
         });
         document.getElementsByTagName("BODY")[0].appendChild(ul);
+    },
+    dimensional(output, data, dimension = 0, parentNodes = []) {
+        if (Array.isArray(data)) {
+            for (let k in data) {
+                if (!data.hasOwnProperty(k)) continue;
+                let parents = parentNodes.slice(0);
+                parents.push(data[k].key);
+                _component.dimensional(output, data[k], dimension, parents);
+            }
+            return;
+        }
+        let parents = parentNodes.slice(0);
+        parents.pop();
+        data.parentNodes = parents;
+        if (!Array.isArray(output[dimension])) {
+            output[dimension] = [data];
+        } else {
+            output[dimension].push(data);
+        }
+        if (!data.hasOwnProperty('nodes') || !Array.isArray(data.nodes) || data.nodes.length === 0) {
+            return;
+        }
+        dimension++;
+        _component.dimensional(output, data.nodes, dimension, parentNodes);
     }
 };
 
@@ -294,7 +321,7 @@ class ComponentCascadeDot {
 
     makeSelect(select) {
         this.dimensional_data = [];
-        this.makeDimensional(select);
+        _component.dimensional(this.dimensional_data, select);
         let object = this;
         for (let stack in this.dimensional_data) {
             if (!this.dimensional_data.hasOwnProperty(stack)) continue;
@@ -316,6 +343,7 @@ class ComponentCascadeDot {
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
                 if (v.nodes !== null) {
+                    div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                     div.addEventListener("contextmenu", (e) => {
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
@@ -362,38 +390,12 @@ class ComponentCascadeDot {
         return this;
     }
 
-    makeDimensional(data, dimension = 0, parentNodes = []) {
-        if (Array.isArray(data)) {
-            for (let k in data) {
-                if (!data.hasOwnProperty(k)) continue;
-                let parents = parentNodes.slice(0);
-                parents.push(data[k].key);
-                this.makeDimensional(data[k], dimension, parents);
-            }
-            return;
-        }
-        let parents = parentNodes.slice(0);
-        parents.pop();
-        data.parentNodes = parents;
-        if (!Array.isArray(this.dimensional_data[dimension])) {
-            this.dimensional_data[dimension] = [data];
-        } else {
-            this.dimensional_data[dimension].push(data);
-        }
-        if (!data.hasOwnProperty('nodes') || !Array.isArray(data.nodes) || data.nodes.length === 0) {
-            return;
-        }
-        dimension++;
-        this.makeDimensional(data.nodes, dimension, parentNodes);
-    }
-
     select(element, stack) {
         let id = parseInt(element.getAttribute('data-id'));
         let k = parseInt(element.getAttribute('data-k'));
         let data = this.dimensional_data[stack][k];
         let currentStackDocuments = this.STACKS[stack].childNodes;
         let parentNode = data.parentNodes[data.parentNodes.length - 1];
-
         if (data.checked === false) {
             data.checked = true;
             currentStackDocuments.forEach((D, index) => {
@@ -405,15 +407,14 @@ class ComponentCascadeDot {
             });
             this.tagCal(id, this.MODE.insert);
             element.classList.remove('dlp-label-silence');
-            element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
-            element.insertAdjacentHTML('beforeend', `<i>${_component.check}</i>`);
+            element.querySelector('i.right') === null && element.insertAdjacentHTML('beforeend', `<i class="right">${_component.check}</i>`);
             this.selectToChildren(stack + 1, data.nodes);
             this.selectToSelected(element, stack);
             this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
         } else if (data.checked === true) {
             data.checked = false;
             this.tagCal(id, this.MODE.delete);
-            element.querySelector('i') != null && element.removeChild(element.querySelector('i'));
+            element.querySelector('i') !== null && element.removeChild(element.querySelector('i'));
             for (let D of this.SELECTED_DOM.childNodes) {
                 if (parseInt(D.getAttribute('data-id')) === id) {
                     D.remove();
@@ -472,7 +473,7 @@ class ComponentCascadeDot {
             }
             if (checked === true && node === data.key && data.mark !== true) {
                 data.mark = true;
-                D.insertAdjacentHTML('beforeend', `<i>${_component.check_circle}</i>`);
+                D.insertAdjacentHTML('beforeend', `<i class="right">${_component.check_circle}</i>`);
             }
             if (checked === false && node === data.key) {
                 let nodes = this.dimensional_data[stack][index].nodes;
@@ -483,9 +484,9 @@ class ComponentCascadeDot {
                         break;
                     }
                 }
-                if (cancel && (D.querySelector('i') instanceof HTMLElement)) {
+                if (cancel && (D.querySelector('i.right') instanceof HTMLElement)) {
                     data.mark = false;
-                    D.querySelector('i').remove();
+                    D.querySelector('i.right').remove();
                 }
             }
         });
@@ -565,8 +566,7 @@ class ComponentCascadeDot {
                 this.COVER_STACK_HASH_DOM = [];
             }
             return;
-        }
-        if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
+        } else if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
             this.COVER_STACK_HASH_DOM = [];
             this.SELECT_COVER_DOM = document.createElement('div');
             this.SELECT_COVER_DOM.className = 'dot-select-cover dlp-scroll dot-select-cascade';
@@ -585,7 +585,8 @@ class ComponentCascadeDot {
     searchCoverClick(stack, data, dom) {
         if (data.nodes !== null) {
             let nextStack = stack + 1;
-            this.searchPushTag(this.dimensional_data[nextStack], data, nextStack);
+            Array.isArray(this.dimensional_data[nextStack]) &&
+            this.searchPushTag(data.nodes, this.dimensional_data[nextStack], nextStack);
             return;
         }
         (dom instanceof HTMLElement) && dom.click();
@@ -593,19 +594,23 @@ class ComponentCascadeDot {
 
     searchPushTag(search, data, stack) {
         data.forEach((d, k) => {
-            if (d.val.indexOf(search.value) !== -1 &&
-                (!Array.isArray(this.COVER_STACK_HASH_DOM[stack]) || this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) === -1)) {
-                let div = document.createElement('div');
-                div.className = 'dlp dlp-text dlp-label';
-                div.textContent = d.val;
-                div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
-                this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
-                if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
-                    this.COVER_STACK_HASH_DOM[stack] = [d.key];
-                    return;
-                }
-                this.COVER_STACK_HASH_DOM[stack].push(d.key);
+            if (Array.isArray(search)) {
+                if (search.indexOf(d.key) === -1) return;
+            } else {
+                if (d.val.indexOf(search.value) === -1) return;
             }
+            if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
+            let div = document.createElement('div');
+            div.className = 'dlp dlp-text dlp-label';
+            div.textContent = d.val;
+            if (d.nodes !== null) div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
+            div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
+            this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
+            if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
+                this.COVER_STACK_HASH_DOM[stack] = [d.key];
+                return;
+            }
+            this.COVER_STACK_HASH_DOM[stack].push(d.key);
         });
     }
 
@@ -1072,5 +1077,168 @@ class ComponentSortable {
 
     getDragY(e) {
         return e.touches ? (e.touches[0] || e.changedTouches[0]).pageY : e.pageY;
+    }
+}
+
+class ComponentCascadeLine {
+    constructor(name, select) {
+        if (!Array.isArray(select)) {
+            console.error('CascadeLine param select must be array!');
+            return;
+        }
+        this.name = name;
+        this.DOM = document.getElementById(name);
+        this.make().makeSelect(select);
+    }
+
+    make() {
+        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
+        this.DOM.insertAdjacentHTML('afterbegin', html);
+        this.DOM.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+        });
+        this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
+        return this;
+    }
+
+    makeSelect(select) {
+        this.dimensional_data = [];
+        _component.dimensional(this.dimensional_data, select);
+        let object = this;
+        for (let stack in this.dimensional_data) {
+            if (!this.dimensional_data.hasOwnProperty(stack)) continue;
+            stack = parseInt(stack);
+            let data = this.dimensional_data[stack];
+            let stackDom = document.createElement('div');
+            stackDom.className = 'dot-cascade-stack dlp-scroll';
+            data.forEach((v, k) => {
+                if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
+                    v.nodes = v.nodes.map((N) => N.key);
+                } else {
+                    v.nodes = null;
+                }
+                let div = document.createElement('div');
+                div.className = 'dlp dlp-text dlp-label';
+                div.textContent = v.val;
+                div.setAttribute('data-id', v.key);
+                div.setAttribute('data-k', k);
+                div.addEventListener('click', this.select.bind(this, div, stack));
+                if (v.nodes !== null) {
+                    div.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                        let k = parseInt(div.getAttribute('data-k'));
+                        _component.contextmenu(e, []);
+                    });
+                } else {
+                    div.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                    });
+                }
+                stackDom.append(div);
+            });
+            this.CONTENT_DOM.append(stackDom);
+        }
+        this.STACKS = this.CONTENT_DOM.childNodes;
+        return this;
+    }
+
+    select(element, stack) {
+        let id = parseInt(element.getAttribute('data-id'));
+        let k = parseInt(element.getAttribute('data-k'));
+        let data = this.dimensional_data[stack][k];
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        let parentNode = data.parentNodes[data.parentNodes.length - 1];
+
+        currentStackDocuments.forEach((D, index) => {
+            if (this.dimensional_data[stack][index].parentNodes.indexOf(parentNode) !== -1) {
+                currentStackDocuments[index].classList.remove('dlp-label-silence');
+            } else {
+                currentStackDocuments[index].classList.add('dlp-label-silence');
+            }
+        });
+        if (data.checked === false) {
+            data.checked = true;
+            element.classList.remove('dlp-label-silence');
+            this.selectToChildren(stack + 1, data.nodes);
+        } else {
+            element.classList.remove('dlp-label-silence');
+            this.selectToChildren(stack + 1, data.nodes);
+        }
+        if (Array.isArray(data.parentNodes) && data.parentNodes.length > 0) {
+            let parentNodes = data.parentNodes.slice(0);
+            this.selectToParent(parentNodes, data.checked);
+        }
+    }
+
+    selectToParent(nodes, checked) {
+        let stack = nodes.length - 1;
+        let node = nodes.pop();
+        let parentNode = nodes[stack - 1];
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        let to_first_index = null;
+        currentStackDocuments.forEach((D, index) => {
+            let data = this.dimensional_data[stack][index];
+            let parents = data.parentNodes;
+            if (checked === true || checked === undefined) {
+                let D = currentStackDocuments[index];
+                if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
+                    D.classList.add('dlp-label-silence');
+                } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
+                    D.classList.add('dlp-label-silence');
+                } else {
+                    D.classList.remove('dlp-label-silence');
+                    if (to_first_index === null && parseInt(D.getAttribute('data-id')) === node) to_first_index = index;
+                }
+            }
+            if (checked === true && node === data.key && data.mark !== true) {
+                data.mark = true;
+                D.insertAdjacentHTML('beforeend', `<i>${_component.check_circle}</i>`);
+            }
+            if (checked === false && node === data.key) {
+                let nodes = this.dimensional_data[stack][index].nodes;
+                let cancel = true;
+                for (let d of this.dimensional_data[stack + 1]) {
+                    if (nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)) {
+                        cancel = false;
+                        break;
+                    }
+                }
+                if (cancel && (D.querySelector('i') instanceof HTMLElement)) {
+                    data.mark = false;
+                    D.querySelector('i').remove();
+                }
+            }
+        });
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        if (nodes.length > 0) {
+            this.selectToParent(nodes, checked);
+        }
+    }
+
+    selectToChildren(stack, nodes) {
+        if (stack > (this.dimensional_data.length - 1)) return;
+        let currentStackDocuments = this.STACKS[stack].childNodes;
+        let children = [];
+        let to_first_index = null;
+        currentStackDocuments.forEach((D, index) => {
+            if (nodes === null) {
+                D.classList.add('dlp-label-silence');
+                return;
+            }
+            if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
+                D.classList.remove('dlp-label-silence');
+                let child = this.dimensional_data[stack][index].nodes;
+                if (Array.isArray(child)) {
+                    child.forEach((c) => {
+                        if (children.indexOf(child) === -1) children.push(c);
+                    });
+                }
+                if (to_first_index === null) to_first_index = index;
+            } else {
+                D.classList.add('dlp-label-silence');
+            }
+        });
+        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        this.selectToChildren(stack + 1, children);
     }
 }

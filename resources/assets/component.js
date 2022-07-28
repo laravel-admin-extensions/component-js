@@ -605,7 +605,7 @@ class ComponentCascadeDot {
             div.textContent = d.val;
             if (d.nodes !== null) div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
             div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
-            this.SELECT_COVER_DOM.childNodes[stack].appendChild(div);
+            this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
             if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
                 this.COVER_STACK_HASH_DOM[stack] = [d.key];
                 return;

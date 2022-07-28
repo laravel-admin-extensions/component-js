@@ -83,8 +83,11 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
             li.style.width = options.W;
             if (typeof v.func === 'function') {
                 li.addEventListener('click', () => {
-                    v.func();
                     ul.remove();
+                    let sync = setTimeout(()=>{
+                        v.func();
+                        clearTimeout(sync);
+                    },100);
                 });
                 ul.append(li);
             }

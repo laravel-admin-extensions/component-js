@@ -29,8 +29,6 @@
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
     margin: 0 0.25em 0;
     padding: 2px 4px 2px 4px;
-    text-transform: none;
-    text-shadow: none;
     line-height: 1em;
     font-style: normal;
     text-align: center;
@@ -45,6 +43,8 @@
     -webkit-transition: opacity .1s ease,background-color .1s ease,color .1s ease,background .1s ease,-webkit-box-shadow .1s ease;
     transition: opacity .1s ease,background-color .1s ease,color .1s ease,background .1s ease,-webkit-box-shadow .1s ease;
     -webkit-tap-highlight-color: transparent;
+    transition-property: color,background-color,border;
+    -webkit-appearance: none;
 }
 
 .dlp-label:hover {
@@ -129,6 +129,7 @@
 }
 .dot-cascade-stack>.dlp-label-silence{
     opacity: 0.5;
+    transition: .2s ease-in-out;
 }
 
 .dlp-input{

@@ -1124,6 +1124,7 @@ class ComponentCascadeLine {
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
                 if (v.nodes !== null) {
+                    div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                     div.addEventListener("contextmenu", (e) => {
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));

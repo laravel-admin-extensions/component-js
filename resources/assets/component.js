@@ -135,11 +135,6 @@ class ComponentDot {
     };
 
     constructor(name, selected, select) {
-        this.name = name;
-        this.DOM = document.getElementById(name);
-        this.DOM.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
-        });
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -148,6 +143,11 @@ class ComponentDot {
             console.error('Dot param select must be object such as {key:val,key2:val2,...} !');
             return;
         }
+        this.name = name;
+        this.DOM = document.getElementById(name);
+        this.DOM.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+        });
         this.make(selected, select);
         this.selected_data = selected;
         this.select_data = selected.slice(0);
@@ -177,13 +177,13 @@ class ComponentDot {
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
             if (selected.indexOf(parseInt(i)) !== -1) {
-                selected_dom += `<div class="dlp dlp-text dlp-label" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
+                selected_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
                 continue;
             }
-            select_dom += `<div class="dlp dlp-text dlp-label" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
+            select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
         }
 
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
+        let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name}  .dot-selected`);
@@ -282,12 +282,12 @@ class ComponentCascadeDot {
     };
 
     constructor(name, selected, select) {
-        this.name = name;
-        this.DOM = document.getElementById(name);
         if (!Array.isArray(selected) || !Array.isArray(select)) {
             console.error('CascadeDot param selected and select must be array!');
             return;
         }
+        this.name = name;
+        this.DOM = document.getElementById(name);
         this.selected_data = selected;
         this.select_data = selected.slice(0);
         this.insert_data = [];
@@ -305,7 +305,7 @@ class ComponentCascadeDot {
     }
 
     make() {
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade dlp-scroll"></div></div></div>
+        let html = `<div class="dlp dlp-dot"><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade dlp-scroll"></div></div></div>
 <input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -785,7 +785,7 @@ class ComponentLine {
     }
 
     makeTd(td, type, value, column, attributes) {
-        var object = this;
+        let object = this;
         switch (type) {
             case 'text':
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp-text" title="${value}">${value}</p>`);

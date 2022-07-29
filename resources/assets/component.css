@@ -1,4 +1,4 @@
-.dlp{
+.dlp,.dlp *{
     font-family: "Raleway",
     "HelveticaNeue",
     "Helvetica Neue",
@@ -7,10 +7,10 @@
     sans-serif;
     font-size: 12px!important;
     border-spacing: 0!important;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    -moz-user-select: none!important;
+    -webkit-user-select: none!important;
+    -ms-user-select: none!important;
+    user-select: none!important;
 }
 .dlp i{cursor: pointer!important;}
 .dlp p{margin: 0!important;}
@@ -176,6 +176,8 @@
 #dlp-plane>div{
     position: relative;
     margin: 30px auto;
+    animation-name: dlpFadeIn;
+    animation-duration: .2s;
 }
 .dlp-plane-gauze{
     display: block;
@@ -216,4 +218,9 @@
 .dlp-contextmenu li:hover{
     background-color: #ebebeb;
     cursor: pointer;
+}
+
+@keyframes dlpFadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
 }

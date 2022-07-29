@@ -171,7 +171,7 @@
 .dlp-table tbody>tr:nth-child(even){background:#0c0c0c!important;}
 .dlp-table tbody>tr:hover{background:rgb(255 255 255 / 5%)!important;color:#fff!important}
 .dlp-table tfoot>tr{height: 40px!important}
-.dlp-table .operate-column{width:45px;text-align: center}
+.dlp-table .operate-column{width:45px;text-align: center;line-height: 9px;}
 
 #dlp-plane>div{
     position: relative;

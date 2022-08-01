@@ -460,6 +460,7 @@ class ComponentCascadeDot {
         currentStackDocuments.forEach((D, index) => {
             let data = this.dimensional_data[stack][index];
             let parents = data.parentNodes;
+            D.classList.remove('dlp-label-active');
             if (checked === true || checked === undefined) {
                 if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                     D.classList.add('dlp-label-silence');
@@ -467,7 +468,10 @@ class ComponentCascadeDot {
                     D.classList.add('dlp-label-silence');
                 } else {
                     D.classList.remove('dlp-label-silence');
-                    if (to_first_index === null && parseInt(D.getAttribute('data-id')) === node) to_first_index = index;
+                    if (to_first_index === null && parseInt(D.getAttribute('data-id')) === node){
+                        to_first_index = index;
+                        D.classList.add('dlp-label-active');
+                    }
                 }
             }
             if (checked === true && node === data.key && data.mark !== true) {

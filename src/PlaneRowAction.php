@@ -10,7 +10,7 @@ class PlaneRowAction extends RowAction
     private $title;
     private $document_class;
 
-    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback='null',$options=[])
+    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
     {
         parent::__construct();
         $this->title = $title;
@@ -19,6 +19,7 @@ class PlaneRowAction extends RowAction
         }
         $options = json_encode($options);
         $this->document_class = substr(md5($title.$url),16);
+        $callback = is_string($callback) && preg_match("/function/",$callback) ? $callback : 'null';
         Admin::script(<<<EOF
             $('.{$this->document_class}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));

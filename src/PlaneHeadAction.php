@@ -10,7 +10,7 @@ class PlaneHeadAction extends RowAction
     private $title;
     private $document_id;
 
-    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback='null',$options=[])
+    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
     {
         parent::__construct();
         $this->title = $title;
@@ -19,6 +19,7 @@ class PlaneHeadAction extends RowAction
         }
         $options = json_encode($options);
         $this->document_id = substr(md5($title.$url),16);
+        $callback = is_string($callback) && preg_match("/function/",$callback) ? $callback : 'null';
         Admin::script(<<<EOF
             $('#{$this->document_id}').click(function(){
                 new ComponentPlane('{$url}','{$xhr_url}','{$method}',{$callback},JSON.parse('{$options}'));

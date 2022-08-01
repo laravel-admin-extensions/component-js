@@ -213,7 +213,8 @@ class ComponentDot {
             if (index === -1) {
                 this.select_data.push(id);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
-            } else if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
+            }
+            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                 this.insert_data.push(id);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
@@ -226,7 +227,8 @@ class ComponentDot {
             if (index !== -1) {
                 this.select_data.splice(index, 1);
                 this.selectInputDOM.value = JSON.stringify(this.select_data);
-            } else if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
+            }
+            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                 this.delete_data.push(id);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);
             }

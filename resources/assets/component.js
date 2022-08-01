@@ -217,7 +217,7 @@ class ComponentDot {
                 this.insert_data.push(id);
                 this.insertInputDOM.value = JSON.stringify(this.insert_data);
             }
-            let index = this.delete_data.indexOf(id);
+            index = this.delete_data.indexOf(id);
             if (index !== -1) {
                 this.delete_data.splice(index, 1);
                 this.deleteInputDOM.value = JSON.stringify(this.delete_data);

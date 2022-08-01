@@ -2,17 +2,16 @@
 
 namespace DLP;
 
-use Encore\Admin\Form\Field;
 
-class Linear extends Field
+class Linear extends DLPField
 {
     protected $view = 'dlp::component';
 
     public function render()
     {
         $id = $this->formatName($this->id);
-        if(isset($this->attributes['columns'])){
-            $columns = json_encode($this->attributes['columns']);
+        if(isset($this->columns)){
+            $columns = json_encode($this->columns);
         }else{
             $columns = [];
             foreach (array_keys(current($this->options)) as $key){
@@ -20,7 +19,6 @@ class Linear extends Field
             }
             $columns = json_encode($columns);
         }
-        $this->attributes['columns'] = null;
         $options = isset($this->attributes['options']) ?  json_encode($this->attributes['options']) : json_encode(['sortable'=>true,'delete'=>true]);
         $height = isset($this->attributes['height']) ?  $this->attributes['height'] : '360px';
         $this->addVariables(['height'=>$height]);

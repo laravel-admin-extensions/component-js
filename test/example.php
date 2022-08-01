@@ -132,8 +132,7 @@ class ExampleController extends AdminController
          * attribute.height 设置高度 默认200px
          */
         $form->Dot('dot','标签选择器')
-            ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',
-            6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣'])
+            ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣'])
             ->checked([1,2,3])
             ->attribute(['height'=>'200px']);
 
@@ -150,7 +149,7 @@ class ExampleController extends AdminController
          */
         $form->CascadeDot('cascadeDot','级联标签选择器')
             ->options($this->cascadeData())
-            ->checked([614,377,550,543,544])
+            ->checked([614,550,543])
             ->attribute(['height'=>'200px']);
 
 
@@ -166,16 +165,14 @@ class ExampleController extends AdminController
             ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
             ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
             ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]])
-            ->attribute([
-            'columns' => [
+            ->columns([
                 'name' => ['name' => '名称', 'type' => 'input'],
                 'meta' => ['name' => '信息', 'type' => 'input'],
                 'url' => ['name' => '链接', 'type' => 'input'],
                 'time' => ['name' => '更新时间', 'type' => 'text'],
                 'is-small' => ['name' => '高清[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
-                'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
-                'tooltip' => ['name' => '可下载[1是 2否]', 'type' => 'input', 'style' => 'width:60px']]
-        ]);
+                'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px']
+            ]);
         return $form;
     }
 

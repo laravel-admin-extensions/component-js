@@ -122,9 +122,6 @@
     opacity: 0.5;
     transition: .2s ease-in-out;
 }
-.dot-cascade-stack>.dlp-label-active{
-    animation: dlpLabelActive ease-in-out 1s forwards;
-}
 .dlp-label>i{
     position: absolute!important;
     right: 4px!important;
@@ -225,9 +222,4 @@
 @keyframes dlpFadeIn {
     0% {opacity: 0;}
     100% {opacity: 1;}
-}
-
-@keyframes dlpLabelActive{
-    0%   {background: #d6d6d6;}
-    100% {background: #ffffff;}
 }

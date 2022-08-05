@@ -11,6 +11,7 @@
     -webkit-user-select: none!important;
     -ms-user-select: none!important;
     user-select: none!important;
+    text-align: left;
 }
 .dlp i{cursor: pointer!important;}
 .dlp p{margin: 0!important;}

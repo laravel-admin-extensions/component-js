@@ -155,16 +155,12 @@ class ExampleController extends AdminController
 
         /**
          * 线组件
+         * columns 设置列表head名称 row字段输出格式input,text,hidden
          * options 设置数据集 二维数组
-         * attribute.columns 设置列表head名称 row字段输出格式input,text,hidden
          * attribute.height  设置高度 默认360px
          * attribute.options 设置操作列 默认开启['sortable'=>true,'delete'=>true]
          */
         $form->Linear('flux_linkage', '磁力链接')
-            ->options([
-            ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-            ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-            ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]])
             ->columns([
                 'name' => ['name' => '名称', 'type' => 'input'],
                 'meta' => ['name' => '信息', 'type' => 'input'],
@@ -172,7 +168,11 @@ class ExampleController extends AdminController
                 'time' => ['name' => '更新时间', 'type' => 'text'],
                 'is-small' => ['name' => '高清[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
                 'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px']
-            ]);
+            ])
+            ->options([
+                ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
+                ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
+                ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]]);
         return $form;
     }
 

@@ -100,6 +100,9 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
         });
         ul.style.top = `${event.pageY - 3}px`;
         ul.style.left = `${event.pageX - 3}px`;
+        ul.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+        });
         ul.addEventListener('mouseleave', () => {
             ul.remove();
         });

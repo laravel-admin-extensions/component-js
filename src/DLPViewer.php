@@ -8,7 +8,6 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class DLPViewer
@@ -24,12 +23,6 @@ class DLPViewer
      */
     public static function makeForm(Content $content)
     {
-        $request = Request::capture();
-        $data = $request->all();
-        if(isset($data['dlp_json_view'])){
-            $list = json_decode(json_encode(DB::select($data['source'])), true);
-            return DLPViewer::result(true, 'source', $list);
-        }
         return view('dlp::content', [
             '_content_' => str_replace('pjax-container', '', $content->build())
         ])->render();

@@ -40,7 +40,7 @@ class DLPField extends Field
 
         $this->checked = array_map(function ($v) {
             return (int)$v;
-        }, array_values($checked));;
+        }, array_values($checked));
         return $this;
     }
 
@@ -57,7 +57,20 @@ class DLPField extends Field
             $columns = $columns->toArray();
         }
 
-        $this->columns = $columns;;
+        $this->columns = $columns;
+        return $this;
+    }
+
+    /**
+     * Set the field option checked.
+     *
+     * @param string $url
+     *
+     * @return $this
+     */
+    public function xhr($url)
+    {
+        $this->xhr = $url;
         return $this;
     }
 }

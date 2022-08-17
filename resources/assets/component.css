@@ -132,6 +132,18 @@
     left: 0!important;
     right: unset!important;
 }
+.dot-cascade-panel{
+    position: absolute;
+    z-index: 100000;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgb(43 43 43);
+    border-radius: 5px;
+    animation-name: dlpFadeIn;
+    animation-duration: .2s;
+}
 .dlp-input{
     vertical-align: middle;
     display: inline-block;
@@ -192,10 +204,10 @@
     -webkit-overflow-scrolling: touch;
     outline: 0;
 }
-#dlp-plane .plane-header{
-    background-color: rgb(44 44 44); padding: 3px; display: flex; justify-content: flex-end;border-bottom: 1px solid #e5e5e5;border-radius: 3px 3px 0 0;
+#dlp-plane .plane-header,.dot-cascade-panel>.plane-header{
+    background-color: rgb(44 44 44); padding: 3px; display: flex; justify-content: flex-end;border-bottom: 1px solid #505050;border-radius: 3px 3px 0 0;
 }
-#dlp-plane .plane-body{
+#dlp-plane .plane-body,.dot-cascade-panel>.plane-body{
     background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
 }
 

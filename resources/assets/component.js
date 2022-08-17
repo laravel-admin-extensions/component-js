@@ -1108,18 +1108,19 @@ class ComponentSortable {
 }
 
 class ComponentCascadeLine {
-    constructor(name, select) {
+    constructor(name, select,xhr_url) {
         if (!Array.isArray(select)) {
             console.error('CascadeLine param select must be array!');
             return;
         }
         this.name = name;
         this.DOM = document.getElementById(name);
+        this.XHR_URL = xhr_url;
         this.make().makeSelect(select);
     }
 
     make() {
-        let html = `<div class="dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
+        let html = `<div class="dlp-dot" style="position: relative;"><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
@@ -1162,6 +1163,29 @@ class ComponentCascadeLine {
                         e.preventDefault();
                     });
                 }
+                let object = this;
+                div.addEventListener("contextmenu", (e) => {
+                    e.preventDefault();
+                    e.target.click();
+                    let k = parseInt(div.getAttribute('data-k'));
+                    _component.contextmenu(e, [
+                        {
+                            title: '新增', func: () => {
+                                object.nodeInsert();
+                            }
+                        },
+                        {
+                            title: '修改', func: () => {
+
+                            }
+                        },
+                        {
+                            title: '删除', func: () => {
+
+                            }
+                        }
+                    ]);
+                });
                 stackDom.append(div);
             });
             this.CONTENT_DOM.append(stackDom);
@@ -1265,5 +1289,30 @@ class ComponentCascadeLine {
         }
         let left_mark = dom.querySelector('i.left');
         if (left_mark) left_mark.innerHTML = _component.caret_right;
+    }
+
+    panel(){
+        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll"></div></div>`;
+        this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
+        let panelDom = this.DOM.childNodes[0].lastChild;
+        /*X*/
+        let X = document.createElement('i');
+        X.insertAdjacentHTML('afterbegin', _component.close);
+        X.addEventListener('click', function () {
+            panelDom.remove();
+        }, false);
+        panelDom.querySelector('.plane-header').append(X);
+    }
+
+    nodeInsert(){
+        this.panel();
+    }
+
+    nodeUpdate(){
+
+    }
+
+    nodeDelete(){
+
     }
 }

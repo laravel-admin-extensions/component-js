@@ -238,8 +238,7 @@
 }
 
 .dlp-loader {
-    background: #000;
-    background: radial-gradient(#222, #000);
+    background: radial-gradient(#3e3e3e, #000);
     overflow: hidden;
     top: 0;
     left:0;

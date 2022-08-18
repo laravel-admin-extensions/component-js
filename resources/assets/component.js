@@ -11,14 +11,6 @@ const _component = {
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
 </svg>`,
     'close': `<svg style="vertical-align: middle;" width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="white" stroke-width="2.5" d="M16,16 L4,4"></path><path fill="none" stroke="white" stroke-width="2.5" d="M16,4 L4,16"></path></svg>`,
-    'loading': `<svg style="width: 100%;height:100px" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-<path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
-<path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-C22.32,8.481,24.301,9.057,26.013,10.047z"><animateTransform attributeType="xml" attributeName="transform"
-type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/></path></svg>`,
     'check': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
 </svg>`,
@@ -59,6 +51,31 @@ type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/
         xhr.onerror = function (e) {
             console.error(e);
         };
+    },
+    loading:function(DOM,remove=false){
+        if(remove){
+            DOM.innerHTML = '';
+            return;
+        }
+        DOM.insertAdjacentHTML('afterbegin', `<div class="dlp-loader">
+        <div class="dlp-loader-inner">
+            <div class="dlp-loader-line-wrap">
+                <div class="dlp-loader-line"></div>
+            </div>
+            <div class="dlp-loader-line-wrap">
+                <div class="dlp-loader-line"></div>
+            </div>
+            <div class="dlp-loader-line-wrap">
+                <div class="dlp-loader-line"></div>
+            </div>
+            <div class="dlp-loader-line-wrap">
+                <div class="dlp-loader-line"></div>
+            </div>
+            <div class="dlp-loader-line-wrap">
+                <div class="dlp-loader-line"></div>
+            </div>
+        </div>
+    </div>`);
     },
     alert: function (message, time = 1, callback = null) {
         let div = document.createElement('div');
@@ -925,10 +942,10 @@ class ComponentPlane {
     }
 
     makeContent() {
-        this.loading();
+        _component.loading(this.MODEL_BODY_DOM);
         let object = this;
         _component.request(this.URL, 'GET', {}, function (response) {
-            object.loading(true);
+            _component.loading(object.MODEL_BODY_DOM,true);
             let fragment = document.createRange().createContextualFragment(response);
             document.querySelector('#dlp-plane .plane-body').appendChild(fragment);
             let submit = object.MODEL_BODY_DOM.querySelector('button[type="submit"]');
@@ -958,22 +975,6 @@ class ComponentPlane {
                 });
             }
         });
-    }
-
-    loading(remove = false) {
-        if (remove && this.LOADING_DOM) {
-            this.MODEL_BODY_DOM.removeChild(this.LOADING_DOM);
-            this.LOADING_DOM = null;
-            return;
-        }
-        if (this.LOADING_DOM instanceof HTMLElement) {
-            return;
-        }
-        this.LOADING_DOM = document.createElement('div');
-        this.LOADING_DOM.style.width = '100%';
-        this.LOADING_DOM.style.height = '100px';
-        this.LOADING_DOM.insertAdjacentHTML('afterbegin', _component.loading);
-        this.MODEL_BODY_DOM.append(this.LOADING_DOM);
     }
 }
 
@@ -1153,15 +1154,6 @@ class ComponentCascadeLine {
                 div.addEventListener('click', this.select.bind(this, div, stack));
                 if (v.nodes !== null) {
                     div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
-                    div.addEventListener("contextmenu", (e) => {
-                        e.preventDefault();
-                        let k = parseInt(div.getAttribute('data-k'));
-                        _component.contextmenu(e, []);
-                    });
-                } else {
-                    div.addEventListener("contextmenu", (e) => {
-                        e.preventDefault();
-                    });
                 }
                 let object = this;
                 div.addEventListener("contextmenu", (e) => {
@@ -1176,7 +1168,7 @@ class ComponentCascadeLine {
                         },
                         {
                             title: '修改', func: () => {
-
+                                object.nodeUpdate();
                             }
                         },
                         {
@@ -1302,6 +1294,7 @@ class ComponentCascadeLine {
             panelDom.remove();
         }, false);
         panelDom.querySelector('.plane-header').append(X);
+        _component.loading(panelDom.querySelector('.plane-body'));
     }
 
     nodeInsert(){
@@ -1309,7 +1302,7 @@ class ComponentCascadeLine {
     }
 
     nodeUpdate(){
-
+        this.panel();
     }
 
     nodeDelete(){

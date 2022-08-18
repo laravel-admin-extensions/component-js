@@ -138,7 +138,7 @@
     left: 0;
     right: 0;
     top: 0;
-    bottom: 0;
+    height: calc(100% - 21.89px);
     background: rgb(43 43 43);
     border-radius: 5px;
     animation-name: dlpFadeIn;

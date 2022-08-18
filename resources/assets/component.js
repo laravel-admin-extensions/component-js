@@ -26,6 +26,7 @@ const _component = {
 </svg>`,
     request: function (url, method = "GET", data = {}, callback = null) {
         let xhr = new XMLHttpRequest();
+        if (method === 'GET') url = _component.parseParams(url,data);
         xhr.open(method, url, true);
         xhr.timeout = 30000;
         let token = '';
@@ -52,6 +53,17 @@ const _component = {
             console.error(e);
         };
     },
+    parseParams(uri, params){
+        let paramsArray = [];
+        if(Object.keys(params).length === 0)return uri;
+        Object.keys(params).forEach(key => params[key] && paramsArray.push(`${key}=${params[key]}`));
+        if (uri.search(/\?/) === -1) {
+            uri += `?${paramsArray.join('&')}`
+        } else {
+            uri += `&${paramsArray.join('&')}`
+        }
+        return uri
+    },
     loading:function(DOM,remove=false){
         if(remove){
             DOM.innerHTML = '';
@@ -59,23 +71,12 @@ const _component = {
         }
         DOM.insertAdjacentHTML('afterbegin', `<div class="dlp-loader">
         <div class="dlp-loader-inner">
-            <div class="dlp-loader-line-wrap">
-                <div class="dlp-loader-line"></div>
-            </div>
-            <div class="dlp-loader-line-wrap">
-                <div class="dlp-loader-line"></div>
-            </div>
-            <div class="dlp-loader-line-wrap">
-                <div class="dlp-loader-line"></div>
-            </div>
-            <div class="dlp-loader-line-wrap">
-                <div class="dlp-loader-line"></div>
-            </div>
-            <div class="dlp-loader-line-wrap">
-                <div class="dlp-loader-line"></div>
-            </div>
-        </div>
-    </div>`);
+            <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
+            <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
+            <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
+            <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
+            <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
+        </div></div>`);
     },
     alert: function (message, time = 1, callback = null) {
         let div = document.createElement('div');
@@ -1110,14 +1111,14 @@ class ComponentSortable {
 }
 
 class ComponentCascadeLine {
-    constructor(name, select,xhr_url) {
+    constructor(name, select,url) {
         if (!Array.isArray(select)) {
             console.error('CascadeLine param select must be array!');
             return;
         }
         this.name = name;
         this.DOM = document.getElementById(name);
-        this.XHR_URL = xhr_url;
+        this.URL = url;
         this.make().makeSelect(select);
     }
 
@@ -1160,16 +1161,16 @@ class ComponentCascadeLine {
                 div.addEventListener("contextmenu", (e) => {
                     e.preventDefault();
                     e.target.click();
-                    let k = parseInt(div.getAttribute('data-k'));
+                    let data = Object.assign({stack:stack,index:k}, v);
                     _component.contextmenu(e, [
                         {
                             title: '新增', func: () => {
-                                object.nodeInsert();
+                                object.nodeInsert(e,data);
                             }
                         },
                         {
                             title: '修改', func: () => {
-                                object.nodeUpdate();
+                                object.nodeUpdate(e,data);
                             }
                         },
                         {
@@ -1295,15 +1296,28 @@ class ComponentCascadeLine {
             panelDom.remove();
         }, false);
         panelDom.querySelector('.plane-header').append(X);
-        _component.loading(panelDom.querySelector('.plane-body'));
+        this.PLANE_BODY = panelDom.querySelector('.plane-body');
+        _component.loading(this.PLANE_BODY);
     }
 
-    nodeInsert(){
-        this.panel();
+    nodeInsert(e,data){
+        this.panel(e,data);
+        let object = this;
+        _component.request(this.URL+'/create', 'GET', {id:data.key}, function (response) {
+            _component.loading(object.PLANE_BODY,true);
+            let fragment = document.createRange().createContextualFragment(response);
+            object.PLANE_BODY.appendChild(fragment);
+        });
     }
 
-    nodeUpdate(){
-        this.panel();
+    nodeUpdate(e,data){
+        let object = this;
+        this.panel(e,data);
+        _component.request(this.URL+'/'+data.key+'/edit', 'GET', {}, function (response) {
+            _component.loading(object.PLANE_BODY,true);
+            let fragment = document.createRange().createContextualFragment(response);
+            object.PLANE_BODY.appendChild(fragment);
+        });
     }
 
     nodeDelete(){

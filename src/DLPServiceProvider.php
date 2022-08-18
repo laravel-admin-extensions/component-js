@@ -22,6 +22,7 @@ class DLPServiceProvider extends ServiceProvider
             Form::extend('Dot', Dot::class);
             Form::extend('CascadeDot', CascadeDot::class);
             Form::extend('Linear', Linear::class);
+            Form::extend('CascadeLine', CascadeLine::class);
         });
     }
 }

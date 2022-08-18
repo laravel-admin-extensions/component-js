@@ -378,6 +378,7 @@ class ComponentCascadeDot {
                                 title: '全选', func: () => {
                                     object.checkAll(stack + 1,
                                         this.dimensional_data[stack][k].nodes, true);
+                                    e.target.click();
                                 }
                             },
                             {

@@ -166,6 +166,12 @@ const _component = {
         }
         dimension++;
         _component.dimensional(output, data.nodes, dimension, parentNodes);
+    },
+    arrayInsert(index, ...items) {
+        if (isNaN(index)) {
+            throw new TypeError('int only');
+        }
+        this.splice(index, 0, ...items);
     }
 };
 
@@ -1353,9 +1359,57 @@ class ComponentCascadeLine {
     nodeInsert(e,data,stack,k){
         this.panel(e,data);
         let object = this;
+        let nextStack = parseInt(stack) + 1;
         _component.request(this.URL+'/create', 'GET', {id:data.key}, function (response) {
             object.panelContent(response,data,object.URL,'POST',(response)=>{
+                let key = parseInt(response.data.key);
+                let val = response.data.val;
+                if(!Array.isArray(data.nodes)) data.nodes = [];
+                data.nodes.push(key);
+                let parents = data.parentNodes.slice(0);
+                parents.push(data.key);
+                if(!Array.isArray(object.dimensional_data[nextStack])){
+                    object.dimensional_data[nextStack] = [
+                        {expand:false, key:key, val:val, nodes:null, parentNodes:parents}];
+                    let v = object.dimensional_data[nextStack][0];
+                    let stackDom = document.createElement('div');
+                    stackDom.className = 'dot-cascade-stack dlp-scroll';
+                    let div = document.createElement('div');
+                    div.className = 'dlp dlp-text dlp-label';
+                    div.textContent = val;
+                    div.setAttribute('data-id', key.toString());
+                    div.setAttribute('data-k', '0');
+                    div.addEventListener('click', object.select.bind(object, div, nextStack));
+                    div.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                        e.target.click();
+                        _component.contextmenu(e, [
+                            {
+                                title: '新增', func: () => {
+                                    object.nodeInsert(e,v,stack,k);
+                                }
+                            },
+                            {
+                                title: '修改', func: () => {
+                                    object.nodeUpdate(e,v,stack,k);
+                                }
+                            },
+                            {
+                                title: '删除', func: () => {
 
+                                }
+                            }
+                        ]);
+                    });
+                    stackDom.append(div);
+                    object.CONTENT_DOM.append(stackDom);
+                }else if(data.nodes.length === 0){
+                    object.dimensional_data[nextStack].push(
+                        {expand:false, key:key, val:val, nodes:null, parentNodes:parents});
+                }else {
+
+                }
+                object.PLANE_DOM.remove();
             });
         });
     }

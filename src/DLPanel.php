@@ -80,7 +80,7 @@ EOF
     public function compile()
     {
         return <<<EOF
-<form action="" class="form-horizontal" accept-charset="UTF-8" enctype="multipart/form-data">
+<form accept-charset="UTF-8" method="post">
     <div class="box-body">{$this->html}</div>
 </form>
 EOF;

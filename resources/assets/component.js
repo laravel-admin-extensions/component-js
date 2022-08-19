@@ -1171,43 +1171,47 @@ class ComponentCascadeLine {
                 } else {
                     v.nodes = null;
                 }
-                let div = document.createElement('div');
-                div.className = 'dlp dlp-text dlp-label';
-                div.textContent = v.val;
-                div.setAttribute('data-id', v.key);
-                div.setAttribute('data-k', k);
-                div.addEventListener('click', this.select.bind(this, div, stack));
+                let labelDom = this.insertLabelDom(v,k,stack);
                 if (v.nodes !== null) {
-                    div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
+                    labelDom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                 }
-                let object = this;
-                div.addEventListener("contextmenu", (e) => {
-                    e.preventDefault();
-                    e.target.click();
-                    _component.contextmenu(e, [
-                        {
-                            title: '新增', func: () => {
-                                object.nodeInsert(e,v,stack,k);
-                            }
-                        },
-                        {
-                            title: '修改', func: () => {
-                                object.nodeUpdate(e,v,stack,k);
-                            }
-                        },
-                        {
-                            title: '删除', func: () => {
-
-                            }
-                        }
-                    ]);
-                });
-                stackDom.append(div);
+                stackDom.append(labelDom);
             });
             this.CONTENT_DOM.append(stackDom);
         }
         this.STACKS = this.CONTENT_DOM.childNodes;
         return this;
+    }
+
+    insertLabelDom(data,index,stack) {
+        let div = document.createElement('div');
+        div.className = 'dlp dlp-text dlp-label';
+        div.textContent = data.val;
+        div.setAttribute('data-id', data.key.toString());
+        div.setAttribute('data-k', index.toString());
+        div.addEventListener('click', this.select.bind(this, div, stack));
+        div.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            e.target.click();
+            _component.contextmenu(e, [
+                {
+                    title: '新增', func: () => {
+                        this.nodeInsert(e,data,stack,index);
+                    }
+                },
+                {
+                    title: '修改', func: () => {
+                        this.nodeUpdate(e,data,stack,index);
+                    }
+                },
+                {
+                    title: '删除', func: () => {
+
+                    }
+                }
+            ]);
+        });
+        return div;
     }
 
     select(element, stack) {
@@ -1374,34 +1378,7 @@ class ComponentCascadeLine {
                     let v = object.dimensional_data[nextStack][0];
                     let stackDom = document.createElement('div');
                     stackDom.className = 'dot-cascade-stack dlp-scroll';
-                    let div = document.createElement('div');
-                    div.className = 'dlp dlp-text dlp-label';
-                    div.textContent = val;
-                    div.setAttribute('data-id', key.toString());
-                    div.setAttribute('data-k', '0');
-                    div.addEventListener('click', object.select.bind(object, div, nextStack));
-                    div.addEventListener("contextmenu", (e) => {
-                        e.preventDefault();
-                        e.target.click();
-                        _component.contextmenu(e, [
-                            {
-                                title: '新增', func: () => {
-                                    object.nodeInsert(e,v,stack,k);
-                                }
-                            },
-                            {
-                                title: '修改', func: () => {
-                                    object.nodeUpdate(e,v,stack,k);
-                                }
-                            },
-                            {
-                                title: '删除', func: () => {
-
-                                }
-                            }
-                        ]);
-                    });
-                    stackDom.append(div);
+                    stackDom.append(object.insertLabelDom(v,0,nextStack));
                     object.CONTENT_DOM.append(stackDom);
                 }else if(data.nodes.length === 0){
                     object.dimensional_data[nextStack].push(

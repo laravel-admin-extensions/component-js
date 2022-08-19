@@ -3,7 +3,7 @@ const _component = {
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
   <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
 </svg>`,
-    'move': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
+    'move': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
 </svg>`,
     'write': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -18,13 +18,25 @@ const _component = {
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
 </svg>`,
-    'caret_right': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+    'caret_right': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
 </svg>`,
-    'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+    'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
 </svg>`,
-    request: function (url, method = "GET", data = {}, callback = null) {
+    'sub_check': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="rgb(54 54 54)" viewBox="0 0 16 16">
+  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+</svg>`,
+    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+  <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+    s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+    c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
+  <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+    C22.32,8.481,24.301,9.057,26.013,10.047z">
+    <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"></animateTransform>
+    </path>
+  </svg>`,
+    request: function (url, method = "GET", data = {}, callback = null,error_callback=null) {
         let xhr = new XMLHttpRequest();
         if (method === 'GET') url = _component.parseParams(url,data);
         xhr.open(method, url, true);
@@ -43,6 +55,10 @@ const _component = {
             xhr.responseType = "json";
             xhr.send(data);
         }
+        xhr.onload = function () {
+            if (this.status >= 200 && this.status < 300) return;
+            if (typeof error_callback === 'function') error_callback();
+        };
         xhr.onreadystatechange = function () {
             if (xhr.readyState === xhr.DONE && xhr.status === 200) {
                 let response = xhr.response;
@@ -51,6 +67,7 @@ const _component = {
         };
         xhr.onerror = function (e) {
             console.error(e);
+            if (typeof error_callback === 'function') error_callback(e);
         };
     },
     parseParams(uri, params){
@@ -1161,16 +1178,15 @@ class ComponentCascadeLine {
                 div.addEventListener("contextmenu", (e) => {
                     e.preventDefault();
                     e.target.click();
-                    let data = Object.assign({stack:stack,index:k}, v);
                     _component.contextmenu(e, [
                         {
                             title: '新增', func: () => {
-                                object.nodeInsert(e,data);
+                                object.nodeInsert(e,v,stack,k);
                             }
                         },
                         {
                             title: '修改', func: () => {
-                                object.nodeUpdate(e,data);
+                                object.nodeUpdate(e,v,stack,k);
                             }
                         },
                         {
@@ -1289,6 +1305,7 @@ class ComponentCascadeLine {
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
+        this.PLANE_DOM = panelDom;
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
@@ -1300,23 +1317,62 @@ class ComponentCascadeLine {
         _component.loading(this.PLANE_BODY);
     }
 
-    nodeInsert(e,data){
-        this.panel(e,data);
+    panelContent(response,data,xhr,method,callback) {
+        _component.loading(this.PLANE_BODY,true);
+        let fragment = document.createRange().createContextualFragment(response);
+        this.PLANE_BODY.appendChild(fragment);
+        let submit = document.createElement('button');
+        submit.className = 'dlp-btn-round';
+        submit.insertAdjacentHTML('afterbegin',_component.sub_check);
+        submit.addEventListener('click',this.submitEvent.bind(this, submit,data,xhr,method,callback));
+        this.PLANE_BODY.append(submit);
+    }
+
+    submitEvent(element,data,xhr,method,callback) {
+        if(this.submit_block) return;
+        this.submit_block = true;
+        element.innerHTML = _component.sub_loading;
+        let form = this.DOM.getElementsByTagName('form')[0];
+        let formdata = new FormData(form);
+        formdata.set('node-key',data.key);
+        formdata.set('node-val',data.val);
+        formdata.set('_method', method);
         let object = this;
-        _component.request(this.URL+'/create', 'GET', {id:data.key}, function (response) {
-            _component.loading(object.PLANE_BODY,true);
-            let fragment = document.createRange().createContextualFragment(response);
-            object.PLANE_BODY.appendChild(fragment);
+        _component.request(xhr, 'POST', formdata, function (response) {
+            object.submit_block = false;
+            element.innerHTML = _component.sub_check;
+            if(response.code !== 0){
+                return _component.alert(response.message,3);
+            }
+            callback(response);
+        },function () {
+            object.submit_block = false;
         });
     }
 
-    nodeUpdate(e,data){
-        let object = this;
+    nodeInsert(e,data,stack,k){
         this.panel(e,data);
-        _component.request(this.URL+'/'+data.key+'/edit', 'GET', {}, function (response) {
-            _component.loading(object.PLANE_BODY,true);
-            let fragment = document.createRange().createContextualFragment(response);
-            object.PLANE_BODY.appendChild(fragment);
+        let object = this;
+        _component.request(this.URL+'/create', 'GET', {id:data.key}, function (response) {
+            object.panelContent(response,data,object.URL,'POST',(response)=>{
+
+            });
+        });
+    }
+
+    nodeUpdate(e,data,stack,k){
+        this.panel(e,data);
+        let object = this;
+        _component.request(this.URL+'/'+data.key+'/edit', 'GET', {val:data.val}, function (response) {
+            object.panelContent(response,data,object.URL+'/'+data.key,'PUT',(response)=>{
+                let val = response.data.val;
+                data.val = val;
+                for (let node of e.target.childNodes){
+                    if(node instanceof HTMLElement) continue;
+                    node.nodeValue = val;
+                }
+                object.PLANE_DOM.remove();
+            });
         });
     }
 

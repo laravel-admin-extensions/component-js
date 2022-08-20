@@ -1,8 +1,13 @@
 <?php
 
-namespace DLP;
+namespace DLP\Widget;
 
+use DLP\DLPField;
 
+/**
+ * Class CascadeDot
+ * @package DLP\Widget
+ */
 class CascadeDot extends DLPField
 {
     protected $view = 'dlp::component';

@@ -1,15 +1,16 @@
 <?php
 
-namespace DLP;
+namespace DLP\Widget\PlaneAction;
 
 use Encore\Admin\Actions\RowAction;
 use Encore\Admin\Admin;
 
-class PlaneRowAction extends RowAction
+/**
+ * Class DLPRowAction
+ * @package DLP\Widget\PlaneAction
+ */
+class RowPos extends RowAction
 {
-    private $title;
-    private $document_class;
-
     public function __construct($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
     {
         parent::__construct();

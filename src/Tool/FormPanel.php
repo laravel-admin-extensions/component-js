@@ -1,19 +1,13 @@
 <?php
 
-namespace DLP;
+namespace DLP\Tool;
 
-use Encore\Admin\Actions\RowAction;
-use Encore\Admin\Admin;
-use Encore\Admin\Form;
-use Encore\Admin\Grid;
-use Encore\Admin\Layout\Content;
-use Illuminate\Http\Request;
 
 /**
- * Class DLPanel
- * @package DLP
+ * Class FormPanel
+ * @package DLP\Tool
  */
-class DLPanel
+class FormPanel
 {
     private $html = '';
 

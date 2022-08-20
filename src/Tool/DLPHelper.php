@@ -1,11 +1,11 @@
 <?php
 
-namespace DLP;
+namespace DLP\Tool;
 
 
 /**
  * Class DLPHelper
- * @package DLP
+ * @package DLP\Tool
  */
 class DLPHelper
 {
@@ -88,5 +88,23 @@ class DLPHelper
                 $d = str_replace($tag, '', $d);
             }
         }
+    }
+
+    /**
+     * 表单提交ajax返回数据格式
+     * @param bool $success
+     * @param string $message
+     * @param array $data
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function result($success = true, $message = 'OK', $data = [])
+    {
+        return response()->json([
+            'code' => $success ? 0 : 1,
+            'data' => $data,
+            'message' => $message
+        ], 200)
+            ->header('Content-Type', 'application/json;charset=utf-8')
+            ->header('Access-Control-Allow-Origin', '*');
     }
 }

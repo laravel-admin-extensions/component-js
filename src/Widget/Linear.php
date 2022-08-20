@@ -1,8 +1,13 @@
 <?php
 
-namespace DLP;
+namespace DLP\Widget;
 
+use DLP\DLPField;
 
+/**
+ * Class Linear
+ * @package DLP\Widget
+ */
 class Linear extends DLPField
 {
     protected $view = 'dlp::component';

@@ -6,6 +6,10 @@ use Encore\Admin\Admin;
 use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
+/**
+ * Class CascadeLineAbstract
+ * @package DLP
+ */
 abstract class CascadeLineAbstract
 {
     public function index(Content $content)

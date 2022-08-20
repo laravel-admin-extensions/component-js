@@ -2,6 +2,10 @@
 
 namespace DLP;
 
+use DLP\Widget\CascadeDot;
+use DLP\Widget\CascadeLine;
+use DLP\Widget\Dot;
+use DLP\Widget\Linear;
 use Illuminate\Support\ServiceProvider;
 use Encore\Admin\Admin;
 use Encore\Admin\Form;

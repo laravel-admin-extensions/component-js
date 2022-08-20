@@ -65,6 +65,7 @@ class Assistant
     }
 
     /**
+     * 数组敏感字符过滤 (转json)
      * @param array $data
      * @param array $tag
      * @return array

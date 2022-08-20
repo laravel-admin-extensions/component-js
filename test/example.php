@@ -2,8 +2,8 @@
 
 namespace App\Admin\Controllers;
 
-use DLP\PlaneHeadAction;
-use DLP\PlaneRowAction;
+use DLP\Tool\Assistant;
+use DLP\Widget\Plane;
 use Encore\Admin\Admin;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
@@ -40,7 +40,7 @@ class ExampleController extends AdminController
         $grid->disableCreateButton();
         $url = config('app.url') . Route::current()->uri;
         /**
-         * 弹窗模式:设置列表-头部操作方法 PlaneHeadAction
+         * 弹窗模式:设置列表-头部操作方法
          * title    名称
          * url      弹窗页地址
          * xhr_url  表单提交地址
@@ -50,10 +50,10 @@ class ExampleController extends AdminController
          *          alert(response);
          *      }
          */
-        $grid->tools->append(new PlaneHeadAction('新增',  $url . '/create', $url, 'POST'));
+        $grid->tools->append(Plane::headAction('新增',  $url . '/create', $url, 'POST'));
 
         /**
-         * 弹窗模式:设置列表-行操作方法 PlaneRowAction
+         * 弹窗模式:设置列表-行操作方法
          * title    名称
          * url      弹窗页地址 {id}反向匹配当前行id
          * xhr_url  表单提交地址 {id}反向匹配当前行id
@@ -65,8 +65,8 @@ class ExampleController extends AdminController
          */
         $grid->actions(function ($actions)use($url){
             $actions->disableEdit();
-            $actions->add(new PlaneRowAction('编辑',$url . '/{id}/edit',$url . '/{id}'));
-            $actions->add(new PlaneRowAction('自定义页',$url . '/{id}/blank'));
+            $actions->add(Plane::rowAction('编辑',$url . '/{id}/edit',$url . '/{id}'));
+            $actions->add(Plane::rowAction('自定义页',$url . '/{id}/blank'));
         });
         return $grid;
     }
@@ -75,8 +75,8 @@ class ExampleController extends AdminController
     {
         $content = $content
             ->body($this->form());
-        /*弹窗模式 渲染模板DLPViewer::makeForm*/
-        return DLPViewer::makeForm($content);
+        /*弹窗模式 渲染form表单模板 Plane::form*/
+        return Plane::form($content);
     }
 
     public function store()
@@ -87,10 +87,10 @@ class ExampleController extends AdminController
            //TODO
         } catch (\Exception $e) {
             DB::rollBack();
-            return DLPViewer::result(false, $e->getMessage());
+            return Assistant::result(false, $e->getMessage());
         }
         DB::commit();
-        return DLPViewer::result(true, '');
+        return Assistant::result(true, '');
     }
 
 
@@ -98,8 +98,8 @@ class ExampleController extends AdminController
     {
         $content = $content
             ->body($this->form($id)->edit($id));
-        /*弹窗模式 渲染模板DLPViewer::makeForm*/
-        return DLPViewer::makeForm($content);
+        /*弹窗模式 渲染form表单模板 Plane::form*/
+        return Plane::form($content);
     }
 
     public function update($id)
@@ -110,10 +110,10 @@ class ExampleController extends AdminController
             //TODO
         } catch (\Exception $e) {
             DB::rollBack();
-            return DLPViewer::result(false, $e->getMessage());
+            return Assistant::result(false, $e->getMessage());
         }
         DB::commit();
-        return DLPViewer::result(true, '');
+        return Assistant::result(true, '');
     }
 
     /**
@@ -179,7 +179,8 @@ class ExampleController extends AdminController
     public function blank()
     {
         $html = '<h1>松下紗栄子</h1>';
-        return DLPViewer::makeHtml($html);
+        /*弹窗模式 渲染自定义页模板 Plane::html*/
+        return Plane::html($html);
     }
 
     private function cascadeData()

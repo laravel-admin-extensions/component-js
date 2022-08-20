@@ -2,6 +2,9 @@
 namespace DLP;
 
 
+use DLP\Tool\Assistant;
+use DLP\Tool\FormPanel;
+use DLP\Widget\Plane;
 use Encore\Admin\Admin;
 use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
@@ -21,7 +24,7 @@ abstract class CascadeLineAbstract
     {
         $request = Request::capture();
         $data = $request->all();
-        $view = new DLPanel();
+        $view = new FormPanel();
         /**
          * TODO
          * $view->input('column','参数')
@@ -30,7 +33,7 @@ abstract class CascadeLineAbstract
         $view->input('insert-val','参数val');
         $content = $content
             ->body($view->compile());
-        return DLPViewer::makeForm($content);
+        return Plane::form($content);
     }
 
     public function store()
@@ -41,16 +44,16 @@ abstract class CascadeLineAbstract
             //TODO insert node
             $result = ['key'=>$data['insert-key'],'val'=>$data['insert-val']];
         }catch (\Exception $e){
-            return DLPViewer::result(false,$e->getMessage());
+            return Assistant::result(false,$e->getMessage());
         }
-        return DLPViewer::result(true,'OK',$result);
+        return Assistant::result(true,'OK',$result);
     }
 
     public function edit($id,Content $content)
     {
         $request = Request::capture();
         $data = $request->all();
-        $view = new DLPanel();
+        $view = new FormPanel();
         /**
          * TODO
          * $view->input('column','参数',value);
@@ -58,7 +61,7 @@ abstract class CascadeLineAbstract
         $view->input('update-val','参数',$data['val']);
         $content = $content
             ->body($view->compile());
-        return DLPViewer::makeForm($content);
+        return Plane::form($content);
     }
 
     public function update($id)
@@ -69,9 +72,9 @@ abstract class CascadeLineAbstract
             //TODO update node
             $result = ['val'=>$data['update-val']];
         }catch (\Exception $e){
-            return DLPViewer::result(false,$e->getMessage());
+            return Assistant::result(false,$e->getMessage());
         }
-        return DLPViewer::result(true,'OK',$result);
+        return Assistant::result(true,'OK',$result);
     }
 
     public function destroy($id)
@@ -81,8 +84,8 @@ abstract class CascadeLineAbstract
         try{
             //TODO delete node
         }catch (\Exception $e){
-            return DLPViewer::result(false,$e->getMessage());
+            return Assistant::result(false,$e->getMessage());
         }
-        return DLPViewer::result(true,'OK');
+        return Assistant::result(true,'OK');
     }
 }

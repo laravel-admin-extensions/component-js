@@ -3,27 +3,38 @@
 namespace DLP\Widget;
 
 
-use DLP\Widget\PlaneAction\HeadPos;
-use DLP\Widget\PlaneAction\RowPos;
+use DLP\Widget\PlaneAction\HeadPosAction;
+use DLP\Widget\PlaneAction\RowPosAction;
 use Encore\Admin\Layout\Content;
 
 class Plane
 {
     /**
-     * @param $pos
      * @param $title
      * @param $url
      * @param null $xhr_url
      * @param string $method
      * @param null $callback
      * @param array $options
-     * @return null
+     * @return HeadPosAction
      */
-    public static function action($pos,$title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
+    public static function headAction($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
     {
-        if($pos === HeadPos::class || $pos === RowPos::class)
-            return new $pos($title,$url,$xhr_url,$method,$callback,$options);
-        throw new \Exception('pos param must be HeadPos::class or RowPos::class');
+        return new HeadPosAction($title,$url,$xhr_url,$method,$callback,$options);
+    }
+
+    /**
+     * @param $title
+     * @param $url
+     * @param null $xhr_url
+     * @param string $method
+     * @param null $callback
+     * @param array $options
+     * @return RowPosAction
+     */
+    public static function rowAction($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
+    {
+        return new RowPosAction($title,$url,$xhr_url,$method,$callback,$options);
     }
 
     /**

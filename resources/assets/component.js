@@ -395,6 +395,7 @@ class ComponentCascadeDot {
                 if (v.nodes !== null) {
                     div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                     div.addEventListener("contextmenu", (e) => {
+                        e.target.click();
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
                         _component.contextmenu(e, [
@@ -402,7 +403,6 @@ class ComponentCascadeDot {
                                 title: '全选', func: () => {
                                     object.checkAll(stack + 1,
                                         this.dimensional_data[stack][k].nodes, true);
-                                    e.target.click();
                                 }
                             },
                             {

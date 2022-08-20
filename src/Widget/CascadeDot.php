@@ -5,6 +5,7 @@ namespace DLP\Widget;
 use DLP\DLPField;
 
 /**
+ * 点 - 级联选择器
  * Class CascadeDot
  * @package DLP\Widget
  */

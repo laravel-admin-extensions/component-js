@@ -5,6 +5,7 @@ namespace DLP\Widget;
 use DLP\DLPField;
 
 /**
+ * 线 - 级联控制器
  * Class CascadeLine
  * @package DLP\Widget
  */

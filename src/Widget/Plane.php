@@ -7,6 +7,11 @@ use DLP\Widget\PlaneAction\HeadPosAction;
 use DLP\Widget\PlaneAction\RowPosAction;
 use Encore\Admin\Layout\Content;
 
+/**
+ * 面
+ * Class Plane
+ * @package DLP\Widget
+ */
 class Plane
 {
     /**

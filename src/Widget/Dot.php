@@ -5,6 +5,7 @@ namespace DLP\Widget;
 use DLP\DLPField;
 
 /**
+ * 点
  * Class Dot
  * @package DLP\Widget
  */

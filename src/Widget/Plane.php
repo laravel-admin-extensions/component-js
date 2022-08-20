@@ -10,6 +10,7 @@ use Encore\Admin\Layout\Content;
 class Plane
 {
     /**
+     * 列表页 头部按钮
      * @param $title
      * @param $url
      * @param null $xhr_url
@@ -24,6 +25,7 @@ class Plane
     }
 
     /**
+     * 列表页 行操作按钮
      * @param $title
      * @param $url
      * @param null $xhr_url
@@ -38,7 +40,7 @@ class Plane
     }
 
     /**
-     * 弹窗表单视图生成
+     * 弹窗表单视图模板
      * @param Content $content
      * @return array|string
      * @throws \Throwable
@@ -51,7 +53,7 @@ class Plane
     }
 
     /**
-     * 弹窗自定义视图生成
+     * 弹窗自定义视图模板
      * @param string $html
      * @return array|string
      * @throws \Throwable

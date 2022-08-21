@@ -23,70 +23,79 @@ abstract class CascadeLineAbstract
 
     public function create(Content $content)
     {
-        $request = Request::capture();
-        $data = $request->all();
-        $view = new FormPanel();
-        /**
-         * TODO
-         * $view->input('column','参数')
-         */
-        $view->input('insert-key','参数key');
-        $view->input('insert-val','参数val');
+        $formPanel = new FormPanel();
+        $this->createForm($formPanel);
         $content = $content
-            ->body($view->compile());
+            ->body($formPanel->compile());
         return Plane::form($content);
     }
+
+    /**
+     * TODO
+     * $formPanel->input('column','参数')
+     * @param FormPanel $formPanel
+     */
+    abstract function createForm(FormPanel $formPanel);
 
     public function store()
     {
-        $request = Request::capture();
-        $data = $request->all();
-        try{
-            //TODO insert node
-            $result = ['key'=>$data['insert-key'],'val'=>$data['insert-val']];
-        }catch (\Exception $e){
-            return Assistant::result(false,$e->getMessage());
+        try {
+            $result = $this->storeAction();
+        } catch (\Exception $e) {
+            return Assistant::result(false, $e->getMessage());
         }
-        return Assistant::result(true,'OK',$result);
+        return Assistant::result(true, 'OK', $result);
     }
 
-    public function edit($id,Content $content)
+    /**
+     * @return array  ['key'=>insert_node_id,'val'=>insert_node_value]
+     */
+    abstract function storeAction(): array;
+
+    public function edit($id, Content $content)
     {
-        $request = Request::capture();
-        $data = $request->all();
-        $view = new FormPanel();
-        /**
-         * TODO
-         * $view->input('column','参数',value);
-         */
-        $view->input('update-val','参数',$data['val']);
+        $formPanel = new FormPanel();
+        $this->editForm($formPanel);
         $content = $content
             ->body($view->compile());
         return Plane::form($content);
     }
 
+    /**
+     * TODO
+     * $formPanel->input('column','参数',value))
+     * @param FormPanel $formPanel
+     */
+    abstract function editForm(FormPanel $formPanel);
+
     public function update($id)
     {
-        $request = Request::capture();
-        $data = $request->all();
-        try{
-            //TODO update node
-            $result = ['val'=>$data['update-val']];
-        }catch (\Exception $e){
-            return Assistant::result(false,$e->getMessage());
+        try {
+            $result = $this->updateAction($id);
+        } catch (\Exception $e) {
+            return Assistant::result(false, $e->getMessage());
         }
-        return Assistant::result(true,'OK',$result);
+        return Assistant::result(true, 'OK', $result);
     }
+
+    /**
+     * @param $id
+     * @return array  ['val'=>update_node_value]
+     */
+    abstract function updateAction($id): array;
 
     public function destroy($id)
     {
-        $request = Request::capture();
-        $data = $request->all();
-        try{
-            //TODO delete node
-        }catch (\Exception $e){
-            return Assistant::result(false,$e->getMessage());
+        try {
+            $this->destroyAction($id);
+        } catch (\Exception $e) {
+            return Assistant::result(false, $e->getMessage());
         }
-        return Assistant::result(true,'OK');
+        return Assistant::result(true, 'OK');
     }
+
+    /**
+     * @param $id
+     */
+    abstract function destroyAction($id);
 }

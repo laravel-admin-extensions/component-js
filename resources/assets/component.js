@@ -24,10 +24,7 @@ const _component = {
     'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
 </svg>`,
-    'sub_check': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="rgb(54 54 54)" viewBox="0 0 16 16">
-  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-</svg>`,
-    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 40 40" stroke="black" style="background: #dd4b39;border-radius: 50%;" enable-background="new 0 0 40 40" xml:space="preserve">
   <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
     s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
     c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
@@ -1326,10 +1323,12 @@ class ComponentCascadeLine {
         let fragment = document.createRange().createContextualFragment(response);
         this.PLANE_BODY.appendChild(fragment);
         let submit = document.createElement('div');
-        submit.className = 'dlp-btn-round';
-        submit.insertAdjacentHTML('afterbegin',_component.sub_check);
+        submit.insertAdjacentHTML('afterbegin',_component.check);
         submit.addEventListener('click',this.submitEvent.bind(this, submit,data,xhr,method,callback));
-        this.PLANE_BODY.append(submit);
+        submit.className = 'dlp-submit-btn';
+        let header = this.PLANE_DOM.querySelector('.plane-header');
+        let X = header.querySelector('i');
+        header.insertBefore(submit,X);
     }
 
     submitEvent(element,data,xhr,method,callback) {
@@ -1344,7 +1343,7 @@ class ComponentCascadeLine {
         let object = this;
         _component.request(xhr, 'POST', formdata, function (response) {
             object.submit_block = false;
-            element.innerHTML = _component.sub_check;
+            element.innerHTML = _component.check;
             if(response.code !== 0){
                 return _component.alert(response.message,3);
             }
@@ -1381,6 +1380,7 @@ class ComponentCascadeLine {
                     object.STACKS[nextStack].append(
                         object.insertLabelDom(object.dimensional_data[nextStack][index],index,nextStack));
                     e.target.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
+                    object.STACKS[nextStack].scrollTop = index * 27;
                 }else {
                     let lastKey = data.nodes[data.nodes.length - 1];
                     let currentStackDocuments = object.STACKS[nextStack].childNodes;
@@ -1399,6 +1399,7 @@ class ComponentCascadeLine {
                     object.dimensional_data[nextStack].forEach((d,index)=>{
                         if(index > newIndex) currentStackDocuments[index].setAttribute('data-k',index);
                     });
+                    object.STACKS[nextStack].scrollTop = newIndex * 27;
                 }
                 if(!Array.isArray(data.nodes)) data.nodes = [];
                 data.nodes.push(key);

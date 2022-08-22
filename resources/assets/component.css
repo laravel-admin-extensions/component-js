@@ -138,7 +138,7 @@
     left: 0;
     right: 0;
     top: 0;
-    height: calc(100% - 21.89px);
+    height: calc(100% - 23px);
     background: rgb(43 43 43);
     border-radius: 5px;
     animation-name: dlpFadeIn;
@@ -205,13 +205,19 @@
     outline: 0;
 }
 #dlp-plane .plane-header,.dot-cascade-panel>.plane-header{
-    background-color: rgb(44 44 44); padding: 3px; display: flex; justify-content: flex-end;border-bottom: 1px solid #505050;border-radius: 3px 3px 0 0;
+    background-color: rgb(44 44 44); padding: 3px; display: flex; justify-content: flex-end;border-bottom: 1px solid #505050;border-radius: 3px 3px 0 0;height: 24px!important;
 }
 #dlp-plane .plane-body,.dot-cascade-panel>.plane-body{
     background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;position: relative!important;height: 100%!important;
 }
 .dot-cascade-panel>.plane-body{
     background: rgb(54 54 54)!important;
+}
+.plane-header>.dlp-submit-btn{
+    margin-right: 3px;
+    cursor: pointer;
+    height: 18px;
+    line-height: 26px;
 }
 
 .dlp-contextmenu{
@@ -238,26 +244,6 @@
 @keyframes dlpFadeIn {
     0% {opacity: 0;}
     100% {opacity: 1;}
-}
-
-.dlp-btn-round {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #b9b9b9;
-    box-shadow: -3px -3px 3px #303030, 3px 3px 3px #1e1e1e;
-    position: absolute;
-    right: 7px;
-    bottom: 7px;
-    margin: 0;
-    padding: 0;
-    border: none;
-}
-
-.dlp-btn-round:active {
-    box-shadow: -3px -3px 7px #bfbfbf inset, 3px 3px 7px #727578 inset;
-    font-size: 16px;
-    user-select: none;
 }
 
 .dlp-loader {

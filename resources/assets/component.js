@@ -24,7 +24,7 @@ const _component = {
     'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
 </svg>`,
-    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="17px" height="17px" viewBox="0 0 40 40" stroke="black" style="background: #dd4b39;border-radius: 50%;" enable-background="new 0 0 40 40" xml:space="preserve">
+    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 40 40" stroke="black" style="background: #dd4b39;border-radius: 50%;" enable-background="new 0 0 40 40" xml:space="preserve">
   <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
     s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
     c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
@@ -1187,12 +1187,12 @@ class ComponentCascadeLine {
             _component.contextmenu(e, [
                 {
                     title: '新增', func: () => {
-                        this.nodeInsert(e,data,stack,index);
+                        this.nodeInsert(e,data,stack);
                     }
                 },
                 {
                     title: '修改', func: () => {
-                        this.nodeUpdate(e,data,stack,index);
+                        this.nodeUpdate(e,data,stack);
                     }
                 },
                 {
@@ -1353,7 +1353,7 @@ class ComponentCascadeLine {
         });
     }
 
-    nodeInsert(e,data,stack,k){
+    nodeInsert(e,data,stack){
         this.panel(e,data);
         let object = this;
         let nextStack = parseInt(stack) + 1;
@@ -1408,16 +1408,20 @@ class ComponentCascadeLine {
         });
     }
 
-    nodeUpdate(e,data,stack,k){
+    nodeUpdate(e,data,stack){
         this.panel(e,data);
         let object = this;
         _component.request(this.URL+'/'+data.key+'/edit', 'GET', {val:data.val}, function (response) {
             object.panelContent(response,data,object.URL+'/'+data.key,'PUT',(response)=>{
                 let val = response.data.val;
                 data.val = val;
-                for (let node of e.target.childNodes){
-                    if(node instanceof HTMLElement) continue;
-                    node.nodeValue = val;
+                if(e.target.childNodes.length > 0) {
+                    for (let node of e.target.childNodes) {
+                        if (node instanceof HTMLElement) continue;
+                        node.nodeValue = val;
+                    }
+                }else {
+                    e.target.innerText = val;
                 }
                 object.PLANE_DOM.remove();
             });

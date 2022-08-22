@@ -166,12 +166,6 @@ const _component = {
         }
         dimension++;
         _component.dimensional(output, data.nodes, dimension, parentNodes);
-    },
-    arrayInsert(index, ...items) {
-        if (isNaN(index)) {
-            throw new TypeError('int only');
-        }
-        this.splice(index, 0, ...items);
     }
 };
 
@@ -1331,7 +1325,7 @@ class ComponentCascadeLine {
         _component.loading(this.PLANE_BODY,true);
         let fragment = document.createRange().createContextualFragment(response);
         this.PLANE_BODY.appendChild(fragment);
-        let submit = document.createElement('button');
+        let submit = document.createElement('div');
         submit.className = 'dlp-btn-round';
         submit.insertAdjacentHTML('afterbegin',_component.sub_check);
         submit.addEventListener('click',this.submitEvent.bind(this, submit,data,xhr,method,callback));
@@ -1344,8 +1338,8 @@ class ComponentCascadeLine {
         element.innerHTML = _component.sub_loading;
         let form = this.DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
-        formdata.set('node-key',data.key);
-        formdata.set('node-val',data.val);
+        formdata.set('key',data.key);
+        formdata.set('val',data.val);
         formdata.set('_method', method);
         let object = this;
         _component.request(xhr, 'POST', formdata, function (response) {
@@ -1366,26 +1360,48 @@ class ComponentCascadeLine {
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL+'/create', 'GET', {id:data.key}, function (response) {
             object.panelContent(response,data,object.URL,'POST',(response)=>{
+                if(response.data.key === undefined)return  _component.alert('返回数据结构缺少key',3);
+                if(response.data.val === undefined)return  _component.alert('返回数据结构缺少val',3);
                 let key = parseInt(response.data.key);
                 let val = response.data.val;
-                if(!Array.isArray(data.nodes)) data.nodes = [];
-                data.nodes.push(key);
                 let parents = data.parentNodes.slice(0);
                 parents.push(data.key);
                 if(!Array.isArray(object.dimensional_data[nextStack])){
                     object.dimensional_data[nextStack] = [
                         {expand:false, key:key, val:val, nodes:null, parentNodes:parents}];
-                    let v = object.dimensional_data[nextStack][0];
                     let stackDom = document.createElement('div');
                     stackDom.className = 'dot-cascade-stack dlp-scroll';
-                    stackDom.append(object.insertLabelDom(v,0,nextStack));
+                    stackDom.append(object.insertLabelDom(object.dimensional_data[nextStack][0],0,nextStack));
                     object.CONTENT_DOM.append(stackDom);
-                }else if(data.nodes.length === 0){
-                    object.dimensional_data[nextStack].push(
+                    e.target.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
+                }else if(!Array.isArray(data.nodes) || data.nodes.length === 0){
+                    let len = object.dimensional_data[nextStack].push(
                         {expand:false, key:key, val:val, nodes:null, parentNodes:parents});
+                    let index = len - 1;
+                    object.STACKS[nextStack].append(
+                        object.insertLabelDom(object.dimensional_data[nextStack][index],index,nextStack));
+                    e.target.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
                 }else {
-
+                    let lastKey = data.nodes[data.nodes.length - 1];
+                    let currentStackDocuments = object.STACKS[nextStack].childNodes;
+                    let newIndex = 0;
+                    for (let index in object.dimensional_data[nextStack]){
+                        index = parseInt(index);
+                        newIndex = index + 1;
+                        if(object.dimensional_data[nextStack][index].key === lastKey){
+                            object.dimensional_data[nextStack].splice(newIndex,0,{expand:false, key:key, val:val, nodes:null, parentNodes:parents});
+                            let D = currentStackDocuments[index];
+                            D.parentNode.insertBefore(
+                                object.insertLabelDom(object.dimensional_data[nextStack][newIndex],newIndex,nextStack),D.nextSibling);
+                            break;
+                        }
+                    }
+                    object.dimensional_data[nextStack].forEach((d,index)=>{
+                        if(index > newIndex) currentStackDocuments[index].setAttribute('data-k',index);
+                    });
                 }
+                if(!Array.isArray(data.nodes)) data.nodes = [];
+                data.nodes.push(key);
                 object.PLANE_DOM.remove();
             });
         });

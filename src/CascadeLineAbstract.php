@@ -31,8 +31,7 @@ abstract class CascadeLineAbstract
     }
 
     /**
-     * TODO
-     * $formPanel->input('column','参数')
+     * 表单内容组装 $formPanel->input('column','参数')...
      * @param FormPanel $formPanel
      */
     abstract function createForm(FormPanel $formPanel);
@@ -48,25 +47,32 @@ abstract class CascadeLineAbstract
     }
 
     /**
-     * @return array  ['key'=>insert_node_id,'val'=>insert_node_value]
+     * 新增数据处理
+     * request params:
+     *      [key] 当前操作节点键
+     *      [val] 当前操作节点值
+     * @return array  ['key'=>insert_node_id,'val'=>insert_node_value] 返回新增节点数据 键值
      */
     abstract function storeAction(): array;
 
     public function edit($id, Content $content)
     {
         $formPanel = new FormPanel();
-        $this->editForm($formPanel);
+        $this->editForm($formPanel,$id);
         $content = $content
-            ->body($view->compile());
+            ->body($formPanel->compile());
         return Plane::form($content);
     }
 
     /**
-     * TODO
-     * $formPanel->input('column','参数',value))
+     * request params:
+     *      [val] 当前操作节点值
+     * 表单内容组装 $formPanel->input('column','参数',value)...
      * @param FormPanel $formPanel
+     * @param $id
+     * @return mixed
      */
-    abstract function editForm(FormPanel $formPanel);
+    abstract function editForm(FormPanel $formPanel,$id);
 
     public function update($id)
     {
@@ -79,8 +85,9 @@ abstract class CascadeLineAbstract
     }
 
     /**
+     * 修改数据处理
      * @param $id
-     * @return array  ['val'=>update_node_value]
+     * @return array  ['val'=>update_node_value] 返回新增节点数据 值
      */
     abstract function updateAction($id): array;
 
@@ -95,6 +102,7 @@ abstract class CascadeLineAbstract
     }
 
     /**
+     * 删除数据处理
      * @param $id
      */
     abstract function destroyAction($id);

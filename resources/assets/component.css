@@ -219,6 +219,10 @@
     height: 18px;
     line-height: 26px;
 }
+.plane-header>.dlp-submit-btn:hover{
+    background: #000000;
+    border-radius: 50%;
+}
 
 .dlp-contextmenu{
     list-style:none;
@@ -299,31 +303,31 @@
 .dlp-loader-line-wrap:nth-child(5) { animation-delay: -250ms; }
 
 .dlp-loader-line-wrap:nth-child(1) .dlp-loader-line {
-    border-color: hsl(0, 80%, 60%);
+    border-color: hsl(0, 0%, 25%);
     height: 90px;
     width: 90px;
     top: 7px;
 }
 .dlp-loader-line-wrap:nth-child(2) .dlp-loader-line {
-    border-color: hsl(60, 80%, 60%);
+    border-color: hsl(0, 0%, 35%);
     height: 76px;
     width: 76px;
     top: 14px;
 }
 .dlp-loader-line-wrap:nth-child(3) .dlp-loader-line {
-    border-color: hsl(120, 80%, 60%);
+    border-color: hsl(0, 0%, 55%);
     height: 62px;
     width: 62px;
     top: 21px;
 }
 .dlp-loader-line-wrap:nth-child(4) .dlp-loader-line {
-    border-color: hsl(180, 80%, 60%);
+    border-color: hsl(0, 0%, 75%);
     height: 48px;
     width: 48px;
     top: 28px;
 }
 .dlp-loader-line-wrap:nth-child(5) .dlp-loader-line {
-    border-color: hsl(240, 80%, 60%);
+    border-color: hsl(0, 0%, 90%);
     height: 34px;
     width: 34px;
     top: 35px;

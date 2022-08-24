@@ -20,11 +20,12 @@ class HeadPosAction extends RowAction
         $this->document_id = substr(md5($title.$url),16);
         Admin::script(<<<EOF
             $('#{$this->document_id}').click(function(){
+                let url = '{$url}';
                 let XHR = JSON.parse('{$xhr}');
                 XHR.url = XHR.url !== undefined ? XHR.url : url;
                 XHR.element = document.querySelector('#dlp-plane button[type="submit"]');
                 XHR.listener = (DOM)=>{DOM.querySelector('button[type="submit"]')};
-                new ComponentPlane('{$url}',XHR,JSON.parse('{$options}'));
+                new ComponentPlane(url,XHR,JSON.parse('{$options}'));
             });
 EOF
         );

@@ -20,7 +20,7 @@ class RowPosAction extends RowAction
         $this->document_class = substr(md5($title.$url),16);
         Admin::script(<<<EOF
             $('.{$this->document_class}').click(function(){
-                let url = '$url'.replace('{id}',$(this).attr('data-id'));
+                let url = '{$url}'.replace('{id}',$(this).attr('data-id'));
                 let XHR = JSON.parse('{$xhr}');
                 let xhr_url = XHR.url !== undefined ? XHR.url : url;
                 XHR.url = xhr_url.replace('{id}',$(this).attr('data-id'));

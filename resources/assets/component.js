@@ -938,6 +938,8 @@ class ComponentPlane {
         this.OPTIONS = Object.assign({
             w: 0.8,
             h: 0.8,
+            top:'30px',
+            left:'auto'
         }, options);
         this.makeModal();
         this.makeContent();
@@ -956,7 +958,8 @@ class ComponentPlane {
         }else {
             height = this.OPTIONS.h;
         }
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${width};"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div></div>`;
+        let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${width};margin: ${margin}"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/

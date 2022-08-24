@@ -187,7 +187,6 @@
 
 #dlp-plane>div{
     position: relative;
-    margin: 30px auto;
     animation-name: dlpFadeIn;
     animation-duration: .2s;
 }

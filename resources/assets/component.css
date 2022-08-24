@@ -210,6 +210,7 @@
     background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;position: relative!important;min-height: 100px;
 }
 .dot-cascade-panel>.plane-body{
+    height: 100%!important;
     background: rgb(54 54 54)!important;
 }
 .plane-header>.dlp-submit-btn{

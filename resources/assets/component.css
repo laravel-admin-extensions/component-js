@@ -208,7 +208,7 @@
     background-color: rgb(44 44 44); padding: 3px; display: flex; justify-content: flex-end;border-bottom: 1px solid #505050;border-radius: 3px 3px 0 0;height: 24px!important;
 }
 #dlp-plane .plane-body,.dot-cascade-panel>.plane-body{
-    background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;position: relative!important;height: 100%!important;
+    background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;position: relative!important;min-height: 100px;
 }
 .dot-cascade-panel>.plane-body{
     background: rgb(54 54 54)!important;

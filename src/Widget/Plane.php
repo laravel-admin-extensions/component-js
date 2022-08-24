@@ -16,32 +16,38 @@ class Plane
 {
     /**
      * 列表页 头部按钮
-     * @param $title
-     * @param $url
-     * @param null $xhr_url
-     * @param string $method
-     * @param null $callback
+     * @param string $title
+     * @param string $url   弹窗页接口地址
+     * @param array $xhr    ajax配置
+     *      xhr.url         string  触发事件ajax地址
+     *      xhr.method      string  GET,POST,PUT,DELETE
+     *      xhr.callback    string  js回调函数
      * @param array $options
+     *      options.W
+     *      options.H
      * @return HeadPosAction
      */
-    public static function headAction($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
+    public static function headAction(string $title,string $url,array $xhr=[],array $options=[])
     {
-        return new HeadPosAction($title,$url,$xhr_url,$method,$callback,$options);
+        return new HeadPosAction($title,$url,$xhr,$options);
     }
 
     /**
      * 列表页 行操作按钮
-     * @param $title
-     * @param $url
-     * @param null $xhr_url
-     * @param string $method
-     * @param null $callback
+     * @param string $title
+     * @param string $url   弹窗页接口地址
+     * @param array $xhr    ajax配置
+     *      xhr.url         string  触发事件ajax地址
+     *      xhr.method      string  GET,POST,PUT,DELETE
+     *      xhr.callback    string  js回调函数
      * @param array $options
+     *      options.W
+     *      options.H
      * @return RowPosAction
      */
-    public static function rowAction($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
+    public static function rowAction(string $title,string $url,array $xhr=[],array $options=[])
     {
-        return new RowPosAction($title,$url,$xhr_url,$method,$callback,$options);
+        return new RowPosAction($title,$url,$xhr,$options);
     }
 
     /**

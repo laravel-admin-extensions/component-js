@@ -926,22 +926,37 @@ class ComponentLine {
 }
 
 class ComponentPlane {
-    constructor(url, xhr_url = '', method = 'POST', callback = null, options = {}) {
+    constructor(url,xhr={}, options = {}) {
         this.URL = url;
-        this.XHR_URL = xhr_url;
-        this.METHOD = method;
-        this.CALLBACK = callback;
+        this.XHR =  Object.assign({
+            url:url,
+            method:'POST',
+            listener:null,
+            event:'click',
+            callback:null,
+        }, xhr);
         this.OPTIONS = Object.assign({
-            W: 0.8,
-            H: 0.8,
+            w: 0.8,
+            h: 0.8,
         }, options);
-
         this.makeModal();
         this.makeContent();
     }
 
     makeModal() {
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${window.innerWidth * this.OPTIONS.W}px;"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="max-height:${window.innerHeight * this.OPTIONS.H + 'px'};min-height:${window.innerHeight * this.OPTIONS.H / 2 + 'px'};"></div></div></div>`;
+        let width;
+        if(this.OPTIONS.w.toString().indexOf('.') !== -1){
+            width = (window.innerWidth * this.OPTIONS.w) + 'px';
+        }else {
+            width = this.OPTIONS.w;
+        }
+        let height;
+        if(this.OPTIONS.h.toString().indexOf('.') !== -1){
+            height = (window.innerHeight * this.OPTIONS.h) + 'px';
+        }else {
+            height = this.OPTIONS.h;
+        }
+        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${width};"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div></div>`;
         document.body.insertAdjacentHTML('beforeEnd', html);
         this.DOM = document.getElementById('dlp-plane');
         /*X*/
@@ -967,9 +982,13 @@ class ComponentPlane {
             _component.loading(object.MODEL_BODY_DOM,true);
             let fragment = document.createRange().createContextualFragment(response);
             document.querySelector('#dlp-plane .plane-body').appendChild(fragment);
-            let submit = object.MODEL_BODY_DOM.querySelector('button[type="submit"]');
-            if (submit instanceof HTMLElement) {
-                submit.addEventListener('click', object.submitEvent.bind(object, submit), false);
+            let listener = object.XHR.listener;
+            if(typeof listener === 'function'){
+                let target = listener(object.MODEL_BODY_DOM);
+                if (target instanceof HTMLElement) {
+                    target.addEventListener(object.XHR.event,
+                        object.submitEvent.bind(object, target), false);
+                }
             }
         });
     }
@@ -980,9 +999,9 @@ class ComponentPlane {
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
         let object = this;
-        _component.request(this.XHR_URL, this.METHOD, formdata, function (response) {
-            if (typeof object.CALLBACK == 'function') {
-                object.CALLBACK(response);
+        _component.request(this.XHR.url, this.XHR.method, formdata, function (response) {
+            if (typeof object.XHR.callback == 'function') {
+                object.XHR.callback(response);
                 return;
             }
             if (response.code === 0) {

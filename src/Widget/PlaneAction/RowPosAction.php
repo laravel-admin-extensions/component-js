@@ -11,21 +11,21 @@ use Encore\Admin\Admin;
  */
 class RowPosAction extends RowAction
 {
-    public function __construct($title,$url,$xhr_url=null,$method='POST',$callback=null,$options=[])
+    public function __construct($title,$url,$xhr,$options)
     {
         parent::__construct();
         $this->title = $title;
-        if(!$xhr_url){
-            $xhr_url = $url;
-        }
+        $xhr = json_encode($xhr);
         $options = json_encode($options);
         $this->document_class = substr(md5($title.$url),16);
-        $callback = is_string($callback) && preg_match("/function/",$callback) ? $callback : 'null';
         Admin::script(<<<EOF
             $('.{$this->document_class}').click(function(){
                 let url = '$url'.replace('{id}',$(this).attr('data-id'));
-                let xhr_url = '$xhr_url'.replace('{id}',$(this).attr('data-id'));
-                new ComponentPlane(url,xhr_url,'{$method}','{$callback}',JSON.parse('{$options}'));
+                let XHR = JSON.parse('{$xhr}');
+                let xhr_url = XHR.url !== undefined ? XHR.url : url;
+                XHR.url = xhr_url.replace('{id}',$(this).attr('data-id'));
+                XHR.listener = (DOM)=>DOM.querySelector('button[type="submit"]');
+                new ComponentPlane(url,XHR,JSON.parse('{$options}'));
             });
 EOF
     );

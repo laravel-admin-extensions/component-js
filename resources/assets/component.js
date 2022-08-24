@@ -192,13 +192,10 @@ class ComponentDot {
         });
         this.make(selected, select);
         this.selected_data = selected;
-        this.select_data = selected.slice(0);
+        this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
 
-        for (let element of this.SELECTED_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagCancel.bind(this, element), false);
-        }
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
             element.addEventListener('click', this.tagSelect.bind(this, element), false);
         }
@@ -214,18 +211,12 @@ class ComponentDot {
     }
 
     make(selected, select) {
-        let selected_dom = '';
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
-            if (selected.indexOf(parseInt(i)) !== -1) {
-                selected_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
-                continue;
-            }
             select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
         }
-
-        let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll">${selected_dom}</div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
+        let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name}  .dot-selected`);
@@ -233,6 +224,14 @@ class ComponentDot {
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
+        setTimeout(()=>{
+            this.CONTENT_DOM.childNodes.forEach((D)=>{
+                let id = parseInt(D.getAttribute('data-id'));
+                if(selected.indexOf(id) !== -1){
+                    D.click();
+                }
+            });
+        });
     }
 
     tagSelect(element) {

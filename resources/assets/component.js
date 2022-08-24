@@ -236,7 +236,7 @@ class ComponentDot {
     }
 
     tagSelect(element) {
-        if(this.limit !== 0 && this.select_data.length >= this.limit){
+        if(this.limit > 0 && this.select_data.length >= this.limit){
             this.SELECTED_DOM.firstChild.click();
         }
         let clone = element.cloneNode(true);
@@ -332,15 +332,16 @@ class ComponentCascadeDot {
         delete: 'delete'
     };
 
-    constructor(name, selected, select) {
+    constructor(name, selected, select,limit=0) {
         if (!Array.isArray(selected) || !Array.isArray(select)) {
             console.error('CascadeDot param selected and select must be array!');
             return;
         }
         this.name = name;
+        this.limit = limit;
         this.DOM = document.getElementById(name);
         this.selected_data = selected;
-        this.select_data = selected.slice(0);
+        this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
         this.make().makeSelect(select);
@@ -425,15 +426,11 @@ class ComponentCascadeDot {
                 let index = this.selected_data.indexOf(parseInt(v.key));
                 if (v.checked !== false && index !== -1) {
                     this.selected_data.splice(index, 1);
-                    this.select_data = this.selected_data.slice(0);
                     return;
                 }
                 if (index !== -1) {
-                    v.checked = true;
-                    let E = new Event('click');
                     setTimeout(() => {
                         div.click();
-                        div.dispatchEvent(E);
                     });
                 }
             });
@@ -469,6 +466,11 @@ class ComponentCascadeDot {
                 this.expand(data,currentStackDocuments[index], false);
             });
             if (data.checked === false) {
+                if(this.limit > 0 && this.select_data.length >= this.limit){
+                    if(this.SELECTED_DOM.firstChild instanceof HTMLElement){
+                        this.SELECTED_DOM.firstChild.click();
+                    }
+                }
                 data.checked = true;
                 this.tagCal(id, this.MODE.insert);
                 element.classList.remove('dlp-label-silence');

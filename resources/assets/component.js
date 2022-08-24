@@ -175,7 +175,7 @@ class ComponentDot {
         delete: 'delete'
     };
 
-    constructor(name, selected, select) {
+    constructor(name, selected, select,limit=0) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -185,6 +185,7 @@ class ComponentDot {
             return;
         }
         this.name = name;
+        this.limit = limit;
         this.DOM = document.getElementById(name);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
@@ -235,15 +236,22 @@ class ComponentDot {
     }
 
     tagSelect(element) {
-        element.addEventListener('click', this.tagCancel.bind(this, element), false);
-        this.SELECTED_DOM.appendChild(element);
+        if(this.limit !== 0 && this.select_data.length >= this.limit){
+            this.SELECTED_DOM.firstChild.click();
+        }
+        let clone = element.cloneNode(true);
+        clone.addEventListener('click', this.tagCancel.bind(this, clone), false);
+        this.SELECTED_DOM.appendChild(clone);
+        element.remove();
         this.tagCal(element, this.MODE.insert);
         this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
     }
 
     tagCancel(element) {
-        element.addEventListener('click', this.tagSelect.bind(this, element), false);
-        this.CONTENT_DOM.appendChild(element);
+        let clone = element.cloneNode(true);
+        clone.addEventListener('click', this.tagSelect.bind(this, clone), false);
+        this.CONTENT_DOM.appendChild(clone);
+        element.remove();
         this.tagCal(element, this.MODE.delete);
     }
 

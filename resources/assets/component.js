@@ -1171,17 +1171,44 @@ class ComponentCascadeLine {
         this.name = name;
         this.DOM = document.getElementById(name);
         this.URL = url;
-        this.make().makeSelect(select);
+        this.make().makeSelect(select).makeHeader();
     }
 
     make() {
-        let html = `<div class="dlp-dot" style="position: relative;"><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
+        let html = `<div class="dlp-dot dlp-cascadeLine"><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
+        this.HEADER_DOM = document.querySelector(`#${this.name} .dot-top`);
         this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
         return this;
+    }
+
+    makeHeader(){
+        let I = document.createElement('div');
+        I.className = 'dlp-btn';
+        I.addEventListener('click',(()=>{
+            this.panel( '新增根节点');
+            let object = this;
+            _component.request(this.URL + '/create', 'GET', {}, function (response) {
+                object.panelContent(response, {key:0}, object.URL, 'POST', (response) => {
+                    if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
+                    if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
+                    let key = parseInt(response.data.key);
+                    let val = response.data.val;
+                    let len = object.dimensional_data[0].push({expand: false, key: key, val: val, nodes: null, parentNodes: []});
+                    let lastKey = len - 1;
+                    let currentStackDocuments = object.STACKS[0];
+                    currentStackDocuments.append(object.insertLabelDom(object.dimensional_data[0][lastKey], lastKey, 0));
+                    object.STACKS[0].scrollTop = lastKey * 27;
+                    currentStackDocuments.lastChild.click();
+                    object.PLANE_DOM.remove();
+                });
+            });
+        }).bind(this));
+        I.insertAdjacentHTML('afterbegin',_component.node);
+        this.HEADER_DOM.append(I);
     }
 
     makeSelect(select) {
@@ -1345,6 +1372,11 @@ class ComponentCascadeLine {
         this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
         this.PLANE_DOM = panelDom;
+        let T = document.createElement('div');
+        T.style.marginRight = 'auto';
+        T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
+        panelDom.querySelector('.plane-header').append(T);
+
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
@@ -1354,12 +1386,6 @@ class ComponentCascadeLine {
         panelDom.querySelector('.plane-header').append(X);
         this.PLANE_BODY = panelDom.querySelector('.plane-body');
         _component.loading(this.PLANE_BODY);
-
-        let T = document.createElement('div');
-        T.style.position = 'absolute';
-        T.style.left = '3px';
-        T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
-        panelDom.querySelector('.plane-header').append(T);
     }
 
     panelContent(response, data, xhr, method, callback) {
@@ -1398,7 +1424,7 @@ class ComponentCascadeLine {
     }
 
     nodeInsert(dom, data, stack) {
-        this.panel(data.val + ' 新增节点');
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 新增节点');
         let object = this;
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
@@ -1459,7 +1485,7 @@ class ComponentCascadeLine {
     }
 
     nodeUpdate(dom, data) {
-        this.panel(data.val + ' 修改节点');
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 修改节点');
         let object = this;
         _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
             object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {

@@ -88,10 +88,26 @@
 .dot-top{
     padding: 5px 0 5px 5px;
     display: flex;
+    align-items: center;
     border-radius: 5px 5px 0 0;
     background: rgb(0 0 0 / 90%);
     border-top: 1px solid rgba(34,36,38,.15);
     border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.dlp-cascadeLine{
+    position: relative!important;
+}
+.dlp-cascadeLine>.dot-top{
+    padding: 5px;
+    justify-content: flex-end;
+}
+.dlp-cascadeLine>.dot-top>.dlp-btn{
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+.dlp-cascadeLine .dot-search{
+    margin-right: auto;
 }
 .dot-selected{width: 100%}
 .dot-selected>.dlp-label{background: white}
@@ -212,6 +228,12 @@
 #dlp-plane .plane-header,.dot-cascade-panel>.plane-header{
     background-color: rgb(44 44 44); padding: 3px; display: flex; justify-content: flex-end;border-bottom: 1px solid #505050;border-radius: 3px 3px 0 0;height: 24px!important;
 }
+.plane-header .title{
+    color: #e54632;
+    max-width: 120px;
+    display: inline-block;
+    vertical-align: middle;
+}
 #dlp-plane .plane-body,.dot-cascade-panel>.plane-body{
     background-color: rgb(244, 244, 244); padding: 0; overflow-y: auto;border-radius: 0 0 3px 3px;box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;position: relative!important;min-height: 100px;
 }
@@ -220,7 +242,7 @@
     background: rgb(54 54 54)!important;
 }
 .plane-header>.dlp-submit-btn{
-    margin-right: 3px;
+    margin-right: 5px;
     cursor: pointer;
     height: 18px;
     line-height: 26px;

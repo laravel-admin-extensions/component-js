@@ -1498,7 +1498,32 @@ class ComponentCascadeLine {
     }
 
     nodeDelete(dom, data) {
+        let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 删除';
+        let marginTop = (this.DOM.clientHeight - 70) / 2;
+        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-delete" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-delete"></div></div>`;
+        this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
+        let panelDom = this.DOM.childNodes[0].lastChild;
+        this.PLANE_DOM = panelDom;
+        let T = document.createElement('div');
+        T.style.marginRight = 'auto';
+        T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
+        panelDom.querySelector('.plane-header').append(T);
 
+        /*X*/
+        let X = document.createElement('i');
+        X.insertAdjacentHTML('afterbegin', _component.close);
+        X.addEventListener('click', function () {
+            panelDom.remove();
+        }, false);
+        panelDom.querySelector('.plane-header').append(X);
+        this.PLANE_BODY = panelDom.querySelector('.plane-body');
+        let D = document.createElement('div');
+        D.className = 'dlp dlp-text dlp-label';
+        D.addEventListener('click',(()=>{
+
+        }).bind(this));
+        D.insertAdjacentHTML('afterbegin',`<span>${data.val}</span><i class="right">${_component.trash}</i>`);
+        this.PLANE_BODY.append(D);
     }
 }
 

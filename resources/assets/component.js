@@ -24,7 +24,7 @@ const _component = {
     'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
 </svg>`,
-    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 40 40" stroke="black" style="background: #dd4b39;border-radius: 50%;" enable-background="new 0 0 40 40" xml:space="preserve">
+    'sub_loading': `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 40 40" stroke="black" style="background: #dd4b39;border-radius: 50%;" enable-background="new 0 0 40 40" xml:space="preserve">
   <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
     s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
     c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
@@ -33,12 +33,12 @@ const _component = {
     <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"></animateTransform>
     </path>
   </svg>`,
-    'node':`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
+    'node': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"/>
 </svg>`,
-    request: function (url, method = "GET", data = {}, callback = null,error_callback=null) {
+    request: function (url, method = "GET", data = {}, callback = null, error_callback = null) {
         let xhr = new XMLHttpRequest();
-        if (method === 'GET') url = _component.parseParams(url,data);
+        if (method === 'GET') url = _component.parseParams(url, data);
         xhr.open(method, url, true);
         xhr.timeout = 30000;
         let token = '';
@@ -70,9 +70,9 @@ const _component = {
             if (typeof error_callback === 'function') error_callback(e);
         };
     },
-    parseParams(uri, params){
+    parseParams(uri, params) {
         let paramsArray = [];
-        if(Object.keys(params).length === 0)return uri;
+        if (Object.keys(params).length === 0) return uri;
         Object.keys(params).forEach(key => params[key] && paramsArray.push(`${key}=${params[key]}`));
         if (uri.search(/\?/) === -1) {
             uri += `?${paramsArray.join('&')}`
@@ -81,8 +81,8 @@ const _component = {
         }
         return uri
     },
-    loading:function(DOM,remove=false){
-        if(remove){
+    loading: function (DOM, remove = false) {
+        if (remove) {
             DOM.innerHTML = '';
             return;
         }
@@ -175,7 +175,7 @@ class ComponentDot {
         delete: 'delete'
     };
 
-    constructor(name, selected, select,limit=0) {
+    constructor(name, selected, select, limit = 0) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -224,10 +224,10 @@ class ComponentDot {
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
-        setTimeout(()=>{
-            this.CONTENT_DOM.childNodes.forEach((D)=>{
+        setTimeout(() => {
+            this.CONTENT_DOM.childNodes.forEach((D) => {
                 let id = parseInt(D.getAttribute('data-id'));
-                if(selected.indexOf(id) !== -1){
+                if (selected.indexOf(id) !== -1) {
                     D.click();
                 }
             });
@@ -235,7 +235,7 @@ class ComponentDot {
     }
 
     tagSelect(element) {
-        if(this.limit > 0 && this.select_data.length >= this.limit){
+        if (this.limit > 0 && this.select_data.length >= this.limit) {
             this.SELECTED_DOM.firstChild.click();
         }
         let clone = element.cloneNode(true);
@@ -331,7 +331,7 @@ class ComponentCascadeDot {
         delete: 'delete'
     };
 
-    constructor(name, selected, select,limit=0) {
+    constructor(name, selected, select, limit = 0) {
         if (!Array.isArray(selected) || !Array.isArray(select)) {
             console.error('CascadeDot param selected and select must be array!');
             return;
@@ -344,9 +344,14 @@ class ComponentCascadeDot {
         this.insert_data = [];
         this.delete_data = [];
         this.make().makeSelect(select);
+        let object = this;
+        setTimeout(() => {
+            object.selected_label_dom.forEach((D) => {
+                D.click();
+            });
+        });
         this.selectInputDOM.value = JSON.stringify(this.select_data);
         let search = document.querySelector(`#${this.name} .dot-search`);
-        let object = this;
         search.addEventListener('input', () => {
             let timeout = setTimeout(function () {
                 clearTimeout(timeout);
@@ -372,6 +377,7 @@ class ComponentCascadeDot {
 
     makeSelect(select) {
         this.dimensional_data = [];
+        this.selected_label_dom = [];
         _component.dimensional(this.dimensional_data, select);
         let object = this;
         for (let stack in this.dimensional_data) {
@@ -428,9 +434,7 @@ class ComponentCascadeDot {
                     return;
                 }
                 if (index !== -1) {
-                    setTimeout(() => {
-                        div.click();
-                    });
+                    this.selected_label_dom.push(div);
                 }
             });
             this.CONTENT_DOM.append(stackDom);
@@ -462,11 +466,11 @@ class ComponentCascadeDot {
                 } else {
                     currentStackDocuments[index].classList.add('dlp-label-silence');
                 }
-                this.expand(data,currentStackDocuments[index], false);
+                this.expand(data, currentStackDocuments[index], false);
             });
             if (data.checked === false) {
-                if(this.limit > 0 && this.select_data.length >= this.limit){
-                    if(this.SELECTED_DOM.firstChild instanceof HTMLElement){
+                if (this.limit > 0 && this.select_data.length >= this.limit) {
+                    if (this.SELECTED_DOM.firstChild instanceof HTMLElement) {
                         this.SELECTED_DOM.firstChild.click();
                     }
                 }
@@ -479,7 +483,7 @@ class ComponentCascadeDot {
                 this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
             } else {
                 element.classList.remove('dlp-label-silence');
-                this.expand(data,element, true);
+                this.expand(data, element, true);
                 this.selectToChildren(stack + 1, data.nodes);
             }
         }
@@ -514,17 +518,17 @@ class ComponentCascadeDot {
             if (checked === true || checked === undefined) {
                 if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                     D.classList.add('dlp-label-silence');
-                    this.expand(data,D, false);
+                    this.expand(data, D, false);
                 } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
                     D.classList.add('dlp-label-silence');
-                    this.expand(data,D, false);
+                    this.expand(data, D, false);
                 } else {
                     D.classList.remove('dlp-label-silence');
                     if (parseInt(D.getAttribute('data-id')) === node) {
                         if (to_first_index === null) to_first_index = index;
-                        this.expand(data,D, true);
+                        this.expand(data, D, true);
                     } else {
-                        this.expand(data,D, false);
+                        this.expand(data, D, false);
                     }
                 }
             }
@@ -573,18 +577,18 @@ class ComponentCascadeDot {
                     });
                 }
                 if (to_first_index === null) to_first_index = index;
-                this.expand(data,D, true);
+                this.expand(data, D, true);
             } else {
                 D.classList.add('dlp-label-silence');
-                this.expand(data,D, false);
+                this.expand(data, D, false);
             }
         });
         if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
         this.selectToChildren(stack + 1, children);
     }
 
-    expand(data,dom, open = true) {
-        if(data.expand === open) return;
+    expand(data, dom, open = true) {
+        if (data.expand === open) return;
         data.expand = open;
         if (open) {
             let left_mark = dom.querySelector('i.left');
@@ -935,20 +939,20 @@ class ComponentLine {
 }
 
 class ComponentPlane {
-    constructor(url,xhr={}, options = {}) {
+    constructor(url, xhr = {}, options = {}) {
         this.URL = url;
-        this.XHR =  Object.assign({
-            url:url,
-            method:'POST',
-            listener:null,
-            event:'click',
-            callback:null,
+        this.XHR = Object.assign({
+            url: url,
+            method: 'POST',
+            listener: null,
+            event: 'click',
+            callback: null,
         }, xhr);
         this.OPTIONS = Object.assign({
             w: 0.8,
             h: 0.8,
-            top:'30px',
-            left:'auto'
+            top: '30px',
+            left: 'auto'
         }, options);
         this.makeModal();
         this.makeContent();
@@ -956,15 +960,15 @@ class ComponentPlane {
 
     makeModal() {
         let width;
-        if(this.OPTIONS.w.toString().indexOf('.') !== -1){
+        if (this.OPTIONS.w.toString().indexOf('.') !== -1) {
             width = (window.innerWidth * this.OPTIONS.w) + 'px';
-        }else {
+        } else {
             width = this.OPTIONS.w;
         }
         let height;
-        if(this.OPTIONS.h.toString().indexOf('.') !== -1){
+        if (this.OPTIONS.h.toString().indexOf('.') !== -1) {
             height = (window.innerHeight * this.OPTIONS.h) + 'px';
-        }else {
+        } else {
             height = this.OPTIONS.h;
         }
         let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
@@ -991,11 +995,11 @@ class ComponentPlane {
         _component.loading(this.MODEL_BODY_DOM);
         let object = this;
         _component.request(this.URL, 'GET', {}, function (response) {
-            _component.loading(object.MODEL_BODY_DOM,true);
+            _component.loading(object.MODEL_BODY_DOM, true);
             let fragment = document.createRange().createContextualFragment(response);
             document.querySelector('#dlp-plane .plane-body').appendChild(fragment);
             let listener = object.XHR.listener;
-            if(typeof listener === 'function'){
+            if (typeof listener === 'function') {
                 let target = listener(object.MODEL_BODY_DOM);
                 if (target instanceof HTMLElement) {
                     target.addEventListener(object.XHR.event,
@@ -1159,7 +1163,7 @@ class ComponentSortable {
 }
 
 class ComponentCascadeLine {
-    constructor(name, select,url) {
+    constructor(name, select, url) {
         if (!Array.isArray(select)) {
             console.error('CascadeLine param select must be array!');
             return;
@@ -1196,7 +1200,7 @@ class ComponentCascadeLine {
                 } else {
                     v.nodes = null;
                 }
-                let labelDom = this.insertLabelDom(v,k,stack);
+                let labelDom = this.insertLabelDom(v, k, stack);
                 if (v.nodes !== null) {
                     labelDom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                 }
@@ -1208,10 +1212,10 @@ class ComponentCascadeLine {
         return this;
     }
 
-    insertLabelDom(data,index,stack) {
+    insertLabelDom(data, index, stack) {
         let div = document.createElement('div');
         div.className = 'dlp dlp-text dlp-label';
-        div.textContent = data.val;
+        div.insertAdjacentHTML('afterbegin',`<span>${data.val}</span>`);
         div.setAttribute('data-id', data.key.toString());
         div.setAttribute('data-k', index.toString());
         div.addEventListener('click', this.select.bind(this, div, stack));
@@ -1221,17 +1225,17 @@ class ComponentCascadeLine {
             _component.contextmenu(e, [
                 {
                     title: '新增', func: () => {
-                        this.nodeInsert(e,data,stack);
+                        this.nodeInsert(div, data, stack);
                     }
                 },
                 {
                     title: '修改', func: () => {
-                        this.nodeUpdate(e,data);
+                        this.nodeUpdate(div, data);
                     }
                 },
                 {
                     title: '删除', func: () => {
-                        this.nodeDelete(e,data,stack);
+                        this.nodeDelete(div, data, stack);
                     }
                 }
             ]);
@@ -1252,9 +1256,9 @@ class ComponentCascadeLine {
             } else {
                 D.classList.add('dlp-label-silence');
             }
-            this.expand(data,currentStackDocuments[index], false);
+            this.expand(data, currentStackDocuments[index], false);
         });
-        this.expand(data,element, true);
+        this.expand(data, element, true);
         element.classList.remove('dlp-label-silence');
         this.selectToChildren(stack + 1, data.nodes);
         if (Array.isArray(data.parentNodes) && data.parentNodes.length > 0) {
@@ -1274,17 +1278,17 @@ class ComponentCascadeLine {
             let parents = data.parentNodes;
             if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                 D.classList.add('dlp-label-silence');
-                this.expand(data,D, false);
+                this.expand(data, D, false);
             } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
                 D.classList.add('dlp-label-silence');
-                this.expand(data,D, false);
+                this.expand(data, D, false);
             } else {
                 D.classList.remove('dlp-label-silence');
-                if(parseInt(D.getAttribute('data-id')) === node){
-                    if (to_first_index === null)to_first_index = index;
-                    this.expand(data,D, true);
-                }else {
-                    this.expand(data,D, false);
+                if (parseInt(D.getAttribute('data-id')) === node) {
+                    if (to_first_index === null) to_first_index = index;
+                    this.expand(data, D, true);
+                } else {
+                    this.expand(data, D, false);
                 }
             }
         });
@@ -1314,18 +1318,18 @@ class ComponentCascadeLine {
                     });
                 }
                 if (to_first_index === null) to_first_index = index;
-                this.expand(data,D, true);
+                this.expand(data, D, true);
             } else {
                 D.classList.add('dlp-label-silence');
-                this.expand(data,D, false);
+                this.expand(data, D, false);
             }
         });
         if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
         this.selectToChildren(stack + 1, children);
     }
 
-    expand(data,dom, open = true) {
-        if(data.expand === open) return;
+    expand(data, dom, open = true) {
+        if (data.expand === open) return;
         data.expand = open;
         if (open) {
             let left_mark = dom.querySelector('i.left');
@@ -1336,7 +1340,7 @@ class ComponentCascadeLine {
         if (left_mark) left_mark.innerHTML = _component.caret_right;
     }
 
-    panel(title){
+    panel(title) {
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
@@ -1354,121 +1358,121 @@ class ComponentCascadeLine {
         let T = document.createElement('div');
         T.style.position = 'absolute';
         T.style.left = '3px';
-        T.insertAdjacentHTML('afterbegin',_component.node+` <span style="vertical-align: top;">${title}</span>`);
+        T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
         panelDom.querySelector('.plane-header').append(T);
     }
 
-    panelContent(response,data,xhr,method,callback) {
-        _component.loading(this.PLANE_BODY,true);
+    panelContent(response, data, xhr, method, callback) {
+        _component.loading(this.PLANE_BODY, true);
         let fragment = document.createRange().createContextualFragment(response);
         this.PLANE_BODY.appendChild(fragment);
         let submit = document.createElement('div');
-        submit.insertAdjacentHTML('afterbegin',_component.check);
-        submit.addEventListener('click',this.submitEvent.bind(this, submit,data,xhr,method,callback));
+        submit.insertAdjacentHTML('afterbegin', _component.check);
+        submit.addEventListener('click', this.submitEvent.bind(this, submit, data, xhr, method, callback));
         submit.className = 'dlp-submit-btn';
         let header = this.PLANE_DOM.querySelector('.plane-header');
         let X = header.querySelector('i');
-        header.insertBefore(submit,X);
+        header.insertBefore(submit, X);
     }
 
-    submitEvent(element,data,xhr,method,callback) {
-        if(this.submit_block) return;
+    submitEvent(element, data, xhr, method, callback) {
+        if (this.submit_block) return;
         this.submit_block = true;
         element.innerHTML = _component.sub_loading;
         let form = this.DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
-        formdata.set('key',data.key);
-        formdata.set('val',data.val);
+        formdata.set('key', data.key);
+        formdata.set('val', data.val);
         formdata.set('_method', method);
         let object = this;
         _component.request(xhr, 'POST', formdata, function (response) {
             object.submit_block = false;
             element.innerHTML = _component.check;
-            if(response.code !== 0){
-                return _component.alert(response.message,3);
+            if (response.code !== 0) {
+                return _component.alert(response.message, 3);
             }
             callback(response);
-        },function () {
+        }, function () {
             object.submit_block = false;
         });
     }
 
-    nodeInsert(e,data,stack){
-        this.panel(data.val+' 新增节点');
+    nodeInsert(dom, data, stack) {
+        this.panel(data.val + ' 新增节点');
         let object = this;
         let nextStack = parseInt(stack) + 1;
-        _component.request(this.URL+'/create', 'GET', {id:data.key}, function (response) {
-            object.panelContent(response,data,object.URL,'POST',(response)=>{
-                if(response.data.key === undefined)return  _component.alert('返回数据结构缺少key',3);
-                if(response.data.val === undefined)return  _component.alert('返回数据结构缺少val',3);
+        _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
+            object.panelContent(response, data, object.URL, 'POST', (response) => {
+                if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
+                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
                 let key = parseInt(response.data.key);
                 let val = response.data.val;
                 let parents = data.parentNodes.slice(0);
                 parents.push(data.key);
-                if(!Array.isArray(object.dimensional_data[nextStack])){
+                if (!Array.isArray(object.dimensional_data[nextStack])) {
                     object.dimensional_data[nextStack] = [
-                        {expand:false, key:key, val:val, nodes:null, parentNodes:parents}];
+                        {expand: false, key: key, val: val, nodes: null, parentNodes: parents}];
                     let stackDom = document.createElement('div');
                     stackDom.className = 'dot-cascade-stack dlp-scroll';
-                    stackDom.append(object.insertLabelDom(object.dimensional_data[nextStack][0],0,nextStack));
+                    stackDom.append(object.insertLabelDom(object.dimensional_data[nextStack][0], 0, nextStack));
                     object.CONTENT_DOM.append(stackDom);
-                    e.target.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
-                }else if(!Array.isArray(data.nodes) || data.nodes.length === 0){
+                    dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
+                } else if (!Array.isArray(data.nodes) || data.nodes.length === 0) {
                     let len = object.dimensional_data[nextStack].push(
-                        {expand:false, key:key, val:val, nodes:null, parentNodes:parents});
+                        {expand: false, key: key, val: val, nodes: null, parentNodes: parents});
                     let index = len - 1;
                     object.STACKS[nextStack].append(
-                        object.insertLabelDom(object.dimensional_data[nextStack][index],index,nextStack));
-                    e.target.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
+                        object.insertLabelDom(object.dimensional_data[nextStack][index], index, nextStack));
+                    dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
                     object.STACKS[nextStack].scrollTop = index * 27;
-                }else {
+                } else {
                     let lastKey = data.nodes[data.nodes.length - 1];
                     let currentStackDocuments = object.STACKS[nextStack].childNodes;
                     let newIndex = 0;
-                    for (let index in object.dimensional_data[nextStack]){
+                    for (let index in object.dimensional_data[nextStack]) {
                         index = parseInt(index);
                         newIndex = index + 1;
-                        if(object.dimensional_data[nextStack][index].key === lastKey){
-                            object.dimensional_data[nextStack].splice(newIndex,0,{expand:false, key:key, val:val, nodes:null, parentNodes:parents});
+                        if (object.dimensional_data[nextStack][index].key === lastKey) {
+                            object.dimensional_data[nextStack].splice(newIndex, 0, {
+                                expand: false,
+                                key: key,
+                                val: val,
+                                nodes: null,
+                                parentNodes: parents
+                            });
                             let D = currentStackDocuments[index];
                             D.parentNode.insertBefore(
-                                object.insertLabelDom(object.dimensional_data[nextStack][newIndex],newIndex,nextStack),D.nextSibling);
+                                object.insertLabelDom(object.dimensional_data[nextStack][newIndex], newIndex, nextStack), D.nextSibling);
                             break;
                         }
                     }
-                    object.dimensional_data[nextStack].forEach((d,index)=>{
-                        if(index > newIndex) currentStackDocuments[index].setAttribute('data-k',index);
+                    object.dimensional_data[nextStack].forEach((d, index) => {
+                        if (index > newIndex) currentStackDocuments[index].setAttribute('data-k', index);
                     });
                     object.STACKS[nextStack].scrollTop = newIndex * 27;
                 }
-                if(!Array.isArray(data.nodes)) data.nodes = [];
+                if (!Array.isArray(data.nodes)) data.nodes = [];
                 data.nodes.push(key);
                 object.PLANE_DOM.remove();
             });
         });
     }
 
-    nodeUpdate(e,data){
-        this.panel(data.val+' 修改节点');
+    nodeUpdate(dom, data) {
+        this.panel(data.val + ' 修改节点');
         let object = this;
-        _component.request(this.URL+'/'+data.key+'/edit', 'GET', {val:data.val}, function (response) {
-            object.panelContent(response,data,object.URL+'/'+data.key,'PUT',(response)=>{
+        _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
+            object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
                 let val = response.data.val;
                 data.val = val;
-                if(e.target.childNodes.length > 0) {
-                    for (let node of e.target.childNodes) {
-                        if (node instanceof HTMLElement) continue;
-                        node.nodeValue = val;
-                    }
-                }else {
-                    e.target.innerText = val;
-                }
+                dom.querySelector('span').textContent = val;
                 object.PLANE_DOM.remove();
             });
         });
     }
 
-    nodeDelete(e,data){
+    nodeDelete(dom, data) {
 
     }
 }
+

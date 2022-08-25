@@ -14,7 +14,7 @@
     text-align: left;
 }
 .dlp i{cursor: pointer!important;}
-.dlp p{margin: 0!important;}
+.dlp p,.dlp span{margin: 0!important;padding: 0!important;}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .dlp-label {
     cursor: pointer;
@@ -112,6 +112,8 @@
     background: #222222;
 }
 .dot-cascade-stack>.dlp-label{
+    padding-left: 16px;
+    padding-right: 16px;
     display: block;
     max-width: unset;
     min-width: unset;
@@ -125,12 +127,16 @@
 }
 .dlp-label>i{
     position: absolute!important;
-    right: 4px!important;
     top: 4px!important;
+    width: 16px!important;
+    height: 16px!important;
 }
 .dlp-label>i.left{
     left: 0!important;
     right: unset!important;
+}
+.dlp-label>i.right{
+    right: 4px!important;
 }
 .dot-cascade-panel{
     position: absolute;

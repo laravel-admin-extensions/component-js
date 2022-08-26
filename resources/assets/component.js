@@ -24,13 +24,9 @@ const _component = {
     'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
 </svg>`,
-    'sub_loading': `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 40 40" stroke="black" style="background: #dd4b39;border-radius: 50%;" enable-background="new 0 0 40 40" xml:space="preserve">
-  <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-    s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-    c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
-  <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-    C22.32,8.481,24.301,9.057,26.013,10.047z">
-    <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"></animateTransform>
+    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 50 50" style="background: rgb(223 9 127);border-radius: 50%;" xml:space="preserve">
+  <path fill="#ffffff" stroke="#ffffff" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">
+    <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
     </path>
   </svg>`,
     'node': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
@@ -1429,6 +1425,7 @@ class ComponentCascadeLine {
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
             object.panelContent(response, data, object.URL, 'POST', (response) => {
+                if(response.code !== 0)return _component.alert(response.message,3);
                 if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
                 if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
                 let key = parseInt(response.data.key);
@@ -1489,6 +1486,8 @@ class ComponentCascadeLine {
         let object = this;
         _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
             object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
+                if(response.code !== 0)return _component.alert(response.message,3);
+                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
                 let val = response.data.val;
                 data.val = val;
                 dom.querySelector('span').textContent = val;
@@ -1497,19 +1496,19 @@ class ComponentCascadeLine {
         });
     }
 
-    nodeDelete(dom, data) {
+    nodeDelete(dom, data,stack) {
+        let object = this;
         let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 删除';
         let marginTop = (this.DOM.clientHeight - 70) / 2;
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-delete" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-delete"></div></div>`;
-        this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
+        this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
         this.PLANE_DOM = panelDom;
         let T = document.createElement('div');
         T.style.marginRight = 'auto';
         T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
         panelDom.querySelector('.plane-header').append(T);
-
-        /*X*/
+        /*X close panel*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
         X.addEventListener('click', function () {
@@ -1517,13 +1516,91 @@ class ComponentCascadeLine {
         }, false);
         panelDom.querySelector('.plane-header').append(X);
         this.PLANE_BODY = panelDom.querySelector('.plane-body');
+        /*D delete node*/
         let D = document.createElement('div');
         D.className = 'dlp dlp-text dlp-label';
         D.addEventListener('click',(()=>{
-
+            if (object.submit_block) return;
+            object.submit_block = true;
+            D.querySelector('.right').innerHTML = _component.sub_loading;
+            _component.request(this.URL + '/' + data.key, 'DELETE', {}, function (response) {
+                object.submit_block = false;
+                if(response.code !== 0)return _component.alert(response.message,3);
+                object.nodeDeleteExec(data,stack);
+                object.PLANE_DOM.remove();
+            }, function () {
+                object.submit_block = false;
+            });
         }).bind(this));
         D.insertAdjacentHTML('afterbegin',`<span>${data.val}</span><i class="right">${_component.trash}</i>`);
         this.PLANE_BODY.append(D);
+    }
+
+    nodeDeleteExec(data,stack) {
+        /*parent data delete*/
+        let parent_stack = data.parentNodes.length - 1;
+        if(parent_stack>=0){
+            let parent = data.parentNodes.pop();
+            for(let i in this.dimensional_data[parent_stack]){
+                i = parseInt(i);
+                let d = this.dimensional_data[parent_stack][i];
+                if(d.key !== parent)continue;
+                d.nodes.forEach((node,k)=>{
+                    if(node === data.key)d.nodes.splice(k,1);
+                });
+                if(d.nodes.length===0){
+                    let left_mark = this.STACKS[parent_stack].childNodes[i].querySelector('i.left');
+                    if (left_mark) left_mark.remove();
+                }
+            }
+        }
+        /*children data dom delete*/
+        for (let currentStack = stack + 1;currentStack<this.dimensional_data.length;currentStack++){
+            let tmp = [];
+            let batchDeleteDom = [];
+            let resetIndex = 0;
+            for (let index in this.dimensional_data[currentStack]){
+                index = parseInt(index);
+                let d = this.dimensional_data[currentStack][index];
+                if(d.parentNodes.indexOf(data.key) !== -1){
+                    batchDeleteDom.push(this.STACKS[currentStack].childNodes[index]);
+                    continue;
+                }
+                this.STACKS[currentStack].childNodes[index].setAttribute('data-k',resetIndex);
+                resetIndex++;
+                tmp.push(d);
+            }
+            for (let dom of batchDeleteDom)dom.remove();
+            if(tmp.length === 0){
+                this.dimensional_data.splice(currentStack,1);
+                this.STACKS[currentStack].remove();
+                break;
+            }
+            this.dimensional_data[currentStack] = tmp;
+        }
+        /*current dom data delete*/
+        let deleteDom;
+        let reset = false;
+        let resetIndex = 0;
+        for(let D of this.STACKS[stack].childNodes){
+            if(parseInt(D.getAttribute('data-id')) === data.key){
+                reset = true;
+                this.dimensional_data[stack].splice(resetIndex,1);
+                deleteDom = D;
+                continue;
+            }
+            reset && D.setAttribute('data-k',resetIndex);
+            resetIndex++;
+        }
+        deleteDom.remove();
+        if(this.STACKS[stack].childNodes.length === 0){
+            if(stack>0){
+                this.STACKS[stack].remove();
+                this.dimensional_data.splice(stack,1);
+            }else {
+                this.dimensional_data = [[]];
+            }
+        }
     }
 }
 

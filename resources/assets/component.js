@@ -399,6 +399,7 @@ class ComponentCascadeDot {
                 if (v.nodes !== null) {
                     div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                     div.addEventListener("contextmenu", (e) => {
+                        e.target.click();
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
                         _component.contextmenu(e, [

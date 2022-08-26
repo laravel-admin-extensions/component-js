@@ -173,7 +173,7 @@
     right: 0;
     top: 0;
     height: 100%;
-    background: rgb(0 0 0 / 81%);
+    background: radial-gradient(rgb(86 86 86 / 60%),#060606);
     border-radius: 5px;
     animation-name: dlpFadeIn;
     animation-duration: .2s;

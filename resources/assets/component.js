@@ -1370,7 +1370,7 @@ class ComponentCascadeLine {
         let panelDom = this.DOM.childNodes[0].lastChild;
         this.PLANE_DOM = panelDom;
         let T = document.createElement('div');
-        T.style.marginRight = 'auto';
+        T.className = 'header-content';
         T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
         panelDom.querySelector('.plane-header').append(T);
 
@@ -1506,7 +1506,7 @@ class ComponentCascadeLine {
         let panelDom = this.DOM.childNodes[0].lastChild;
         this.PLANE_DOM = panelDom;
         let T = document.createElement('div');
-        T.style.marginRight = 'auto';
+        T.className = 'header-content';
         T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
         panelDom.querySelector('.plane-header').append(T);
         /*X close panel*/

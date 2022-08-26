@@ -246,6 +246,10 @@
     border-radius: 3px 3px 0 0;
     height: 18px!important;
 }
+.plane-header .header-content{
+    margin-right: auto;
+    display: flex;
+}
 .plane-header .title{
     color: rgb(255 0 141);
     max-width: 120px;

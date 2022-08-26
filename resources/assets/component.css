@@ -20,8 +20,8 @@
     cursor: pointer;
     display: inline-block;
     min-width: 6em;
-    max-width: 9em;
-    min-height: 1em;
+    max-width: 12em;
+    height: 18px;
     outline: 0;
     border: none;
     vertical-align: baseline;
@@ -30,7 +30,7 @@
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
     margin: 0 4px 0;
     padding: 2px 4px 2px 4px;
-    line-height: 1em;
+    line-height: 14px;
     font-style: normal;
     text-align: center;
     text-decoration: none;
@@ -128,15 +128,21 @@
     background: #222222;
 }
 .dot-cascade-stack>.dlp-label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 24px!important;
-    padding-left: 19px;
-    padding-right: 19px;
-    display: block;
+    padding-left: 24px;
+    padding-right: 24px;
     max-width: unset;
     min-width: unset;
-    line-height: 20px;
     margin-bottom: 3px;
     position: relative;
+}
+.dlp-label>span{
+    width: 100%;
+    text-align: center;
+    text-overflow: ellipsis;overflow: hidden;white-space: nowrap;
 }
 .dot-cascade-stack>.dlp-label-silence{
     opacity: 0.5;

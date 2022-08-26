@@ -12,23 +12,29 @@
     -ms-user-select: none!important;
     user-select: none!important;
     text-align: left;
+    -webkit-appearance: none!important;
+    -webkit-box-sizing: unset!important;
+    -moz-box-sizing: unset!important;
+    box-sizing: unset!important;
 }
 .dlp i{cursor: pointer!important;}
 .dlp p,.dlp span{margin: 0!important;padding: 0!important;}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .dlp-label {
     cursor: pointer;
-    display: inline-block;
-    min-width: 6em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 7em;
     max-width: 12em;
-    height: 18px;
+    height: 14px;
     outline: 0;
     border: none;
     vertical-align: baseline;
     background: #d6d6d6;
     color: rgba(0,0,0,.7);
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
-    margin: 0 4px 0;
+    margin: 0 4px 3px;
     padding: 2px 4px 2px 4px;
     line-height: 14px;
     font-style: normal;
@@ -45,7 +51,6 @@
     transition: opacity .1s ease,background-color .1s ease,color .1s ease,background .1s ease,-webkit-box-shadow .1s ease;
     -webkit-tap-highlight-color: transparent;
     transition-property: color,background-color,border;
-    -webkit-appearance: none;
 }
 
 .dlp-label:hover {
@@ -109,7 +114,7 @@
 .dlp-cascadeLine .dot-search{
     margin-right: auto;
 }
-.dot-selected{width: 100%}
+.dot-selected{width: 100%!important;height: 100%!important;}
 .dot-selected>.dlp-label{background: white}
 .dot-body{padding:3px 0 3px 0;background: rgb(43 43 43);border-radius: 0 0 5px 5px;position: relative;}
 .dot-select{position: absolute;top:3px;left:0;bottom:3px;right:0;z-index: 1050;}
@@ -131,7 +136,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 24px!important;
+    height: 21px!important;
     padding-left: 24px;
     padding-right: 24px;
     max-width: unset;
@@ -176,8 +181,8 @@
 .dlp-input{
     vertical-align: middle;
     display: inline-block;
-    width: 100%;
-    height: 25px;
+    width: auto;
+    height: 20px;
     padding-left: 4px;
     padding-right: 4px;
     background: #ededed;;

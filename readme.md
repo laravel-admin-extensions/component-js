@@ -63,7 +63,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <ul>
             例.自定义页
             <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
-            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L185'>渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L183'>渲染</a></li>
         </ul>
     </tr>
 </table>

@@ -179,11 +179,11 @@
     animation-duration: .2s;
 }
 .dlp-input{
-    padding: 1 2px!important;
+    padding: 0 2px!important;
     vertical-align: middle;
     display: inline-block;
     width: calc(100% - 8px)!important;
-    height: 20px!important;
+    height: 24px!important;
     background: #ededed;
     color: #666;
     border: 1px solid #e5e5e5;

@@ -994,7 +994,7 @@ class ComponentPlane {
         _component.request(this.URL, 'GET', {}, function (response) {
             _component.loading(object.MODEL_BODY_DOM, true);
             let fragment = document.createRange().createContextualFragment(response);
-            document.querySelector('#dlp-plane .plane-body').appendChild(fragment);
+            object.MODEL_BODY_DOM.appendChild(fragment);
             let listener = object.XHR.listener;
             if (typeof listener === 'function') {
                 let target = listener(object.MODEL_BODY_DOM);

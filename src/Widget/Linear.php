@@ -41,7 +41,7 @@ EOT;
 
     public static function panel(array $columns,array $data,array $options=['sortable' => true, 'delete' => true])
     {
-        $columns = json_encode($columns);
+        $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $options = json_encode(array_merge(['sortable' => true, 'delete' => true],$options));
         $id = 'dot_'.mt_rand(0,100);

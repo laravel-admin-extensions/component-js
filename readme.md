@@ -16,6 +16,7 @@ composer require dlp/component-js
 php artisan vendor:publish --provider="DLP\DLPServiceProvider"
 ```
 
+### 使用说明
 <table> 
     <tr>
         <th style="text-align:left;">名称</td>

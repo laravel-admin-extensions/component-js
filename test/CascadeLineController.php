@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 
 class CascadeLineController
 {
+    /**
+     * 实现抽象trait
+     */
     use CascadeLineTrait;
+
     /**
      * @inheritDoc
      */

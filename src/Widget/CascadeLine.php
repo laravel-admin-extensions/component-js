@@ -29,7 +29,7 @@ EOT;
     public static function panel(array $select,string $xhr,array $style=[])
     {
         $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $style = array_merge(['height'=>'230px'],$style);
+        $style = array_merge(['width'=>'100%','height'=>'230px'],$style);
         $style_string = '';
         foreach ($style as $k=>$s){
             $style_string.="$k:$s;";

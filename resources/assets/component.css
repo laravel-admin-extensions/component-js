@@ -205,8 +205,22 @@
     font: inherit;
 }
 
-.dlp-input:focus{border-color:#66afe9;outline:0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)}
-
+.dlp-input:focus,.dlp-form-row>textarea:focus{border-color:#66afe9;outline:0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)}
+.dlp-form-row{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    padding: 5px 10px 5px 5px;
+}
+.dlp-form-row>input,.dlp-form-row>textarea{
+    flex: auto;
+    color: #0c0c0c;
+}
+.dlp-form-row>label{
+    min-width: 12rem!important;
+    max-width: 12rem!important;
+    text-align: center!important;
+}
 .dlp-table{
     width: 100%;
     border-radius: 5px;
@@ -276,7 +290,7 @@
 }
 .dot-cascade-panel>.plane-body{
     height: calc(100% - 23px);
-    background: rgb(54 54 54)!important;
+    background: rgb(30 30 30)!important;;
 }
 .dot-cascade-panel>.plane-header-delete{
     width: 270px;

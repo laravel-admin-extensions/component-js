@@ -31,7 +31,7 @@ EOT;
     {
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $style = array_merge(['height'=>'230px'],$style);
+        $style = array_merge(['width'=>'100%','height'=>'230px'],$style);
         $style_string = '';
         foreach ($style as $k=>$s){
             $style_string.="$k:$s;";

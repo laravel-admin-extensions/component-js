@@ -1,6 +1,7 @@
 ## 前端组件扩展
     Dot         标签选择器   
     CascadeDot  级联标签选择器
+    CascadeLine 级联标签管理器
     Linear      数据表单控件   
     plane       异步弹窗组件
 
@@ -30,12 +31,21 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     </tr>
     <tr>
         <td style="text-align:left;">级联标签选择器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>参考结构</a>
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">支持右键全选,取消<br/>多选择数量可设限制<br/>适用于无限分类,地区选择</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L150'>$form->CascadeDot</a></td>
+    </tr>
+    <tr>
+        <td style="text-align:left;">级联标签管理器</td>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>参考结构</a>
+        <br/>
+        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L179'>数据辅助组装</a><br/>
+        </td>
+        <td style="text-align:left;">右键新增,修改,删除 操作节点接口参考test\CascadeLineController</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L187'>$form->CascadeLine</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">数据表单控件</td>
@@ -63,7 +73,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <ul>
             例.自定义页
             <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
-            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L182'>渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L196'>渲染</a></li>
         </ul>
     </tr>
 </table>

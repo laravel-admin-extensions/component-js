@@ -26,4 +26,21 @@ new ComponentDot("{$id}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$lim
 EOT;
         return parent::render();
     }
+
+    public static function panel(array $selected,array $select,int $limit=1,array $style=[])
+    {
+        $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $style = array_merge(['height'=>'200px'],$style);
+        $style_string = '';
+        foreach ($style as $k=>$s){
+            $style_string.="$k:$s;";
+        }
+        $id = 'dot_'.mt_rand(0,100);
+        return <<<EOF
+<div id="{$id}" style="$style_string"></div>
+<script>
+new ComponentDot("{$id}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit});
+</script>
+EOF;
+    }
 }

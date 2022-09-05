@@ -16,7 +16,7 @@ class CascadeDot extends DLPField
     public function render()
     {
         $id = $this->formatName($this->id);
-        $height = isset($this->attributes['height']) ?  $this->attributes['height'] : '250px';
+        $height = isset($this->attributes['height']) ?  $this->attributes['height'] : '230px';
         $limit = isset($this->attributes['limit']) ? (int)$this->attributes['limit'] : 0;
         $this->addVariables(['height'=>$height]);
         $select = json_encode($this->options, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -25,5 +25,23 @@ class CascadeDot extends DLPField
 new ComponentCascadeDot("{$id}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit});
 EOT;
         return parent::render();
+    }
+
+    public static function panel(array $selected,array $select,int $limit=1,array $style=[])
+    {
+        $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $style = array_merge(['height'=>'230px'],$style);
+        $style_string = '';
+        foreach ($style as $k=>$s){
+            $style_string.="$k:$s;";
+        }
+        $id = 'cascade_dot_'.mt_rand(0,100);
+        return <<<EOF
+<div id="{$id}" style="$style_string"></div>
+<script>
+new ComponentCascadeDot("{$id}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit});
+</script>
+EOF;
     }
 }

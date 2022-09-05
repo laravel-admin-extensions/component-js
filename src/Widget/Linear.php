@@ -38,4 +38,18 @@ new ComponentLine("{$id}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.pa
 EOT;
         return parent::render();
     }
+
+    public static function panel(array $columns,array $data,array $options=['sortable' => true, 'delete' => true])
+    {
+        $columns = json_encode($columns);
+        $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $options = json_encode(array_merge(['sortable' => true, 'delete' => true],$options));
+        $id = 'dot_'.mt_rand(0,100);
+        return <<<EOF
+<div id="{$id}" style="$style_string"></div>
+<script>
+new ComponentLine("{$id}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));
+</script>
+EOF;
+    }
 }

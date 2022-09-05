@@ -1,5 +1,5 @@
 <?php
-namespace DLP\Trait;
+namespace DLP\Traits;
 
 
 use DLP\Tool\Assistant;
@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 /**
  * 线 - 级联控制器 视图,接口
  * Trait CascadeLineTrait
- * @package DLP
+ * @package DLP\Traits
  */
 trait CascadeLineTrait
 {

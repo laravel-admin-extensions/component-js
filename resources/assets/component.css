@@ -209,7 +209,7 @@
 .dlp-form-row{
     display: flex;
     justify-content:center;
-    align-items: center;
+    align-items: baseline;
     padding: 5px 10px 5px 5px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{

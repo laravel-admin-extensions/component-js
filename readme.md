@@ -31,7 +31,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     </tr>
     <tr>
         <td style="text-align:left;">级联标签选择器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>参考结构</a>
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
@@ -40,7 +40,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     </tr>
     <tr>
         <td style="text-align:left;">级联标签管理器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>参考结构</a>
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L179'>数据辅助组装</a><br/>
         </td>

@@ -210,15 +210,15 @@
     display: flex;
     justify-content:center;
     align-items: baseline;
-    padding: 5px 10px 5px 5px;
+    padding: 5px 3em 5px 5px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
     flex: auto;
     color: #0c0c0c;
 }
 .dlp-form-row>label{
-    min-width: 12rem!important;
-    max-width: 12rem!important;
+    min-width: 7em!important;
+    max-width: 7em!important;
     text-align: center!important;
 }
 .dlp-table{

@@ -1,12 +1,13 @@
 <?php
 namespace App\Admin\Controllers;
 
-use DLP\CascadeLineAbstract;
 use DLP\Tool\FormPanel;
+use DLP\Traits\CascadeLineTrait;
 use Illuminate\Http\Request;
 
-class CascadeLineController extends CascadeLineAbstract
+class CascadeLineController
 {
+    use CascadeLineTrait;
     /**
      * @inheritDoc
      */

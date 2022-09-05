@@ -142,13 +142,13 @@ class ExampleController extends AdminController
          *          链表结构数据辅助组装
          *              1.倒排父节点查询
          *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
-         *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
+         *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);
          * checked 已选择 一维数组 值类型integer
          * attribute.height 设置高度 默认200px
          */
         $form->CascadeDot('cascadeDot','级联标签选择器')
-            ->options($this->cascadeData())
+            ->options($this->cascadeExampleData())
             ->checked([614,550,543])
             ->attribute(['height'=>'200px']);
 
@@ -183,7 +183,7 @@ class ExampleController extends AdminController
         return Plane::html($html);
     }
 
-    private function cascadeData()
+    private function cascadeExampleData()
     {
         return [
             ["key" => "3", "val" => "基本", "nodes" => [

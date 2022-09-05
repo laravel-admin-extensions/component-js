@@ -142,16 +142,15 @@ class ExampleController extends AdminController
          *          链表结构数据辅助组装
          *              1.倒排父节点查询
          *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
-         *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
+         *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
          *          DLPHelper::dimension($select);
          * checked 已选择 一维数组 值类型integer
          * attribute.height 设置高度 默认200px
          */
         $form->CascadeDot('cascadeDot','级联标签选择器')
-            ->options($this->cascadeExampleData())
+            ->options($this->cascadeData())
             ->checked([614,550,543])
             ->attribute(['height'=>'200px']);
-
 
         /**
          * 线组件
@@ -173,6 +172,21 @@ class ExampleController extends AdminController
                 ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
                 ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
                 ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]]);
+
+        /**
+         * 级联线组件
+         * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
+         *          链表结构数据辅助组装
+         *              1.倒排父节点查询
+         *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
+         *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
+         *          DLPHelper::dimension($select);
+         * xhr 接口地址 编码参见:test\CascadeLineController
+         * attribute.height 设置高度 默认200px
+         */
+        $form->CascadeLine('cascadeLine','级联标签管理器')
+            ->options($this->cascadeExampleData())
+            ->xhr('route-to-CascadeLineController');
         return $form;
     }
 
@@ -183,7 +197,7 @@ class ExampleController extends AdminController
         return Plane::html($html);
     }
 
-    private function cascadeExampleData()
+    private function cascadeData()
     {
         return [
             ["key" => "3", "val" => "基本", "nodes" => [

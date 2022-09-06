@@ -140,8 +140,8 @@ class ExampleController extends AdminController
          * 级联点组件
          * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
          *          链表结构数据辅助组装
-         *              1.倒排父节点查询
-         *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
+         *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
+         *          $select = Model::orderBy('par','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
          *          DLPHelper::dimension($select);
          * checked 已选择 一维数组 值类型integer
@@ -177,7 +177,7 @@ class ExampleController extends AdminController
          * 级联线组件
          * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
          *          链表结构数据辅助组装
-         *              1.倒排父节点查询
+         *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
          *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);

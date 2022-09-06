@@ -45,7 +45,7 @@ class ExampleController extends AdminController
          * url      弹窗页地址
          * xhr_url  表单提交地址
          * method   提交方式 POST PUT GET ...
-         * callback ajax请求回调函数
+         * callback ajax请求回调js函数 (字符串方式书写)
          *      function(response){
          *          alert(response);
          *      }
@@ -58,7 +58,7 @@ class ExampleController extends AdminController
          * url      弹窗页地址 {id}反向匹配当前行id
          * xhr_url  表单提交地址 {id}反向匹配当前行id
          * method   提交方式 POST PUT GET ...
-         * callback ajax请求回调函数
+         * callback ajax请求回调js函数 (字符串方式书写)
          *      function(response){
          *          alert(response);
          *      }

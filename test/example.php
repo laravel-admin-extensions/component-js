@@ -45,7 +45,7 @@ class ExampleController extends AdminController
          * url      弹窗页地址
          * xhr_url  表单提交地址
          * method   提交方式 POST PUT GET ...
-         * callback ajax请求回调函数
+         * callback ajax请求回调js函数 (字符串方式书写)
          *      function(response){
          *          alert(response);
          *      }
@@ -58,7 +58,7 @@ class ExampleController extends AdminController
          * url      弹窗页地址 {id}反向匹配当前行id
          * xhr_url  表单提交地址 {id}反向匹配当前行id
          * method   提交方式 POST PUT GET ...
-         * callback ajax请求回调函数
+         * callback ajax请求回调js函数 (字符串方式书写)
          *      function(response){
          *          alert(response);
          *      }
@@ -140,8 +140,8 @@ class ExampleController extends AdminController
          * 级联点组件
          * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
          *          链表结构数据辅助组装
-         *              1.倒排父节点查询
-         *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
+         *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
+         *          $select = Model::orderBy('par','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
          *          DLPHelper::dimension($select);
          * checked 已选择 一维数组 值类型integer
@@ -177,16 +177,16 @@ class ExampleController extends AdminController
          * 级联线组件
          * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
          *          链表结构数据辅助组装
-         *              1.倒排父节点查询
+         *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
          *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);
-         * xhr 接口地址 编码参见:test\CascadeLineController 路由配置$router->resource('/地址', 'CascadeLineController')
+         * xhr 接口地址 编码参见:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
          * attribute.height 设置高度 默认200px
          */
         $form->CascadeLine('cascadeLine','级联标签管理器')
             ->options($this->cascadeExampleData())
-            ->xhr('route-to-CascadeLineController');
+            ->xhr('.../xhr地址');
         return $form;
     }
 

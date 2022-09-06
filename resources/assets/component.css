@@ -53,11 +53,8 @@
     transition-property: color,background-color,border;
 }
 
-.dlp-label:hover {
-    background-color: #bfbfbf;
-    background-image: none;
-    -webkit-box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
-    box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgb(34 36 38 / 15%) inset;
+.dlp-label:hover,.dlp-label-active {
+    background-color: #f7f7f7;
     color: rgba(0,0,0,1);
 }
 
@@ -290,7 +287,7 @@
 }
 .dot-cascade-panel>.plane-body{
     height: calc(100% - 23px);
-    background: rgb(30 30 30)!important;;
+    background: rgb(35 35 35)!important;
 }
 .dot-cascade-panel>.plane-header-delete{
     width: 270px;

@@ -181,12 +181,12 @@ class ExampleController extends AdminController
          *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);
-         * xhr 接口地址 编码参见:test\CascadeLineController 路由配置$router->resource('/地址', 'CascadeLineController')
+         * xhr 接口地址 编码参见:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
          * attribute.height 设置高度 默认200px
          */
         $form->CascadeLine('cascadeLine','级联标签管理器')
             ->options($this->cascadeExampleData())
-            ->xhr('route-to-CascadeLineController');
+            ->xhr('.../xhr地址');
         return $form;
     }
 

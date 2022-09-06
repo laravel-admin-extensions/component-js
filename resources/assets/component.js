@@ -1421,7 +1421,7 @@ class ComponentCascadeLine {
     }
 
     nodeInsert(dom, data, stack) {
-        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 新增节点');
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 新增');
         let object = this;
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
@@ -1483,7 +1483,7 @@ class ComponentCascadeLine {
     }
 
     nodeUpdate(dom, data) {
-        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 修改节点');
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 修改');
         let object = this;
         _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
             object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {

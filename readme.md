@@ -45,7 +45,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L179'>数据辅助组装</a><br/>
         </td>
-        <td style="text-align:left;">右键新增,修改,删除 操作节点接口参考<a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L8'>test\CascadeLineController</a></td>
+        <td style="text-align:left;">右键新增,修改,删除 操作节点接口参考<a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L8'>test\CascadeLineController</a><br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L13'>实现CascadeLineTrait抽象方法</a></td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L187'>$form->CascadeLine</a><br/><br/><b>直接调用<b/>:<br/>CascadeLine::panel($selected,$xhr,$style)</td>
     </tr>
     <tr>

@@ -1426,7 +1426,7 @@ window.ComponentCascadeLine = class {
     }
 
     nodeInsert(dom, data, stack) {
-        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 新增');
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 新增`);
         let object = this;
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
@@ -1489,7 +1489,7 @@ window.ComponentCascadeLine = class {
     }
 
     nodeUpdate(dom, data) {
-        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 修改');
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 修改`);
         let object = this;
         _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
             object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
@@ -1505,7 +1505,7 @@ window.ComponentCascadeLine = class {
 
     nodeDelete(dom, data,stack) {
         let object = this;
-        let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span>` + ' 删除';
+        let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span> 删除`;
         let marginTop = (this.DOM.clientHeight - 70) / 2;
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-delete" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-delete"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);

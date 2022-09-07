@@ -51,7 +51,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     <tr>
         <td style="text-align:left;">数据表单控件</td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
-        <td style="text-align:left;">支持拖拽排序 弥补JSON组件<br/>对字段类型依赖不可排序问题</td>
+        <td style="text-align:left;">支持拖拽排序 类似JSON组件</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/>Linear::panel($columns,$data)</td>
     </tr>
     <tr>

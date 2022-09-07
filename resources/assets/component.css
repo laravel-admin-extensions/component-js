@@ -54,7 +54,7 @@
 }
 
 .dlp-label:hover,.dlp-label-active {
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     color: rgba(0,0,0,1);
 }
 
@@ -71,7 +71,7 @@
     box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
     border-radius: 5px;
 }
-.dot-top>.dot-search{
+.dot-top .dot-search{
     width: 100px;
     border: none;
     color: inherit;
@@ -103,13 +103,25 @@
     padding: 5px;
     justify-content: flex-end;
 }
-.dlp-cascadeLine>.dot-top>.dlp-btn{
+.dlp-cascadeLine .dlp-btn{
     cursor: pointer;
+    text-align: center;
+    line-height: 16px;
     width: 16px;
     height: 16px;
 }
-.dlp-cascadeLine .dot-search{
+.dlp-cascadeLine>.dot-top>.search-box{
     margin-right: auto;
+    display: flex;
+}
+.dlp-cascadeLine .dot-search-result-panel{
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
+.dlp-cascadeLine .search-result-number{
+    width: 18px;
+    text-align: center;
 }
 .dot-selected{width: 100%!important;height: 100%!important;}
 .dot-selected>.dlp-label{background: white}

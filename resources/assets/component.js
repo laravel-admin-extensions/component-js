@@ -101,8 +101,7 @@ const _component = {
             "top:" + h + "px;left:" + w + "px;";
         div.setAttribute('style', style);
         document.getElementsByTagName("BODY")[0].appendChild(div);
-        let task = setTimeout(function () {
-            clearTimeout(task);
+        setTimeout(()=> {
             div.parentNode.removeChild(div);
             if (typeof callback === 'function') callback();
         }, time * 1000);
@@ -121,9 +120,8 @@ const _component = {
             if (typeof v.func === 'function') {
                 li.addEventListener('click', () => {
                     ul.remove();
-                    let sync = setTimeout(() => {
+                    setTimeout(() => {
                         v.func();
-                        clearTimeout(sync);
                     }, 100);
                 });
                 ul.append(li);
@@ -199,8 +197,7 @@ class ComponentDot {
         let search = document.querySelector(`#${this.name} .dot-search`);
         let object = this;
         search.addEventListener('input', () => {
-            let timeout = setTimeout(function () {
-                clearTimeout(timeout);
+            setTimeout(() =>{
                 object.search(search);
             }, 500);
         });
@@ -349,8 +346,7 @@ class ComponentCascadeDot {
         this.selectInputDOM.value = JSON.stringify(this.select_data);
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
-            let timeout = setTimeout(function () {
-                clearTimeout(timeout);
+            setTimeout(()=> {
                 object.search(search);
             }, 500);
         });
@@ -1169,16 +1165,25 @@ class ComponentCascadeLine {
         this.DOM = document.getElementById(name);
         this.URL = url;
         this.make().makeSelect(select).makeHeader();
+
+        let object = this;
+        let search = document.querySelector(`#${this.name} .dot-search`);
+        search.addEventListener('input', () => {
+            setTimeout(()=> {
+                object.search(search);
+            }, 700);
+        });
     }
 
     make() {
-        let html = `<div class="dlp-dot dlp-cascadeLine"><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
+        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
         this.HEADER_DOM = document.querySelector(`#${this.name} .dot-top`);
         this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
+        this.SEARCH_BOX = document.querySelector(`#${this.name} .search-box`);
         return this;
     }
 
@@ -1454,6 +1459,7 @@ class ComponentCascadeLine {
                     let currentStackDocuments = object.STACKS[nextStack].childNodes;
                     let newIndex = 0;
                     for (let index in object.dimensional_data[nextStack]) {
+                        if(!object.dimensional_data[nextStack].hasOwnProperty(index))continue;
                         index = parseInt(index);
                         newIndex = index + 1;
                         if (object.dimensional_data[nextStack][index].key === lastKey) {
@@ -1543,6 +1549,7 @@ class ComponentCascadeLine {
         if(parent_stack>=0){
             let parent = data.parentNodes.pop();
             for(let i in this.dimensional_data[parent_stack]){
+                if(!this.dimensional_data[parent_stack].hasOwnProperty(i))continue;
                 i = parseInt(i);
                 let d = this.dimensional_data[parent_stack][i];
                 if(d.key !== parent)continue;
@@ -1561,6 +1568,7 @@ class ComponentCascadeLine {
             let batchDeleteDom = [];
             let resetIndex = 0;
             for (let index in this.dimensional_data[currentStack]){
+                if(!this.dimensional_data[currentStack].hasOwnProperty(index))continue;
                 index = parseInt(index);
                 let d = this.dimensional_data[currentStack][index];
                 if(d.parentNodes.indexOf(data.key) !== -1){
@@ -1602,6 +1610,76 @@ class ComponentCascadeLine {
                 this.dimensional_data = [[]];
             }
         }
+    }
+
+    search(search) {
+        if(Array.isArray(this.search_result) && this.search_result.length > 0){
+            this.lastPickRemove();
+        }
+        this.search_result = [];
+        let object = this;
+        this.dimensional_data.forEach((data,stack)=>{
+            data.forEach((d,index)=>{
+                if(d.val.indexOf(search.value) !== -1)object.search_result.push({'stack':stack,'index':index});
+            });
+        });
+        if(this.search_result_panel instanceof HTMLElement){
+            this.search_result_panel.remove();
+        }
+        if(this.search_result.length === 0 || search.value === '')return;
+        let panel = document.createElement('div');
+        panel.className = 'dot-search-result-panel';
+        let previous = document.createElement('span');
+        previous.className = 'dlp-btn';
+        previous.textContent = '◀';
+        previous.addEventListener('click',this.searchPick.bind(this,false));
+        let next = document.createElement('span');
+        next.className = 'dlp-btn';
+        next.textContent = '▶';
+        next.addEventListener('click',this.searchPick.bind(this,true));
+        let pick = document.createElement('span');
+        pick.className = 'search-result-number dlp-text';
+        pick.textContent = '1';
+        this.SEARCH_PICK = pick;
+        this.search_result_pick = 1;
+        panel.append(previous);
+        panel.append(pick);
+        panel.insertAdjacentHTML('beforeend',`<span> / </span><span class="search-result-number dlp-text">${this.search_result.length.toString()}</span>`);
+        panel.append(next);
+        this.search_result_panel = panel;
+        this.SEARCH_BOX.append(panel);
+        this.pickUp();
+    }
+
+    searchPick(toward=true){
+        this.lastPickRemove();
+        if(toward){
+            this.search_result_pick++;
+            if(this.search_result_pick > this.search_result.length){
+                this.search_result_pick = 1;
+            }
+        }else {
+            this.search_result_pick--;
+            if (this.search_result_pick < 1) {
+                this.search_result_pick = this.search_result.length;
+            }
+        }
+        this.SEARCH_PICK.textContent = this.search_result_pick.toString();
+        this.pickUp();
+    }
+
+    lastPickRemove(){
+        let pick = this.search_result[(this.search_result_pick -1)];
+        this.STACKS[pick.stack].childNodes[pick.index].classList.remove('dlp-label-active');
+    }
+
+    pickUp(){
+        let pick = this.search_result[(this.search_result_pick -1)];
+        let DOM = this.STACKS[pick.stack].childNodes[pick.index];
+        if(!(DOM instanceof HTMLElement))return;
+        DOM.classList.add('dlp-label-active');
+        this.STACKS[pick.stack].scrollTop = pick.index * 27;
+        DOM.click();
     }
 }
 

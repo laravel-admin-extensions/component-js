@@ -316,7 +316,7 @@ window.ComponentDot = class {
         }
         this.SELECT_COVER_DOM.append(...elements);
     }
-}
+};
 
 window.ComponentCascadeDot = class {
     MODE = {
@@ -709,7 +709,7 @@ window.ComponentCascadeDot = class {
         if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
         this.checkAll(stack + 1, children, check);
     }
-}
+};
 
 window.ComponentLine = class {
     constructor(name, columns, data, options = {}) {
@@ -929,7 +929,7 @@ window.ComponentLine = class {
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
         });
     }
-}
+};
 
 window.ComponentPlane = class {
     constructor(url, xhr = {}, options = {}) {
@@ -1023,7 +1023,7 @@ window.ComponentPlane = class {
             }
         });
     }
-}
+};
 
 window.ComponentSortable = class {
     constructor(list, callback = null) {
@@ -1153,7 +1153,7 @@ window.ComponentSortable = class {
     getDragY(e) {
         return e.touches ? (e.touches[0] || e.changedTouches[0]).pageY : e.pageY;
     }
-}
+};
 
 window.ComponentCascadeLine = class {
     constructor(name, select, url) {
@@ -1681,5 +1681,5 @@ window.ComponentCascadeLine = class {
         this.STACKS[pick.stack].scrollTop = pick.index * 27;
         DOM.click();
     }
-}
+};
 

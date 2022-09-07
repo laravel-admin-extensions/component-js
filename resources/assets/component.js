@@ -1607,16 +1607,15 @@ window.ComponentCascadeLine = class {
             this.lastPickRemove();
         }
         this.search_result = [];
-        let object = this;
+        if(this.search_result_panel instanceof HTMLElement) this.search_result_panel.remove();
+        if(search.value === '')return;
         this.dimensional_data.forEach((data,stack)=>{
             data.forEach((d,index)=>{
-                if(d.val.indexOf(search.value) !== -1)object.search_result.push({'stack':stack,'index':index});
+                if(d.val.indexOf(search.value) !== -1)this.search_result.push({'stack':stack,'index':index});
             });
         });
-        if(this.search_result_panel instanceof HTMLElement){
-            this.search_result_panel.remove();
-        }
-        if(this.search_result.length === 0 || search.value === '')return;
+        if(this.search_result.length === 0)return;
+
         let panel = document.createElement('div');
         panel.className = 'dot-search-result-panel';
         let previous = document.createElement('span');

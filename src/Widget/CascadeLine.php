@@ -26,6 +26,13 @@ EOT;
         return parent::render();
     }
 
+    /**
+     * 直接调用ComponentCascadeLine组件
+     * @param array $select 全部选项
+     * @param string $xhr   ajax接口地址
+     * @param array $style  组件样式设置 宽:width 高:height
+     * @return string
+     */
     public static function panel(array $select,string $xhr,array $style=[])
     {
         $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);

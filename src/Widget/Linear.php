@@ -39,6 +39,13 @@ EOT;
         return parent::render();
     }
 
+    /**
+     * 直接调用ComponentLine组件
+     * @param array $columns    头部字段样式定义
+     * @param array $data       数据集
+     * @param array $options    操作列设置 sortable可排序 delete可删除
+     * @return string
+     */
     public static function panel(array $columns,array $data,array $options=['sortable' => true, 'delete' => true])
     {
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);

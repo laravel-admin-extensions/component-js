@@ -127,9 +127,10 @@ class ExampleController extends AdminController
 
         /**
          * 点组件
-         * options 设置数据集 一维数组 格式 [value1=>text1,value2=>text2...]
-         * checked 已选择 一维数组 值类型integer
+         * options          设置数据集 一维数组 格式 [value1=>text1,value2=>text2...]
+         * checked          已选择 一维数组 值类型integer
          * attribute.height 设置高度 默认200px
+         * attribute.limit  选择限制数 默认0:无限
          */
         $form->Dot('dot','标签选择器')
             ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣'])
@@ -144,8 +145,9 @@ class ExampleController extends AdminController
          *          $select = Model::orderBy('par','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
          *          DLPHelper::dimension($select);
-         * checked 已选择 一维数组 值类型integer
+         * checked          已选择 一维数组 值类型integer
          * attribute.height 设置高度 默认200px
+         * attribute.limit  选择限制数 默认0:无限
          */
         $form->CascadeDot('cascadeDot','级联标签选择器')
             ->options($this->cascadeData())

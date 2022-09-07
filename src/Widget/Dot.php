@@ -27,6 +27,14 @@ EOT;
         return parent::render();
     }
 
+    /**
+     * 直接调用ComponentDot组件
+     * @param array $selected   已选择id组 [1,2,3...]
+     * @param array $select     全部选项
+     * @param int $limit        选择限制数 默认0:无限
+     * @param array $style      组件样式设置 宽:width 高:height
+     * @return string
+     */
     public static function panel(array $selected,array $select,int $limit=1,array $style=[])
     {
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);

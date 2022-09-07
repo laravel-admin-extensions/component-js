@@ -207,7 +207,7 @@ window.ComponentDot = class {
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
-            select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}">${select[i]}</div>`;
+            select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
         let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
@@ -388,7 +388,7 @@ window.ComponentCascadeDot = class {
                 }
                 let div = document.createElement('div');
                 div.className = 'dlp dlp-text dlp-label';
-                div.textContent = v.val;
+                div.insertAdjacentHTML('afterbegin',`<span>${v.val}</span>`);
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
@@ -491,7 +491,7 @@ window.ComponentCascadeDot = class {
         div.className = 'dlp dlp-text dlp-label';
         div.setAttribute('data-id', element.getAttribute('data-id'));
         div.setAttribute('stack', stack);
-        div.textContent = element.textContent;
+        div.insertAdjacentHTML('afterbegin',`<span>${element.querySelector('span').textContent}</span>`);
         let object = this;
         div.addEventListener('click', function () {
             object.select(element, stack);

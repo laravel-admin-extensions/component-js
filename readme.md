@@ -32,27 +32,27 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     </tr>
     <tr>
         <td style="text-align:left;">级联标签选择器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L202'>参考结构</a>
         <br/>
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">支持右键全选,取消<br/>多选择数量可设限制<br/>适用于无限分类,地区选择</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L150'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/>CascadeDot::panel(selected,select,limit,style)</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L152'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/>CascadeDot::panel(selected,select,limit,style)</td>
     </tr>
     <tr>
         <td style="text-align:left;">级联标签管理器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L202'>参考结构</a>
         <br/>
-        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L179'>数据辅助组装</a><br/>
+        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L181'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">右键新增,修改,删除 操作节点接口参考<a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L8'>test\CascadeLineController</a><br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L13'>实现CascadeLineTrait抽象方法</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L187'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/>CascadeLine::panel(select,xhr,style)</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L189'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/>CascadeLine::panel(select,xhr,style)</td>
     </tr>
     <tr>
         <td style="text-align:left;">数据表单控件</td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
         <td style="text-align:left;">支持拖拽排序 类似JSON组件</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/>Linear::panel(columns,data)</td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/>Linear::panel(columns,data)</td>
     </tr>
     <tr>
         <td style="text-align:left;">弹出层组件</td>
@@ -74,7 +74,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <ul>
             例.自定义页
             <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
-            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L196'>渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L198'>渲染</a></li>
         </ul>
     </tr>
 </table>

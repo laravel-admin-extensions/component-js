@@ -195,10 +195,9 @@ window.ComponentDot = class {
         }
 
         let search = document.querySelector(`#${this.name} .dot-search`);
-        let object = this;
         search.addEventListener('input', () => {
             setTimeout(() =>{
-                object.search(search);
+                this.search(search);
             }, 500);
         });
     }
@@ -337,9 +336,8 @@ window.ComponentCascadeDot = class {
         this.insert_data = [];
         this.delete_data = [];
         this.make().makeSelect(select);
-        let object = this;
         setTimeout(() => {
-            object.selected_label_dom.forEach((D) => {
+            this.selected_label_dom.forEach((D) => {
                 D.click();
             });
         });
@@ -347,7 +345,7 @@ window.ComponentCascadeDot = class {
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
             setTimeout(()=> {
-                object.search(search);
+                this.search(search);
             }, 500);
         });
     }
@@ -492,9 +490,8 @@ window.ComponentCascadeDot = class {
         div.setAttribute('data-id', element.getAttribute('data-id'));
         div.setAttribute('stack', stack);
         div.insertAdjacentHTML('afterbegin',`<span>${element.querySelector('span').textContent}</span>`);
-        let object = this;
-        div.addEventListener('click', function () {
-            object.select(element, stack);
+        div.addEventListener('click', ()=> {
+            this.select(element, stack);
         });
         this.SELECTED_DOM.append(div);
     }
@@ -768,10 +765,9 @@ window.ComponentLine = class {
     makeBody() {
         let records = [];
         let tbody = document.createElement('tbody');
-        let object = this;
         let columns = this.COLUMNS;
         if (Array.isArray(this.DATA) === false) return;
-        this.DATA.forEach(function (value, key) {
+        this.DATA.forEach((value, key)=> {
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
@@ -786,13 +782,13 @@ window.ComponentLine = class {
                 let td = document.createElement('td');
                 if (value[column]) {
                     record[column] = value[column];
-                    object.makeTd(td, columns[column].type, value[column], column);
+                    this.makeTd(td, columns[column].type, value[column], column);
                     if (columns[column].style) {
                         td.style = columns[column].style;
                     }
                 } else {
                     record[column] = '';
-                    object.makeTd(td, columns[column].type, '', column);
+                    this.makeTd(td, columns[column].type, '', column);
                     if (columns[column].style) {
                         td.style = columns[column].style;
                     }
@@ -802,13 +798,13 @@ window.ComponentLine = class {
             }
 
             let td = document.createElement('td');
-            object.operateButton(td);
+            this.operateButton(td);
             tr.appendChild(td);
             tbody.appendChild(tr);
             records.push(record);
         });
-        object.DATA = records;
-        object.DATA_INPUT.value = JSON.stringify(records);
+        this.DATA = records;
+        this.DATA_INPUT.value = JSON.stringify(records);
         tbody.setAttribute('sortable-list', 'sortable-list');
         tbody.className = 'dlp-scroll';
         this.TBODY_DOM = tbody;
@@ -820,41 +816,39 @@ window.ComponentLine = class {
         tfoot.insertAdjacentHTML('afterbegin', foot);
         this.TABLE_DOM.appendChild(tfoot);
         /*insert action*/
-        let object = this;
         let i = document.createElement('i');
         i.style.cursor = 'pointer';
         i.insertAdjacentHTML('afterbegin', _component.write);
-        i.addEventListener('click', function () {
-            let inputs = object.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
+        i.addEventListener('click', ()=> {
+            let inputs = this.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
             let insert = {};
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item', 'sortable-item');
-            tr.setAttribute('data-key', object.DATA.length.toString());
+            tr.setAttribute('data-key', this.DATA.length.toString());
             for (let input of inputs) {
                 let td = document.createElement('td');
                 let column = input.getAttribute('data-column');
                 insert[column] = input.value;
 
-                object.makeTd(td, object.COLUMNS[column].type, input.value, column);
-                if (object.COLUMNS[column].style) {
-                    td.style = object.COLUMNS[column].style;
+                this.makeTd(td, this.COLUMNS[column].type, input.value, column);
+                if (this.COLUMNS[column].style) {
+                    td.style = this.COLUMNS[column].style;
                 }
                 tr.appendChild(td);
                 input.value = '';
             }
             let td = document.createElement('td');
-            object.operateButton(td);
+            this.operateButton(td);
             tr.appendChild(td);
-            object.TBODY_DOM.appendChild(tr);
-            object.DATA.push(insert);
-            object.DATA_INPUT.value = JSON.stringify(object.DATA);
-            object.TBODY_DOM.scrollTop = object.TBODY_DOM.scrollHeight;
+            this.TBODY_DOM.appendChild(tr);
+            this.DATA.push(insert);
+            this.DATA_INPUT.value = JSON.stringify(this.DATA);
+            this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
         }, false);
         this.DOM.getElementsByClassName('insert_handel')[0].appendChild(i);
     }
 
     makeTd(td, type, value, column, attributes) {
-        let object = this;
         switch (type) {
             case 'text':
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp-text" title="${value}">${value}</p>`);
@@ -868,12 +862,12 @@ window.ComponentLine = class {
                     if (!attributes.hasOwnProperty(attribute)) continue;
                     input.setAttribute(attribute, attributes[attribute]);
                 }
-                input.addEventListener('input', function () {
-                    let key = this.parentNode.parentNode.getAttribute('data-key');
-                    let column = this.getAttribute('data-column');
-                    if (object.DATA[key]) {
-                        object.DATA[key][column] = this.value;
-                        object.DATA_INPUT.value = JSON.stringify(object.DATA);
+                input.addEventListener('input', ()=> {
+                    let key = input.parentNode.parentNode.getAttribute('data-key');
+                    let column = input.getAttribute('data-column');
+                    if (this.DATA[key]) {
+                        this.DATA[key][column] = input.value;
+                        this.DATA_INPUT.value = JSON.stringify(this.DATA);
                     }
                 }, false);
                 td.appendChild(input);
@@ -885,7 +879,6 @@ window.ComponentLine = class {
     }
 
     operateButton(td) {
-        let object = this;
         if (this.OPTIONS.sortable) {
             let M = document.createElement('i');
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
@@ -898,14 +891,14 @@ window.ComponentLine = class {
             let D = document.createElement('span');
             D.setAttribute('style', 'cursor: pointer;display: inline-block;');
             D.insertAdjacentHTML('afterbegin', _component.trash);
-            D.addEventListener('click', function () {
-                let tr = this.parentNode.parentNode;
+            D.addEventListener('click', ()=> {
+                let tr = D.parentNode.parentNode;
                 let tbody = tr.parentNode;
                 let key = tr.getAttribute('data-key');
 
-                object.DATA.splice(key, 1);
+                this.DATA.splice(key, 1);
                 tbody.removeChild(tr);
-                object.DATA_INPUT.value = JSON.stringify(object.DATA);
+                this.DATA_INPUT.value = JSON.stringify(this.DATA);
                 for (let node in tbody.childNodes) {
                     if (!tbody.childNodes.hasOwnProperty(node)) continue;
                     if (tbody.childNodes[node] instanceof HTMLElement) {
@@ -971,17 +964,16 @@ window.ComponentPlane = class {
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
-        let object = this;
-        X.addEventListener('click', function () {
-            if (object.DOM instanceof HTMLElement) {
-                object.DOM.remove();
+        X.addEventListener('click', ()=> {
+            if (this.DOM instanceof HTMLElement) {
+                this.DOM.remove();
             }
             if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
                 document.getElementById('kvFileinputModal').remove();
             }
         }, false);
-        object.DOM.querySelector('.plane-header').append(X);
-        this.MODEL_BODY_DOM = object.DOM.querySelector('.plane-body');
+        this.DOM.querySelector('.plane-header').append(X);
+        this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
     }
 
     makeContent() {
@@ -1007,10 +999,9 @@ window.ComponentPlane = class {
         element.innerText = '提交中...';
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
-        let object = this;
-        _component.request(this.XHR.url, this.XHR.method, formdata, function (response) {
-            if (typeof object.XHR.callback == 'function') {
-                object.XHR.callback(response);
+        _component.request(this.XHR.url, this.XHR.method, formdata, (response)=> {
+            if (typeof this.XHR.callback == 'function') {
+                this.XHR.callback(response);
                 return;
             }
             if (response.code === 0) {
@@ -1166,11 +1157,10 @@ window.ComponentCascadeLine = class {
         this.URL = url;
         this.make().makeSelect(select).makeHeader();
 
-        let object = this;
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
             setTimeout(()=> {
-                object.search(search);
+                this.search(search);
             }, 700);
         });
     }
@@ -1208,7 +1198,7 @@ window.ComponentCascadeLine = class {
                     object.PLANE_DOM.remove();
                 });
             });
-        }).bind(this));
+        }));
         I.insertAdjacentHTML('afterbegin',_component.node);
         this.HEADER_DOM.append(I);
     }
@@ -1382,7 +1372,7 @@ window.ComponentCascadeLine = class {
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
-        X.addEventListener('click', function () {
+        X.addEventListener('click', ()=> {
             panelDom.remove();
         }, false);
         panelDom.querySelector('.plane-header').append(X);
@@ -1518,7 +1508,7 @@ window.ComponentCascadeLine = class {
         /*X close panel*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
-        X.addEventListener('click', function () {
+        X.addEventListener('click', ()=> {
             panelDom.remove();
         }, false);
         panelDom.querySelector('.plane-header').append(X);
@@ -1538,7 +1528,7 @@ window.ComponentCascadeLine = class {
             }, function () {
                 object.submit_block = false;
             });
-        }).bind(this));
+        }));
         D.insertAdjacentHTML('afterbegin',`<span>${data.val}</span><i class="right">${_component.trash}</i>`);
         this.PLANE_BODY.append(D);
     }

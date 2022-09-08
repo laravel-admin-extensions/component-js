@@ -40,7 +40,7 @@ EOT;
     }
 
     /**
-     * 直接调用ComponentLine组件
+     * 直接调用Linear组件
      * @param array $columns    头部字段样式定义
      * @param array $data       数据集
      * @param array $options    操作列设置 sortable可排序 delete可删除
@@ -51,7 +51,7 @@ EOT;
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $options = json_encode(array_merge(['sortable' => true, 'delete' => true],$options));
-        $id = 'dot_'.mt_rand(0,100);
+        $id = 'linear_'.mt_rand(0,100);
         return <<<EOF
 <div id="{$id}" style="$style_string"></div>
 <script>

@@ -150,7 +150,7 @@ class ExampleController extends AdminController
          * attribute.limit  选择限制数 默认0:无限
          */
         $form->CascadeDot('cascadeDot','级联标签选择器')
-            ->options($this->cascadeData())
+            ->options($this->cascadeExampleData())
             ->checked([614,550,543])
             ->attribute(['height'=>'200px']);
 
@@ -199,7 +199,7 @@ class ExampleController extends AdminController
         return Plane::html($html);
     }
 
-    private function cascadeData()
+    private function cascadeExampleData()
     {
         return [
             ["key" => "3", "val" => "基本", "nodes" => [

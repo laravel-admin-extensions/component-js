@@ -141,6 +141,7 @@
     flex-direction: row;
     align-items:stretch;
     flex-wrap: unset;
+    overflow: hidden;
 }
 .dot-cascade-stack{
     width: 100%;
@@ -150,7 +151,7 @@
     margin:0 3px 0;
     background: #222222;
 }
-.dot-cascade-stack>.dlp-label{
+.dot-cascade-stack>.dlp-label,.dlp-label-movement{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -161,6 +162,11 @@
     min-width: unset;
     margin-bottom: 3px;
     position: relative;
+}
+.dlp-label-movement,.dlp-label-movement:hover{
+    position: absolute!important;
+    z-index: 10000;
+    background:rgb(255 255 255 / 60%);
 }
 .dlp-label>span{
     width: 100%;

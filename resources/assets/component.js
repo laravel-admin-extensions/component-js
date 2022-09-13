@@ -24,7 +24,7 @@ window._component = {
     'caret_right_circle': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
 </svg>`,
-    'sub_loading':`<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 50 50" style="background: rgb(223 9 127);border-radius: 50%;" xml:space="preserve">
+    'sub_loading': `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 50 50" style="background: rgb(223 9 127);border-radius: 50%;" xml:space="preserve">
   <path fill="#ffffff" stroke="#ffffff" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">
     <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
     </path>
@@ -101,7 +101,7 @@ window._component = {
             "top:" + h + "px;left:" + w + "px;";
         div.setAttribute('style', style);
         document.getElementsByTagName("BODY")[0].appendChild(div);
-        setTimeout(()=> {
+        setTimeout(() => {
             div.parentNode.removeChild(div);
             if (typeof callback === 'function') callback();
         }, time * 1000);
@@ -196,7 +196,7 @@ window.ComponentDot = class {
 
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
-            setTimeout(() =>{
+            setTimeout(() => {
                 this.search(search);
             }, 500);
         });
@@ -344,14 +344,14 @@ window.ComponentCascadeDot = class {
         this.selectInputDOM.value = JSON.stringify(this.select_data);
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
-            setTimeout(()=> {
+            setTimeout(() => {
                 this.search(search);
             }, 500);
         });
     }
 
     make() {
-        let html = `<div class="dlp dlp-dot"><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade dlp-scroll"></div></div></div>
+        let html = `<div class="dlp dlp-dot"><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>
 <input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -386,7 +386,7 @@ window.ComponentCascadeDot = class {
                 }
                 let div = document.createElement('div');
                 div.className = 'dlp dlp-text dlp-label';
-                div.insertAdjacentHTML('afterbegin',`<span>${v.val}</span>`);
+                div.insertAdjacentHTML('afterbegin', `<span>${v.val}</span>`);
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
@@ -489,8 +489,8 @@ window.ComponentCascadeDot = class {
         div.className = 'dlp dlp-text dlp-label';
         div.setAttribute('data-id', element.getAttribute('data-id'));
         div.setAttribute('stack', stack);
-        div.insertAdjacentHTML('afterbegin',`<span>${element.querySelector('span').textContent}</span>`);
-        div.addEventListener('click', ()=> {
+        div.insertAdjacentHTML('afterbegin', `<span>${element.querySelector('span').textContent}</span>`);
+        div.addEventListener('click', () => {
             this.select(element, stack);
         });
         this.SELECTED_DOM.append(div);
@@ -767,7 +767,7 @@ window.ComponentLine = class {
         let tbody = document.createElement('tbody');
         let columns = this.COLUMNS;
         if (Array.isArray(this.DATA) === false) return;
-        this.DATA.forEach((value, key)=> {
+        this.DATA.forEach((value, key) => {
             let tr = document.createElement('tr');
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
@@ -819,7 +819,7 @@ window.ComponentLine = class {
         let i = document.createElement('i');
         i.style.cursor = 'pointer';
         i.insertAdjacentHTML('afterbegin', _component.write);
-        i.addEventListener('click', ()=> {
+        i.addEventListener('click', () => {
             let inputs = this.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
             let insert = {};
             let tr = document.createElement('tr');
@@ -862,7 +862,7 @@ window.ComponentLine = class {
                     if (!attributes.hasOwnProperty(attribute)) continue;
                     input.setAttribute(attribute, attributes[attribute]);
                 }
-                input.addEventListener('input', ()=> {
+                input.addEventListener('input', () => {
                     let key = input.parentNode.parentNode.getAttribute('data-key');
                     let column = input.getAttribute('data-column');
                     if (this.DATA[key]) {
@@ -891,7 +891,7 @@ window.ComponentLine = class {
             let D = document.createElement('span');
             D.setAttribute('style', 'cursor: pointer;display: inline-block;');
             D.insertAdjacentHTML('afterbegin', _component.trash);
-            D.addEventListener('click', ()=> {
+            D.addEventListener('click', () => {
                 let tr = D.parentNode.parentNode;
                 let tbody = tr.parentNode;
                 let key = tr.getAttribute('data-key');
@@ -964,7 +964,7 @@ window.ComponentPlane = class {
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
-        X.addEventListener('click', ()=> {
+        X.addEventListener('click', () => {
             if (this.DOM instanceof HTMLElement) {
                 this.DOM.remove();
             }
@@ -999,7 +999,7 @@ window.ComponentPlane = class {
         element.innerText = '提交中...';
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
-        _component.request(this.XHR.url, this.XHR.method, formdata, (response)=> {
+        _component.request(this.XHR.url, this.XHR.method, formdata, (response) => {
             if (typeof this.XHR.callback == 'function') {
                 this.XHR.callback(response);
                 return;
@@ -1147,22 +1147,27 @@ window.ComponentSortable = class {
 };
 
 window.ComponentCascadeLine = class {
-    constructor(name, select, url) {
+    constructor(name, select, url, movable = true) {
         if (!Array.isArray(select)) {
             console.error('CascadeLine param select must be array!');
             return;
         }
         this.name = name;
+        this.movable = movable;
         this.DOM = document.getElementById(name);
         this.URL = url;
         this.make().makeSelect(select).makeHeader();
 
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
-            setTimeout(()=> {
+            setTimeout(() => {
                 this.search(search);
             }, 700);
         });
+
+        for (let D of this.DOM.querySelectorAll('i.right')) {
+            this.nodeMovement(D);
+        }
     }
 
     make() {
@@ -1177,19 +1182,25 @@ window.ComponentCascadeLine = class {
         return this;
     }
 
-    makeHeader(){
+    makeHeader() {
         let I = document.createElement('div');
         I.className = 'dlp-btn';
-        I.addEventListener('click',(()=>{
-            this.panel( '新增根节点');
+        I.addEventListener('click', (() => {
+            this.panel('新增根节点');
             let object = this;
             _component.request(this.URL + '/create', 'GET', {}, function (response) {
-                object.panelContent(response, {key:0}, object.URL, 'POST', (response) => {
+                object.panelContent(response, {key: 0}, object.URL, 'POST', (response) => {
                     if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
                     if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
                     let key = parseInt(response.data.key);
                     let val = response.data.val;
-                    let len = object.dimensional_data[0].push({expand: false, key: key, val: val, nodes: null, parentNodes: []});
+                    let len = object.dimensional_data[0].push({
+                        expand: false,
+                        key: key,
+                        val: val,
+                        nodes: null,
+                        parentNodes: []
+                    });
                     let lastKey = len - 1;
                     let currentStackDocuments = object.STACKS[0];
                     currentStackDocuments.append(object.insertLabelDom(object.dimensional_data[0][lastKey], lastKey, 0));
@@ -1199,7 +1210,7 @@ window.ComponentCascadeLine = class {
                 });
             });
         }));
-        I.insertAdjacentHTML('afterbegin',_component.node);
+        I.insertAdjacentHTML('afterbegin', _component.node);
         this.HEADER_DOM.append(I);
     }
 
@@ -1234,7 +1245,7 @@ window.ComponentCascadeLine = class {
     insertLabelDom(data, index, stack) {
         let div = document.createElement('div');
         div.className = 'dlp dlp-text dlp-label';
-        div.insertAdjacentHTML('afterbegin',`<span>${data.val}</span>`);
+        div.insertAdjacentHTML('afterbegin', `<span>${data.val}</span>`);
         div.setAttribute('data-id', data.key.toString());
         div.setAttribute('data-k', index.toString());
         div.addEventListener('click', this.select.bind(this, div, stack));
@@ -1259,6 +1270,7 @@ window.ComponentCascadeLine = class {
                 }
             ]);
         });
+        if (this.movable) div.insertAdjacentHTML('afterbegin', `<i class="right">${_component.move}</i>`);
         return div;
     }
 
@@ -1372,7 +1384,7 @@ window.ComponentCascadeLine = class {
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
-        X.addEventListener('click', ()=> {
+        X.addEventListener('click', () => {
             panelDom.remove();
         }, false);
         panelDom.querySelector('.plane-header').append(X);
@@ -1421,7 +1433,7 @@ window.ComponentCascadeLine = class {
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
             object.panelContent(response, data, object.URL, 'POST', (response) => {
-                if(response.code !== 0)return _component.alert(response.message,3);
+                if (response.code !== 0) return _component.alert(response.message, 3);
                 if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
                 if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
                 let key = parseInt(response.data.key);
@@ -1449,7 +1461,7 @@ window.ComponentCascadeLine = class {
                     let currentStackDocuments = object.STACKS[nextStack].childNodes;
                     let newIndex = 0;
                     for (let index in object.dimensional_data[nextStack]) {
-                        if(!object.dimensional_data[nextStack].hasOwnProperty(index))continue;
+                        if (!object.dimensional_data[nextStack].hasOwnProperty(index)) continue;
                         index = parseInt(index);
                         newIndex = index + 1;
                         if (object.dimensional_data[nextStack][index].key === lastKey) {
@@ -1483,7 +1495,7 @@ window.ComponentCascadeLine = class {
         let object = this;
         _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
             object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
-                if(response.code !== 0)return _component.alert(response.message,3);
+                if (response.code !== 0) return _component.alert(response.message, 3);
                 if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
                 let val = response.data.val;
                 data.val = val;
@@ -1493,7 +1505,7 @@ window.ComponentCascadeLine = class {
         });
     }
 
-    nodeDelete(dom, data,stack) {
+    nodeDelete(dom, data, stack) {
         let object = this;
         let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span> 删除`;
         let marginTop = (this.DOM.clientHeight - 70) / 2;
@@ -1508,7 +1520,7 @@ window.ComponentCascadeLine = class {
         /*X close panel*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
-        X.addEventListener('click', ()=> {
+        X.addEventListener('click', () => {
             panelDom.remove();
         }, false);
         panelDom.querySelector('.plane-header').append(X);
@@ -1516,62 +1528,62 @@ window.ComponentCascadeLine = class {
         /*D delete node*/
         let D = document.createElement('div');
         D.className = 'dlp dlp-text dlp-label';
-        D.addEventListener('click',(()=>{
+        D.addEventListener('click', (() => {
             if (object.submit_block) return;
             object.submit_block = true;
             D.querySelector('.right').innerHTML = _component.sub_loading;
             _component.request(this.URL + '/' + data.key, 'DELETE', {}, function (response) {
                 object.submit_block = false;
-                if(response.code !== 0)return _component.alert(response.message,3);
-                object.nodeDeleteExec(data,stack);
+                if (response.code !== 0) return _component.alert(response.message, 3);
+                object.nodeDeleteExec(data, stack);
                 object.PLANE_DOM.remove();
             }, function () {
                 object.submit_block = false;
             });
         }));
-        D.insertAdjacentHTML('afterbegin',`<span>${data.val}</span><i class="right">${_component.trash}</i>`);
+        D.insertAdjacentHTML('afterbegin', `<span>${data.val}</span><i class="right">${_component.trash}</i>`);
         this.PLANE_BODY.append(D);
     }
 
-    nodeDeleteExec(data,stack) {
+    nodeDeleteExec(data, stack) {
         /*parent data delete*/
         let parent_stack = data.parentNodes.length - 1;
-        if(parent_stack>=0){
+        if (parent_stack >= 0) {
             let parent = data.parentNodes.pop();
-            for(let i in this.dimensional_data[parent_stack]){
-                if(!this.dimensional_data[parent_stack].hasOwnProperty(i))continue;
+            for (let i in this.dimensional_data[parent_stack]) {
+                if (!this.dimensional_data[parent_stack].hasOwnProperty(i)) continue;
                 i = parseInt(i);
                 let d = this.dimensional_data[parent_stack][i];
-                if(d.key !== parent)continue;
-                d.nodes.forEach((node,k)=>{
-                    if(node === data.key)d.nodes.splice(k,1);
+                if (d.key !== parent) continue;
+                d.nodes.forEach((node, k) => {
+                    if (node === data.key) d.nodes.splice(k, 1);
                 });
-                if(d.nodes.length===0){
+                if (d.nodes.length === 0) {
                     let left_mark = this.STACKS[parent_stack].childNodes[i].querySelector('i.left');
                     if (left_mark) left_mark.remove();
                 }
             }
         }
         /*children data dom delete*/
-        for (let currentStack = stack + 1;currentStack<this.dimensional_data.length;currentStack++){
+        for (let currentStack = stack + 1; currentStack < this.dimensional_data.length; currentStack++) {
             let tmp = [];
             let batchDeleteDom = [];
             let resetIndex = 0;
-            for (let index in this.dimensional_data[currentStack]){
-                if(!this.dimensional_data[currentStack].hasOwnProperty(index))continue;
+            for (let index in this.dimensional_data[currentStack]) {
+                if (!this.dimensional_data[currentStack].hasOwnProperty(index)) continue;
                 index = parseInt(index);
                 let d = this.dimensional_data[currentStack][index];
-                if(d.parentNodes.indexOf(data.key) !== -1){
+                if (d.parentNodes.indexOf(data.key) !== -1) {
                     batchDeleteDom.push(this.STACKS[currentStack].childNodes[index]);
                     continue;
                 }
-                this.STACKS[currentStack].childNodes[index].setAttribute('data-k',resetIndex);
+                this.STACKS[currentStack].childNodes[index].setAttribute('data-k', resetIndex);
                 resetIndex++;
                 tmp.push(d);
             }
-            for (let dom of batchDeleteDom)dom.remove();
-            if(tmp.length === 0){
-                this.dimensional_data.splice(currentStack,1);
+            for (let dom of batchDeleteDom) dom.remove();
+            if (tmp.length === 0) {
+                this.dimensional_data.splice(currentStack, 1);
                 this.STACKS[currentStack].remove();
                 break;
             }
@@ -1581,51 +1593,51 @@ window.ComponentCascadeLine = class {
         let deleteDom;
         let reset = false;
         let resetIndex = 0;
-        for(let D of this.STACKS[stack].childNodes){
-            if(parseInt(D.getAttribute('data-id')) === data.key){
+        for (let D of this.STACKS[stack].childNodes) {
+            if (parseInt(D.getAttribute('data-id')) === data.key) {
                 reset = true;
-                this.dimensional_data[stack].splice(resetIndex,1);
+                this.dimensional_data[stack].splice(resetIndex, 1);
                 deleteDom = D;
                 continue;
             }
-            reset && D.setAttribute('data-k',resetIndex);
+            reset && D.setAttribute('data-k', resetIndex);
             resetIndex++;
         }
         deleteDom.remove();
-        if(this.STACKS[stack].childNodes.length === 0){
-            if(stack>0){
+        if (this.STACKS[stack].childNodes.length === 0) {
+            if (stack > 0) {
                 this.STACKS[stack].remove();
-                this.dimensional_data.splice(stack,1);
-            }else {
+                this.dimensional_data.splice(stack, 1);
+            } else {
                 this.dimensional_data = [[]];
             }
         }
     }
 
     search(search) {
-        if(Array.isArray(this.search_result) && this.search_result.length > 0){
+        if (Array.isArray(this.search_result) && this.search_result.length > 0) {
             this.lastPickRemove();
         }
         this.search_result = [];
-        if(this.search_result_panel instanceof HTMLElement) this.search_result_panel.remove();
-        if(search.value === '')return;
-        this.dimensional_data.forEach((data,stack)=>{
-            data.forEach((d,index)=>{
-                if(d.val.indexOf(search.value) !== -1)this.search_result.push({'stack':stack,'index':index});
+        if (this.search_result_panel instanceof HTMLElement) this.search_result_panel.remove();
+        if (search.value === '') return;
+        this.dimensional_data.forEach((data, stack) => {
+            data.forEach((d, index) => {
+                if (d.val.indexOf(search.value) !== -1) this.search_result.push({'stack': stack, 'index': index});
             });
         });
-        if(this.search_result.length === 0)return;
+        if (this.search_result.length === 0) return;
 
         let panel = document.createElement('div');
         panel.className = 'dot-search-result-panel';
         let previous = document.createElement('span');
         previous.className = 'dlp-btn';
         previous.textContent = '◀';
-        previous.addEventListener('click',this.searchPick.bind(this,false));
+        previous.addEventListener('click', this.searchPick.bind(this, false));
         let next = document.createElement('span');
         next.className = 'dlp-btn';
         next.textContent = '▶';
-        next.addEventListener('click',this.searchPick.bind(this,true));
+        next.addEventListener('click', this.searchPick.bind(this, true));
         let pick = document.createElement('span');
         pick.className = 'search-result-number dlp-text';
         pick.textContent = '1';
@@ -1633,21 +1645,21 @@ window.ComponentCascadeLine = class {
         this.search_result_pick = 1;
         panel.append(previous);
         panel.append(pick);
-        panel.insertAdjacentHTML('beforeend',`<span> / </span><span class="search-result-number dlp-text">${this.search_result.length.toString()}</span>`);
+        panel.insertAdjacentHTML('beforeend', `<span> / </span><span class="search-result-number dlp-text">${this.search_result.length.toString()}</span>`);
         panel.append(next);
         this.search_result_panel = panel;
         this.SEARCH_BOX.append(panel);
         this.pickUp();
     }
 
-    searchPick(toward=true){
+    searchPick(toward = true) {
         this.lastPickRemove();
-        if(toward){
+        if (toward) {
             this.search_result_pick++;
-            if(this.search_result_pick > this.search_result.length){
+            if (this.search_result_pick > this.search_result.length) {
                 this.search_result_pick = 1;
             }
-        }else {
+        } else {
             this.search_result_pick--;
             if (this.search_result_pick < 1) {
                 this.search_result_pick = this.search_result.length;
@@ -1657,18 +1669,49 @@ window.ComponentCascadeLine = class {
         this.pickUp();
     }
 
-    lastPickRemove(){
-        let pick = this.search_result[(this.search_result_pick -1)];
+    lastPickRemove() {
+        let pick = this.search_result[(this.search_result_pick - 1)];
         this.STACKS[pick.stack].childNodes[pick.index].classList.remove('dlp-label-active');
     }
 
-    pickUp(){
-        let pick = this.search_result[(this.search_result_pick -1)];
+    pickUp() {
+        let pick = this.search_result[(this.search_result_pick - 1)];
         let DOM = this.STACKS[pick.stack].childNodes[pick.index];
-        if(!(DOM instanceof HTMLElement))return;
+        if (!(DOM instanceof HTMLElement)) return;
         DOM.classList.add('dlp-label-active');
         this.STACKS[pick.stack].scrollTop = pick.index * 27;
         DOM.click();
+    }
+
+    nodeMovement(dom) {
+        dom.addEventListener('mousedown', (e) => {
+            let D = dom.parentNode;
+            D.click();
+            setTimeout(() => {
+                this.movanime = true;
+                let M = D.cloneNode(true);
+                D.innerHTML = '';
+                M.style.width = D.clientWidth + 'px';
+                M.classList.add('dlp-label-movement');
+                this.CONTENT_DOM.append(M);
+                let startX = e.clientX;
+                let startY = e.clientY;
+                let left = D.offsetLeft;
+                let top = D.offsetTop;
+                let ST = D.parentNode.scrollTop;
+                let onMousemove = (e) => {
+                    e.preventDefault();
+                    if (!this.movanime) return;
+                    M.style.left = `${left + e.clientX - startX}px`;
+                    M.style.top = `${top + e.clientY - startY - ST}px`;
+                };
+                document.addEventListener('mousemove', onMousemove);
+                M.addEventListener('mouseup', () => {
+                    this.movanime = false;
+                    document.removeEventListener('mousemove', onMousemove);
+                });
+            });
+        });
     }
 };
 

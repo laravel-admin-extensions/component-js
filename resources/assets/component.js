@@ -1248,6 +1248,7 @@ window.ComponentCascadeLine = class {
         div.insertAdjacentHTML('afterbegin', `<span>${data.val}</span>`);
         div.setAttribute('data-id', data.key.toString());
         div.setAttribute('data-k', index.toString());
+        div.setAttribute('data-stack', stack.toString());
         div.setAttribute('drag-zone', 'true');
         div.addEventListener('click', this.select.bind(this, div, stack));
         div.addEventListener("contextmenu", (e) => {
@@ -1691,7 +1692,7 @@ window.ComponentCascadeLine = class {
             D.setAttribute('draggable','true');
             D.style.setProperty('border','1px dashed #3c2d2d');
             let aim;
-            let f = function(e,action){
+            function f(e){
                 e.preventDefault();
                 let el = e.target;
                 while (true){
@@ -1701,25 +1702,35 @@ window.ComponentCascadeLine = class {
                     if(el.getAttribute('drag-area') === 'true')break;
                     if(el.tagName === 'BODY')break;
                     if(el.getAttribute('drag-zone') === 'true'){
-                        if(action==='dragover'){
+                        if(e.type==='dragover'){
                             aim = el;
                             el.click();
                             el.style.setProperty('background', '#bb8f2c');
-                        }else if(action ==='dragleave'){
+                        }else if(e.type ==='dragleave'){
                             (aim instanceof HTMLElement) && aim.style.removeProperty( 'background');
                         }
                         break;
                     }
                     el = el.parentNode;
                 }
-            };
-            document.addEventListener('dragover',(e)=>{f(e,'dragover')});
-            document.addEventListener('dragleave',(e)=>{f(e,'dragleave')});
-            D.addEventListener('dragend',()=>{
+            }
+            document.addEventListener('dragover',f);
+            document.addEventListener('dragleave',f);
+            let object = this;
+            function fc(){
                 D.removeAttribute('draggable');
                 D.style.removeProperty('border');
-                (aim instanceof HTMLElement) && aim.style.removeProperty( 'background');
-            });
+                D.removeEventListener('dragend',fc);
+                document.removeEventListener('dragover',f);
+                document.removeEventListener('dragleave',f);
+                if(aim instanceof HTMLElement) {
+                    aim.style.removeProperty( 'background');
+                    let stack = parseInt(aim.getAttribute('data-stack'));
+                    let index = parseInt(aim.getAttribute('data-k'));
+                    console.log(object.dimensional_data[stack][index]);
+                }
+            }
+            D.addEventListener('dragend',fc);
         });
         dom.addEventListener('mouseup',()=>{
             dom.parentNode.style.removeProperty('border');

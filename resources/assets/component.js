@@ -1171,7 +1171,7 @@ window.ComponentCascadeLine = class {
     }
 
     make() {
-        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div  class="dot-select dot-select-cascade dlp-scroll"></div></div></div>`;
+        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div  class="dot-select dot-select-cascade" drag-area="true"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
@@ -1248,6 +1248,7 @@ window.ComponentCascadeLine = class {
         div.insertAdjacentHTML('afterbegin', `<span>${data.val}</span>`);
         div.setAttribute('data-id', data.key.toString());
         div.setAttribute('data-k', index.toString());
+        div.setAttribute('drag-zone', 'true');
         div.addEventListener('click', this.select.bind(this, div, stack));
         div.addEventListener("contextmenu", (e) => {
             e.preventDefault();
@@ -1684,32 +1685,47 @@ window.ComponentCascadeLine = class {
     }
 
     nodeMovement(dom) {
-        dom.addEventListener('mousedown', (e) => {
+        dom.addEventListener('mousedown', () => {
             let D = dom.parentNode;
             D.click();
-            setTimeout(() => {
-                this.movanime = true;
-                let M = D.cloneNode(true);
-                D.innerHTML = '';
-                M.style.width = D.clientWidth + 'px';
-                M.classList.add('dlp-label-movement');
-                this.CONTENT_DOM.append(M);
-                let startX = e.clientX;
-                let startY = e.clientY;
-                let left = D.offsetLeft;
-                let top = D.offsetTop;
-                let ST = D.parentNode.scrollTop;
-                let onMousemove = (e) => {
-                    e.preventDefault();
-                    if (!this.movanime) return;
-                    M.style.left = `${left + e.clientX - startX}px`;
-                    M.style.top = `${top + e.clientY - startY - ST}px`;
-                };
-                document.addEventListener('mousemove', onMousemove);
-                M.addEventListener('mouseup', () => {
-                    this.movanime = false;
-                    document.removeEventListener('mousemove', onMousemove);
-                });
+            D.setAttribute('draggable','true');
+            D.addEventListener('dragstart',()=>{
+                D.style.background = '#222222';
+            });
+            D.addEventListener('drag',(e)=>{
+
+            });
+            document.addEventListener('dragover',(e)=>{
+                e.preventDefault();
+                let el = e.target;
+                while (true){
+                    if(el === D)break;
+                    if(el.getAttribute('drag-zone') === 'true'){
+                        el.click();
+                        el.style.setProperty( 'background','#bf165d');
+                        break;
+                    }
+                    if(el.getAttribute('drag-area') === 'true')break;
+                    if(el.tagName === 'BODY')break;
+                    el = el.parentNode;
+                }
+            });
+            document.addEventListener('dragleave',(e)=>{
+                let el = e.target;
+                while (true){
+                    if(el === D)break;
+                    if(el.getAttribute('drag-zone') === 'true'){
+                        el.click();
+                        el.style.removeProperty( 'background');
+                        break;
+                    }
+                    if(el.getAttribute('drag-area') === 'true')break;
+                    if(el.tagName === 'BODY')break;
+                    el = el.parentNode;
+                }
+            });
+            D.addEventListener('dragend',(e)=>{
+
             });
         });
     }

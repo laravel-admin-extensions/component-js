@@ -1689,6 +1689,7 @@ window.ComponentCascadeLine = class {
             let D = dom.parentNode;
             D.click();
             D.setAttribute('draggable','true');
+            D.style.setProperty('border','1px dashed #3c2d2d');
             let aim;
             let f = function(e,action){
                 e.preventDefault();
@@ -1716,8 +1717,12 @@ window.ComponentCascadeLine = class {
             document.addEventListener('dragleave',(e)=>{f(e,'dragleave')});
             D.addEventListener('dragend',()=>{
                 D.removeAttribute('draggable');
+                D.style.removeProperty('border');
                 (aim instanceof HTMLElement) && aim.style.removeProperty( 'background');
             });
+        });
+        dom.addEventListener('mouseup',()=>{
+            dom.parentNode.style.removeProperty('border');
         });
     }
 };

@@ -1689,43 +1689,34 @@ window.ComponentCascadeLine = class {
             let D = dom.parentNode;
             D.click();
             D.setAttribute('draggable','true');
-            D.addEventListener('dragstart',()=>{
-                D.style.background = '#222222';
-            });
-            D.addEventListener('drag',(e)=>{
-
-            });
-            document.addEventListener('dragover',(e)=>{
+            let aim;
+            let f = function(e,action){
                 e.preventDefault();
                 let el = e.target;
                 while (true){
+                    if(el === null)break;
                     if(el === D)break;
-                    if(el.getAttribute('drag-zone') === 'true'){
-                        el.click();
-                        el.style.setProperty( 'background','#bf165d');
-                        break;
-                    }
+                    if(!(el instanceof HTMLElement) && !(el.tagName === 'svg'))break;
                     if(el.getAttribute('drag-area') === 'true')break;
                     if(el.tagName === 'BODY')break;
-                    el = el.parentNode;
-                }
-            });
-            document.addEventListener('dragleave',(e)=>{
-                let el = e.target;
-                while (true){
-                    if(el === D)break;
                     if(el.getAttribute('drag-zone') === 'true'){
-                        el.click();
-                        el.style.removeProperty( 'background');
+                        if(action==='dragover'){
+                            aim = el;
+                            el.click();
+                            el.style.setProperty('background', '#bb8f2c');
+                        }else if(action ==='dragleave'){
+                            (aim instanceof HTMLElement) && aim.style.removeProperty( 'background');
+                        }
                         break;
                     }
-                    if(el.getAttribute('drag-area') === 'true')break;
-                    if(el.tagName === 'BODY')break;
                     el = el.parentNode;
                 }
-            });
-            D.addEventListener('dragend',(e)=>{
-
+            };
+            document.addEventListener('dragover',(e)=>{f(e,'dragover')});
+            document.addEventListener('dragleave',(e)=>{f(e,'dragleave')});
+            D.addEventListener('dragend',()=>{
+                D.removeAttribute('draggable');
+                (aim instanceof HTMLElement) && aim.style.removeProperty( 'background');
             });
         });
     }

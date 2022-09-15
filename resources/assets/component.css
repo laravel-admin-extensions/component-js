@@ -219,7 +219,7 @@
     display: flex;
     justify-content:center;
     align-items: baseline;
-    padding: 5px 3em 5px 5px;
+    padding: 10px 3em 5px 10px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
     flex: auto;
@@ -299,7 +299,7 @@
 }
 .dot-cascade-panel>.plane-body{
     height: calc(100% - 23px);
-    background: rgb(35 35 35)!important;
+    background: #484848!important;
 }
 .dot-cascade-panel>.plane-header-delete{
     width: 270px;

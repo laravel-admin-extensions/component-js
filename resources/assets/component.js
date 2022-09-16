@@ -1742,7 +1742,7 @@ window.ComponentCascadeLine = class {
                 if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
                     object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);
                 }else {
-                    object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">↑</div>`);
+                    object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
                 }
                 object.PLANE_BODY.append(M);
             }

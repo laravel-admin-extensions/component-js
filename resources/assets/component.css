@@ -308,7 +308,7 @@
 .dot-cascade-panel>.plane-body-dialog{
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
     width: 270px;
     min-height: 50px!important;

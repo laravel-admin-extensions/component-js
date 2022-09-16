@@ -1689,59 +1689,66 @@ window.ComponentCascadeLine = class {
     }
 
     nodeMovement(dom) {
-        dom.addEventListener('mousedown', () => {
-            let D = dom.parentNode;
+        let D = dom.parentNode;
+        let object = this;
+        let aim = null;
+        function f(e){
+            e.preventDefault();
+            let el = e.target;
+            while (true){
+                if(el === null)break;
+                if(el === D)break;
+                if(!(el instanceof HTMLElement) && !(el.tagName === 'svg'))break;
+                if(el.getAttribute('drag-area') === 'true')break;
+                if(el.tagName === 'BODY')break;
+                if(el.getAttribute('drag-zone') === 'true'){
+                    if(e.type==='dragover'){
+                        aim = el;
+                        el.click();
+                        el.style.setProperty('background', '#bb8f2c');
+                    }else if(e.type ==='dragleave' && aim instanceof HTMLElement){
+                        aim.style.removeProperty( 'background');
+                        aim = null;
+                    }
+                    break;
+                }
+                el = el.parentNode;
+            }
+        }
+        function fc(){
+            D.removeAttribute('draggable');
+            D.style.removeProperty('border');
+            D.removeEventListener('dragend',fc);
+            document.removeEventListener('dragover',f);
+            document.removeEventListener('dragleave',f);
+            if(aim instanceof HTMLElement) {
+                aim.style.removeProperty( 'background');
+                let stack = parseInt(aim.getAttribute('data-stack'));
+                let index = parseInt(aim.getAttribute('data-k'));
+                let aim_node_data = object.dimensional_data[stack][index];
+                stack = parseInt(D.getAttribute('data-stack'));
+                index = parseInt(D.getAttribute('data-k'));
+                let node_data = object.dimensional_data[stack][index];
+                object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 移动`);
+            }
+        }
+        dom.addEventListener('mousedown', ()=>{
             D.click();
             D.setAttribute('draggable','true');
             D.style.setProperty('border','1px dashed #3c2d2d');
-            let aim;
-            function f(e){
-                e.preventDefault();
-                let el = e.target;
-                while (true){
-                    if(el === null)break;
-                    if(el === D)break;
-                    if(!(el instanceof HTMLElement) && !(el.tagName === 'svg'))break;
-                    if(el.getAttribute('drag-area') === 'true')break;
-                    if(el.tagName === 'BODY')break;
-                    if(el.getAttribute('drag-zone') === 'true'){
-                        if(e.type==='dragover'){
-                            aim = el;
-                            el.click();
-                            el.style.setProperty('background', '#bb8f2c');
-                        }else if(e.type ==='dragleave' && aim instanceof HTMLElement){
-                            aim.style.removeProperty( 'background');
-                            aim = null;
-                        }
-                        break;
-                    }
-                    el = el.parentNode;
-                }
-            }
             document.addEventListener('dragover',f);
             document.addEventListener('dragleave',f);
-            let object = this;
-            function fc(){
-                D.removeAttribute('draggable');
-                D.style.removeProperty('border');
-                D.removeEventListener('dragend',fc);
-                document.removeEventListener('dragover',f);
-                document.removeEventListener('dragleave',f);
-                if(aim instanceof HTMLElement) {
-                    aim.style.removeProperty( 'background');
-                    let stack = parseInt(aim.getAttribute('data-stack'));
-                    let index = parseInt(aim.getAttribute('data-k'));
-                    let aim_node_data = object.dimensional_data[stack][index];
-                    stack = parseInt(D.getAttribute('data-stack'));
-                    index = parseInt(D.getAttribute('data-k'));
-                    let node_data = object.dimensional_data[stack][index];
-                    object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 移动`);
-                }
-            }
             D.addEventListener('dragend',fc);
         });
         dom.addEventListener('mouseup',()=>{
             dom.parentNode.style.removeProperty('border');
+            document.removeEventListener('dragover',f);
+            document.removeEventListener('dragleave',f);
+            D.removeEventListener('dragend',fc);
+            if(aim instanceof HTMLElement) {
+                aim.style.removeProperty('background');
+                aim = null;
+            }
         });
     }
 };

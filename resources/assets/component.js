@@ -1507,9 +1507,9 @@ window.ComponentCascadeLine = class {
         });
     }
 
-    dialog(title){
-        let marginTop = (this.DOM.clientHeight - 70) / 2;
-        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-delete" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-delete"></div></div>`;
+    dialog(title,h=50){
+        let marginTop = (this.DOM.clientHeight - (h+20)) / 2;
+        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-dialog" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-dialog" style="height:${h}px"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
         let T = document.createElement('div');
@@ -1729,7 +1729,22 @@ window.ComponentCascadeLine = class {
                 stack = parseInt(D.getAttribute('data-stack'));
                 index = parseInt(D.getAttribute('data-k'));
                 let node_data = object.dimensional_data[stack][index];
-                object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 移动`);
+                object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 移动`,90);
+                let M = document.createElement('div');
+                M.className = 'dlp dlp-text dlp-label';
+                M.addEventListener('click', (() => {
+                    if (object.submit_block) return;
+                    object.submit_block = true;
+
+                }));
+                M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span>`);
+                object.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
+                if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
+                    object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div>⇵</div>`);
+                }else {
+                    object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div>↑</div>`);
+                }
+                object.PLANE_BODY.append(M);
             }
         }
         dom.addEventListener('mousedown', ()=>{

@@ -301,21 +301,22 @@
     height: calc(100% - 23px);
     background: #484848!important;
 }
-.dot-cascade-panel>.plane-header-delete{
+.dot-cascade-panel>.plane-header-dialog{
     width: 270px;
     margin: 30px auto 0;
 }
-.dot-cascade-panel>.plane-body-delete{
+.dot-cascade-panel>.plane-body-dialog{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
     width: 270px;
-    height: 50px;
     min-height: 50px!important;
     margin: 0 auto;
     overflow: hidden;
 }
-.plane-body-delete>.dlp-label{
+
+.plane-body-dialog>.dlp-label{
     position: relative;
     width: 220px;
     max-width: 220px;

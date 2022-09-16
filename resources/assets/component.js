@@ -1729,7 +1729,7 @@ window.ComponentCascadeLine = class {
                 stack = parseInt(D.getAttribute('data-stack'));
                 index = parseInt(D.getAttribute('data-k'));
                 let node_data = object.dimensional_data[stack][index];
-                object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 移动`,90);
+                object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`,90);
                 let M = document.createElement('div');
                 M.className = 'dlp dlp-text dlp-label';
                 M.addEventListener('click', (() => {

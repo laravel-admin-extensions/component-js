@@ -1737,7 +1737,7 @@ window.ComponentCascadeLine = class {
                     object.submit_block = true;
 
                 }));
-                M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span>`);
+                M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
                 object.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
                 if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
                     object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);

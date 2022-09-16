@@ -1507,14 +1507,11 @@ window.ComponentCascadeLine = class {
         });
     }
 
-    nodeDelete(dom, data, stack) {
-        let object = this;
-        let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span> 删除`;
+    dialog(title){
         let marginTop = (this.DOM.clientHeight - 70) / 2;
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-delete" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-delete"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
-        this.PLANE_DOM = panelDom;
         let T = document.createElement('div');
         T.className = 'header-content';
         T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
@@ -1527,6 +1524,12 @@ window.ComponentCascadeLine = class {
         }, false);
         panelDom.querySelector('.plane-header').append(X);
         this.PLANE_BODY = panelDom.querySelector('.plane-body');
+    }
+
+    nodeDelete(dom, data, stack) {
+        let object = this;
+        let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span> 删除`;
+        this.dialog(title);
         /*D delete node*/
         let D = document.createElement('div');
         D.className = 'dlp dlp-text dlp-label';
@@ -1706,8 +1709,9 @@ window.ComponentCascadeLine = class {
                             aim = el;
                             el.click();
                             el.style.setProperty('background', '#bb8f2c');
-                        }else if(e.type ==='dragleave'){
-                            (aim instanceof HTMLElement) && aim.style.removeProperty( 'background');
+                        }else if(e.type ==='dragleave' && aim instanceof HTMLElement){
+                            aim.style.removeProperty( 'background');
+                            aim = null;
                         }
                         break;
                     }
@@ -1727,7 +1731,11 @@ window.ComponentCascadeLine = class {
                     aim.style.removeProperty( 'background');
                     let stack = parseInt(aim.getAttribute('data-stack'));
                     let index = parseInt(aim.getAttribute('data-k'));
-                    console.log(object.dimensional_data[stack][index]);
+                    let aim_node_data = object.dimensional_data[stack][index];
+                    stack = parseInt(D.getAttribute('data-stack'));
+                    index = parseInt(D.getAttribute('data-k'));
+                    let node_data = object.dimensional_data[stack][index];
+                    object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 移动`);
                 }
             }
             D.addEventListener('dragend',fc);

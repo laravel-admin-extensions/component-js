@@ -1382,7 +1382,6 @@ window.ComponentCascadeLine = class {
         T.className = 'header-content';
         T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
         panelDom.querySelector('.plane-header').append(T);
-
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
@@ -1402,6 +1401,7 @@ window.ComponentCascadeLine = class {
         submit.insertAdjacentHTML('afterbegin', _component.check);
         submit.addEventListener('click', this.submitEvent.bind(this, submit, data, xhr, method, callback));
         submit.className = 'dlp-submit-btn';
+        if(!(this.PLANE_DOM instanceof HTMLElement)) return;
         let header = this.PLANE_DOM.querySelector('.plane-header');
         let X = header.querySelector('i');
         header.insertBefore(submit, X);
@@ -1514,7 +1514,7 @@ window.ComponentCascadeLine = class {
         let panelDom = this.DOM.childNodes[0].lastChild;
         let T = document.createElement('div');
         T.className = 'header-content';
-        T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
+        T.insertAdjacentHTML('afterbegin', _component.node + `<span style="vertical-align: top;">${title}</span>`);
         panelDom.querySelector('.plane-header').append(T);
         /*X close panel*/
         let X = document.createElement('i');
@@ -1632,7 +1632,6 @@ window.ComponentCascadeLine = class {
             });
         });
         if (this.search_result.length === 0) return;
-
         let panel = document.createElement('div');
         panel.className = 'dot-search-result-panel';
         let previous = document.createElement('span');

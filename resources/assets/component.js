@@ -1509,7 +1509,7 @@ window.ComponentCascadeLine = class {
 
     dialog(title,h=50){
         let marginTop = (this.DOM.clientHeight - (h+20)) / 2;
-        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-dialog" style="margin-top: ${marginTop}px"></div><div class="plane-body dlp-scroll plane-body-dialog" style="height:${h}px"></div></div>`;
+        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-dialog" style="margin-top: ${marginTop+'px'}"></div><div class="plane-body dlp-scroll plane-body-dialog" style="height:${h+'px'}"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
         let T = document.createElement('div');

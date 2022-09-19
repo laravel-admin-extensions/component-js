@@ -18,8 +18,21 @@ trait CascadeLineTrait
 {
     public function index(Content $content)
     {
-
+        try {
+            $this->migrate();
+        } catch (\Exception $e) {
+            return Assistant::result(false, $e->getMessage());
+        }
+        return Assistant::result(true, 'OK');
     }
+
+    /**
+     * 迁移节点
+     * event            迁移事件 migrate:节点转移 exchange:主节点与子节点交换
+     * node_key         被迁移的节点
+     * aim_node_key     迁移到目标节点
+     */
+    abstract function migrate();
 
     public function create(Content $content)
     {

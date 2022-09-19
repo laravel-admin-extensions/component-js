@@ -1166,7 +1166,7 @@ window.ComponentCascadeLine = class {
         });
 
         for (let D of this.DOM.querySelectorAll('i.right')) {
-            this.nodeMovement(D);
+            this.nodeMigrate(D);
         }
     }
 
@@ -1688,7 +1688,7 @@ window.ComponentCascadeLine = class {
         DOM.click();
     }
 
-    nodeMovement(dom) {
+    nodeMigrate(dom) {
         let D = dom.parentNode;
         let object = this;
         let aim = null;
@@ -1729,22 +1729,7 @@ window.ComponentCascadeLine = class {
                 stack = parseInt(D.getAttribute('data-stack'));
                 index = parseInt(D.getAttribute('data-k'));
                 let node_data = object.dimensional_data[stack][index];
-                object.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`,90);
-                let M = document.createElement('div');
-                M.className = 'dlp dlp-text dlp-label';
-                M.addEventListener('click', (() => {
-                    if (object.submit_block) return;
-                    object.submit_block = true;
-
-                }));
-                M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
-                object.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
-                if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
-                    object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);
-                }else {
-                    object.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
-                }
-                object.PLANE_BODY.append(M);
+                object.nodeMigrateConfirm(node_data,aim_node_data);
             }
         }
         dom.addEventListener('mousedown', ()=>{
@@ -1765,6 +1750,40 @@ window.ComponentCascadeLine = class {
                 aim = null;
             }
         });
+    }
+
+    nodeMigrateConfirm(node_data,aim_node_data){
+        this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`,90);
+        let M = document.createElement('div');
+        let object = this;
+        M.className = 'dlp dlp-text dlp-label';
+        M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
+        this.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
+        let event;
+        if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
+            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);
+            event = 'exchange';
+        }else {
+            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
+            event = 'migrate';
+        }
+        M.addEventListener('click', (() => {
+            if (this.submit_block) return;
+            this.submit_block = true;
+            M.querySelector('.right').innerHTML = _component.sub_loading;
+            _component.request(this.URL, 'GET', {event:event, node_key:node_data.key, aim_node_key:aim_node_data.key}, function (response) {
+                object.submit_block = false;
+                if (response.code !== 0) return _component.alert(response.message, 3);
+                object.nodeMigrateExec();
+            }, function () {
+                object.submit_block = false;
+            });
+        }));
+        this.PLANE_BODY.append(M);
+    }
+
+    nodeMigrateExec(){
+
     }
 };
 

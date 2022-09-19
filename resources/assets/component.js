@@ -227,7 +227,7 @@ window.ComponentDot = class {
     }
 
     tagSelect(element) {
-        if (this.limit > 0 && this.select_data.length >= this.limit) {
+        if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
             this.SELECTED_DOM.firstChild.click();
         }
         let clone = element.cloneNode(true);
@@ -393,7 +393,7 @@ window.ComponentCascadeDot = class {
                 if (v.nodes !== null) {
                     div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                     div.addEventListener("contextmenu", (e) => {
-                        e.target.click();
+                        if(e.target instanceof HTMLElement)e.target.click();
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
                         _component.contextmenu(e, [
@@ -401,7 +401,7 @@ window.ComponentCascadeDot = class {
                                 title: '全选', func: () => {
                                     object.checkAll(stack + 1,
                                         this.dimensional_data[stack][k].nodes, true);
-                                    e.target.click();
+                                    if(e.target instanceof HTMLElement)e.target.click();
                                 }
                             },
                             {
@@ -1098,7 +1098,6 @@ window.ComponentSortable = class {
             item.style.transform = `translateY(${this.positions.indexOf(index) * this.itemHeight}px)`;
             item.style.transition = `transform ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         });
-
         e.preventDefault();
     }
 
@@ -1253,7 +1252,7 @@ window.ComponentCascadeLine = class {
         div.addEventListener('click', this.select.bind(this, div, stack));
         div.addEventListener("contextmenu", (e) => {
             e.preventDefault();
-            e.target.click();
+            if(e.target instanceof HTMLElement) e.target.click();
             _component.contextmenu(e, [
                 {
                     title: '新增', func: () => {
@@ -1375,7 +1374,7 @@ window.ComponentCascadeLine = class {
 
     panel(title) {
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll"></div></div>`;
-        this.DOM.childNodes[0].insertAdjacentHTML('beforeEnd', html);
+        this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
         this.PLANE_DOM = panelDom;
         let T = document.createElement('div');

@@ -1767,10 +1767,10 @@ window.ComponentCascadeLine = class {
             event = 'migrate';
         }
         M.addEventListener('click', (() => {
-            if (this.submit_block) return;
-            this.submit_block = true;
+            if (object.submit_block) return;
+            object.submit_block = true;
             M.querySelector('.right').innerHTML = _component.sub_loading;
-            _component.request(this.URL, 'GET', {event:event, node_key:node_data.key, aim_node_key:aim_node_data.key}, function (response) {
+            _component.request(this.URL, 'GET', {event:event, node_key:node_data.key,node_val:node_data.val, aim_node_key:aim_node_data.key,aim_node_val:aim_node_data.val}, function (response) {
                 object.submit_block = false;
                 if (response.code !== 0) return _component.alert(response.message, 3);
                 object.nodeMigrateExec();

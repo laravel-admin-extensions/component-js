@@ -29,8 +29,10 @@ trait CascadeLineTrait
     /**
      * 迁移节点
      * event            迁移事件 migrate:节点转移 exchange:主节点与子节点交换
-     * node_key         被迁移的节点
-     * aim_node_key     迁移到目标节点
+     * node_key         被迁移的节点 键
+     * node_val         被迁移的节点 值
+     * aim_node_key     迁移到目标节点 键
+     * aim_node_val     迁移到目标节点 值
      */
     abstract function migrate();
 

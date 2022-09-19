@@ -541,7 +541,7 @@ window.ComponentCascadeDot = class {
                 }
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
         if (nodes.length > 0) {
             this.selectToParent(nodes, checked);
         }
@@ -573,7 +573,7 @@ window.ComponentCascadeDot = class {
                 this.expand(data, D, false);
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
         this.selectToChildren(stack + 1, children);
     }
 
@@ -703,7 +703,7 @@ window.ComponentCascadeDot = class {
                 if (to_first_index === null) to_first_index = index;
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
         this.checkAll(stack + 1, children, check);
     }
 };
@@ -1204,7 +1204,7 @@ window.ComponentCascadeLine = class {
                     let lastKey = len - 1;
                     let currentStackDocuments = object.STACKS[0];
                     currentStackDocuments.append(object.insertLabelDom(object.dimensional_data[0][lastKey], lastKey, 0));
-                    object.STACKS[0].scrollTop = lastKey * 27;
+                    object.STACKS[0].scrollTo(0,lastKey * 27);
                     currentStackDocuments.lastChild.click();
                     object.PLANE_DOM.remove();
                 });
@@ -1325,7 +1325,7 @@ window.ComponentCascadeLine = class {
                 }
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
         if (nodes.length > 0) {
             this.selectToParent(nodes);
         }
@@ -1357,7 +1357,7 @@ window.ComponentCascadeLine = class {
                 this.expand(data, D, false);
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTop = to_first_index * 27;
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
         this.selectToChildren(stack + 1, children);
     }
 
@@ -1457,7 +1457,7 @@ window.ComponentCascadeLine = class {
                     object.STACKS[nextStack].append(
                         object.insertLabelDom(object.dimensional_data[nextStack][index], index, nextStack));
                     dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
-                    object.STACKS[nextStack].scrollTop = index * 27;
+                    object.STACKS[nextStack].scrollTo(0,index * 27);
                 } else {
                     let lastKey = data.nodes[data.nodes.length - 1];
                     let currentStackDocuments = object.STACKS[nextStack].childNodes;
@@ -1483,7 +1483,7 @@ window.ComponentCascadeLine = class {
                     object.dimensional_data[nextStack].forEach((d, index) => {
                         if (index > newIndex) currentStackDocuments[index].setAttribute('data-k', index);
                     });
-                    object.STACKS[nextStack].scrollTop = newIndex * 27;
+                    object.STACKS[nextStack].scrollTo(0,newIndex * 27);
                 }
                 if (!Array.isArray(data.nodes)) data.nodes = [];
                 data.nodes.push(key);
@@ -1684,7 +1684,7 @@ window.ComponentCascadeLine = class {
         let DOM = this.STACKS[pick.stack].childNodes[pick.index];
         if (!(DOM instanceof HTMLElement)) return;
         DOM.classList.add('dlp-label-active');
-        this.STACKS[pick.stack].scrollTop = pick.index * 27;
+        this.STACKS[pick.stack].scrollTo(0, pick.index * 27);
         DOM.click();
     }
 

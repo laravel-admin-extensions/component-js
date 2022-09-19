@@ -579,6 +579,7 @@ window.ComponentCascadeDot = class {
         if (data.expand === open) return;
         data.expand = open;
         let left_mark = dom.querySelector('i.left');
+        if(!(left_mark instanceof HTMLElement))return;
         if (open) {
             left_mark.innerHTML = _component.caret_right_circle;
             return;
@@ -1361,6 +1362,7 @@ window.ComponentCascadeLine = class {
         if (data.expand === open) return;
         data.expand = open;
         let left_mark = dom.querySelector('i.left');
+        if(!(left_mark instanceof HTMLElement))return;
         if (open) {
             left_mark.innerHTML = _component.caret_right_circle;
             return;

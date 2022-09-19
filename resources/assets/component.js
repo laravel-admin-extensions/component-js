@@ -460,10 +460,8 @@ window.ComponentCascadeDot = class {
                 this.expand(data, currentStackDocuments[index], false);
             });
             if (data.checked === false) {
-                if (this.limit > 0 && this.select_data.length >= this.limit) {
-                    if (this.SELECTED_DOM.firstChild instanceof HTMLElement) {
-                        this.SELECTED_DOM.firstChild.click();
-                    }
+                if (this.limit > 0 && this.select_data.length >= this.limit && (this.SELECTED_DOM.firstChild instanceof HTMLElement)) {
+                    this.SELECTED_DOM.firstChild.click();
                 }
                 data.checked = true;
                 this.tagCal(id, this.MODE.insert);
@@ -580,13 +578,12 @@ window.ComponentCascadeDot = class {
     expand(data, dom, open = true) {
         if (data.expand === open) return;
         data.expand = open;
+        let left_mark = dom.querySelector('i.left');
         if (open) {
-            let left_mark = dom.querySelector('i.left');
-            if (left_mark) left_mark.innerHTML = _component.caret_right_circle;
+            left_mark.innerHTML = _component.caret_right_circle;
             return;
         }
-        let left_mark = dom.querySelector('i.left');
-        if (left_mark) left_mark.innerHTML = _component.caret_right;
+        left_mark.innerHTML = _component.caret_right;
     }
 
     tagCal(id, operate) {
@@ -1363,31 +1360,31 @@ window.ComponentCascadeLine = class {
     expand(data, dom, open = true) {
         if (data.expand === open) return;
         data.expand = open;
+        let left_mark = dom.querySelector('i.left');
         if (open) {
-            let left_mark = dom.querySelector('i.left');
-            if (left_mark) left_mark.innerHTML = _component.caret_right_circle;
+            left_mark.innerHTML = _component.caret_right_circle;
             return;
         }
-        let left_mark = dom.querySelector('i.left');
-        if (left_mark) left_mark.innerHTML = _component.caret_right;
+        left_mark.innerHTML = _component.caret_right;
     }
 
     panel(title) {
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
+        let header = panelDom.querySelector('.plane-header');
         this.PLANE_DOM = panelDom;
         let T = document.createElement('div');
         T.className = 'header-content';
         T.insertAdjacentHTML('afterbegin', _component.node + ` <span style="vertical-align: top;">${title}</span>`);
-        panelDom.querySelector('.plane-header').append(T);
+        header.append(T);
         /*X*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
         X.addEventListener('click', () => {
             panelDom.remove();
         }, false);
-        panelDom.querySelector('.plane-header').append(X);
+        header.append(X);
         this.PLANE_BODY = panelDom.querySelector('.plane-body');
         _component.loading(this.PLANE_BODY);
     }
@@ -1511,17 +1508,18 @@ window.ComponentCascadeLine = class {
         let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-dialog" style="margin-top: ${marginTop+'px'}"></div><div class="plane-body dlp-scroll plane-body-dialog" style="height:${h+'px'}"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
+        let header = panelDom.querySelector('.plane-header');
         let T = document.createElement('div');
         T.className = 'header-content';
         T.insertAdjacentHTML('afterbegin', _component.node + `<span style="vertical-align: top;">${title}</span>`);
-        panelDom.querySelector('.plane-header').append(T);
+        header.append(T);
         /*X close panel*/
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
         X.addEventListener('click', () => {
             panelDom.remove();
         }, false);
-        panelDom.querySelector('.plane-header').append(X);
+        header.append(X);
         this.PLANE_BODY = panelDom.querySelector('.plane-body');
     }
 

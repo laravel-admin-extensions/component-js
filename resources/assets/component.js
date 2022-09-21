@@ -1158,7 +1158,7 @@ window.ComponentCascadeLine = class {
         this.name = name;
         this.OPTIONS = Object.assign({
             movable : true,
-            exchange:false,
+            exchange:true,
             insert:true,
             update:true,
             delete:true

@@ -1221,6 +1221,7 @@ window.ComponentCascadeLine = class {
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
             data.forEach((v, k) => {
+                v.stack = stack;
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
                     v.nodes = v.nodes.map((N) => N.key);
                     v.expand = false;
@@ -1720,14 +1721,7 @@ window.ComponentCascadeLine = class {
             document.removeEventListener('dragover',f);
             document.removeEventListener('dragleave',f);
             if(aim instanceof HTMLElement) {
-                aim.style.removeProperty( 'background');
-                let stack = parseInt(aim.getAttribute('data-stack'));
-                let index = parseInt(aim.getAttribute('data-k'));
-                let aim_node_data = object.dimensional_data[stack][index];
-                stack = parseInt(D.getAttribute('data-stack'));
-                index = parseInt(D.getAttribute('data-k'));
-                let node_data = object.dimensional_data[stack][index];
-                object.nodeMigrateConfirm(node_data,aim_node_data);
+                object.nodeMigrateConfirm(D,aim);
             }
         }
         dom.addEventListener('mousedown', ()=>{
@@ -1750,7 +1744,14 @@ window.ComponentCascadeLine = class {
         });
     }
 
-    nodeMigrateConfirm(node_data,aim_node_data){
+    nodeMigrateConfirm(node,aim_node){
+        aim_node.style.removeProperty( 'background');
+        let stack = parseInt(aim_node.getAttribute('data-stack'));
+        let index = parseInt(aim_node.getAttribute('data-k'));
+        let aim_node_data = this.dimensional_data[stack][index];
+        stack = parseInt(node.getAttribute('data-stack'));
+        index = parseInt(node.getAttribute('data-k'));
+        let node_data = this.dimensional_data[stack][index];
         this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`,90);
         let M = document.createElement('div');
         let object = this;
@@ -1765,7 +1766,7 @@ window.ComponentCascadeLine = class {
             this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
             event = 'migrate';
         }
-        M.addEventListener('click', (() => {
+        /*M.addEventListener('click', (() => {
             if (object.submit_block) return;
             object.submit_block = true;
             M.querySelector('.right').innerHTML = _component.sub_loading;
@@ -1776,11 +1777,47 @@ window.ComponentCascadeLine = class {
             }, function () {
                 object.submit_block = false;
             });
-        }));
+        }));*/
+        object.nodeMigrateExec(event,node,node_data,aim_node,aim_node_data);
         this.PLANE_BODY.append(M);
     }
 
-    nodeMigrateExec(){
+    nodeMigrateExec(event,node,node_data,aim_node,aim_node_data){
+        if(event === 'exchange'){
+            let tmp_key = node_data.key;
+            let tmp_val = node_data.val;
+            node_data.key = aim_node_data.key;
+            node_data.val = aim_node_data.val;
+            let index = node_data.nodes.indexOf(aim_node_data.key);
+            node_data.nodes.splice(index,1,tmp_key);
 
+            index = aim_node_data.parentNodes.indexOf(tmp_key);
+            aim_node_data.parentNodes.splice(index,1,aim_node_data.key);
+            aim_node_data.key = tmp_key;
+            aim_node_data.val = tmp_val;
+            this.resetChildrenParent(node_data);
+
+            node.querySelector('span').textContent = node_data.val;
+            node.setAttribute('data-id',node_data.key);
+            aim_node.querySelector('span').textContent = aim_node_data.val;
+            aim_node.setAttribute('data-id',aim_node_data.key);
+            return;
+        }
+    }
+
+    resetChildrenParent(node_data){
+        let stack = node_data.stack;
+        let nodes = node_data.nodes;
+        let parents = node_data.parentNodes.slice(0);
+        parents.push(node_data.key);
+        stack++;
+        this.dimensional_data[stack].forEach((d)=>{
+            if(nodes.indexOf(d.key) !== -1){
+                d.parentNodes = parents;
+                if(Array.isArray(d.nodes) && d.nodes.length > 0){
+                    this.resetChildrenParent(d);
+                }
+            }
+        });
     }
 };

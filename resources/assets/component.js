@@ -1144,16 +1144,23 @@ window.ComponentSortable = class {
 };
 
 window.ComponentCascadeLine = class {
-    constructor(name, select, url, movable = true) {
+    constructor(name, select, url, options) {
         if (!Array.isArray(select)) {
             console.error('CascadeLine param select must be array!');
             return;
         }
         this.name = name;
-        this.movable = movable;
+        this.OPTIONS = Object.assign({
+            movable : true,
+            exchange:true,
+            insert:true,
+            update:true,
+            delete:true
+        }, options);
         this.DOM = document.getElementById(name);
         this.URL = url;
-        this.make().makeSelect(select).makeHeader();
+        this.make().makeSelect(select);
+        if(this.OPTIONS.insert)this.makeHeader();
 
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
@@ -1162,6 +1169,7 @@ window.ComponentCascadeLine = class {
             }, 700);
         });
 
+        if(!this.OPTIONS.movable)return;
         for (let D of this.DOM.querySelectorAll('i.right')) {
             this.nodeMigrate(D);
         }
@@ -1237,7 +1245,6 @@ window.ComponentCascadeLine = class {
             this.CONTENT_DOM.append(stackDom);
         }
         this.STACKS = this.CONTENT_DOM.childNodes;
-        return this;
     }
 
     insertLabelDom(data, index, stack) {
@@ -1252,25 +1259,25 @@ window.ComponentCascadeLine = class {
         div.addEventListener("contextmenu", (e) => {
             e.preventDefault();
             if(e.target instanceof HTMLElement) e.target.click();
-            _component.contextmenu(e, [
-                {
-                    title: '新增', func: () => {
-                        this.nodeInsert(div, data, stack);
-                    }
-                },
-                {
-                    title: '修改', func: () => {
-                        this.nodeUpdate(div, data);
-                    }
-                },
-                {
-                    title: '删除', func: () => {
-                        this.nodeDelete(div, data, stack);
-                    }
+            let settings = [];
+            if(this.OPTIONS.insert) settings.push({
+                title: '新增', func: () => {
+                    this.nodeInsert(div, data, stack);
                 }
-            ]);
+            });
+            if(this.OPTIONS.update) settings.push({
+                title: '修改', func: () => {
+                    this.nodeUpdate(div, data);
+                }
+            });
+            if(this.OPTIONS.delete) settings.push({
+                title: '删除', func: () => {
+                    this.nodeDelete(div, data, stack);
+                }
+            });
+            _component.contextmenu(e, settings);
         });
-        if (this.movable) div.insertAdjacentHTML('afterbegin', `<i class="right">${_component.move}</i>`);
+        if (this.OPTIONS.movable) div.insertAdjacentHTML('afterbegin', `<i class="right">${_component.move}</i>`);
         return div;
     }
 

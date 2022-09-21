@@ -717,6 +717,7 @@ window.ComponentLine = class {
         this.OPTIONS = Object.assign({
             sortable: true,
             delete: true,
+            insert:true
         }, options);
         /*head foot*/
         let foot = this.makeHead();
@@ -811,6 +812,11 @@ window.ComponentLine = class {
 
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
+        if(!this.OPTIONS.insert){
+            tfoot.insertAdjacentHTML('afterbegin', `<tr></tr>`);
+            this.TABLE_DOM.appendChild(tfoot);
+            return;
+        }
         tfoot.insertAdjacentHTML('afterbegin', foot);
         this.TABLE_DOM.appendChild(tfoot);
         /*insert action*/
@@ -843,7 +849,7 @@ window.ComponentLine = class {
             this.DATA_INPUT.value = JSON.stringify(this.DATA);
             this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
         }, false);
-        this.DOM.getElementsByClassName('insert_handel')[0].appendChild(i);
+        this.TABLE_DOM.querySelector('.insert_handel').appendChild(i);
     }
 
     makeTd(td, type, value, column, attributes) {

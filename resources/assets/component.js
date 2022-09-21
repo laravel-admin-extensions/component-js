@@ -1158,7 +1158,7 @@ window.ComponentCascadeLine = class {
         this.name = name;
         this.OPTIONS = Object.assign({
             movable : true,
-            exchange:true,
+            exchange:false,
             insert:true,
             update:true,
             delete:true
@@ -1716,8 +1716,17 @@ window.ComponentCascadeLine = class {
                 if(el.getAttribute('drag-zone') === 'true'){
                     if(e.type==='dragover'){
                         aim = el;
-                        el.click();
-                        el.style.setProperty('background', '#bb8f2c');
+                        if(aim.classList.contains('dlp-label-silence'))aim.click();
+                        if(!object.OPTIONS.exchange){
+                            let stack = parseInt(aim.getAttribute('data-stack'));
+                            let index = parseInt(aim.getAttribute('data-k'));
+                            let parents = object.dimensional_data[stack][index].parentNodes;
+                            if(Array.isArray(parents) && (parents.indexOf(parseInt(D.getAttribute('data-id'))) === -1)){
+                                aim.style.setProperty('background', '#bb8f2c');
+                            }
+                        }else {
+                            aim.style.setProperty('background', '#bb8f2c');
+                        }
                     }else if(e.type ==='dragleave' && aim instanceof HTMLElement){
                         aim.style.removeProperty( 'background');
                         aim = null;
@@ -1758,26 +1767,30 @@ window.ComponentCascadeLine = class {
     }
 
     nodeMigrateConfirm(node,aim_node){
-        aim_node.style.removeProperty( 'background');
+        let event;
         let stack = parseInt(aim_node.getAttribute('data-stack'));
         let index = parseInt(aim_node.getAttribute('data-k'));
         let aim_node_data = this.dimensional_data[stack][index];
         stack = parseInt(node.getAttribute('data-stack'));
         index = parseInt(node.getAttribute('data-k'));
         let node_data = this.dimensional_data[stack][index];
+        if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
+            event = 'exchange';
+        }else {
+            event = 'migrate';
+        }
+        if(!this.OPTIONS.exchange && event === 'exchange')return;
+        aim_node.style.removeProperty( 'background');
         this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`,90);
         let M = document.createElement('div');
         let object = this;
         M.className = 'dlp dlp-text dlp-label';
         M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
         this.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
-        let event;
-        if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
+        if(event === 'exchange'){
             this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);
-            event = 'exchange';
         }else {
             this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
-            event = 'migrate';
         }
         /*M.addEventListener('click', (() => {
             if (object.submit_block) return;

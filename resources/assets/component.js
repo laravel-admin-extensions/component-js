@@ -1789,12 +1789,19 @@ window.ComponentCascadeLine = class {
             node_data.key = aim_node_data.key;
             node_data.val = aim_node_data.val;
             let index = node_data.nodes.indexOf(aim_node_data.key);
-            node_data.nodes.splice(index,1,tmp_key);
+            if(index !== -1) node_data.nodes.splice(index,1,tmp_key);
 
-            index = aim_node_data.parentNodes.indexOf(tmp_key);
-            aim_node_data.parentNodes.splice(index,1,aim_node_data.key);
             aim_node_data.key = tmp_key;
             aim_node_data.val = tmp_val;
+            let aimParentNode = aim_node_data.parentNodes.slice(0).pop();
+            for (let index in this.dimensional_data[aim_node_data.stack - 1]){
+                if(!this.dimensional_data[aim_node_data.stack - 1].hasOwnProperty(index))continue;
+                let d = this.dimensional_data[aim_node_data.stack - 1][index];
+                if(d.key === aimParentNode){
+                    d.nodes.splice(d.nodes.indexOf(node_data.key),1,aim_node_data.key);
+                    break;
+                }
+            }
             this.resetChildrenParent(node_data);
 
             node.querySelector('span').textContent = node_data.val;
@@ -1814,6 +1821,7 @@ window.ComponentCascadeLine = class {
         this.dimensional_data[stack].forEach((d)=>{
             if(nodes.indexOf(d.key) !== -1){
                 d.parentNodes = parents;
+                console.log(d)
                 if(Array.isArray(d.nodes) && d.nodes.length > 0){
                     this.resetChildrenParent(d);
                 }

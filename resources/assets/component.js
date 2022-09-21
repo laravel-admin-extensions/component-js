@@ -1821,7 +1821,6 @@ window.ComponentCascadeLine = class {
         this.dimensional_data[stack].forEach((d)=>{
             if(nodes.indexOf(d.key) !== -1){
                 d.parentNodes = parents;
-                console.log(d)
                 if(Array.isArray(d.nodes) && d.nodes.length > 0){
                     this.resetChildrenParent(d);
                 }

@@ -1804,51 +1804,53 @@ window.ComponentCascadeLine = class {
                 object.submit_block = false;
             });
         }));*/
-        object.nodeMigrateExec(event,node,node_data,aim_node,aim_node_data);
+        if(event === 'exchange')object.nodeExchangeExec(node,node_data,aim_node,aim_node_data);
+        if(event === 'migrate')object.nodeMigrateExec(node,node_data,aim_node,aim_node_data);
         this.PLANE_BODY.append(M);
     }
 
-    nodeMigrateExec(event,node,node_data,aim_node,aim_node_data){
-        if(event === 'exchange'){
-            /*node*/
-            let tmp_key = node_data.key;
-            let tmp_val = node_data.val;
-            node_data.key = aim_node_data.key;
-            node_data.val = aim_node_data.val;
-            let index = node_data.nodes.indexOf(aim_node_data.key);
-            if(index !== -1) node_data.nodes.splice(index,1,tmp_key);
-            /*node parent*/
-            let parentNode = node_data.parentNodes.slice(0).pop();
-            if(parentNode !== undefined){
-                for (let index in this.dimensional_data[node_data.stack - 1]){
-                    if(!this.dimensional_data[node_data.stack - 1].hasOwnProperty(index))continue;
-                    let d = this.dimensional_data[node_data.stack - 1][index];
-                    if(d.key === parentNode){
-                        d.nodes.splice(d.nodes.indexOf(tmp_key),1,aim_node_data.key);
-                        break;
-                    }
-                }
-            }
-            /*aim node*/
-            aim_node_data.key = tmp_key;
-            aim_node_data.val = tmp_val;
-            let aimParentNode = aim_node_data.parentNodes.slice(0).pop();
-            for (let index in this.dimensional_data[aim_node_data.stack - 1]){
-                if(!this.dimensional_data[aim_node_data.stack - 1].hasOwnProperty(index))continue;
-                let d = this.dimensional_data[aim_node_data.stack - 1][index];
-                if(d.key === aimParentNode){
-                    d.nodes.splice(d.nodes.indexOf(node_data.key),1,aim_node_data.key);
+    nodeMigrateExec(node,node_data,aim_node,aim_node_data){
+
+    }
+
+    nodeExchangeExec(node,node_data,aim_node,aim_node_data){
+        /*node*/
+        let tmp_key = node_data.key;
+        let tmp_val = node_data.val;
+        node_data.key = aim_node_data.key;
+        node_data.val = aim_node_data.val;
+        let index = node_data.nodes.indexOf(aim_node_data.key);
+        if(index !== -1) node_data.nodes.splice(index,1,tmp_key);
+        /*node parent*/
+        let parentNode = node_data.parentNodes.slice(0).pop();
+        if(parentNode !== undefined){
+            for (let index in this.dimensional_data[node_data.stack - 1]){
+                if(!this.dimensional_data[node_data.stack - 1].hasOwnProperty(index))continue;
+                let d = this.dimensional_data[node_data.stack - 1][index];
+                if(d.key === parentNode){
+                    d.nodes.splice(d.nodes.indexOf(tmp_key),1,aim_node_data.key);
                     break;
                 }
             }
-            this.resetChildrenParent(node_data);
-
-            node.querySelector('span').textContent = node_data.val;
-            node.setAttribute('data-id',node_data.key);
-            aim_node.querySelector('span').textContent = aim_node_data.val;
-            aim_node.setAttribute('data-id',aim_node_data.key);
-            return;
         }
+        /*aim node*/
+        aim_node_data.key = tmp_key;
+        aim_node_data.val = tmp_val;
+        let aimParentNode = aim_node_data.parentNodes.slice(0).pop();
+        for (let index in this.dimensional_data[aim_node_data.stack - 1]){
+            if(!this.dimensional_data[aim_node_data.stack - 1].hasOwnProperty(index))continue;
+            let d = this.dimensional_data[aim_node_data.stack - 1][index];
+            if(d.key === aimParentNode){
+                d.nodes.splice(d.nodes.indexOf(node_data.key),1,aim_node_data.key);
+                break;
+            }
+        }
+        this.resetChildrenParent(node_data);
+
+        node.querySelector('span').textContent = node_data.val;
+        node.setAttribute('data-id',node_data.key);
+        aim_node.querySelector('span').textContent = aim_node_data.val;
+        aim_node.setAttribute('data-id',aim_node_data.key);
     }
 
     resetChildrenParent(node_data){

@@ -1822,8 +1822,6 @@ window.ComponentCascadeLine = class {
 
         this.resetChildrenDimensional(node_data,node_data.stack + 1,diffStack);
         node_data.stack = stack;
-        console.log(this.dimensional_data)
-
         /*aim node*/
         if(!Array.isArray(aim_node_data.nodes))aim_node_data.nodes = [];
         aim_node_data.nodes.push(node_data.key);

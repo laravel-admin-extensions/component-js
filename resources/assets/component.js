@@ -1810,7 +1810,23 @@ window.ComponentCascadeLine = class {
     }
 
     nodeMigrateExec(node,node_data,aim_node,aim_node_data){
+        let parents = aim_node_data.parentNodes.slice(0);
+        parents.push(aim_node_data.key);
+        node_data.parentNodes = parents;
+        let stack = aim_node_data.stack + 1;
+        let diffStack = stack - node_data.stack;
+        let index = parseInt(node.getAttribute('data-k'));
+        this.dimensional_data[node_data.stack].splice(index,1);
+        if(!Array.isArray(this.dimensional_data[stack]))this.dimensional_data[stack] = [];
+        this.dimensional_data[stack].push(node_data);
 
+        this.resetChildrenDimensional(node_data,node_data.stack + 1,diffStack);
+        node_data.stack = stack;
+        console.log(this.dimensional_data)
+
+        /*aim node*/
+        if(!Array.isArray(aim_node_data.nodes))aim_node_data.nodes = [];
+        aim_node_data.nodes.push(node_data.key);
     }
 
     nodeExchangeExec(node,node_data,aim_node,aim_node_data){
@@ -1853,11 +1869,11 @@ window.ComponentCascadeLine = class {
         aim_node.setAttribute('data-id',aim_node_data.key);
     }
 
-    resetChildrenParent(node_data){
-        let stack = node_data.stack;
-        let nodes = node_data.nodes;
-        let parents = node_data.parentNodes.slice(0);
-        parents.push(node_data.key);
+    resetChildrenParent(node){
+        let stack = node.stack;
+        let nodes = node.nodes;
+        let parents = node.parentNodes.slice(0);
+        parents.push(node.key);
         stack++;
         this.dimensional_data[stack].forEach((d)=>{
             if(nodes.indexOf(d.key) !== -1){
@@ -1866,6 +1882,28 @@ window.ComponentCascadeLine = class {
                     this.resetChildrenParent(d);
                 }
             }
+        });
+    }
+
+    resetChildrenDimensional(node,stack,diffStack){
+        let nodes = node.nodes;
+        let parents = node.parentNodes.slice(0);
+        parents.push(node.key);
+        if(!Array.isArray(this.dimensional_data[stack]))return;
+        let indexes = [];
+        this.dimensional_data[stack].forEach((d,index)=>{
+            if(Array.isArray(nodes) && nodes.indexOf(d.key) !== -1){
+                indexes.push(index);
+                d.parentNodes = parents;
+                d.stack = stack + diffStack;
+                if(!Array.isArray(this.dimensional_data[d.stack]))this.dimensional_data[d.stack] = [];
+                this.dimensional_data[d.stack].push(d);
+                this.resetChildrenDimensional(d,stack+1,diffStack);
+            }
+        });
+        indexes.reverse();
+        indexes.forEach((d)=>{
+            this.dimensional_data[stack].splice(d,1);
         });
     }
 };

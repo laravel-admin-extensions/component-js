@@ -1182,7 +1182,7 @@ window.ComponentCascadeLine = class {
     }
 
     make() {
-        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div  class="dot-select dot-select-cascade" drag-area="true"></div></div></div>`;
+        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade" drag-area="true"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();

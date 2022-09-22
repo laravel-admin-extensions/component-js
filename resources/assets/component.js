@@ -393,7 +393,7 @@ window.ComponentCascadeDot = class {
                 if (v.nodes !== null) {
                     div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
                     div.addEventListener("contextmenu", (e) => {
-                        if(e.target instanceof HTMLElement)e.target.click();
+                        if (e.target instanceof HTMLElement) e.target.click();
                         e.preventDefault();
                         let k = parseInt(div.getAttribute('data-k'));
                         _component.contextmenu(e, [
@@ -401,7 +401,7 @@ window.ComponentCascadeDot = class {
                                 title: '全选', func: () => {
                                     object.checkAll(stack + 1,
                                         this.dimensional_data[stack][k].nodes, true);
-                                    if(e.target instanceof HTMLElement)e.target.click();
+                                    if (e.target instanceof HTMLElement) e.target.click();
                                 }
                             },
                             {
@@ -539,7 +539,7 @@ window.ComponentCascadeDot = class {
                 }
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
         if (nodes.length > 0) {
             this.selectToParent(nodes, checked);
         }
@@ -571,7 +571,7 @@ window.ComponentCascadeDot = class {
                 this.expand(data, D, false);
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
         this.selectToChildren(stack + 1, children);
     }
 
@@ -579,7 +579,7 @@ window.ComponentCascadeDot = class {
         if (data.expand === open) return;
         data.expand = open;
         let left_mark = dom.querySelector('i.left');
-        if(!(left_mark instanceof HTMLElement))return;
+        if (!(left_mark instanceof HTMLElement)) return;
         if (open) {
             left_mark.innerHTML = _component.caret_right_circle;
             return;
@@ -701,7 +701,7 @@ window.ComponentCascadeDot = class {
                 if (to_first_index === null) to_first_index = index;
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
         this.checkAll(stack + 1, children, check);
     }
 };
@@ -717,7 +717,7 @@ window.ComponentLine = class {
         this.OPTIONS = Object.assign({
             sortable: true,
             delete: true,
-            insert:true
+            insert: true
         }, options);
         /*head foot*/
         let foot = this.makeHead();
@@ -812,7 +812,7 @@ window.ComponentLine = class {
 
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
-        if(!this.OPTIONS.insert){
+        if (!this.OPTIONS.insert) {
             tfoot.insertAdjacentHTML('afterbegin', `<tr></tr>`);
             this.TABLE_DOM.appendChild(tfoot);
             return;
@@ -1157,16 +1157,16 @@ window.ComponentCascadeLine = class {
         }
         this.name = name;
         this.OPTIONS = Object.assign({
-            movable : true,
-            exchange:true,
-            insert:true,
-            update:true,
-            delete:true
+            movable: true,
+            exchange: true,
+            insert: true,
+            update: true,
+            delete: true
         }, options);
         this.DOM = document.getElementById(name);
         this.URL = url;
         this.make().makeSelect(select);
-        if(this.OPTIONS.insert)this.makeHeader();
+        if (this.OPTIONS.insert) this.makeHeader();
 
         let search = document.querySelector(`#${this.name} .dot-search`);
         search.addEventListener('input', () => {
@@ -1175,7 +1175,7 @@ window.ComponentCascadeLine = class {
             }, 700);
         });
 
-        if(!this.OPTIONS.movable)return;
+        if (!this.OPTIONS.movable) return;
         for (let D of this.DOM.querySelectorAll('i.right')) {
             this.nodeMigrate(D);
         }
@@ -1215,7 +1215,7 @@ window.ComponentCascadeLine = class {
                     let lastKey = len - 1;
                     let currentStackDocuments = object.STACKS[0];
                     currentStackDocuments.append(object.insertLabelDom(object.dimensional_data[0][lastKey], lastKey, 0));
-                    object.STACKS[0].scrollTo(0,lastKey * 27);
+                    object.STACKS[0].scrollTo(0, lastKey * 27);
                     currentStackDocuments.lastChild.click();
                     object.PLANE_DOM.remove();
                 });
@@ -1264,19 +1264,19 @@ window.ComponentCascadeLine = class {
         div.addEventListener('click', this.select.bind(this, div, stack));
         div.addEventListener("contextmenu", (e) => {
             e.preventDefault();
-            if(e.target instanceof HTMLElement) e.target.click();
+            if (e.target instanceof HTMLElement) e.target.click();
             let settings = [];
-            if(this.OPTIONS.insert) settings.push({
+            if (this.OPTIONS.insert) settings.push({
                 title: '新增', func: () => {
                     this.nodeInsert(div, data, stack);
                 }
             });
-            if(this.OPTIONS.update) settings.push({
+            if (this.OPTIONS.update) settings.push({
                 title: '修改', func: () => {
                     this.nodeUpdate(div, data);
                 }
             });
-            if(this.OPTIONS.delete) settings.push({
+            if (this.OPTIONS.delete) settings.push({
                 title: '删除', func: () => {
                     this.nodeDelete(div, data, stack);
                 }
@@ -1336,7 +1336,7 @@ window.ComponentCascadeLine = class {
                 }
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
         if (nodes.length > 0) {
             this.selectToParent(nodes);
         }
@@ -1368,7 +1368,7 @@ window.ComponentCascadeLine = class {
                 this.expand(data, D, false);
             }
         });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0,to_first_index * 27);
+        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
         this.selectToChildren(stack + 1, children);
     }
 
@@ -1376,7 +1376,7 @@ window.ComponentCascadeLine = class {
         if (data.expand === open) return;
         data.expand = open;
         let left_mark = dom.querySelector('i.left');
-        if(!(left_mark instanceof HTMLElement))return;
+        if (!(left_mark instanceof HTMLElement)) return;
         if (open) {
             left_mark.innerHTML = _component.caret_right_circle;
             return;
@@ -1413,7 +1413,7 @@ window.ComponentCascadeLine = class {
         submit.insertAdjacentHTML('afterbegin', _component.check);
         submit.addEventListener('click', this.submitEvent.bind(this, submit, data, xhr, method, callback));
         submit.className = 'dlp-submit-btn';
-        if(!(this.PLANE_DOM instanceof HTMLElement)) return;
+        if (!(this.PLANE_DOM instanceof HTMLElement)) return;
         let header = this.PLANE_DOM.querySelector('.plane-header');
         let X = header.querySelector('i');
         header.insertBefore(submit, X);
@@ -1469,7 +1469,7 @@ window.ComponentCascadeLine = class {
                     object.STACKS[nextStack].append(
                         object.insertLabelDom(object.dimensional_data[nextStack][index], index, nextStack));
                     dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
-                    object.STACKS[nextStack].scrollTo(0,index * 27);
+                    object.STACKS[nextStack].scrollTo(0, index * 27);
                 } else {
                     let lastKey = data.nodes[data.nodes.length - 1];
                     let currentStackDocuments = object.STACKS[nextStack].childNodes;
@@ -1495,7 +1495,7 @@ window.ComponentCascadeLine = class {
                     object.dimensional_data[nextStack].forEach((d, index) => {
                         if (index > newIndex) currentStackDocuments[index].setAttribute('data-k', index);
                     });
-                    object.STACKS[nextStack].scrollTo(0,newIndex * 27);
+                    object.STACKS[nextStack].scrollTo(0, newIndex * 27);
                 }
                 if (!Array.isArray(data.nodes)) data.nodes = [];
                 data.nodes.push(key);
@@ -1519,9 +1519,9 @@ window.ComponentCascadeLine = class {
         });
     }
 
-    dialog(title,h=50){
-        let marginTop = (this.DOM.clientHeight - (h+20)) / 2;
-        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-dialog" style="margin-top: ${marginTop+'px'}"></div><div class="plane-body dlp-scroll plane-body-dialog" style="height:${h+'px'}"></div></div>`;
+    dialog(title, h = 50) {
+        let marginTop = (this.DOM.clientHeight - (h + 20)) / 2;
+        let html = `<div class="dot-cascade-panel"><div class="dlp plane-header plane-header-dialog" style="margin-top: ${marginTop + 'px'}"></div><div class="plane-body dlp-scroll plane-body-dialog" style="height:${h + 'px'}"></div></div>`;
         this.DOM.childNodes[0].insertAdjacentHTML('beforeend', html);
         let panelDom = this.DOM.childNodes[0].lastChild;
         let header = panelDom.querySelector('.plane-header');
@@ -1704,31 +1704,32 @@ window.ComponentCascadeLine = class {
         let D = dom.parentNode;
         let object = this;
         let aim = null;
-        function f(e){
+
+        function f(e) {
             e.preventDefault();
             let el = e.target;
-            while (true){
-                if(el === null)break;
-                if(el === D)break;
-                if(!(el instanceof HTMLElement) && !(el.tagName === 'svg'))break;
-                if(el.getAttribute('drag-area') === 'true')break;
-                if(el.tagName === 'BODY')break;
-                if(el.getAttribute('drag-zone') === 'true'){
-                    if(e.type==='dragover'){
+            while (true) {
+                if (el === null) break;
+                if (el === D) break;
+                if (!(el instanceof HTMLElement) && !(el.tagName === 'svg')) break;
+                if (el.getAttribute('drag-area') === 'true') break;
+                if (el.tagName === 'BODY') break;
+                if (el.getAttribute('drag-zone') === 'true') {
+                    if (e.type === 'dragover') {
                         aim = el;
-                        if(aim.classList.contains('dlp-label-silence'))aim.click();
-                        if(!object.OPTIONS.exchange){
+                        if (aim.classList.contains('dlp-label-silence')) aim.click();
+                        if (!object.OPTIONS.exchange) {
                             let stack = parseInt(aim.getAttribute('data-stack'));
                             let index = parseInt(aim.getAttribute('data-k'));
                             let parents = object.dimensional_data[stack][index].parentNodes;
-                            if(Array.isArray(parents) && (parents.indexOf(parseInt(D.getAttribute('data-id'))) === -1)){
+                            if (Array.isArray(parents) && (parents.indexOf(parseInt(D.getAttribute('data-id'))) === -1)) {
                                 aim.style.setProperty('background', '#bb8f2c');
                             }
-                        }else {
+                        } else {
                             aim.style.setProperty('background', '#bb8f2c');
                         }
-                    }else if(e.type ==='dragleave' && aim instanceof HTMLElement){
-                        aim.style.removeProperty( 'background');
+                    } else if (e.type === 'dragleave' && aim instanceof HTMLElement) {
+                        aim.style.removeProperty('background');
                         aim = null;
                     }
                     break;
@@ -1736,37 +1737,39 @@ window.ComponentCascadeLine = class {
                 el = el.parentNode;
             }
         }
-        function fc(){
+
+        function fc() {
             D.removeAttribute('draggable');
             D.style.removeProperty('border');
-            D.removeEventListener('dragend',fc);
-            document.removeEventListener('dragover',f);
-            document.removeEventListener('dragleave',f);
-            if(aim instanceof HTMLElement) {
-                object.nodeMigrateConfirm(D,aim);
+            D.removeEventListener('dragend', fc);
+            document.removeEventListener('dragover', f);
+            document.removeEventListener('dragleave', f);
+            if (aim instanceof HTMLElement) {
+                object.nodeMigrateConfirm(D, aim);
             }
         }
-        dom.addEventListener('mousedown', ()=>{
+
+        dom.addEventListener('mousedown', () => {
             D.click();
-            D.setAttribute('draggable','true');
-            D.style.setProperty('border','1px dashed #3c2d2d');
-            document.addEventListener('dragover',f);
-            document.addEventListener('dragleave',f);
-            D.addEventListener('dragend',fc);
+            D.setAttribute('draggable', 'true');
+            D.style.setProperty('border', '1px dashed #3c2d2d');
+            document.addEventListener('dragover', f);
+            document.addEventListener('dragleave', f);
+            D.addEventListener('dragend', fc);
         });
-        dom.addEventListener('mouseup',()=>{
+        dom.addEventListener('mouseup', () => {
             dom.parentNode.style.removeProperty('border');
-            document.removeEventListener('dragover',f);
-            document.removeEventListener('dragleave',f);
-            D.removeEventListener('dragend',fc);
-            if(aim instanceof HTMLElement) {
+            document.removeEventListener('dragover', f);
+            document.removeEventListener('dragleave', f);
+            D.removeEventListener('dragend', fc);
+            if (aim instanceof HTMLElement) {
                 aim.style.removeProperty('background');
                 aim = null;
             }
         });
     }
 
-    nodeMigrateConfirm(node,aim_node){
+    nodeMigrateConfirm(node, aim_node) {
         let event;
         let stack = parseInt(aim_node.getAttribute('data-stack'));
         let index = parseInt(aim_node.getAttribute('data-k'));
@@ -1774,22 +1777,22 @@ window.ComponentCascadeLine = class {
         stack = parseInt(node.getAttribute('data-stack'));
         index = parseInt(node.getAttribute('data-k'));
         let node_data = this.dimensional_data[stack][index];
-        if(aim_node_data.parentNodes.indexOf(node_data.key) !== -1){
+        if (aim_node_data.parentNodes.indexOf(node_data.key) !== -1) {
             event = 'exchange';
-        }else {
+        } else {
             event = 'migrate';
         }
-        if(!this.OPTIONS.exchange && event === 'exchange')return;
-        aim_node.style.removeProperty( 'background');
-        this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`,90);
+        if (!this.OPTIONS.exchange && event === 'exchange') return;
+        aim_node.style.removeProperty('background');
+        this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`, 90);
         let M = document.createElement('div');
         let object = this;
         M.className = 'dlp dlp-text dlp-label';
         M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
         this.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
-        if(event === 'exchange'){
+        if (event === 'exchange') {
             this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);
-        }else {
+        } else {
             this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
         }
         /*M.addEventListener('click', (() => {
@@ -1804,45 +1807,45 @@ window.ComponentCascadeLine = class {
                 object.submit_block = false;
             });
         }));*/
-        if(event === 'exchange')object.nodeExchangeExec(node,node_data,aim_node,aim_node_data);
-        if(event === 'migrate')object.nodeMigrateExec(node,node_data,aim_node,aim_node_data);
+        if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
+        if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
         this.PLANE_BODY.append(M);
     }
 
-    nodeMigrateExec(node,node_data,aim_node,aim_node_data){
+    nodeMigrateExec(node, node_data, aim_node, aim_node_data) {
         let parents = aim_node_data.parentNodes.slice(0);
         parents.push(aim_node_data.key);
         node_data.parentNodes = parents;
         let stack = aim_node_data.stack + 1;
         let diffStack = stack - node_data.stack;
         let index = parseInt(node.getAttribute('data-k'));
-        this.dimensional_data[node_data.stack].splice(index,1);
-        if(!Array.isArray(this.dimensional_data[stack]))this.dimensional_data[stack] = [];
+        this.dimensional_data[node_data.stack].splice(index, 1);
+        if (!Array.isArray(this.dimensional_data[stack])) this.dimensional_data[stack] = [];
         this.dimensional_data[stack].push(node_data);
 
-        this.resetChildrenDimensional(node_data,node_data.stack + 1,diffStack);
+        this.resetChildrenDimensional(node_data, node_data.stack + 1, diffStack);
         node_data.stack = stack;
         /*aim node*/
-        if(!Array.isArray(aim_node_data.nodes))aim_node_data.nodes = [];
+        if (!Array.isArray(aim_node_data.nodes)) aim_node_data.nodes = [];
         aim_node_data.nodes.push(node_data.key);
     }
 
-    nodeExchangeExec(node,node_data,aim_node,aim_node_data){
+    nodeExchangeExec(node, node_data, aim_node, aim_node_data) {
         /*node*/
         let tmp_key = node_data.key;
         let tmp_val = node_data.val;
         node_data.key = aim_node_data.key;
         node_data.val = aim_node_data.val;
         let index = node_data.nodes.indexOf(aim_node_data.key);
-        if(index !== -1) node_data.nodes.splice(index,1,tmp_key);
+        if (index !== -1) node_data.nodes.splice(index, 1, tmp_key);
         /*node parent*/
         let parentNode = node_data.parentNodes.slice(0).pop();
-        if(parentNode !== undefined){
-            for (let index in this.dimensional_data[node_data.stack - 1]){
-                if(!this.dimensional_data[node_data.stack - 1].hasOwnProperty(index))continue;
+        if (parentNode !== undefined) {
+            for (let index in this.dimensional_data[node_data.stack - 1]) {
+                if (!this.dimensional_data[node_data.stack - 1].hasOwnProperty(index)) continue;
                 let d = this.dimensional_data[node_data.stack - 1][index];
-                if(d.key === parentNode){
-                    d.nodes.splice(d.nodes.indexOf(tmp_key),1,aim_node_data.key);
+                if (d.key === parentNode) {
+                    d.nodes.splice(d.nodes.indexOf(tmp_key), 1, aim_node_data.key);
                     break;
                 }
             }
@@ -1851,57 +1854,57 @@ window.ComponentCascadeLine = class {
         aim_node_data.key = tmp_key;
         aim_node_data.val = tmp_val;
         let aimParentNode = aim_node_data.parentNodes.slice(0).pop();
-        for (let index in this.dimensional_data[aim_node_data.stack - 1]){
-            if(!this.dimensional_data[aim_node_data.stack - 1].hasOwnProperty(index))continue;
+        for (let index in this.dimensional_data[aim_node_data.stack - 1]) {
+            if (!this.dimensional_data[aim_node_data.stack - 1].hasOwnProperty(index)) continue;
             let d = this.dimensional_data[aim_node_data.stack - 1][index];
-            if(d.key === aimParentNode){
-                d.nodes.splice(d.nodes.indexOf(node_data.key),1,aim_node_data.key);
+            if (d.key === aimParentNode) {
+                d.nodes.splice(d.nodes.indexOf(node_data.key), 1, aim_node_data.key);
                 break;
             }
         }
         this.resetChildrenParent(node_data);
 
         node.querySelector('span').textContent = node_data.val;
-        node.setAttribute('data-id',node_data.key);
+        node.setAttribute('data-id', node_data.key);
         aim_node.querySelector('span').textContent = aim_node_data.val;
-        aim_node.setAttribute('data-id',aim_node_data.key);
+        aim_node.setAttribute('data-id', aim_node_data.key);
     }
 
-    resetChildrenParent(node){
+    resetChildrenParent(node) {
         let stack = node.stack;
         let nodes = node.nodes;
         let parents = node.parentNodes.slice(0);
         parents.push(node.key);
         stack++;
-        this.dimensional_data[stack].forEach((d)=>{
-            if(nodes.indexOf(d.key) !== -1){
+        this.dimensional_data[stack].forEach((d) => {
+            if (nodes.indexOf(d.key) !== -1) {
                 d.parentNodes = parents;
-                if(Array.isArray(d.nodes) && d.nodes.length > 0){
+                if (Array.isArray(d.nodes) && d.nodes.length > 0) {
                     this.resetChildrenParent(d);
                 }
             }
         });
     }
 
-    resetChildrenDimensional(node,stack,diffStack){
+    resetChildrenDimensional(node, stack, diffStack) {
         let nodes = node.nodes;
         let parents = node.parentNodes.slice(0);
         parents.push(node.key);
-        if(!Array.isArray(this.dimensional_data[stack]))return;
+        if (!Array.isArray(this.dimensional_data[stack])) return;
         let indexes = [];
-        this.dimensional_data[stack].forEach((d,index)=>{
-            if(Array.isArray(nodes) && nodes.indexOf(d.key) !== -1){
+        this.dimensional_data[stack].forEach((d, index) => {
+            if (Array.isArray(nodes) && nodes.indexOf(d.key) !== -1) {
                 indexes.push(index);
                 d.parentNodes = parents;
                 d.stack = stack + diffStack;
-                if(!Array.isArray(this.dimensional_data[d.stack]))this.dimensional_data[d.stack] = [];
+                if (!Array.isArray(this.dimensional_data[d.stack])) this.dimensional_data[d.stack] = [];
                 this.dimensional_data[d.stack].push(d);
-                this.resetChildrenDimensional(d,stack+1,diffStack);
+                this.resetChildrenDimensional(d, stack + 1, diffStack);
             }
         });
         indexes.reverse();
-        indexes.forEach((d)=>{
-            this.dimensional_data[stack].splice(d,1);
+        indexes.forEach((d) => {
+            this.dimensional_data[stack].splice(d, 1);
         });
     }
 };

@@ -43,7 +43,9 @@ EOT;
      * 直接调用Linear组件
      * @param array $columns    头部字段样式定义
      * @param array $data       数据集
-     * @param array $options    操作列设置 sortable可排序 delete可删除
+     * @param array $options    操作列设置
+     *      options.sortable      bool 可排序
+     *      options.delete        bool 可删除
      * @return string
      */
     public static function panel(array $columns,array $data,array $options=['sortable' => true, 'delete' => true])

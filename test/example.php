@@ -184,7 +184,8 @@ class ExampleController extends AdminController
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);
          * xhr 接口地址 编码参见:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
-         * attribute.height 设置高度 默认200px
+         * attribute.height  设置高度 默认200px
+         * attribute.options 设置
          */
         $form->CascadeLine('cascadeLine','级联标签管理器')
             ->options($this->cascadeExampleData())

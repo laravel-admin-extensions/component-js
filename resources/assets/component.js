@@ -1795,20 +1795,20 @@ window.ComponentCascadeLine = class {
         } else {
             this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
         }
-        /*M.addEventListener('click', (() => {
+        M.addEventListener('click', (() => {
             if (object.submit_block) return;
             object.submit_block = true;
             M.querySelector('.right').innerHTML = _component.sub_loading;
             _component.request(this.URL, 'GET', {event:event, node_key:node_data.key,node_val:node_data.val, aim_node_key:aim_node_data.key,aim_node_val:aim_node_data.val}, function (response) {
                 object.submit_block = false;
                 if (response.code !== 0) return _component.alert(response.message, 3);
-                object.nodeMigrateExec();
+                if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
+                if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
+                object.PLANE_DOM.remove();
             }, function () {
                 object.submit_block = false;
             });
-        }));*/
-        if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
-        if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
+        }));
         this.PLANE_BODY.append(M);
     }
 
@@ -1828,6 +1828,33 @@ window.ComponentCascadeLine = class {
         /*aim node*/
         if (!Array.isArray(aim_node_data.nodes)) aim_node_data.nodes = [];
         aim_node_data.nodes.push(node_data.key);
+
+        this.CONTENT_DOM.innerHTML = '';
+        for (let stack in this.dimensional_data) {
+            if (!this.dimensional_data.hasOwnProperty(stack)) continue;
+            stack = parseInt(stack);
+            let data = this.dimensional_data[stack];
+            let stackDom = document.createElement('div');
+            stackDom.className = 'dot-cascade-stack dlp-scroll';
+            data.forEach((v, k) => {
+                if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
+                    v.expand = false;
+                } else {
+                    v.nodes = null;
+                }
+                let labelDom = this.insertLabelDom(v, k, stack);
+                if (v.nodes !== null) {
+                    labelDom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
+                }
+                stackDom.append(labelDom);
+            });
+            this.CONTENT_DOM.append(stackDom);
+        }
+        this.STACKS = this.CONTENT_DOM.childNodes;
+        if (!this.OPTIONS.movable) return;
+        for (let D of this.DOM.querySelectorAll('i.right')) {
+            this.nodeMigrate(D);
+        }
     }
 
     nodeExchangeExec(node, node_data, aim_node, aim_node_data) {

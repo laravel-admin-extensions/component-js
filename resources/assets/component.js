@@ -1536,6 +1536,7 @@ window.ComponentCascadeLine = class {
             panelDom.remove();
         }, false);
         header.append(X);
+        this.PLANE_DOM = panelDom;
         this.PLANE_BODY = panelDom.querySelector('.plane-body');
     }
 
@@ -1801,6 +1802,7 @@ window.ComponentCascadeLine = class {
             M.querySelector('.right').innerHTML = _component.sub_loading;
             _component.request(this.URL, 'GET', {event:event, node_key:node_data.key,node_val:node_data.val, aim_node_key:aim_node_data.key,aim_node_val:aim_node_data.val}, function (response) {
                 object.submit_block = false;
+                response = JSON.parse(response);
                 if (response.code !== 0) return _component.alert(response.message, 3);
                 if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
                 if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);

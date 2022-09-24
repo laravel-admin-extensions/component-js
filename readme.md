@@ -5,7 +5,7 @@
     Linear      数据表单控件   
     plane       异步弹窗组件
 
-### 参考 [demo](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
+
     
 ### 安装
 ```shell script

@@ -1005,11 +1005,27 @@ window.ComponentPlane = class {
         element.innerText = '提交中...';
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
+        for (const pair of formdata.entries()) {
+            let key = pair[0];
+            let val = pair[1];
+            if(/\[.*\]/.test(key) && /\[.*\]/.test(val)){
+                val = JSON.parse(val);
+                if(Array.isArray(val) && val.length>0){
+                    val.forEach((v)=>{
+                        formdata.append(`${key}[]`,v);
+                    });
+                }else {
+                    formdata.append(`${key}`,'');
+                }
+            }
+        }
+
         _component.request(this.XHR.url, this.XHR.method, formdata, (response) => {
             if (typeof this.XHR.callback == 'function') {
                 this.XHR.callback(response);
                 return;
             }
+            if(!response)return;
             if (response.code === 0) {
                 window.location.reload();
             } else {

@@ -217,12 +217,14 @@ window.ComponentDot = class {
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
         setTimeout(() => {
+            let queue = [];
             this.CONTENT_DOM.childNodes.forEach((D) => {
                 let id = parseInt(D.getAttribute('data-id'));
                 if (selected.indexOf(id) !== -1) {
-                    D.click();
+                    queue.push(D);
                 }
             });
+            queue.forEach((D)=>D.click());
         });
     }
 

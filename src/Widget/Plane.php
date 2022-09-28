@@ -23,8 +23,8 @@ class Plane
      *      xhr.method      string  GET,POST,PUT,DELETE
      *      xhr.callback    string  js回调函数
      * @param array $options
-     *      options.W       float|string    0.5,50%,500px
-     *      options.H       float|string    0.5,50%,500px
+     *      options.w       float|string    0.5,50%,500px
+     *      options.h       float|string    0.5,50%,500px
      *      options.top     string          5%,50px
      *      options.left    string          5%,50px,auto
      * @return HeadPosAction
@@ -43,8 +43,8 @@ class Plane
      *      xhr.method      string  GET,POST,PUT,DELETE
      *      xhr.callback    string  js回调函数
      * @param array $options
-     *      options.W       float|string    0.5,50%,500px
-     *      options.H       float|string    0.5,50%,500px
+     *      options.w       float|string    0.5,50%,500px
+     *      options.h       float|string    0.5,50%,500px
      *      options.top     string          5%,50px
      *      options.left    string          5%,50px,auto
      * @return RowPosAction

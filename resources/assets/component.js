@@ -97,7 +97,7 @@ window._component = {
         let w = window.innerWidth / 2 - 140;
         let h = window.innerHeight / 2 - 145;
         let style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
-            "width: 280px;height: 45px;line-height: 40px;border-radius: 3px;text-align: center;" +
+            "width: 320px;max-height: 450px;line-height: 20px;overflow: hidden;border-radius: 3px;text-align: center;display: block;" +
             "top:" + h + "px;left:" + w + "px;";
         div.setAttribute('style', style);
         document.getElementsByTagName("BODY")[0].appendChild(div);

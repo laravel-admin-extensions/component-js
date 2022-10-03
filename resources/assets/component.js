@@ -97,7 +97,7 @@ window._component = {
         let w = window.innerWidth / 2 - 140;
         let h = window.innerHeight / 2 - 145;
         let style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
-            "width: 320px;max-height: 450px;line-height: 20px;overflow: hidden;border-radius: 3px;text-align: center;display: block;" +
+            "width: 320px;max-height: 450px;line-height: 30px;overflow: hidden;border-radius: 3px;text-align: center;display: block;" +
             "top:" + h + "px;left:" + w + "px;";
         div.setAttribute('style', style);
         document.getElementsByTagName("BODY")[0].appendChild(div);
@@ -1008,7 +1008,7 @@ window.ComponentPlane = class {
         for (const pair of formdata.entries()) {
             let key = pair[0];
             let val = pair[1];
-            if(/\[.*\]/.test(key) && /\[.*\]/.test(val)){
+            if(/\[.*\]/.test(key) && /\[.*\]/.test(val) && (typeof val !== 'object')){
                 val = JSON.parse(val);
                 if(Array.isArray(val) && val.length>0){
                     val.forEach((v)=>{

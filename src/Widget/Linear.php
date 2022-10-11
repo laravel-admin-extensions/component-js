@@ -29,7 +29,7 @@ class Linear extends DLPField
             }
             $columns = json_encode($columns);
         }
-        $options = isset($this->attributes['options']) ? json_encode($this->attributes['options']) : json_encode(['sortable' => true, 'delete' => true]);
+        $options = isset($this->attributes['options']) ? json_encode($this->attributes['options']) : json_encode(['sortable' => true, 'delete' => true, 'insert' => true]);
         $height = isset($this->attributes['height']) ? $this->attributes['height'] : '355px';
         $this->addVariables(['height' => $height]);
         $data = json_encode($this->options, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -41,25 +41,26 @@ EOT;
 
     /**
      * 直接调用Linear组件
-     * @param array $columns    头部字段样式定义
-     * @param array $data       数据集
-     * @param array $style      组件样式设置 宽:width 高:height
-     * @param array $options    操作列设置
+     * @param array $columns 头部字段样式定义
+     * @param array $data 数据集
+     * @param array $style 组件样式设置 宽:width 高:height
+     * @param array $options 操作列设置
      *      options.sortable      bool 可排序
      *      options.delete        bool 可删除
+     *      options.insert        bool 可新增
      * @return string
      */
-    public static function panel(array $columns,array $data,array $style=[],array $options=['sortable' => true, 'delete' => true])
+    public static function panel(array $columns, array $data, array $style = [], array $options = ['sortable' => true, 'delete' => true, 'insert' => true])
     {
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $style = array_merge(['width'=>'100%','height'=>'355px'],$style);
+        $style = array_merge(['width' => '100%', 'height' => '355px'], $style);
         $style_string = '';
-        foreach ($style as $k=>$s){
-            $style_string.="$k:$s;";
+        foreach ($style as $k => $s) {
+            $style_string .= "$k:$s;";
         }
-        $options = json_encode(array_merge(['sortable' => true, 'delete' => true],$options));
-        $id = 'linear_'.mt_rand(0,100);
+        $options = json_encode(array_merge(['sortable' => true, 'delete' => true, 'insert' => true], $options));
+        $id = 'linear_' . mt_rand(0, 100);
         return <<<EOF
 <div id="{$id}" style="$style_string"></div>
 <script>

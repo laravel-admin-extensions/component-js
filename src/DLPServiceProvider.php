@@ -24,7 +24,7 @@ class DLPServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole() && $assets = $extension->assets()) {
             $this->publishes([
-                __DIR__.'/../resources/assets' => public_path('vendor/dlp/')
+                __DIR__.'/../resources/assets' => public_path('vendor/dlp')
             ]);
         }
 

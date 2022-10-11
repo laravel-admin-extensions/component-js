@@ -12,13 +12,21 @@ use Encore\Admin\Form;
 
 class DLPServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(DLP $extension)
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dlp');
+        if (!DLP::boot()) {
+            return ;
+        }
 
-        $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/dlp/')
-        ]);
+        if ($views = $extension->views()) {
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'dlp');
+        }
+
+        if ($this->app->runningInConsole() && $assets = $extension->assets()) {
+            $this->publishes([
+                __DIR__.'/../resources/assets' => public_path('vendor/dlp/')
+            ]);
+        }
 
         Admin::booting(function () {
             Admin::css('vendor/dlp/component.min.css?v3.4');

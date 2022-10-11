@@ -26,7 +26,7 @@ class HeadPosAction extends RowAction
                 let XHR = JSON.parse('{$xhr}');
                 XHR.callback = {$callback};
                 XHR.url = XHR.url !== undefined ? XHR.url : url;
-                XHR.listener = (DOM)=>DOM.querySelector('button[type="submit"]');
+                XHR.listener = (DOM)=>DOM.querySelector('.box-footer button[type="submit"]');
                 new ComponentPlane(url,XHR,JSON.parse('{$options}'));
             });
 EOF

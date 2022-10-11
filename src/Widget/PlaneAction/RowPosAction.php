@@ -27,7 +27,7 @@ class RowPosAction extends RowAction
                 XHR.callback = {$callback};
                 let xhr_url = XHR.url !== undefined ? XHR.url : url;
                 XHR.url = xhr_url.replace('{id}',$(this).attr('data-id'));
-                XHR.listener = (DOM)=>DOM.querySelector('button[type="submit"]');
+                XHR.listener = (DOM)=>DOM.querySelector('.box-footer button[type="submit"]');
                 new ComponentPlane(url,XHR,JSON.parse('{$options}'));
             });
 EOF

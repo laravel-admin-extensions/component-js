@@ -29,6 +29,7 @@ EOT;
 
     /**
      * 直接调用ComponentCascadeLine组件
+     * @param string $name      名称
      * @param array $select 全部选项
      * @param string $xhr   ajax接口地址
      * @param array $style  组件样式设置 宽:width 高:height
@@ -40,7 +41,7 @@ EOT;
      *      options.delete      bool 可删除
      * @return string
      */
-    public static function panel(array $select,string $xhr,array $style=[],array $options=[])
+    public static function panel($name,array $select,string $xhr,array $style=[],array $options=[])
     {
         $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $style = array_merge(['width'=>'100%','height'=>'230px'],$style);
@@ -54,11 +55,11 @@ EOT;
         foreach ($style as $k=>$s){
             $style_string.="$k:$s;";
         }
-        $id = 'cascade_line_'.mt_rand(0,100);
+
         return <<<EOF
-<div id="{$id}" style="$style_string"></div>
+<div id="{$name}" style="$style_string"></div>
 <script>
-new ComponentCascadeLine("{$id}",JSON.parse('{$select}'),'{$xhr}',JSON.parse('{$options}'));
+new ComponentCascadeLine("{$name}",JSON.parse('{$select}'),'{$xhr}',JSON.parse('{$options}'));
 </script>
 EOF;
     }

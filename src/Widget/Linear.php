@@ -41,6 +41,7 @@ EOT;
 
     /**
      * 直接调用Linear组件
+     * @param string $name      名称
      * @param array $columns 头部字段样式定义
      * @param array $data 数据集
      * @param array $style 组件样式设置 宽:width 高:height
@@ -50,7 +51,7 @@ EOT;
      *      options.insert        bool 可新增
      * @return string
      */
-    public static function panel(array $columns, array $data, array $style = [], array $options = ['sortable' => true, 'delete' => true, 'insert' => true])
+    public static function panel($name,array $columns, array $data, array $style = [], array $options = ['sortable' => true, 'delete' => true, 'insert' => true])
     {
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -60,11 +61,11 @@ EOT;
             $style_string .= "$k:$s;";
         }
         $options = json_encode(array_merge(['sortable' => true, 'delete' => true, 'insert' => true], $options));
-        $id = 'linear_' . mt_rand(0, 100);
+
         return <<<EOF
-<div id="{$id}" style="$style_string"></div>
+<div id="{$name}" style="$style_string"></div>
 <script>
-new ComponentLine("{$id}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));
+new ComponentLine("{$name}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));
 </script>
 EOF;
     }

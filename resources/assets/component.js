@@ -1008,7 +1008,7 @@ window.ComponentPlane = class {
         for (const pair of formdata.entries()) {
             let key = pair[0];
             let val = pair[1];
-            if(/\[.*\]/.test(key) && /\[.*\]/.test(val) && (typeof val !== 'object')){
+            if(/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')){
                 val = JSON.parse(val);
                 if(Array.isArray(val) && val.length>0){
                     val.forEach((v)=>{

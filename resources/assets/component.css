@@ -201,7 +201,7 @@
     padding: 0 2px!important;
     vertical-align: middle;
     display: inline-block;
-    width: calc(100% - 8px)!important;
+    width: 100%!important;
     height: 24px!important;
     background: #ededed;
     color: #666;

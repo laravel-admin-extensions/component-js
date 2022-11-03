@@ -169,6 +169,7 @@ $('input.{$column}').fileinput(JSON.parse('{$settings}')).on('filebeforedelete',
                         });
                 });
             }).on("filebatchselected", function (event, files) {
+                if(files.length == 0)return;
                 $(this).fileinput("upload");
             }).on('fileerror', function (event, data, msg) {
                 alert(msg);

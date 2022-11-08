@@ -17,7 +17,7 @@ class Linear extends DLPField
     {
         $id = $this->formatName($this->id);
         if (isset($this->columns)) {
-            $columns = json_encode($this->columns);
+            $columns = json_encode($this->columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_FORCE_OBJECT);
         } else {
             $columns = [];
             $record = current($this->options);
@@ -43,7 +43,13 @@ EOT;
     /**
      * 直接调用Linear组件
      * @param string $name      名称
-     * @param array $columns 头部字段样式定义
+     * @param array $columns[column...] 列数据格式配置
+              *  column.name             列表头名称
+              *  column.type             列数据 输出格式input,text,hidden,datetime,date,select,image,file
+              *  column.insert_type      增加列格式(默认不填同type) 格式input,datetime,date,select,image,file hidden表示置空
+              *  column.options          insert_type或type为select时 多选项
+              *  column.options_limit    insert_type或type为select时 多选项选择限制数 默认0:无限制
+              *  column.style            自定义style格式
      * @param array $data 数据集
      * @param array $style 组件样式设置 宽:width 高:height
      * @param array $options 操作列设置
@@ -54,7 +60,7 @@ EOT;
      */
     public static function panel($name,array $columns, array $data, array $style = [], array $options = ['sortable' => true, 'delete' => true, 'insert' => true])
     {
-        $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_FORCE_OBJECT);
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $style = array_merge(['width' => '100%', 'height' => '355px'], $style);
         $style_string = '';

@@ -158,11 +158,13 @@ class ExampleController extends AdminController
 
         /**
          * 线组件
-         * columns[column...] 列数据格式配置
-         *  column.name 列表头名称
-         *  column.type 列数据 输出格式input,text,hidden,datetime,select,image,file
-         *  column.insert_type 增加列格式(默认不填同type) hidden表示置空
-         *  column.options type为select是选项
+         * columns[column...]       列数据格式配置
+         *  column.name             列表头名称
+         *  column.type             列数据 输出格式input,text,hidden,datetime,date,select,image,file
+         *  column.insert_type      增加列格式(默认不填同type) hidden表示置空
+         *  column.options          insert_type或type为select时 多选项
+         *  column.options_limit    insert_type或type为select时 多选项选择限制数 默认0:无限制
+         *  column.style            自定义style格式
          * options 设置数据集 二维数组
          * attribute.width   设置宽度 默认100%
          * attribute.height  设置高度 默认355px
@@ -171,16 +173,15 @@ class ExampleController extends AdminController
         $form->Linear('flux_linkage', '磁力链接')
             ->columns([
                 'name' => ['name' => '名称', 'type' => 'input'],
-                'meta' => ['name' => '信息', 'type' => 'input'],
-                'url' => ['name' => '链接', 'type' => 'input','insert_type'=>'hidden'],
+                'meta' => ['name' => '信息', 'type' => 'input','insert_type'=>'hidden'],
+                'url' => ['name' => '链接', 'type' => 'image','insert_type'=>'image'],
                 'time' => ['name' => '更新时间', 'type' => 'text','insert_type'=>'datetime'],
-                'is-small' => ['name' => '高清[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
-                'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px']
+                'is-small' => ['name' => '高清', 'type' => 'select','options'=>[1=>'是',2=>'否'],'options_limit'=>1, 'style' => 'width:60px']
             ])
             ->options([
-                ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-                ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-                ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]])
+                ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1],
+                ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1],
+                ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1]])
             ->attribute(['height' => '360px','options'=>['sortable' => true, 'delete' => true, 'insert' => true]]);
         /**
          * 级联线组件

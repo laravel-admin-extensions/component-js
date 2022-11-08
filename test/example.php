@@ -156,25 +156,29 @@ class ExampleController extends AdminController
 
         /**
          * 线组件
-         * columns 设置列表head名称 row字段输出格式input,text,hidden
+         * columns[column...] 列数据格式配置
+         *  column.name 列表头名称
+         *  column.type 列数据 输出格式input,text,hidden,datetime,select,image,file
+         *  column.insert_type 增加列格式(默认不填同type) hidden表示置空
+         *  column.options type为select是选项
          * options 设置数据集 二维数组
-         * attribute.height  设置高度 默认360px
-         * attribute.options 设置操作列 默认开启['sortable'=>true,'delete'=>true]
+         * attribute.height  设置高度 默认355px
+         * attribute.options 设置操作列 默认开启:可排序/可删除/可新增['sortable' => true, 'delete' => true, 'insert' => true]
          */
         $form->Linear('flux_linkage', '磁力链接')
             ->columns([
                 'name' => ['name' => '名称', 'type' => 'input'],
                 'meta' => ['name' => '信息', 'type' => 'input'],
-                'url' => ['name' => '链接', 'type' => 'input'],
-                'time' => ['name' => '更新时间', 'type' => 'text'],
+                'url' => ['name' => '链接', 'type' => 'input','insert_type'=>'hidden'],
+                'time' => ['name' => '更新时间', 'type' => 'text','insert_type'=>'datetime'],
                 'is-small' => ['name' => '高清[1是 2否]', 'type' => 'input', 'style' => 'width:60px'],
                 'is-warning' => ['name' => '含字幕[1是 2否]', 'type' => 'input', 'style' => 'width:60px']
             ])
             ->options([
                 ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
                 ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1],
-                ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]]);
-
+                ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1,'is-warning'=>1]])
+            ->attribute(['height' => '360px','options'=>['sortable' => true, 'delete' => true, 'insert' => true]]);
         /**
          * 级联线组件
          * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]
@@ -183,13 +187,15 @@ class ExampleController extends AdminController
          *          $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);
-         * xhr 接口地址 编码参见:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
+         * xhr 接口地址 编码参见文件:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
          * attribute.height  设置高度 默认200px
-         * attribute.options 设置
+         * attribute.options 设置 可迁移(节点切换其父级)/可交换(节点与其后代节点交换位置)/可新增/可修改/可删除
+         *           ['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]
          */
         $form->CascadeLine('cascadeLine','级联标签管理器')
             ->options($this->cascadeExampleData())
-            ->xhr('.../xhr地址');
+            ->xhr('.../xhr地址')
+            ->attribute(['height' => '200px','options'=>['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]]);
         return $form;
     }
 

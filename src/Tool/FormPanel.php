@@ -65,13 +65,14 @@ new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);
     }
-
+    
     /**
      * @param string $column
      * @param string $label
-     * @param string $value
+     * @param string|integer $value
+     * @param string $format  YYYY-MM-DD HH:mm:ss | YYYY-MM-DD | YYYY
      */
-    public function datepicker(string $column, string $label, string $value = '')
+    public function datepicker(string $column, string $label, $value = '',$format = "YYYY-MM-DD HH:mm:ss")
     {
         if (!$value) {
             $value = date('Y-m-d H:i:s');
@@ -79,13 +80,7 @@ EOF;
         $content = <<<EOF
 <input style="width: 160px" type="text" id="{$column}" name="{$column}" value="{$value}" class="dlp-input {$column}" placeholder="输入 {$label}" />
 <script>
-$('#{$column}').datetimepicker({"format":"YYYY-MM-DD HH:mm:ss","locale":"zh-CN"});
-$('#{$column}').on(
-        'dp.show',
-        function(e) {
-        $(".bootstrap-datetimepicker-widget").css(
-        "background-color", "#3c3e43");
-        });
+$('#{$column}').datetimepicker({"format":{$format},"locale":"zh-CN"});
 </script>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);

@@ -35,7 +35,7 @@ EOT;
      * @param string $xhr   ajax接口地址
      * @param array $style  组件样式设置 宽:width 高:height
      * @param array $options
-     *      options.movable     bool 可迁移节点 (迁移到其他节点子集)
+     *      options.movable     bool 可迁移节点 (迁移该节点与其子集到其他节点下)
      *      options.exchange    bool 可交换节点 (节点与其子节点相互交换)
      *      options.insert      bool 可新增
      *      options.update      bool 可修改

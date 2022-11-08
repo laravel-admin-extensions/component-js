@@ -193,7 +193,7 @@ class ExampleController extends AdminController
          * xhr 接口地址 编码参见文件:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
          * attribute.width   设置宽度 默认100%
          * attribute.height  设置高度 默认200px
-         * attribute.options 设置 可迁移(节点切换其父级)/可交换(节点与其后代节点交换位置)/可新增/可修改/可删除
+         * attribute.options 设置 可迁移(迁移该节点与其子集到其他节点下)/可交换(节点与其后代节点交换位置)/可新增/可修改/可删除
          *           ['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]
          */
         $form->CascadeLine('cascadeLine','级联标签管理器')

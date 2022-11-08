@@ -16,9 +16,10 @@ class Dot extends DLPField
     public function render()
     {
         $id = $this->formatName($this->id);
-        $height = isset($this->attributes['height']) ?  $this->attributes['height'] : '200px';
         $limit = isset($this->attributes['limit']) ? (int)$this->attributes['limit'] : 0;
-        $this->addVariables(['height'=>$height]);
+        $width = isset($this->attributes['width']) ? $this->attributes['width'] : '100%';
+        $height = isset($this->attributes['height']) ? $this->attributes['height'] : '200px';
+        $this->addVariables(['width'=>$width,'height' => $height]);
         $select = json_encode($this->options, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $selected = json_encode($this->checked);
         $this->script = <<<EOT

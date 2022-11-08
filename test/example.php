@@ -129,6 +129,7 @@ class ExampleController extends AdminController
          * 点组件
          * options          设置数据集 一维数组 格式 [value1=>text1,value2=>text2...]
          * checked          已选择 一维数组 值类型integer
+         * attribute.width  设置宽度 默认100%
          * attribute.height 设置高度 默认200px
          * attribute.limit  选择限制数 默认0:无限
          */
@@ -146,6 +147,7 @@ class ExampleController extends AdminController
          *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
          *          DLPHelper::dimension($select);
          * checked          已选择 一维数组 值类型integer
+         * attribute.width  设置宽度 默认100%
          * attribute.height 设置高度 默认200px
          * attribute.limit  选择限制数 默认0:无限
          */
@@ -162,6 +164,7 @@ class ExampleController extends AdminController
          *  column.insert_type 增加列格式(默认不填同type) hidden表示置空
          *  column.options type为select是选项
          * options 设置数据集 二维数组
+         * attribute.width   设置宽度 默认100%
          * attribute.height  设置高度 默认355px
          * attribute.options 设置操作列 默认开启:可排序/可删除/可新增['sortable' => true, 'delete' => true, 'insert' => true]
          */
@@ -188,6 +191,7 @@ class ExampleController extends AdminController
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
          *          DLPHelper::dimension($select);
          * xhr 接口地址 编码参见文件:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
+         * attribute.width   设置宽度 默认100%
          * attribute.height  设置高度 默认200px
          * attribute.options 设置 可迁移(节点切换其父级)/可交换(节点与其后代节点交换位置)/可新增/可修改/可删除
          *           ['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]

@@ -815,15 +815,9 @@ window.ComponentLine = class {
                 if (value[column]) {
                     record[column] = value[column];
                     this.makeTd(td, columns[column], value[column], column);
-                    if (columns[column].style) {
-                        td.style = columns[column].style;
-                    }
                 } else {
                     record[column] = '';
                     this.makeTd(td, columns[column], '', column);
-                    if (columns[column].style) {
-                        td.style = columns[column].style;
-                    }
                 }
                 tr.setAttribute('data-key', key.toString());
                 tr.appendChild(td);
@@ -937,6 +931,9 @@ window.ComponentLine = class {
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                 break;
         }
+        if (settings.style) {
+            td.style = settings.style;
+        }
     }
 
     operateButton(td) {
@@ -987,12 +984,14 @@ window.ComponentLine = class {
     }
 
     datepicker(){
-        setTimeout(()=>{
-            for(let col in this.format_settings){
-                let format = this.format_settings[col];
-                $(`#${this.NAME} input.datetime-${col}`).datetimepicker({"format":format,"locale":"zh-CN"});
-            }
-        });
+        if (typeof jQuery != 'undefined') {
+            setTimeout(()=>{
+                for(let col in this.format_settings){
+                    let format = this.format_settings[col];
+                    $(`#${this.NAME} input.datetime-${col}`).datetimepicker({"format":format,"locale":"zh-CN"});
+                }
+            });
+        }
     }
 };
 

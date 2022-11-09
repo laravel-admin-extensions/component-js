@@ -241,7 +241,7 @@
 }
 
 .dlp-table .dlp-tbody{display:block;height:100%;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);}
-.dlp-table .dlp-tr{display:table;width:100%;table-layout:fixed;}
+.dlp-table .dlp-tr{display:table;width:100%;table-layout:fixed;position: relative;}
 .dlp-tr>th,.dlp-tr>td{overflow: hidden;padding:  7px 3px 7px 3px;text-align: left}
 .dlp-table .dlp-thead>.dlp-tr{height: 45px}
 .dlp-table .dlp-tbody>.dlp-tr{background:#1e1e1e}

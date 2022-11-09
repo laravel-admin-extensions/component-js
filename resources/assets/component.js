@@ -206,9 +206,9 @@ window.ComponentDot = class {
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
-            select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
+            select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
-        let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
+        let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name}  .dot-selected`);
@@ -353,7 +353,7 @@ window.ComponentCascadeDot = class {
     }
 
     make() {
-        let html = `<div class="dlp dlp-dot"><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>
+        let html = `<div class="dlp dlp-dot"><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>
 <input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -755,7 +755,7 @@ window.ComponentLine = class {
             let insert_type = val.insert_type ? val.insert_type : val.type;
             switch (insert_type) {
                 case 'input':
-                    foot += `<th><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    foot += `<th style="${val.style}"><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                     break;
                 case 'select':
 
@@ -774,14 +774,14 @@ window.ComponentLine = class {
                             break;
                     }
                     this.format_settings[column] = format;
-                    foot += `<th style="position: relative;overflow: unset;"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`;
+                    foot += `<th style="position: relative;overflow: unset;${val.style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`;
                     break;
                 case 'hidden':
                     foot += `<th><input data-column="${column}" type="hidden"/></th>`;
                     break;
                 default:
                     this.COLUMNS[column].insert_type = 'input';
-                    foot += `<th><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    foot += `<th style="${val.style}"><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                     break;
             }
         }
@@ -1266,7 +1266,7 @@ window.ComponentCascadeLine = class {
     }
 
     make() {
-        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade" drag-area="true"></div></div></div>`;
+        let html = `<div class="dlp dlp-dot dlp-cascadeLine"><div class="dot-top"><div class="search-box"><input type="text" class="dlp dot-search" placeholder="搜索名称"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade" drag-area="true"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();

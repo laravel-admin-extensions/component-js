@@ -206,7 +206,7 @@ window.ComponentDot = class {
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
-            select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
+            select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
         let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
@@ -714,6 +714,7 @@ window.ComponentLine = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
+        this.format_settings = {};
         this.COLUMNS = columns;
         this.DATA = data;
         this.OPTIONS = Object.assign({
@@ -733,13 +734,20 @@ window.ComponentLine = class {
         this.makeBody();
         /*foot*/
         this.makeFoot(foot);
+        /*datetime*/
+        setTimeout(()=>{
+            for(let col in this.format_settings){
+                let format = this.format_settings[col];
+                $(`#${name} input.datetime-${col}`).datetimepicker({"format":format,"locale":"zh-CN"});
+            }
+        });
         /*sort*/
         if (this.OPTIONS.sortable) this.sortable();
     }
 
     makeHead() {
-        let head = '<tr>';
-        let foot = '<tr>';
+        let head = '<tr class="dlp-tr">';
+        let foot = '<tr class="dlp-tr">';
         let columns = this.COLUMNS;
         for (let column in columns) {
             if (!columns.hasOwnProperty(column)) continue;
@@ -748,17 +756,47 @@ window.ComponentLine = class {
                 continue;
             }
             if (val.style) {
-                head += `<th style="${val.style}">${val.name}</th>`;
-                foot += `<th style="${val.style}"><input class="dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
-                continue;
+                head += `<th class="dlp-text text-white" style="${val.style}">${val.name}</th>`;
+                foot += `<th style="${val.style}"><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+            }else {
+                head += `<th class="dlp-text text-white">${val.name}</th>`;
             }
-            head += `<th>${val.name}</th>`;
-            foot += `<th><input class="dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+            let insert_type = val.insert_type ? val.insert_type : val.type;
+            switch (insert_type) {
+                case 'input':
+                    foot += `<th><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    break;
+                case 'select':
+
+                    break;
+                case 'datetime':
+                    let format;
+                    switch (val.format) {
+                        case 1:
+                            format = 'YYYY-MM-DD';
+                            break;
+                        case 2:
+                            format = 'YYYY';
+                            break;
+                        default:
+                            format = 'YYYY-MM-DD HH:mm:ss';
+                            break;
+                    }
+                    this.format_settings[column] = format;
+                    foot += `<th style="position: relative;overflow: unset;"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`;
+                    break;
+                case 'hidden':
+                    foot += `<th><input data-column="${column}" type="hidden"/></th>`;
+                    break;
+                default:
+                    foot += `<th><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    break;
+            }
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
         foot += '<th class="insert_handel operate-column" style="width: 48px;"></th></tr>';
 
-        this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead>${head}</thead></table>`);
+        this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
         return foot;
     }
@@ -770,6 +808,7 @@ window.ComponentLine = class {
         if (Array.isArray(this.DATA) === false) return;
         this.DATA.forEach((value, key) => {
             let tr = document.createElement('tr');
+            tr.className = 'dlp-tr';
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
             for (let column in columns) {
@@ -783,13 +822,13 @@ window.ComponentLine = class {
                 let td = document.createElement('td');
                 if (value[column]) {
                     record[column] = value[column];
-                    this.makeTd(td, columns[column].type, value[column], column);
+                    this.makeTd(td, columns[column], value[column], column);
                     if (columns[column].style) {
                         td.style = columns[column].style;
                     }
                 } else {
                     record[column] = '';
-                    this.makeTd(td, columns[column].type, '', column);
+                    this.makeTd(td, columns[column], '', column);
                     if (columns[column].style) {
                         td.style = columns[column].style;
                     }
@@ -807,13 +846,14 @@ window.ComponentLine = class {
         this.DATA = records;
         this.DATA_INPUT.value = JSON.stringify(records);
         tbody.setAttribute('sortable-list', 'sortable-list');
-        tbody.className = 'dlp-scroll';
+        tbody.className = 'dlp-tbody dlp-scroll';
         this.TBODY_DOM = tbody;
         this.TABLE_DOM.appendChild(tbody);
     }
 
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
+        tfoot.className = 'dlp-tfoot';
         if (!this.OPTIONS.insert) {
             tfoot.insertAdjacentHTML('afterbegin', `<tr></tr>`);
             this.TABLE_DOM.appendChild(tfoot);
@@ -823,6 +863,7 @@ window.ComponentLine = class {
         this.TABLE_DOM.appendChild(tfoot);
         /*insert action*/
         let i = document.createElement('i');
+        i.className = 'dlp text-white';
         i.style.cursor = 'pointer';
         i.insertAdjacentHTML('afterbegin', _component.write);
         i.addEventListener('click', () => {
@@ -836,7 +877,7 @@ window.ComponentLine = class {
                 let column = input.getAttribute('data-column');
                 insert[column] = input.value;
 
-                this.makeTd(td, this.COLUMNS[column].type, input.value, column);
+                this.makeTd(td, this.COLUMNS[column], input.value, column);
                 if (this.COLUMNS[column].style) {
                     td.style = this.COLUMNS[column].style;
                 }
@@ -854,14 +895,15 @@ window.ComponentLine = class {
         this.TABLE_DOM.querySelector('.insert_handel').appendChild(i);
     }
 
-    makeTd(td, type, value, column, attributes) {
-        switch (type) {
+    makeTd(td, settings, value, column, attributes) {
+        let input;
+        switch (settings.type) {
             case 'text':
-                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp-text" title="${value}">${value}</p>`);
+                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                 break;
             case 'input':
-                let input = document.createElement('input');
-                input.setAttribute('class', 'dlp-input');
+                input = document.createElement('input');
+                input.className = 'dlp dlp-input';
                 input.setAttribute('data-column', column);
                 input.value = value;
                 for (let attribute in attributes) {
@@ -878,8 +920,28 @@ window.ComponentLine = class {
                 }, false);
                 td.appendChild(input);
                 break;
+            case 'datetime':
+                input = document.createElement('input');
+                input.setAttribute('class', `dlp dlp-input datetime-${column}`);
+                input.setAttribute('data-column', column);
+                input.value = value;
+                let format;
+                switch (settings.format) {
+                    case 1:
+                        format = 'YYYY-MM-DD';
+                        break;
+                    case 2:
+                        format = 'YYYY';
+                        break;
+                    default:
+                        format = 'YYYY-MM-DD HH:mm:ss';
+                        break;
+                }
+                this.format_settings[column] = format;
+                td.appendChild(input);
+                break;
             default:
-                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp-text" title="${value}">${value}</p>`);
+                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                 break;
         }
     }
@@ -887,6 +949,7 @@ window.ComponentLine = class {
     operateButton(td) {
         if (this.OPTIONS.sortable) {
             let M = document.createElement('i');
+            M.className = 'dlp text-white';
             M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
             M.setAttribute('sortable-handle', 'sortable-handle');
             M.insertAdjacentHTML('afterbegin', _component.move);
@@ -895,6 +958,7 @@ window.ComponentLine = class {
 
         if (this.OPTIONS.delete) {
             let D = document.createElement('span');
+            D.className = 'dlp text-white';
             D.setAttribute('style', 'cursor: pointer;display: inline-block;');
             D.insertAdjacentHTML('afterbegin', _component.trash);
             D.addEventListener('click', () => {

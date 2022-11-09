@@ -45,11 +45,12 @@ EOT;
      * @param string $name      名称
      * @param array $columns[column...] 列数据格式配置
               *  column.name             列表头名称
-              *  column.type             列数据 输出格式input,text,hidden,datetime,date,select,image,file
-              *  column.insert_type      增加列格式(默认不填同type) 格式input,datetime,date,select,image,file hidden表示置空
-              *  column.options          insert_type或type为select时 多选项
-              *  column.options_limit    insert_type或type为select时 多选项选择限制数 默认0:无限制
+              *  column.type             列数据 输出格式input,text,hidden,datetime,select,image,file
+              *  column.insert_type      增加列格式(默认不填同input) 格式input,datetime,select,image,file hidden表示置空
               *  column.style            自定义style格式
+              *  column.options          *insert_type或type为select时 多选项
+              *  column.options_limit    *insert_type或type为select时 多选项选择限制数 数字类型默认0:无限制
+              *  column.format           *insert_type或type为datetime时时间格式 数字类型默认0: YYYY-MM-DD HH:mm:ss | 1: YYYY-MM-DD | 2: YYYY
      * @param array $data 数据集
      * @param array $style 组件样式设置 宽:width 高:height
      * @param array $options 操作列设置

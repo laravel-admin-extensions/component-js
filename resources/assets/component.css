@@ -1,4 +1,4 @@
-.dlp,.dlp *{
+.dlp{
     font-family: "Raleway",
     "HelveticaNeue",
     "Helvetica Neue",
@@ -20,6 +20,7 @@
 }
 .dlp i{cursor: pointer!important;}
 .dlp p,.dlp span{margin: 0!important;padding: 0!important;}
+.dlp .text-white{color: rgba(255,255,255,.9);}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .dlp-label {
     cursor: pointer;
@@ -236,19 +237,17 @@
     border-radius: 5px;
     box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
     text-align: left;
-    background: #191919;
-    color: rgba(255,255,255,.9);
+    background: #121212;
 }
 
-.dlp-table tbody{display:block!important;height:100%!important;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);}
-
-.dlp-table tr{display:table!important;width:100%!important;table-layout:fixed!important;}
-.dlp-table th,.dlp-table td{overflow: hidden!important;padding:  7px 3px 7px 3px!important;}
-.dlp-table thead>tr{height: 45px!important}
-.dlp-table tbody>tr{background:rgb(43 43 43)!important;}
-.dlp-table tbody>tr:nth-child(even){background:#0c0c0c!important;}
-.dlp-table tbody>tr:hover{background:rgb(255 255 255 / 5%)!important;color:#fff!important}
-.dlp-table tfoot>tr{height: 40px!important}
+.dlp-table .dlp-tbody{display:block;height:100%;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);}
+.dlp-table .dlp-tr{display:table;width:100%;table-layout:fixed;}
+.dlp-tr>th,.dlp-tr>td{overflow: hidden;padding:  7px 3px 7px 3px;text-align: left}
+.dlp-table .dlp-thead>.dlp-tr{height: 45px}
+.dlp-table .dlp-tbody>.dlp-tr{background:#1e1e1e}
+.dlp-table .dlp-tbody>.dlp-tr:nth-child(even){background:#2a2a2a}
+.dlp-table .dlp-tbody>.dlp-tr:hover{background:rgb(255 255 255 / 1%)}
+.dlp-table .dlp-tfoot>.dlp-tr{height: 40px;}
 .dlp-table .operate-column{width:45px;text-align: center;line-height: 9px;}
 
 #dlp-plane>div{

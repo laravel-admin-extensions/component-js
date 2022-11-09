@@ -206,7 +206,7 @@ window.ComponentDot = class {
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
-            select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
+            select_dom += `<div class="dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
         let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
@@ -755,12 +755,7 @@ window.ComponentLine = class {
             if (val.type === 'hidden') {
                 continue;
             }
-            if (val.style) {
-                head += `<th class="dlp-text text-white" style="${val.style}">${val.name}</th>`;
-                foot += `<th style="${val.style}"><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
-            }else {
-                head += `<th class="dlp-text text-white">${val.name}</th>`;
-            }
+            head += `<th class="dlp-text text-white" style="${val.style}">${val.name}</th>`;
             let insert_type = val.insert_type ? val.insert_type : val.type;
             switch (insert_type) {
                 case 'input':
@@ -789,6 +784,7 @@ window.ComponentLine = class {
                     foot += `<th><input data-column="${column}" type="hidden"/></th>`;
                     break;
                 default:
+                    this.COLUMNS[column].insert_type = 'input';
                     foot += `<th><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                     break;
             }
@@ -867,23 +863,27 @@ window.ComponentLine = class {
         i.style.cursor = 'pointer';
         i.insertAdjacentHTML('afterbegin', _component.write);
         i.addEventListener('click', () => {
-            let inputs = this.DOM.getElementsByTagName('tfoot')[0].getElementsByTagName('input');
+            let tfoot = this.DOM.getElementsByTagName('tfoot')[0];
             let insert = {};
             let tr = document.createElement('tr');
+            tr.className = 'dlp-tr';
             tr.setAttribute('sortable-item', 'sortable-item');
             tr.setAttribute('data-key', this.DATA.length.toString());
-            for (let input of inputs) {
+            for (let column in this.COLUMNS) {
+                if (!this.COLUMNS.hasOwnProperty(column)) continue;
+                let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
                 let td = document.createElement('td');
-                let column = input.getAttribute('data-column');
-                insert[column] = input.value;
-
-                this.makeTd(td, this.COLUMNS[column], input.value, column);
-                if (this.COLUMNS[column].style) {
-                    td.style = this.COLUMNS[column].style;
+                let value;
+                if (type === 'input' || type === 'datetime') {
+                    value = tfoot.querySelector(`input[data-column="${column}"]`).value;
+                }else {
+                    value = '';
                 }
+                insert[column] = value;
+                this.makeTd(td, this.COLUMNS[column], value, column);
                 tr.appendChild(td);
-                input.value = '';
             }
+
             let td = document.createElement('td');
             this.operateButton(td);
             tr.appendChild(td);
@@ -895,7 +895,7 @@ window.ComponentLine = class {
         this.TABLE_DOM.querySelector('.insert_handel').appendChild(i);
     }
 
-    makeTd(td, settings, value, column, attributes) {
+    makeTd(td, settings, value, column) {
         let input;
         switch (settings.type) {
             case 'text':
@@ -906,10 +906,6 @@ window.ComponentLine = class {
                 input.className = 'dlp dlp-input';
                 input.setAttribute('data-column', column);
                 input.value = value;
-                for (let attribute in attributes) {
-                    if (!attributes.hasOwnProperty(attribute)) continue;
-                    input.setAttribute(attribute, attributes[attribute]);
-                }
                 input.addEventListener('input', () => {
                     let key = input.parentNode.parentNode.getAttribute('data-key');
                     let column = input.getAttribute('data-column');

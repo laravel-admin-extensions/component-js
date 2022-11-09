@@ -711,6 +711,7 @@ window.ComponentCascadeDot = class {
 window.ComponentLine = class {
     constructor(name, columns, data, options = {}) {
         this.DOM = document.getElementById(name);
+        this.NAME = name;
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
@@ -735,12 +736,7 @@ window.ComponentLine = class {
         /*foot*/
         this.makeFoot(foot);
         /*datetime*/
-        setTimeout(()=>{
-            for(let col in this.format_settings){
-                let format = this.format_settings[col];
-                $(`#${name} input.datetime-${col}`).datetimepicker({"format":format,"locale":"zh-CN"});
-            }
-        });
+        this.datepicker();
         /*sort*/
         if (this.OPTIONS.sortable) this.sortable();
     }
@@ -891,6 +887,7 @@ window.ComponentLine = class {
             this.DATA.push(insert);
             this.DATA_INPUT.value = JSON.stringify(this.DATA);
             this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
+            this.datepicker();
         }, false);
         this.TABLE_DOM.querySelector('.insert_handel').appendChild(i);
     }
@@ -986,6 +983,15 @@ window.ComponentLine = class {
             });
             object.DATA = data;
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
+        });
+    }
+
+    datepicker(){
+        setTimeout(()=>{
+            for(let col in this.format_settings){
+                let format = this.format_settings[col];
+                $(`#${this.NAME} input.datetime-${col}`).datetimepicker({"format":format,"locale":"zh-CN"});
+            }
         });
     }
 };

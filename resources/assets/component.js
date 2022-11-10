@@ -169,7 +169,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, selected, select, limit = 0) {
+    constructor(name, selected, select, limit = 0,menu_mode= false) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -184,17 +184,22 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.make(selected, select);
+
         this.selected_data = selected;
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
 
-        for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagSelect.bind(this, element), false);
+        if(menu_mode === false) {
+            this.make(selected, select);
+            for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
+                element.addEventListener('click', this.tagSelect.bind(this, element), false);
+            }
+        }else {
+            this.menuMake(selected, select);
         }
 
-        let search = document.querySelector(`#${this.name} .dot-search`);
+        let search = this.DOM.querySelector(`.dot-search`);
         search.addEventListener('input', () => {
             setTimeout(() => {
                 this.search(search);
@@ -226,6 +231,53 @@ window.ComponentDot = class {
             });
             queue.forEach((D)=>D.click());
         });
+    }
+
+    menuMake(selected, select){
+        let menu = document.createElement('div');
+        menu.className = 'dlp-dot-menu';
+
+        let menu_select = document.createElement('div');
+        menu_select.className = 'dlp-input dlp-dot-menu-select';
+        menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">测试</div><div>▼</div>`);
+
+        let menu_list = document.createElement('div');
+        menu_list.className = 'dlp-input menu-list';
+        let search_box = document.createElement('div');
+        search_box.className = 'search-box';
+        let input = document.createElement('input');
+        input.className = 'dlp dlp-input dot-search';
+        input.setAttribute('placeholder','搜索');
+
+        let list = document.createElement('div');
+        list.className = 'list dlp-scroll';
+        for (let id in select){
+            if(!select.hasOwnProperty(id))continue;
+            let option = document.createElement('div');
+            option.className = 'option';
+            option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+            list.append(option);
+        }
+
+        menu.append(menu_select);
+        search_box.append(input);
+        menu_list.append(search_box);
+        menu_list.append(list);
+        menu.append(menu_list);
+        menu.addEventListener('click',()=>{
+            menu_list.style.display = 'flex';
+        });
+        menu.addEventListener('mouseleave',()=>{
+            menu_list.style.display = 'none';
+        });
+
+        this.DOM.append(menu);
+        this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
+        this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`);
+        this.CONTENT_DOM = document.querySelector(`#${this.name}  .option`);
+        this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
+        this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
+        this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
     }
 
     tagSelect(element) {

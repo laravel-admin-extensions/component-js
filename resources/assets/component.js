@@ -200,6 +200,7 @@ window.ComponentDot = class {
                 }
             });
             queue.forEach((D)=>D.click());
+            if(menu_mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
         });
         if(menu_mode === false) {
             this.make(selected, select);
@@ -866,11 +867,12 @@ window.ComponentLine = class {
             if (val.type === 'hidden') {
                 continue;
             }
-            head += `<th class="dlp-text text-white" style="${val.style}">${val.name}</th>`;
+            let style = val.style ? `style="${val.style}"` : '';
+            head += `<th class="dlp-text text-white" ${style}>${val.name}</th>`;
             let insert_type = val.insert_type ? val.insert_type : val.type;
             switch (insert_type) {
                 case 'input':
-                    foot += `<th style="${val.style}"><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    foot += `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                     break;
                 case 'select':
 
@@ -889,14 +891,15 @@ window.ComponentLine = class {
                             break;
                     }
                     this.format_settings[column] = format;
-                    foot += `<th style="position: relative;overflow: unset;${val.style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`;
+                    style = val.style ? `${val.style}` : '';
+                    foot += `<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`;
                     break;
                 case 'hidden':
                     foot += `<th><input data-column="${column}" type="hidden"/></th>`;
                     break;
                 default:
                     this.COLUMNS[column].insert_type = 'input';
-                    foot += `<th style="${val.style}"><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    foot += `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
                     break;
             }
         }

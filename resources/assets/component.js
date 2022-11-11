@@ -274,7 +274,7 @@ window.ComponentDot = class {
                     option.classList.remove('option-active');
                     if(option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
                     this.menuSelect(select);
-                    if(this.select_data.length == 0)this.SELECTED_DOM.textContent = this.menu_placeholder;
+                    if(this.select_data.length === 0)this.SELECTED_DOM.textContent = this.menu_placeholder;
                     return;
                 }
                 if (this.limit > 0 && this.select_data.length >= this.limit) {
@@ -779,7 +779,7 @@ window.ComponentCascadeDot = class {
             if (Array.isArray(search)) {
                 if (search.indexOf(d.key) === -1) return;
             } else {
-                if (d.val.indexOf(search.value) === -1) return;
+                if (d.val.indexOf(search.value) === -1 && search.value.indexOf(d.val) === -1) return;
             }
             if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
             let div = document.createElement('div');
@@ -1851,7 +1851,7 @@ window.ComponentCascadeLine = class {
         if (search.value === '') return;
         this.dimensional_data.forEach((data, stack) => {
             data.forEach((d, index) => {
-                if (d.val.indexOf(search.value) !== -1) this.search_result.push({'stack': stack, 'index': index});
+                if (d.val.indexOf(search.value) !== -1 || search.value.indexOf(d.val) !== -1) this.search_result.push({'stack': stack, 'index': index});
             });
         });
         if (this.search_result.length === 0) return;

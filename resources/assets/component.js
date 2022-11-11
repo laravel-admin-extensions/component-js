@@ -169,7 +169,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, selected, select, limit = 0,menu_mode= false) {
+    constructor(name, selected, select, limit = 0,menu_mode= false,menu_placeholder='') {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -178,6 +178,7 @@ window.ComponentDot = class {
             console.error('Dot param select must be object such as {key:val,key2:val2,...} !');
             return;
         }
+        this.select = select;
         this.name = name;
         this.limit = limit;
         this.DOM = document.getElementById(name);
@@ -190,19 +191,26 @@ window.ComponentDot = class {
         this.insert_data = [];
         this.delete_data = [];
 
+        setTimeout(() => {
+            let queue = [];
+            this.CONTENT_DOM.childNodes.forEach((D) => {
+                let id = parseInt(D.getAttribute('data-id'));
+                if (selected.indexOf(id) !== -1) {
+                    queue.push(D);
+                }
+            });
+            queue.forEach((D)=>D.click());
+        });
         if(menu_mode === false) {
             this.make(selected, select);
-            for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-                element.addEventListener('click', this.tagSelect.bind(this, element), false);
-            }
         }else {
+            this.menu_placeholder = menu_placeholder;
             this.menuMake(selected, select);
         }
-
         let search = this.DOM.querySelector(`.dot-search`);
         search.addEventListener('input', () => {
             setTimeout(() => {
-                this.search(search);
+                this.search(search,menu_mode);
             }, 500);
         });
     }
@@ -221,16 +229,9 @@ window.ComponentDot = class {
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
-        setTimeout(() => {
-            let queue = [];
-            this.CONTENT_DOM.childNodes.forEach((D) => {
-                let id = parseInt(D.getAttribute('data-id'));
-                if (selected.indexOf(id) !== -1) {
-                    queue.push(D);
-                }
-            });
-            queue.forEach((D)=>D.click());
-        });
+        for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
+            element.addEventListener('click', this.tagSelect.bind(this, element), false);
+        }
     }
 
     menuMake(selected, select){
@@ -239,7 +240,7 @@ window.ComponentDot = class {
 
         let menu_select = document.createElement('div');
         menu_select.className = 'dlp-input dlp-dot-menu-select';
-        menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">测试</div><div>▼</div>`);
+        menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">${this.menu_placeholder}</div><div>▼</div>`);
 
         let menu_list = document.createElement('div');
         menu_list.className = 'dlp-input menu-list';
@@ -251,11 +252,38 @@ window.ComponentDot = class {
 
         let list = document.createElement('div');
         list.className = 'list dlp-scroll';
+
+        let check = _component.check;
+        check = check.replace(`width="16" height="16"`,`width="12" height="12"`);
+        this.id_line_hash = [];
+        let line = 0;
         for (let id in select){
             if(!select.hasOwnProperty(id))continue;
+            this.id_line_hash[id] = line;
+            line++;
             let option = document.createElement('div');
             option.className = 'option';
+            option.setAttribute('data-id',id);
             option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+            option.addEventListener('click', ()=>{
+                id = parseInt(id);
+                if(this.select_data.indexOf(id) !== -1){
+                    /*cancel*/
+                    this.tagCal(id, this.MODE.delete);
+                    option.classList.remove('option-active');
+                    if(option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                    this.menuSelect(select);
+                    if(this.select_data.length == 0)this.SELECTED_DOM.textContent = this.menu_placeholder;
+                    return;
+                }
+                if (this.limit > 0 && this.select_data.length >= this.limit) {
+                    list.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
+                }
+                option.classList.add('option-active');
+                this.tagCal(id, this.MODE.insert);
+                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin',check);
+                this.menuSelect(select);
+            }, false);
             list.append(option);
         }
 
@@ -269,15 +297,32 @@ window.ComponentDot = class {
         });
         menu.addEventListener('mouseleave',()=>{
             menu_list.style.display = 'none';
+            let search = this.DOM.querySelector(`.dot-search`);
+            search.value = '';
+            for(let node of this.CONTENT_DOM.childNodes){
+                node.style.display = 'flex';
+            }
         });
 
         this.DOM.append(menu);
         this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
-        this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`);
-        this.CONTENT_DOM = document.querySelector(`#${this.name}  .option`);
+        this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`).firstElementChild;
+        this.CONTENT_DOM = document.querySelector(`#${this.name}  .list`);
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
+    }
+
+    menuSelect(select){
+        if(this.limit == 1){
+            this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
+            return;
+        }
+        let html = '';
+        for(let id of this.select_data){
+            html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
+        }
+        this.SELECTED_DOM.innerHTML = html;
     }
 
     tagSelect(element) {
@@ -288,7 +333,7 @@ window.ComponentDot = class {
         clone.addEventListener('click', this.tagCancel.bind(this, clone), false);
         this.SELECTED_DOM.appendChild(clone);
         element.remove();
-        this.tagCal(element, this.MODE.insert);
+        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
         this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
     }
 
@@ -297,11 +342,10 @@ window.ComponentDot = class {
         clone.addEventListener('click', this.tagSelect.bind(this, clone), false);
         this.CONTENT_DOM.appendChild(clone);
         element.remove();
-        this.tagCal(element, this.MODE.delete);
+        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
     }
 
-    tagCal(element, operate) {
-        let id = parseInt(element.getAttribute('data-id'));
+    tagCal(id, operate) {
         let index = this.select_data.indexOf(id);
         if (operate === this.MODE.insert) {
             if (index === -1) {
@@ -334,7 +378,26 @@ window.ComponentDot = class {
         }
     }
 
-    search(search) {
+    search(search,menu_mode) {
+        if(menu_mode){
+            if (search.value === '') {
+                for(let node of this.CONTENT_DOM.childNodes){
+                    node.style.display = 'flex';
+                }
+                return;
+            }
+            for (let id in this.select){
+                if(!this.select.hasOwnProperty(id))continue;
+                let text = this.select[id];
+                let line = this.id_line_hash[id];
+                if(text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1){
+                    this.CONTENT_DOM.childNodes[line].style.display = 'flex';
+                }else {
+                    this.CONTENT_DOM.childNodes[line].style.display = 'none';
+                }
+            }
+            return;
+        }
         if (search.value === '') {
             if (this.SELECT_COVER_DOM instanceof HTMLElement) {
                 let elements = [];
@@ -363,7 +426,7 @@ window.ComponentDot = class {
             if (element.className.indexOf('dlp-label') === -1) {
                 continue;
             }
-            if (element.innerText.indexOf(search.value) !== -1) {
+            if (element.innerText.indexOf(search.value) !== -1 || search.value.indexOf(element.innerText) !== -1) {
                 elements.push(element);
             }
         }

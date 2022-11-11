@@ -1,5 +1,6 @@
 ## 前端组件扩展
     Dot         标签选择器   
+    Dot         标签选择器(下拉列表模式)
     CascadeDot  级联标签选择器
     CascadeLine 级联标签管理器
     Linear      数据表单控件   

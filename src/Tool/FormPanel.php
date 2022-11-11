@@ -48,7 +48,16 @@ EOF;
         $this->html .= $this->rowpanel($column, $label, $content);
     }
 
-    public function select(string $column, string $label, array $selected, array $select, $limit = 0, array $style = [])
+    /**
+     * @param string $column
+     * @param string $label
+     * @param array $selected
+     * @param array $select
+     * @param int $limit
+     * @param array $style
+     * @param bool $menu_mode
+     */
+    public function select(string $column, string $label, array $selected, array $select, $limit = 0, array $style = [],$menu_mode=true)
     {
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $select = json_encode($select, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -60,12 +69,12 @@ EOF;
         $content = <<<EOF
 <div id="{$column}" style="$style_string"></div>
 <script>
-new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit});
+new ComponentDot("{$column}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit},{$menu_mode},{$label});
 </script>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);
     }
-    
+
     /**
      * @param string $column
      * @param string $label

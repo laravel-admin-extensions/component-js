@@ -132,6 +132,8 @@ class ExampleController extends AdminController
          * attribute.width  设置宽度 默认100%
          * attribute.height 设置高度 默认200px
          * attribute.limit  选择限制数 默认0:无限
+         * attribute.menu_mode  组件模式设置 false:默认模式 true:下拉列表模式
+         * attribute.menu_placeholder  下拉列表模式 默认未选择占位
          */
         $form->Dot('dot','标签选择器')
             ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣'])
@@ -161,7 +163,7 @@ class ExampleController extends AdminController
          * columns[column...]       列数据格式配置
          *  column.name             列表头名称
          *  column.type             列数据 输出格式input,text,hidden,datetime,date,select,image,file
-         *  column.insert_type      增加列格式(默认不填同type) hidden表示置空
+         *  column.insert_type      增加列格式(不填时默认等同于type值) hidden表示置空
          *  column.options          insert_type或type为select时 多选项
          *  column.options_limit    insert_type或type为select时 多选项选择限制数 默认0:无限制
          *  column.style            自定义style格式
@@ -174,7 +176,7 @@ class ExampleController extends AdminController
             ->columns([
                 'name' => ['name' => '名称', 'type' => 'input'],
                 'meta' => ['name' => '信息', 'type' => 'input','insert_type'=>'hidden'],
-                'url' => ['name' => '链接', 'type' => 'image','insert_type'=>'image'],
+                'url' => ['name' => '链接', 'type' => 'image'],
                 'time' => ['name' => '更新时间', 'type' => 'text','insert_type'=>'datetime'],
                 'is-small' => ['name' => '高清', 'type' => 'select','options'=>[1=>'是',2=>'否'],'options_limit'=>1, 'style' => 'width:60px']
             ])
@@ -206,9 +208,16 @@ class ExampleController extends AdminController
 
     public function blank()
     {
-        $html = '<h1>松下紗栄子</h1>';
+        $html = '<h1>弹窗模式 自定页</h1>';
         /*弹窗模式 渲染自定义页模板 Plane::html*/
-        return Plane::html($html);
+        $panel = new FormPanel();
+        $panel->input('id','序号');
+        $panel->textarea('description','描述');
+        $panel->select('status','状态',[0],[0=>'开启',1=>'关闭',2=>'删除'],1);
+        $panel->datepicker('time','时间');
+        $panel->html('test','自定义','<p>松下紗栄子</p>');
+        $html = $panel->compile();
+        return Plane::html($title.$html);
     }
 
     private function cascadeExampleData()

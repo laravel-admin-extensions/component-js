@@ -177,7 +177,7 @@
     align-items: center;
 }
 .dlp-dot-menu>.menu-list .option:hover,.dlp-dot-menu>.menu-list .option-active{background: #dbdbdb}
-.dlp-dot-menu .search-box{width: 100%;height: 24px;padding: 2px}
+.dlp-dot-menu .search-box{width: 100%;height: 28px;padding: 2px}
 .dlp-dot-menu .search-box>input{
     border: 1px solid #bdbdbd;
 }

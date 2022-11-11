@@ -71,10 +71,7 @@ EOT;
         $options = json_encode(array_merge(['sortable' => true, 'delete' => true, 'insert' => true], $options));
 
         return <<<EOF
-<div id="{$name}" style="$style_string"></div>
-<script>
-new ComponentLine("{$name}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));
-</script>
+<div id="{$name}" style="$style_string"></div><script>new ComponentLine("{$name}",JSON.parse('{$columns}'),JSON.parse('{$data}'),JSON.parse('{$options}'));</script>
 EOF;
     }
 }

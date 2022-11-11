@@ -48,10 +48,7 @@ EOT;
         }
 
         return <<<EOF
-<div id="{$name}" style="$style_string"></div>
-<script>
-new ComponentCascadeDot("{$name}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit});
-</script>
+<div id="{$name}" style="$style_string"></div><script>new ComponentCascadeDot("{$name}",JSON.parse('{$selected}'),JSON.parse('{$select}'),{$limit});</script>
 EOF;
     }
 }

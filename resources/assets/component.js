@@ -1006,12 +1006,14 @@ window.ComponentLine = class {
 
     makeTd(td, settings, value, column) {
         let input;
-        let input_change = function() {
+        let DATA = this.DATA;
+        let DATA_INPUT = this.DATA_INPUT;
+        let input_change = function input_change() {
             let key = input.parentNode.parentNode.getAttribute('data-key');
             let column = input.getAttribute('data-column');
-            if (this.DATA[key]) {
-                this.DATA[key][column] = input.value;
-                this.DATA_INPUT.value = JSON.stringify(this.DATA);
+            if (DATA[key]) {
+                DATA[key][column] = input.value;
+                DATA_INPUT.value = JSON.stringify(DATA);
             }
         };
         switch (settings.type) {

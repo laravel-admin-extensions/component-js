@@ -1006,6 +1006,14 @@ window.ComponentLine = class {
 
     makeTd(td, settings, value, column) {
         let input;
+        let input_change = function() {
+            let key = input.parentNode.parentNode.getAttribute('data-key');
+            let column = input.getAttribute('data-column');
+            if (this.DATA[key]) {
+                this.DATA[key][column] = input.value;
+                this.DATA_INPUT.value = JSON.stringify(this.DATA);
+            }
+        };
         switch (settings.type) {
             case 'text':
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
@@ -1016,12 +1024,7 @@ window.ComponentLine = class {
                 input.setAttribute('data-column', column);
                 input.value = value;
                 input.addEventListener('input', () => {
-                    let key = input.parentNode.parentNode.getAttribute('data-key');
-                    let column = input.getAttribute('data-column');
-                    if (this.DATA[key]) {
-                        this.DATA[key][column] = input.value;
-                        this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                    }
+                    input_change();
                 }, false);
                 td.appendChild(input);
                 break;
@@ -1043,6 +1046,9 @@ window.ComponentLine = class {
                         break;
                 }
                 this.format_settings[column] = format;
+                input.addEventListener('blur', () => {
+                    input_change();
+                }, false);
                 td.appendChild(input);
                 break;
             default:

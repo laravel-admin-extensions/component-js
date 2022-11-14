@@ -169,7 +169,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, selected, select, limit = 0,menu_mode= false,menu_placeholder='') {
+    constructor(name, select, selected, limit = 0,menu_mode= false,menu_placeholder='') {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -441,7 +441,7 @@ window.ComponentCascadeDot = class {
         delete: 'delete'
     };
 
-    constructor(name, selected, select, limit = 0) {
+    constructor(name, select, selected, limit = 0) {
         if (!Array.isArray(selected) || !Array.isArray(select)) {
             console.error('CascadeDot param selected and select must be array!');
             return;

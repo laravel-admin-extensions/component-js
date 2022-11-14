@@ -26,6 +26,19 @@ class DLPField extends Field
     }
 
     /**
+     * Set the field options.
+     *
+     * @param array $list
+     *
+     * @return $this
+     */
+    public function list(array $list = [])
+    {
+        $this->list = $list;
+        return $this;
+    }
+
+    /**
      * Set the field option checked.
      *
      * @param array $checked

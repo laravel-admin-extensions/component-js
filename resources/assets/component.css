@@ -123,6 +123,7 @@
     display: flex!important;
     border-radius: 3px;
     color: #ffffff;
+    border: 1px solid #1e1e1e;
 }
 .dlp-dot-menu-select>div:first-child{
     width: 100%;

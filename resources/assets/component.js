@@ -859,7 +859,8 @@ window.ComponentLine = class {
 
     makeHeadFoot() {
         let head = '<tr class="dlp-tr">';
-        let foot = '<tr class="dlp-tr">';
+        let foot = document.createElement('tr');
+        foot.className = 'dlp-tr';
         let columns = this.COLUMNS;
         for (let column in columns) {
             if (!columns.hasOwnProperty(column)) continue;
@@ -872,10 +873,13 @@ window.ComponentLine = class {
             let insert_type = val.insert_type ? val.insert_type : val.type;
             switch (insert_type) {
                 case 'input':
-                    foot += `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    foot.insertAdjacentHTML('beforeend',`<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
                     break;
                 case 'select':
-
+                    let td = document.createElement('td');
+                    td.style = val.style;
+                    td.append(this.menuMake([],val.options,val.options_limit,val.name));
+                    foot.append(td);
                     break;
                 case 'datetime':
                     let format;
@@ -892,19 +896,19 @@ window.ComponentLine = class {
                     }
                     this.format_settings[column] = format;
                     style = val.style ? `${val.style}` : '';
-                    foot += `<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`;
+                    foot.insertAdjacentHTML('beforeend',`<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`);
                     break;
                 case 'hidden':
-                    foot += `<th><input data-column="${column}" type="hidden"/></th>`;
+                    foot.insertAdjacentHTML('beforeend',`<th><input data-column="${column}" type="hidden"/></th>`);
                     break;
                 default:
                     this.COLUMNS[column].insert_type = 'input';
-                    foot += `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`;
+                    foot.insertAdjacentHTML('beforeend',`<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
                     break;
             }
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
-        foot += '<th class="insert_handel operate-column" style="width: 48px;"></th></tr>';
+        foot.insertAdjacentHTML('beforeend','<th class="insert_handel operate-column" style="width: 48px;"></th></tr>');
 
         this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
@@ -963,7 +967,7 @@ window.ComponentLine = class {
             this.TABLE_DOM.appendChild(tfoot);
             return;
         }
-        tfoot.insertAdjacentHTML('afterbegin', foot);
+        tfoot.append(foot);
         this.TABLE_DOM.appendChild(tfoot);
         /*insert action*/
         let i = document.createElement('i');

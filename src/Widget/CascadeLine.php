@@ -31,7 +31,7 @@ EOT;
     /**
      * 直接调用ComponentCascadeLine组件
      * @param string $name      名称
-     * @param array $list   数据集
+     * @param array $list   数据集 多维
      * @param string $xhr   ajax接口地址
      * @param array $style  组件样式设置 宽:width 高:height
      * @param array $options

@@ -185,7 +185,7 @@
 </div>
 </body>
 <script>
-    new ComponentDot('test', [2, 5, 10], {
+    new ComponentDot('test', {
         "2": "西宮このみ",
         "5": "瀨名光莉",
         "7": "日菜々はのん",
@@ -342,9 +342,9 @@
         "298": "椎葉みくる",
         "299": "佐伯奈々",
         "300": "小谷みのり"
-    });
+    }, [2, 5, 10]);
 
-    new ComponentDot('test7', [], {
+    new ComponentDot('test7', {
         "2": "西宮このみ",
         "5": "瀨名光莉",
         "7": "日菜々はのん",
@@ -359,7 +359,7 @@
         "31": "AIKA -",
         "33": "永井みひな",
         "36": "河北彩花"
-    },30,true,'请选择');
+    },[],1,true,'请选择');
 
     new ComponentLine("test2", {
             "name": {"name": "名称", "type": "input"},
@@ -844,7 +844,7 @@
     ];
     let cascadeData2 = JSON.parse(JSON.stringify(cascadeData));
 
-    new ComponentCascadeDot('test4', [1102, 542], cascadeData);
+    new ComponentCascadeDot('test4', cascadeData, [1102, 542]);
 
     new ComponentCascadeLine('test5', cascadeData2,'http://url...');
 </script>

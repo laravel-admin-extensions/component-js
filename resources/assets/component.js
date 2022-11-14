@@ -244,7 +244,7 @@ window.ComponentDot = class {
         menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">${this.menu_placeholder}</div><div>▼</div>`);
 
         let menu_list = document.createElement('div');
-        menu_list.className = 'dlp-input menu-list';
+        menu_list.className = 'menu-list';
         let search_box = document.createElement('div');
         search_box.className = 'search-box';
         let input = document.createElement('input');
@@ -840,7 +840,7 @@ window.ComponentLine = class {
             insert: true
         }, options);
         /*head foot*/
-        let foot = this.makeHead();
+        let foot = this.makeHeadFoot();
         /*hidden data container*/
         this.DATA_INPUT = document.createElement('input');
         this.DATA_INPUT.setAttribute('name', name);
@@ -857,7 +857,7 @@ window.ComponentLine = class {
         if (this.OPTIONS.sortable) this.sortable();
     }
 
-    makeHead() {
+    makeHeadFoot() {
         let head = '<tr class="dlp-tr">';
         let foot = '<tr class="dlp-tr">';
         let columns = this.COLUMNS;
@@ -1053,6 +1053,9 @@ window.ComponentLine = class {
                 }, false);
                 td.appendChild(input);
                 break;
+            case 'select':
+                td.append(this.menuMake([],settings.options,settings.options_limit,settings.name));
+                break;
             default:
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                 break;
@@ -1095,6 +1098,61 @@ window.ComponentLine = class {
             td.appendChild(D);
         }
         td.className = 'operate-column';
+    }
+
+    menuMake(selected, select,limit,placeholder){
+        let menu = document.createElement('div');
+        menu.className = 'dlp-dot-menu';
+
+        let menu_select = document.createElement('div');
+        menu_select.className = 'dlp-input dlp-dot-menu-select';
+        menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">${placeholder}</div><div>▼</div>`);
+
+        let menu_list = document.createElement('div');
+        menu_list.className = 'menu-list';
+        let search_box = document.createElement('div');
+        search_box.className = 'search-box';
+        let input = document.createElement('input');
+        input.className = 'dlp dlp-input dot-search';
+        input.setAttribute('placeholder','搜索');
+
+        let list = document.createElement('div');
+        list.className = 'list dlp-scroll';
+
+        let check = _component.check;
+        check = check.replace(`width="16" height="16"`,`width="12" height="12"`);
+        this.id_line_hash = [];
+        let line = 0;
+        for (let id in select){
+            if(!select.hasOwnProperty(id))continue;
+            this.id_line_hash[id] = line;
+            line++;
+            let option = document.createElement('div');
+            option.className = 'option';
+            option.setAttribute('data-id',id);
+            option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+            option.addEventListener('click', ()=>{
+                id = parseInt(id);
+
+            }, false);
+            list.append(option);
+        }
+
+        menu.append(menu_select);
+        search_box.append(input);
+        menu_list.append(search_box);
+        menu_list.append(list);
+        menu.append(menu_list);
+        menu.addEventListener('click',()=>{
+            menu_list.style.display = 'flex';
+        });
+        menu.addEventListener('mouseleave',()=>{
+            menu_list.style.display = 'none';
+            let search = this.DOM.querySelector(`.dot-search`);
+            search.value = '';
+        });
+
+        return menu;
     }
 
     sortable() {

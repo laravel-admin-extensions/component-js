@@ -315,7 +315,7 @@ window.ComponentDot = class {
     }
 
     menuSelect(select){
-        if(this.limit == 1){
+        if(this.limit === 1){
             this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
             return;
         }
@@ -878,7 +878,7 @@ window.ComponentLine = class {
                 case 'select':
                     let td = document.createElement('td');
                     td.style = val.style;
-                    td.append(this.menuMake([],val.options,val.options_limit,val.name));
+                    td.append(this.menuMake(column,[],val.options,val.options_limit,val.name));
                     foot.append(td);
                     break;
                 case 'datetime':
@@ -934,6 +934,15 @@ window.ComponentLine = class {
                     continue;
                 }
                 let td = document.createElement('td');
+                if(columns[column].type === 'select') {
+                    let v = this.DATA[key][column];
+                    if (/^[0-9]+$/.test(v)) {
+                        v = [parseInt(v)];
+                    } else if (Array.isArray(v) === false) {
+                        v = [];
+                    }
+                    value[column] = v;
+                }
                 if (value[column]) {
                     record[column] = value[column];
                     this.makeTd(td, columns[column], value[column], column);
@@ -1012,14 +1021,6 @@ window.ComponentLine = class {
         let input;
         let DATA = this.DATA;
         let DATA_INPUT = this.DATA_INPUT;
-        let input_change = function input_change() {
-            let key = input.parentNode.parentNode.getAttribute('data-key');
-            let column = input.getAttribute('data-column');
-            if (DATA[key]) {
-                DATA[key][column] = input.value;
-                DATA_INPUT.value = JSON.stringify(DATA);
-            }
-        };
         switch (settings.type) {
             case 'text':
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
@@ -1030,7 +1031,12 @@ window.ComponentLine = class {
                 input.setAttribute('data-column', column);
                 input.value = value;
                 input.addEventListener('input', () => {
-                    input_change();
+                    let key = input.parentNode.parentNode.getAttribute('data-key');
+                    let column = input.getAttribute('data-column');
+                    if (DATA[key]) {
+                        DATA[key][column] = input.value;
+                        DATA_INPUT.value = JSON.stringify(DATA);
+                    }
                 }, false);
                 td.appendChild(input);
                 break;
@@ -1053,12 +1059,17 @@ window.ComponentLine = class {
                 }
                 this.format_settings[column] = format;
                 input.addEventListener('blur', () => {
-                    input_change();
+                    let key = input.parentNode.parentNode.getAttribute('data-key');
+                    let column = input.getAttribute('data-column');
+                    if (DATA[key]) {
+                        DATA[key][column] = input.value;
+                        DATA_INPUT.value = JSON.stringify(DATA);
+                    }
                 }, false);
                 td.appendChild(input);
                 break;
             case 'select':
-                td.append(this.menuMake([],settings.options,settings.options_limit,settings.name));
+                td.append(this.menuMake(column,value,settings.options,settings.options_limit,settings.name));
                 break;
             default:
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
@@ -1104,7 +1115,7 @@ window.ComponentLine = class {
         td.className = 'operate-column';
     }
 
-    menuMake(selected, select,limit,placeholder){
+    menuMake(column,selected, select,limit,placeholder){
         let menu = document.createElement('div');
         menu.className = 'dlp-dot-menu';
 
@@ -1125,23 +1136,51 @@ window.ComponentLine = class {
 
         let check = _component.check;
         check = check.replace(`width="16" height="16"`,`width="12" height="12"`);
-        this.id_line_hash = [];
-        let line = 0;
         for (let id in select){
             if(!select.hasOwnProperty(id))continue;
-            this.id_line_hash[id] = line;
-            line++;
             let option = document.createElement('div');
             option.className = 'option';
             option.setAttribute('data-id',id);
             option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
             option.addEventListener('click', ()=>{
                 id = parseInt(id);
-
+                let data_key = parseInt(menu.parentNode.parentNode.getAttribute('data-key'));
+                let selected = this.DATA[data_key][column];
+                let index = selected.indexOf(id);
+                if(index !== -1){
+                    /*cancel*/
+                    selected.splice(index,1);
+                    option.classList.remove('option-active');
+                    if(option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                    menuSelect(select,selected,limit);
+                    this.DATA[data_key][column] = selected;
+                    if(selected.length === 0)menu_select.firstElementChild.textContent = placeholder;
+                    return;
+                }
+                if (limit > 0 && selected.length >= limit) {
+                    for (let line of list.childNodes){
+                        if((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString()) line.click();
+                    }
+                }
+                option.classList.add('option-active');
+                selected.push(id);
+                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin',check);
+                menuSelect(select,selected,limit);
             }, false);
             list.append(option);
         }
 
+        function menuSelect(select,selected,limit){
+            if(limit === 1){
+                menu_select.firstElementChild.innerHTML = `<p class="dlp-text">${select[selected[0]]}</p>`;
+                return;
+            }
+            let html = '';
+            for(let id of this.select_data){
+                html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
+            }
+            menu_select.firstElementChild.innerHTML = html;
+        }
         menu.append(menu_select);
         search_box.append(input);
         menu_list.append(search_box);

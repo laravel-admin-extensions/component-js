@@ -19,7 +19,7 @@ class Dot extends DLPField
         $limit = isset($this->attributes['limit']) ? (int)$this->attributes['limit'] : 0;
         $width = isset($this->attributes['width']) ? $this->attributes['width'] : '100%';
         $height = isset($this->attributes['height']) ? $this->attributes['height'] : '200px';
-        $menu_mode = isset($this->attributes['mode']) ? (bool)$this->attributes['mode'] : false;
+        $menu_mode = isset($this->attributes['mode']) && $this->attributes['mode'] === true ? 'true' : 'false';
         $menu_placeholder = isset($this->attributes['placeholder']) ? $this->attributes['placeholder'] : '未选择';
         $this->addVariables(['width' => $width, 'height' => $height]);
         $select = json_encode($this->options, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
@@ -52,9 +52,10 @@ EOT;
             $style_string .= "$k:$s;";
         }
         $menu = array_merge(['mode'=>false,'placeholder'=>'请选择'], $style);
+        $menu_mode = isset($menu['mode']) && $menu['mode'] === true ? 'true' : 'false';
 
         return <<<EOF
-<div id="{$name}" style="$style_string"></div><script>new ComponentDot("{$name}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu['mode']},{$menu['placeholder']});</script>
+<div id="{$name}" style="$style_string"></div><script>new ComponentDot("{$name}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu_mode},{$menu['placeholder']});</script>
 EOF;
     }
 }

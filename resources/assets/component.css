@@ -137,11 +137,11 @@
 .dlp-dot-menu-select>div:first-child span{
     background: #ffffff;
     color: #4c4c4c;
-    display: inline-block;
+    display: inline-flex;
     border-radius: 2px;
     padding: 0 2px!important;
-    height: 22px;
-    line-height: 22px;
+    height: 85%;
+    align-items: center;
     margin-right: 2px!important;
     max-width: 5em;
 }

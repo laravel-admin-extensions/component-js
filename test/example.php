@@ -210,36 +210,36 @@ class ExampleController extends AdminController
     public function blank()
     {
             $title = '<h1>松下紗栄子</h1>';
-            /*弹窗模式 渲染自定义页模板 Plane::html*/
-            $panel = new FormPanel();
-            $panel->input('id','序号');
-            $panel->textarea('description','描述');
-            $panel->select('status','状态',[0],[0=>'开启',1=>'关闭',2=>'删除'],1);
-            $panel->datepicker('time','时间');
-            $panel->html('test','自定义html','<p>松下紗栄子</p>');
-            /*多图上传样例*/
-            $settings = [
-                'uploadUrl' => 'https://...upload.file.url...',
-                'uploadExtraData' => [
-                    '_token' => csrf_token(),
-                    'uploadAsync' => true,
-                    /*自定义加传参*/
-                ],
-                'deleteUrl' => 'https://...delete.file.url...',
-                'deleteExtraData' => [
-                    '_token' => csrf_token(),
-                    'uploadAsync' => true,
-                    /*自定义加传参*/
-                ],
-                'maxFileCount' => 10,
-                'maxFileSize' => 800 //单图限制800kb
-            ];
-            $images = ['/image1...','/image2...','/image3...'];
-            $panel->fileInput('photo','艳照',$settings,
-                ['files' => $images, 'url' => '/image.server...'],
-                "accept='image/*'");
-
-            $html = $panel->compile();
+            /*辅助表单内容组装器 FormPanel 参考以下*/
+                $panel = new FormPanel();
+                $panel->input('id','序号');
+                $panel->textarea('description','描述');
+                $panel->select('status','状态',[0],[0=>'开启',1=>'关闭',2=>'删除'],1);
+                $panel->datepicker('time','时间');
+                $panel->html('test','自定义html','<p>松下紗栄子</p>');
+                /*多图上传样例*/
+                $settings = [
+                    'uploadUrl' => 'https://...upload.file.url...',
+                    'uploadExtraData' => [
+                        '_token' => csrf_token(),
+                        'uploadAsync' => true,
+                        /*自定义加传参*/
+                    ],
+                    'deleteUrl' => 'https://...delete.file.url...',
+                    'deleteExtraData' => [
+                        '_token' => csrf_token(),
+                        'uploadAsync' => true,
+                        /*自定义加传参*/
+                    ],
+                    'maxFileCount' => 10,
+                    'maxFileSize' => 800 //单图限制800kb
+                ];
+                $images = ['/image1...','/image2...','/image3...'];
+                $panel->fileInput('photo','艳照',$settings,
+                    ['files' => $images, 'url' => '/image.server...'],
+                    "accept='image/*'");
+                $html = $panel->compile();
+            /*弹窗模式 渲染自定义页模板 调用Plane::html*/
             return Plane::html($title.$html);
     }
 

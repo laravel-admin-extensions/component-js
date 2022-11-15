@@ -989,6 +989,8 @@ window.ComponentLine = class {
                 let value;
                 if (type === 'input' || type === 'datetime') {
                     value = tfoot.querySelector(`input[data-column="${column}"]`).value;
+                }else if(type === 'select'){
+                    value = this.INSERT_ROW_MENUE_DATA[column];
                 }else {
                     value = '';
                 }
@@ -1160,9 +1162,7 @@ window.ComponentLine = class {
                 selected.push(id);
                 (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin',check);
                 menuSelect(select,selected,limit);
-                if(insertRow === false){
-                    this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                }
+                if(insertRow === false)this.DATA_INPUT.value = JSON.stringify(this.DATA);
             }, false);
             /*init selected*/
             if (limit > 0 && selected.length >= limit) selected.slice(0,limit);

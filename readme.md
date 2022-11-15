@@ -27,25 +27,25 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <td style="text-align:left;">多选择器</td>
         <td style="text-align:left;">一维数组<br/>[id=>val,id2=>val2...]</td>
         <td style="text-align:left;">多选择器<br/>多选择数量可设限制</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L134'>$form->Dot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Dot.php#L38'>Dot::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L129'>$form->Dot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Dot.php#L34'>Dot::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">级联多选择器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L202'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L248'>参考结构</a>
         <br/>
-        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L143'>数据辅助组装</a><br/>
+        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L146'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">支持右键全选,取消<br/>多选择数量可设限制<br/>适用于无限分类,地区选择</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L152'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeDot.php#L38'>CascadeDot::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L144'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeDot.php#L38'>CascadeDot::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">级联管理器</td>
-        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L202'>参考结构</a>
+        <td style="text-align:left;">链表多维数组 <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L248'>参考结构</a>
         <br/>
-        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L181'>数据辅助组装</a><br/>
+        <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L192'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">右键新增,修改,删除 操作节点接口参考<a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L8'>test\CascadeLineController</a><br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L13'>实现CascadeLineTrait抽象方法</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L189'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeLine.php#L36'>CascadeLine::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L190'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeLine.php#L32'>CascadeLine::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">表单控件</td>

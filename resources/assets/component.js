@@ -169,7 +169,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, select, selected, limit = 0,menu_mode= false,menu_placeholder='') {
+    constructor(name, select, selected, limit = 0,menu = {}) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -185,6 +185,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
+        this.menu = Object.assign({mode:false,placeholder:'未选择',height:'350px'}, menu);
 
         this.selected_data = selected;
         this.select_data = [];
@@ -200,18 +201,18 @@ window.ComponentDot = class {
                 }
             });
             queue.forEach((D)=>D.click());
-            if(menu_mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
+            if(this.menu.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
         });
-        if(menu_mode === false) {
+        if(this.menu.mode === false) {
             this.make(selected, select);
         }else {
-            this.menu_placeholder = menu_placeholder;
+            this.menu_placeholder = this.menu.placeholder;
             this.menuMake(selected, select);
         }
         let search = this.DOM.querySelector(`.dot-search`);
         search.addEventListener('input', () => {
             setTimeout(() => {
-                this.search(search,menu_mode);
+                this.search(search,this.menu.mode);
             }, 500);
         });
     }
@@ -253,6 +254,7 @@ window.ComponentDot = class {
 
         let list = document.createElement('div');
         list.className = 'list dlp-scroll';
+        list.style.maxHeight = this.menu.height;
 
         let check = _component.check;
         check = check.replace(`width="16" height="16"`,`width="12" height="12"`);
@@ -1061,6 +1063,7 @@ window.ComponentLine = class {
                     }
                 }, false);
                 td.appendChild(input);
+                td.style.position = 'relative';
                 break;
             case 'select':
                 td.append(this.menuMake(column,value,settings.options,settings.options_limit,settings.name));

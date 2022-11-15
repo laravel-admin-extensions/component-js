@@ -53,23 +53,26 @@ EOF;
      * @param string $label
      * @param array $select
      * @param array $selected
-     * @param int $limit
-     * @param array $style
-     * @param bool $menu_mode
+     * @param int $limit  选择数量限制 0无限
+     * @param array $setting
+     *      mode 选择器下拉列表模式 false默认经典模式 true下拉模式
+     *      placeholder 下拉列表默认展位
+     *      width      容器宽
+     *      height     容器高
+     *      menu_height 下拉列表高度限制
      */
-    public function select(string $column, string $label, array $select, array $selected, $limit = 0, array $style = [],$menu_mode=true)
+    public function select(string $column, string $label, array $select, array $selected, $limit = 0, array $setting = [])
     {
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $select = json_encode($select, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $style = array_merge(['width' => '100%', 'height' => '62px'], $style);
-        $style_string = '';
-        foreach ($style as $k => $s) {
-            $style_string .= "$k:$s;";
-        }
+        $setting = array_merge(['mode'=>false,'placeholder'=>'请选择','width' => '100%','height'=>'200px','menu_height'=>'150px'], $setting);
+        $style = $setting['mode'] === true ? "witdh:{$setting['width']};" : "witdh:{$setting['width']};height:{$setting['height']}";
+
+        $menu = json_encode(['mode'=>$setting['mode'],'placeholder'=>$setting['placeholder'],'height'=>$setting['menu_height']]);
         $content = <<<EOF
-<div id="{$column}" style="$style_string"></div>
+<div id="{$column}" style="$style"></div>
 <script>
-new ComponentDot("{$column}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu_mode},{$label});
+new ComponentDot("{$column}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu});
 </script>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);
@@ -78,18 +81,21 @@ EOF;
     /**
      * @param string $column
      * @param string $label
-     * @param string|integer $value
-     * @param string $format  YYYY-MM-DD HH:mm:ss | YYYY-MM-DD | YYYY
+     * @param string $value
+     * @param array $settings
+     *          format: [YYYY-MM-DD HH:mm:ss | YYYY-MM-DD | YYYY ]
+     *          locale 语言配置
      */
-    public function datepicker(string $column, string $label, $value = '',$format = "YYYY-MM-DD HH:mm:ss")
+    public function datepicker(string $column, string $label, $value = '',array $settings = ['format'=>"YYYY-MM-DD HH:mm:ss",'locale'=>"zh-CN"])
     {
         if (!$value) {
             $value = date('Y-m-d H:i:s');
         }
+        $settings = json_encode($settings);
         $content = <<<EOF
 <input style="width: 160px" type="text" id="{$column}" name="{$column}" value="{$value}" class="dlp-input {$column}" placeholder="输入 {$label}" />
 <script>
-$('#{$column}').datetimepicker({"format":{$format},"locale":"zh-CN"});
+$('#{$column}').datetimepicker(JSON.parse({$settings}));
 </script>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);

@@ -185,7 +185,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.menu = Object.assign({mode:false,placeholder:'未选择',height:'350px'}, menu);
+        this.menu = Object.assign({mode:false,placeholder:'未选择',height:'150px'}, menu);
 
         this.selected_data = selected;
         this.select_data = [];

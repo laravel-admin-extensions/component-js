@@ -51,7 +51,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <td style="text-align:left;">表单控件</td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
         <td style="text-align:left;">支持拖拽排序 类似JSON组件</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L164'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Linear.php#L49'>Linear::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L162'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Linear.php#L44'>Linear::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">弹出层组件</td>
@@ -73,7 +73,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <ul>
             例.自定义页
             <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L69'>grid行创建按钮</a></li>
-            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L198'>渲染</a></li>
+            <li><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L210'>自定义页内容</a></li>
         </ul>
     </tr>
 </table>

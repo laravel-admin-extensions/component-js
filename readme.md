@@ -6,22 +6,6 @@
     Linear      表单控件   
     plane       异步弹窗组件
 
-
-  CascadeDot 
-  	增加下拉列表模式	O
-  	搜索逆向		O
-  FormPanel 
-  	下拉列表		O
-  	 时间input  	O
-  	 图文上传		O
-  	 界面调整
-  	 布局功能
-  Linear 数据表单控件 
-  	界面调整  		O
-  	下拉列表 		O
-  	时间input  	O
-  	图片 		 
-  	insert/update配置化  O  
 ### 安装
 ```shell script
 composer require dlp/component-js

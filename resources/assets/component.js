@@ -862,6 +862,7 @@ window.ComponentLine = class {
         let foot = document.createElement('tr');
         foot.className = 'dlp-tr';
         let columns = this.COLUMNS;
+        this.INSERT_ROW_MENUE_DATA = {};
         for (let column in columns) {
             if (!columns.hasOwnProperty(column)) continue;
             let val = columns[column];
@@ -878,7 +879,7 @@ window.ComponentLine = class {
                 case 'select':
                     let td = document.createElement('td');
                     td.style = val.style;
-                    td.append(this.menuMake(column,[],val.options,val.options_limit,val.name));
+                    td.append(this.menuMake(column,[],val.options,val.options_limit,val.name,true));
                     foot.append(td);
                     break;
                 case 'datetime':
@@ -920,40 +921,31 @@ window.ComponentLine = class {
         let tbody = document.createElement('tbody');
         let columns = this.COLUMNS;
         if (Array.isArray(this.DATA) === false) return;
-        this.DATA.forEach((value, key) => {
+        this.DATA.forEach((values, key) => {
             let tr = document.createElement('tr');
             tr.className = 'dlp-tr';
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
-            for (let column in columns) {
-                if (!columns.hasOwnProperty(column)) continue;
-                if (columns[column].type === 'hidden') {
-                    if (value[column]) {
-                        record[column] = value[column];
-                    }
-                    continue;
+            for (let name in columns) {
+                if(!columns.hasOwnProperty(name))continue;
+                let column = columns[name];
+                if(!values[name]){
+                    this.DATA[key][name] = '';
+                    record[name] = '';
                 }
                 let td = document.createElement('td');
-                if(columns[column].type === 'select') {
-                    let v = this.DATA[key][column];
+                let v = this.DATA[key][name];
+                if(column.type === 'select') {
                     if (/^[0-9]+$/.test(v)) {
                         v = [parseInt(v)];
                     } else if (Array.isArray(v) === false) {
                         v = [];
                     }
-                    value[column] = v;
                 }
-                if (value[column]) {
-                    record[column] = value[column];
-                    this.makeTd(td, columns[column], value[column], column);
-                } else {
-                    record[column] = '';
-                    this.makeTd(td, columns[column], '', column);
-                }
-                tr.setAttribute('data-key', key.toString());
+                this.makeTd(td, name, column, v);
+                record[name] = v;
                 tr.appendChild(td);
             }
-
             let td = document.createElement('td');
             this.operateButton(td);
             tr.appendChild(td);
@@ -989,7 +981,7 @@ window.ComponentLine = class {
             let tr = document.createElement('tr');
             tr.className = 'dlp-tr';
             tr.setAttribute('sortable-item', 'sortable-item');
-            tr.setAttribute('data-key', this.DATA.length.toString());
+
             for (let column in this.COLUMNS) {
                 if (!this.COLUMNS.hasOwnProperty(column)) continue;
                 let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
@@ -1001,7 +993,7 @@ window.ComponentLine = class {
                     value = '';
                 }
                 insert[column] = value;
-                this.makeTd(td, this.COLUMNS[column], value, column);
+                this.makeTd(td, column, this.COLUMNS[column], value);
                 tr.appendChild(td);
             }
 
@@ -1017,7 +1009,7 @@ window.ComponentLine = class {
         this.TABLE_DOM.querySelector('.insert_handel').appendChild(i);
     }
 
-    makeTd(td, settings, value, column) {
+    makeTd(td, column, settings, value) {
         let input;
         let DATA = this.DATA;
         let DATA_INPUT = this.DATA_INPUT;
@@ -1031,7 +1023,7 @@ window.ComponentLine = class {
                 input.setAttribute('data-column', column);
                 input.value = value;
                 input.addEventListener('input', () => {
-                    let key = input.parentNode.parentNode.getAttribute('data-key');
+                    let key = this.searchChildrenDomIndex(input.parentNode.parentNode);
                     let column = input.getAttribute('data-column');
                     if (DATA[key]) {
                         DATA[key][column] = input.value;
@@ -1059,7 +1051,7 @@ window.ComponentLine = class {
                 }
                 this.format_settings[column] = format;
                 input.addEventListener('blur', () => {
-                    let key = input.parentNode.parentNode.getAttribute('data-key');
+                    let key = this.searchChildrenDomIndex(input.parentNode.parentNode);
                     let column = input.getAttribute('data-column');
                     if (DATA[key]) {
                         DATA[key][column] = input.value;
@@ -1098,26 +1090,21 @@ window.ComponentLine = class {
             D.addEventListener('click', () => {
                 let tr = D.parentNode.parentNode;
                 let tbody = tr.parentNode;
-                let key = tr.getAttribute('data-key');
+                let key = this.searchChildrenDomIndex(tr);
 
                 this.DATA.splice(key, 1);
                 tbody.removeChild(tr);
                 this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                for (let node in tbody.childNodes) {
-                    if (!tbody.childNodes.hasOwnProperty(node)) continue;
-                    if (tbody.childNodes[node] instanceof HTMLElement) {
-                        tbody.childNodes[node].setAttribute('data-key', node);
-                    }
-                }
             }, false);
             td.appendChild(D);
         }
         td.className = 'operate-column';
     }
 
-    menuMake(column,selected, select,limit,placeholder){
+    menuMake(column,selected, select,limit,placeholder,insertRow = false){
         let menu = document.createElement('div');
         menu.className = 'dlp-dot-menu';
+        if(insertRow)this.INSERT_ROW_MENUE_DATA[column] = [];
 
         let menu_select = document.createElement('div');
         menu_select.className = 'dlp-input dlp-dot-menu-select';
@@ -1144,8 +1131,13 @@ window.ComponentLine = class {
             option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
             option.addEventListener('click', ()=>{
                 id = parseInt(id);
-                let data_key = parseInt(menu.parentNode.parentNode.getAttribute('data-key'));
-                let selected = this.DATA[data_key][column];
+                let selected;
+                if(insertRow){
+                    selected = this.INSERT_ROW_MENUE_DATA[column];
+                }else {
+                    let key = this.searchChildrenDomIndex(menu.parentNode.parentNode);
+                    selected = this.DATA[key][column];
+                }
                 let index = selected.indexOf(id);
                 if(index !== -1){
                     /*cancel*/
@@ -1153,20 +1145,32 @@ window.ComponentLine = class {
                     option.classList.remove('option-active');
                     if(option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
                     menuSelect(select,selected,limit);
-                    this.DATA[data_key][column] = selected;
                     if(selected.length === 0)menu_select.firstElementChild.textContent = placeholder;
+                    if(insertRow === false){
+                        this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                    }
                     return;
                 }
                 if (limit > 0 && selected.length >= limit) {
                     for (let line of list.childNodes){
-                        if((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString()) line.click();
+                        if((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString())line.click();
                     }
                 }
                 option.classList.add('option-active');
                 selected.push(id);
                 (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin',check);
                 menuSelect(select,selected,limit);
+                if(insertRow === false){
+                    this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                }
             }, false);
+            /*init selected*/
+            if (limit > 0 && selected.length >= limit) selected.slice(0,limit);
+            if(selected.indexOf(parseInt(id)) !== -1) {
+                option.classList.add('option-active');
+                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
+                menuSelect(select,selected,limit);
+            }
             list.append(option);
         }
 
@@ -1219,6 +1223,12 @@ window.ComponentLine = class {
                 }
             });
         }
+    }
+
+    searchChildrenDomIndex(dom){
+        let i = 0;
+        while((dom = dom.previousSibling) != null) i++;
+        return i;
     }
 };
 

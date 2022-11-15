@@ -1119,6 +1119,24 @@ window.ComponentLine = class {
         let input = document.createElement('input');
         input.className = 'dlp dlp-input dot-search';
         input.setAttribute('placeholder','搜索');
+        input.addEventListener('input',()=>{
+            setTimeout(() => {
+                if(input.value === ''){
+                    for(let node of list.childNodes){
+                        node.style.display = 'flex';
+                    }
+                    return;
+                }
+                for(let node of list.childNodes){
+                    let text = node.firstElementChild.innerText;
+                    if(text.indexOf(input.value) !== -1 || input.value.indexOf(text) !== -1){
+                        node.style.display = 'flex';
+                    }else {
+                        node.style.display = 'none';
+                    }
+                }
+            }, 300);
+        });
 
         let list = document.createElement('div');
         list.className = 'list dlp-scroll';

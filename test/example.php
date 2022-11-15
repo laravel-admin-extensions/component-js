@@ -208,7 +208,7 @@ class ExampleController extends AdminController
     }
 
     public function blank()
-        {
+    {
             $title = '<h1>松下紗栄子</h1>';
             /*弹窗模式 渲染自定义页模板 Plane::html*/
             $panel = new FormPanel();
@@ -241,7 +241,7 @@ class ExampleController extends AdminController
 
             $html = $panel->compile();
             return Plane::html($title.$html);
-        }
+    }
 
     private function cascadeExampleData()
     {

@@ -1,14 +1,20 @@
 ## 前端组件扩展
+
     |-表单类组件扩展
-    |    |-Dot         多选择器   
-    |    |-Dot         多选择器(下拉列表模式)
+    |    |-Dot         多选择器
     |    |-CascadeDot  级联多选择器
     |    |-CascadeLine 级联管理器
     |    |-Linear      表单控件  
     |
     |-弹窗组件 
-         |-plane       异步弹窗组件
-
+    |     |-plane       异步弹窗组件
+    |     
+    |-辅助工具
+    |     |-Assistant   数据处理辅助方法  
+    |     |-FormPanel   表单内容生成器
+    |     |-CascadeLineTrait   级联管理器的接口抽象类 
+    
+    
 ### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
 
 ### 安装
@@ -31,7 +37,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
     <tr>
         <td style="text-align:left;">多选择器</td>
         <td style="text-align:left;">一维数组<br/>[id=>val,id2=>val2...]</td>
-        <td style="text-align:left;">多选择器<br/>多选择数量可设限制</td>
+        <td style="text-align:left;">多选择器<br/>多选择数量可设限制数<br/>模式切换:经典 下拉列表</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L129'>$form->Dot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Dot.php#L34'>Dot::panel</a></td>
     </tr>
     <tr>

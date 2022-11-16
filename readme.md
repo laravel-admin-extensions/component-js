@@ -1,10 +1,13 @@
 ## 前端组件扩展
-    Dot         多选择器   
-    Dot         多选择器(下拉列表模式)
-    CascadeDot  级联多选择器
-    CascadeLine 级联管理器
-    Linear      表单控件   
-    plane       异步弹窗组件
+    |-表单类组件扩展
+    |    |-Dot         多选择器   
+    |    |-Dot         多选择器(下拉列表模式)
+    |    |-CascadeDot  级联多选择器
+    |    |-CascadeLine 级联管理器
+    |    |-Linear      表单控件  
+    |
+    |-弹窗组件 
+         |-plane       异步弹窗组件
 
 ### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
 

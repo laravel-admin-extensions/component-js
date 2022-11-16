@@ -8,6 +8,8 @@ class DLPField extends Field
 {
     protected $view = 'dlp::component';
 
+    protected $list = [];
+    
     /**
      * Set the field options.
      *

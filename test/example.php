@@ -134,12 +134,12 @@ class ExampleController extends AdminController
          * attribute.limit  选择限制数 默认0:无限
          * attribute.mode  组件模式设置 false:默认模式 true:下拉列表模式
          * attribute.placeholder  下拉列表模式 默认未选择占位
+         * attribute.menu_height  下拉列表高度限制
          */
         $form->Dot('dot','标签选择器')
             ->options([1=>'松下紗栄子',2=>'上原亜衣',3=>'白石茉莉奈',4=>'美谷朱里',5=>'沖田杏梨',6=>'由愛可奈',7=>'七瀬あいり',8=>'五十嵐星蘭',9=>'仲里紗羽',10=>'波多野結衣'])
             ->checked([1,2,3])
             ->attribute(['height'=>'200px']);
-
         /**
          * 级联点组件
          * options 设置数据集 多维数组 格式[[key=>key1,val=>value1,nodes=>[...]],...]

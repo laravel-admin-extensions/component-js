@@ -54,12 +54,12 @@ EOT;
      * @param array $list 数据集 二维数据集列表格式
      * @param array $style 组件样式设置 宽:width 高:height
      * @param array $options 操作列设置
-     *      options.sortable      bool 可排序
-     *      options.delete        bool 可删除
-     *      options.insert        bool 可新增
+     *      options.sortable      bool 可排序 true开启
+     *      options.delete        bool 可删除 true开启
+     *      options.insert        bool 可新增 true开启
      * @return string
      */
-    public static function panel($name, array $columns, array $list, array $style = [], array $options = ['sortable' => true, 'delete' => true, 'insert' => true])
+    public static function panel($name, array $columns, array $list, array $style = [], array $options = [])
     {
         $columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_FORCE_OBJECT);
         $list = json_encode($list, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);

@@ -713,10 +713,10 @@
             ]
         }
     ];
-    let cascadeData2 = JSON.parse(JSON.stringify(cascadeData));
+    let cascadeData_copy = JSON.parse(JSON.stringify(cascadeData));
 
     new ComponentCascadeDot('test4', cascadeData, [1102, 542]);
 
-    new ComponentCascadeLine('test5', cascadeData2,'http://url...');
+    new ComponentCascadeLine('test5', cascadeData_copy,'http://url...');
 </script>
 </html>

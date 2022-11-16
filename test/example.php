@@ -214,7 +214,7 @@ class ExampleController extends AdminController
                 $panel = new FormPanel();
                 $panel->input('id','序号');
                 $panel->textarea('description','描述');
-                $panel->select('status','状态',[0],[0=>'开启',1=>'关闭',2=>'删除'],1);
+                $panel->select('status','状态',[0=>'开启',1=>'关闭',2=>'删除'],[0],1);
                 $panel->datepicker('time','时间');
                 $panel->html('test','自定义html','<p>松下紗栄子</p>');
                 /*多图上传样例*/

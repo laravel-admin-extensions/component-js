@@ -43,7 +43,7 @@ EOF;
     public function textarea(string $column, string $label, string $value = '')
     {
         $content = <<<EOF
-<textarea name="{$column}" class="{$column}" rows="3" placeholder="输入 {$label}">{$value}</textarea>
+<textarea name="{$column}" class="dlp-input" rows="3" placeholder="输入 {$label}">{$value}</textarea>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);
     }
@@ -65,7 +65,7 @@ EOF;
     {
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $select = json_encode($select, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $setting = array_merge(['mode'=>false,'placeholder'=>'请选择','width' => '100%','height'=>'200px','menu_height'=>'150px'], $setting);
+        $setting = array_merge(['mode'=>true,'placeholder'=>'请选择','width' => '100%','height'=>'200px','menu_height'=>'150px'], $setting);
         $style = $setting['mode'] === true ? "witdh:{$setting['width']};" : "witdh:{$setting['width']};height:{$setting['height']}";
 
         $menu = json_encode(['mode'=>$setting['mode'],'placeholder'=>$setting['placeholder'],'height'=>$setting['menu_height']]);

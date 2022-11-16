@@ -290,13 +290,17 @@
 .dlp-input:focus,.dlp-form-row>textarea:focus{border-color:#66afe9;outline:0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)}
 .dlp-form-row{
     display: flex;
-    justify-content:center;
+    justify-content:left;
     align-items: baseline;
-    padding: 10px 3em 5px 10px;
+    margin: 10px 3em 5px 10px;
+    border: 1px solid #ebebeb;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
     flex: auto;
     color: #0c0c0c;
+}
+.dlp-form-row>textarea{
+    height: auto!important;
 }
 .dlp-form-row>label{
     min-width: 7em!important;
@@ -360,7 +364,7 @@
     vertical-align: bottom;
 }
 #dlp-plane .plane-body,.dot-cascade-panel>.plane-body{
-    background-color: rgb(244, 244, 244);
+    background-color: #ffffff;
     padding: 0;
     overflow-y: auto;
     border-radius: 0 0 3px 3px;

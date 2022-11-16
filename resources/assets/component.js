@@ -1201,7 +1201,7 @@ window.ComponentLine = class {
                 return;
             }
             let html = '';
-            for(let id of select_data){
+            for(let id of selected){
                 html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
             }
             menu_select.firstElementChild.innerHTML = html;

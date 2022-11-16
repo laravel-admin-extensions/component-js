@@ -86,16 +86,16 @@ EOF;
      *          format: [YYYY-MM-DD HH:mm:ss | YYYY-MM-DD | YYYY ]
      *          locale 语言配置
      */
-    public function datepicker(string $column, string $label, $value = '',array $settings = ['format'=>"YYYY-MM-DD HH:mm:ss",'locale'=>"zh-CN"])
+    public function datepicker(string $column, string $label, $value = '',array $settings = [])
     {
         if (!$value) {
             $value = date('Y-m-d H:i:s');
         }
-        $settings = json_encode($settings);
+        $settings = json_encode(array_merge(['format'=>'YYYY-MM-DD HH:mm:ss','locale'=>'zh-CN'], $settings));
         $content = <<<EOF
 <input style="width: 160px" type="text" id="{$column}" name="{$column}" value="{$value}" class="dlp-input {$column}" placeholder="输入 {$label}" />
 <script>
-$('#{$column}').datetimepicker(JSON.parse({$settings}));
+$('#{$column}').datetimepicker({$settings});
 </script>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);
@@ -158,7 +158,8 @@ EOF;
             }
         }
         $settings = json_encode(array_merge($file_input_settings, $settings));
-        $content = `<input class='{$column}' name='{$column}' multiple type='file' {$attribute}>
+        $content = <<<EOF
+<input class='{$column}' name='{$column}' multiple type='file' {$attribute}>
 <script>
 $('input.{$column}').fileinput(JSON.parse('{$settings}')).on('filebeforedelete', function () {
                 return new Promise(function(resolve, reject) {
@@ -184,7 +185,8 @@ $('input.{$column}').fileinput(JSON.parse('{$settings}')).on('filebeforedelete',
             }).on('fileerror', function (event, data, msg) {
                 alert(msg);
             });
-</script>`;
+</script>
+EOF;
 
         $this->html .= $this->rowpanel($column, $label, $content);
     }

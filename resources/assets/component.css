@@ -292,8 +292,7 @@
     display: flex;
     justify-content:left;
     align-items: baseline;
-    margin: 10px 3em 5px 10px;
-    border: 1px solid #ebebeb;
+    margin: 15px 10px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
     flex: auto;

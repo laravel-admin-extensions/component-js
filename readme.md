@@ -7,12 +7,12 @@
     |    |-Linear      表单控件  
     |
     |-弹窗组件 
-    |     |-plane       异步弹窗组件
+    |    |-plane       异步弹窗组件
     |     
     |-辅助工具
-    |     |-Assistant   数据处理辅助方法  
-    |     |-FormPanel   表单内容生成器
-    |     |-CascadeLineTrait   级联管理器的接口抽象类 
+    |    |-Assistant   数据处理辅助方法  
+    |    |-FormPanel   表单内容生成器
+    |    |-CascadeLineTrait   级联管理器的接口抽象类 
     
     
 ### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)

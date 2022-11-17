@@ -499,19 +499,18 @@ window.ComponentCascadeDot = class {
             data.forEach((v, k) => {
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
                     v.nodes = v.nodes.map((N) => N.key);
-                    v.expand = false;
                 } else {
                     v.nodes = null;
                     v.checked = false;
                 }
                 let div = document.createElement('div');
                 div.className = 'dlp dlp-text dlp-label';
-                div.insertAdjacentHTML('afterbegin', `<span>${v.val}</span>`);
+                div.insertAdjacentHTML('afterbegin', `<i class="left"></i><span>${v.val}</span><i class="right"></i>`);
                 div.setAttribute('data-id', v.key);
                 div.setAttribute('data-k', k);
                 div.addEventListener('click', this.select.bind(this, div, stack));
                 if (v.nodes !== null) {
-                    div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
+                    div.querySelector('i.left').insertAdjacentHTML('afterbegin', `${_component.caret_right}`);
                     div.addEventListener("contextmenu", (e) => {
                         if (e.target instanceof HTMLElement) e.target.click();
                         e.preventDefault();
@@ -563,7 +562,7 @@ window.ComponentCascadeDot = class {
         if (data.checked === true) {
             data.checked = false;
             this.tagCal(id, this.MODE.delete);
-            element.querySelector('i.right') !== null && element.removeChild(element.querySelector('i.right'));
+            if(data.nodes === null) element.querySelector('i.right').innerHTML = '';
             for (let D of this.SELECTED_DOM.childNodes) {
                 if (parseInt(D.getAttribute('data-id')) === id) {
                     D.remove();
@@ -577,7 +576,6 @@ window.ComponentCascadeDot = class {
                 } else {
                     currentStackDocuments[index].classList.add('dlp-label-silence');
                 }
-                this.expand(data, currentStackDocuments[index], false);
             });
             if (data.checked === false) {
                 if (this.limit > 0 && this.select_data.length >= this.limit && (this.SELECTED_DOM.firstChild instanceof HTMLElement)) {
@@ -586,13 +584,12 @@ window.ComponentCascadeDot = class {
                 data.checked = true;
                 this.tagCal(id, this.MODE.insert);
                 element.classList.remove('dlp-label-silence');
-                if (element.querySelector('i.right') === null) element.insertAdjacentHTML('beforeend', `<i class="right">${_component.check}</i>`);
+                element.querySelector('i.right').insertAdjacentHTML('afterbegin',_component.check);
                 this.selectToChildren(stack + 1, data.nodes);
                 this.selectToSelected(element, stack);
                 this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
             } else {
                 element.classList.remove('dlp-label-silence');
-                this.expand(data, element, true);
                 this.selectToChildren(stack + 1, data.nodes);
             }
         }
@@ -626,23 +623,19 @@ window.ComponentCascadeDot = class {
             if (checked === true || checked === undefined) {
                 if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
                     D.classList.add('dlp-label-silence');
-                    this.expand(data, D, false);
                 } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
                     D.classList.add('dlp-label-silence');
-                    this.expand(data, D, false);
                 } else {
                     D.classList.remove('dlp-label-silence');
                     if (parseInt(D.getAttribute('data-id')) === node) {
                         if (to_first_index === null) to_first_index = index;
-                        this.expand(data, D, true);
                     } else {
-                        this.expand(data, D, false);
                     }
                 }
             }
             if (checked === true && node === data.key && data.mark !== true) {
                 data.mark = true;
-                D.insertAdjacentHTML('beforeend', `<i class="right">${_component.check_circle}</i>`);
+                D.querySelector('.right').insertAdjacentHTML('afterbegin',_component.check_circle);
             }
             if (checked === false && node === data.key) {
                 let nodes = this.dimensional_data[stack][index].nodes;
@@ -653,9 +646,9 @@ window.ComponentCascadeDot = class {
                         break;
                     }
                 }
-                if (cancel && (D.querySelector('i.right') instanceof HTMLElement)) {
+                if (cancel) {
                     data.mark = false;
-                    D.querySelector('i.right').remove();
+                    D.querySelector('i.right').innerHTML = '';
                 }
             }
         });
@@ -685,26 +678,12 @@ window.ComponentCascadeDot = class {
                     });
                 }
                 if (to_first_index === null) to_first_index = index;
-                this.expand(data, D, true);
             } else {
                 D.classList.add('dlp-label-silence');
-                this.expand(data, D, false);
             }
         });
         if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
         this.selectToChildren(stack + 1, children);
-    }
-
-    expand(data, dom, open = true) {
-        if (data.expand === open) return;
-        data.expand = open;
-        let left_mark = dom.querySelector('i.left');
-        if (!(left_mark instanceof HTMLElement)) return;
-        if (open) {
-            left_mark.innerHTML = _component.caret_right_circle;
-            return;
-        }
-        left_mark.innerHTML = _component.caret_right;
     }
 
     tagCal(id, operate) {
@@ -786,8 +765,10 @@ window.ComponentCascadeDot = class {
             if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
             let div = document.createElement('div');
             div.className = 'dlp dlp-text dlp-label';
+            div.insertAdjacentHTML('afterbegin','<i class="left"></i>');
             div.textContent = d.val;
-            if (d.nodes !== null) div.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
+            div.insertAdjacentHTML('beforeend','<i class="right"></i>');
+            if (d.nodes !== null) div.querySelector('i.left').insertAdjacentHTML('afterbegin', _component.caret_right);
             div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
             this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
             if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {

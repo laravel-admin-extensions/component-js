@@ -1624,7 +1624,7 @@ window.ComponentCascadeLine = class {
             });
             _component.contextmenu(e, settings);
         });
-        if (this.OPTIONS.movable) div.insertAdjacentHTML('afterbegin', `<i class="right">${_component.move}</i>`);
+        if (this.OPTIONS.movable) div.insertAdjacentHTML('beforeend', `<i class="right">${_component.move}</i>`);
         return div;
     }
 

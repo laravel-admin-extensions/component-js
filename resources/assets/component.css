@@ -245,8 +245,6 @@
     justify-content: center;
     align-items: center;
     height: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
     max-width: unset;
     min-width: unset;
     margin-bottom: 3px;
@@ -262,17 +260,8 @@
     transition: .2s ease-in-out;
 }
 .dlp-label>i{
-    position: absolute!important;
-    top: calc(50% - 8px)!important;
     width: 16px!important;
     height: 16px!important;
-}
-.dlp-label>i.left{
-    left: 0!important;
-    right: unset!important;
-}
-.dlp-label>i.right{
-    right: 4px!important;
 }
 .dot-cascade-panel{
     position: absolute;

@@ -892,7 +892,7 @@ window.ComponentLine = class {
             }
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
-        foot.insertAdjacentHTML('beforeend','<th class="insert_handel operate-column" style="width: 48px;"></th></tr>');
+        foot.insertAdjacentHTML('beforeend','<th class="insert_handel operate-column" style="width: 48px;"><div></div></th></tr>');
 
         this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
@@ -930,6 +930,7 @@ window.ComponentLine = class {
                 tr.appendChild(td);
             }
             let td = document.createElement('td');
+            td.insertAdjacentHTML('afterbegin','<div></div>');
             this.operateButton(td);
             tr.appendChild(td);
             tbody.appendChild(tr);
@@ -983,6 +984,7 @@ window.ComponentLine = class {
             }
 
             let td = document.createElement('td');
+            td.insertAdjacentHTML('afterbegin','<div></div>');
             this.operateButton(td);
             tr.appendChild(td);
             this.TBODY_DOM.appendChild(tr);
@@ -991,7 +993,7 @@ window.ComponentLine = class {
             this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
             this.datepicker();
         }, false);
-        this.TABLE_DOM.querySelector('.insert_handel').appendChild(i);
+        this.TABLE_DOM.querySelector('.insert_handel div').appendChild(i);
     }
 
     makeTd(td, column, settings, value) {
@@ -1062,19 +1064,19 @@ window.ComponentLine = class {
         if (this.OPTIONS.sortable) {
             let M = document.createElement('i');
             M.className = 'dlp text-white';
-            M.setAttribute('style', 'cursor: pointer;margin-right:5px;');
+            M.setAttribute('style', 'cursor: pointer;');
             M.setAttribute('sortable-handle', 'sortable-handle');
             M.insertAdjacentHTML('afterbegin', _component.move);
-            td.appendChild(M);
+            td.firstElementChild.appendChild(M);
         }
 
         if (this.OPTIONS.delete) {
-            let D = document.createElement('span');
+            let D = document.createElement('i');
             D.className = 'dlp text-white';
-            D.setAttribute('style', 'cursor: pointer;display: inline-block;');
+            D.setAttribute('style', 'cursor: pointer;');
             D.insertAdjacentHTML('afterbegin', _component.trash);
             D.addEventListener('click', () => {
-                let tr = D.parentNode.parentNode;
+                let tr = D.parentNode.parentNode.parentNode;
                 let tbody = tr.parentNode;
                 let key = this.searchChildrenDomIndex(tr);
 
@@ -1082,7 +1084,7 @@ window.ComponentLine = class {
                 tbody.removeChild(tr);
                 this.DATA_INPUT.value = JSON.stringify(this.DATA);
             }, false);
-            td.appendChild(D);
+            td.firstElementChild.appendChild(D);
         }
         td.className = 'operate-column';
     }

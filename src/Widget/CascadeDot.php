@@ -23,7 +23,7 @@ class CascadeDot extends DLPField
         $select = json_encode($this->options, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $selected = json_encode($this->checked);
         $this->script = <<<EOT
-new ComponentCascadeDot("{$id}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit});
+new ComponentCascadeDot("{$id}",{$select},{$selected},{$limit});
 EOT;
         return parent::render();
     }
@@ -48,7 +48,7 @@ EOT;
         }
 
         return <<<EOF
-<div id="{$name}" style="$style_string"></div><script>new ComponentCascadeDot("{$name}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit});</script>
+<div id="{$name}" style="$style_string"></div><script>new ComponentCascadeDot("{$name}",{$select},{$selected},{$limit});</script>
 EOF;
     }
 }

@@ -35,7 +35,7 @@ class Linear extends DLPField
         $this->addVariables(['width' => $width, 'height' => $height]);
         $list = json_encode($this->list, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $this->script = <<<EOT
-new ComponentLine("{$id}",JSON.parse('{$columns}'),JSON.parse('{$list}'),JSON.parse('{$options}'));
+new ComponentLine("{$id}",{$columns},{$list},{$options});
 EOT;
         return parent::render();
     }
@@ -71,7 +71,7 @@ EOT;
         $options = json_encode(array_merge(['sortable' => true, 'delete' => true, 'insert' => true], $options));
 
         return <<<EOF
-<div id="{$name}" style="$style_string"></div><script>new ComponentLine("{$name}",JSON.parse('{$columns}'),JSON.parse('{$list}'),JSON.parse('{$options}'));</script>
+<div id="{$name}" style="$style_string"></div><script>new ComponentLine("{$name}",{$columns},{$list},{$options});</script>
 EOF;
     }
 }

@@ -23,7 +23,7 @@ class CascadeLine extends DLPField
         $xhr = $this->xhr ?? '';
         $options = isset($this->attributes['options']) ? json_encode($this->attributes['options']) : json_encode(['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]);
         $this->script = <<<EOT
-new ComponentCascadeLine("{$id}",JSON.parse('{$list}'),'{$xhr}');
+new ComponentCascadeLine("{$id}",{$list},'{$xhr}',{$options});
 EOT;
         return parent::render();
     }
@@ -58,7 +58,7 @@ EOT;
         }
 
         return <<<EOF
-<div id="{$name}" style="$style_string"></div><script>new ComponentCascadeLine("{$name}",JSON.parse('{$list}'),'{$xhr}',JSON.parse('{$options}'));</script>
+<div id="{$name}" style="$style_string"></div><script>new ComponentCascadeLine("{$name}",{$list},'{$xhr}',{$options});</script>
 EOF;
     }
 }

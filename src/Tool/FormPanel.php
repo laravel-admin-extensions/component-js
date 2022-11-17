@@ -72,7 +72,7 @@ EOF;
         $content = <<<EOF
 <div id="{$column}" style="$style"></div>
 <script>
-new ComponentDot("{$column}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu});
+new ComponentDot("{$column}",{$select},{$selected},{$limit},{$menu});
 </script>
 EOF;
         $this->html .= $this->rowpanel($column, $label, $content);

@@ -27,7 +27,7 @@ class Dot extends DLPField
         $select = json_encode($this->options, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $selected = json_encode($this->checked);
         $this->script = <<<EOT
-new ComponentDot("{$id}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu});
+new ComponentDot("{$id}",{$select},{$selected},{$limit},{$menu});
 EOT;
         return parent::render();
     }
@@ -55,7 +55,7 @@ EOT;
 
         $menu = json_encode(['mode'=>$setting['mode'],'placeholder'=>$setting['placeholder'],'height'=>$setting['menu_height']]);
         return <<<EOF
-<div id="{$name}" style="$style"></div><script>new ComponentDot("{$name}",JSON.parse('{$select}'),JSON.parse('{$selected}'),{$limit},{$menu}});</script>
+<div id="{$name}" style="$style"></div><script>new ComponentDot("{$name}",{$select},{$selected},{$limit},{$menu});</script>
 EOF;
     }
 }

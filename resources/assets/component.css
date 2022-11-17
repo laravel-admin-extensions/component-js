@@ -386,7 +386,7 @@
     position: relative;
     width: 220px;
     max-width: 220px;
-    margin: 0 auto;
+    margin: 0;
     height: 25px;
     display: flex;
     justify-content: center;

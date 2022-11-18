@@ -2121,7 +2121,7 @@ window.ComponentCascadeLine = class {
         let title = '迁移';
         if (aim_node_data.parentNodes.indexOf(node_data.key) !== -1) {
             event = 'exchange';
-            title += '.交换';
+            title = '迁移.交换';
         } else {
             event = 'migrate';
         }
@@ -2134,9 +2134,9 @@ window.ComponentCascadeLine = class {
         M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
         this.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
         if (event === 'exchange') {
-            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 20px!important;">⇵</div>`);
+            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">⇵</div>`);
         } else {
-            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 18px!important;">↑</div>`);
+            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
         }
         M.addEventListener('click', (() => {
             if (object.submit_block) return;

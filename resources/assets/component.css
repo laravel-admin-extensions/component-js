@@ -349,7 +349,7 @@
     display: flex;
 }
 .plane-header .title{
-    color: rgb(255 0 141);
+    color: #f39c12;
     max-width: 120px;
     display: inline-block;
     vertical-align: bottom;

@@ -29,7 +29,11 @@ class Linear extends DLPField
             }
             $columns = json_encode($columns);
         }
-        $options = isset($this->attributes['options']) ? json_encode($this->attributes['options']) : json_encode(['sortable' => true, 'delete' => true, 'insert' => true]);
+        $options = json_encode([
+            'sortable' => isset($this->attributes['sortable']) ? (bool)$this->attributes['sortable'] : true,
+            'delete' => isset($this->attributes['delete']) ? (bool)$this->attributes['delete'] : true,
+            'insert' => isset($this->attributes['insert']) ? (bool)$this->attributes['insert'] : true,
+        ]);
         $width = isset($this->attributes['width']) ? $this->attributes['width'] : '100%';
         $height = isset($this->attributes['height']) ? $this->attributes['height'] : '355px';
         $this->addVariables(['width' => $width, 'height' => $height]);

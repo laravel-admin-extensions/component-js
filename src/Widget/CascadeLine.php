@@ -18,10 +18,18 @@ class CascadeLine extends DLPField
         $id = $this->formatName($this->id);
         $width = isset($this->attributes['width']) ? $this->attributes['width'] : '100%';
         $height = isset($this->attributes['height']) ? $this->attributes['height'] : '230px';
-        $this->addVariables(['width'=>$width,'height' => $height]);
+        $this->addVariables(['width' => $width, 'height' => $height]);
         $list = json_encode($this->list, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $xhr = $this->xhr ?? '';
-        $options = isset($this->attributes['options']) ? json_encode($this->attributes['options']) : json_encode(['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]);
+
+        $options = json_encode([
+            'movable' => isset($this->attributes['movable']) ? (bool)$this->attributes['movable'] : true,
+            'exchange' => isset($this->attributes['exchange']) ? (bool)$this->attributes['exchange'] : true,
+            'insert' => isset($this->attributes['insert']) ? (bool)$this->attributes['insert'] : true,
+            'update' => isset($this->attributes['update']) ? (bool)$this->attributes['update'] : true,
+            'delete' => isset($this->attributes['delete']) ? (bool)$this->attributes['delete'] : true,
+            'detail' => isset($this->attributes['detail']) ? (bool)$this->attributes['detail'] : true,
+        ]);
         $this->script = <<<EOT
 new ComponentCascadeLine("{$id}",{$list},'{$xhr}',{$options});
 EOT;
@@ -30,10 +38,10 @@ EOT;
 
     /**
      * 直接调用ComponentCascadeLine组件
-     * @param string $name      名称
-     * @param array $list   数据集 多维
-     * @param string $xhr   ajax接口地址
-     * @param array $style  组件样式设置 宽:width 高:height
+     * @param string $name 名称
+     * @param array $list 数据集 多维
+     * @param string $xhr ajax接口地址
+     * @param array $style 组件样式设置 宽:width 高:height
      * @param array $options
      *      options.movable     bool 可迁移节点 (迁移该节点与其子集到其他节点下)
      *      options.exchange    bool 可交换节点 (节点与其子节点相互交换)
@@ -43,20 +51,20 @@ EOT;
      *      options.delete      bool 可删除
      * @return string
      */
-    public static function panel($name,array $list,string $xhr,array $style=[],array $options=[])
+    public static function panel($name, array $list, string $xhr, array $style = [], array $options = [])
     {
         $list = json_encode($list, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $style = array_merge(['width'=>'100%','height'=>'230px'],$style);
+        $style = array_merge(['width' => '100%', 'height' => '230px'], $style);
         $style_string = '';
         $options = json_encode(array_merge([
-        'movable' => true,
-        'exchange' => true,
-        'detail' => true,
-        'insert' => true,
-        'update' => true,
-        'delete' => true],$options));
-        foreach ($style as $k=>$s){
-            $style_string.="$k:$s;";
+            'movable' => true,
+            'exchange' => true,
+            'detail' => true,
+            'insert' => true,
+            'update' => true,
+            'delete' => true], $options));
+        foreach ($style as $k => $s) {
+            $style_string .= "$k:$s;";
         }
 
         return <<<EOF

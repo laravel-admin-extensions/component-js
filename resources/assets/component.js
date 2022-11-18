@@ -2118,14 +2118,16 @@ window.ComponentCascadeLine = class {
         stack = parseInt(node.getAttribute('data-stack'));
         index = parseInt(node.getAttribute('data-k'));
         let node_data = this.dimensional_data[stack][index];
+        let title = '迁移';
         if (aim_node_data.parentNodes.indexOf(node_data.key) !== -1) {
             event = 'exchange';
+            title += '.交换';
         } else {
             event = 'migrate';
         }
         if (!this.OPTIONS.exchange && event === 'exchange') return;
         aim_node.style.removeProperty('background');
-        this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移`, 90);
+        this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> ${title}`, 90);
         let M = document.createElement('div');
         let object = this;
         M.className = 'dlp dlp-text dlp-label';

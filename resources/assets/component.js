@@ -1483,6 +1483,7 @@ window.ComponentCascadeLine = class {
         this.OPTIONS = Object.assign({
             movable: true,
             exchange: true,
+            detail: true,
             insert: true,
             update: true,
             delete: true
@@ -1590,6 +1591,11 @@ window.ComponentCascadeLine = class {
             e.preventDefault();
             if (e.target instanceof HTMLElement) e.target.click();
             let settings = [];
+            if (this.OPTIONS.detail) settings.push({
+                title: '详情', func: () => {
+                    this.nodeDetail(div, data);
+                }
+            });
             if (this.OPTIONS.insert) settings.push({
                 title: '新增', func: () => {
                     this.nodeInsert(div, data, stack);
@@ -1762,6 +1768,18 @@ window.ComponentCascadeLine = class {
             callback(response);
         }, function () {
             object.submit_block = false;
+        });
+    }
+
+    nodeDetail(dom, data){
+        this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 详情`);
+        let object = this;
+        _component.request(this.URL + '/' + data.key, 'GET', {}, function (response) {
+            object.panelContent(response, data, object.URL, 'POST', (response) => {
+                _component.loading(object.PLANE_BODY, true);
+                let fragment = document.createRange().createContextualFragment(response);
+                object.PLANE_BODY.appendChild(fragment);
+            });
         });
     }
 

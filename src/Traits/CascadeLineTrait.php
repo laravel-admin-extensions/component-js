@@ -36,6 +36,14 @@ trait CascadeLineTrait
      */
     abstract function migrate();
 
+    /**
+    * detail详情查看界面
+    * @param $id
+    * @param Content $content
+    * @return mixed
+    */
+    abstract function show($id, Content $content);
+
     public function create(Content $content)
     {
         $formPanel = new FormPanel();

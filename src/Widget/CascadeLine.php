@@ -37,6 +37,7 @@ EOT;
      * @param array $options
      *      options.movable     bool 可迁移节点 (迁移该节点与其子集到其他节点下)
      *      options.exchange    bool 可交换节点 (节点与其子节点相互交换)
+     *      options.detail      bool 可查看
      *      options.insert      bool 可新增
      *      options.update      bool 可修改
      *      options.delete      bool 可删除
@@ -50,6 +51,7 @@ EOT;
         $options = json_encode(array_merge([
         'movable' => true,
         'exchange' => true,
+        'detail' => true,
         'insert' => true,
         'update' => true,
         'delete' => true],$options));

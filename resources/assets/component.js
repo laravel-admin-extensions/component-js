@@ -1775,11 +1775,9 @@ window.ComponentCascadeLine = class {
         this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 详情`);
         let object = this;
         _component.request(this.URL + '/' + data.key, 'GET', {}, function (response) {
-            object.panelContent(response, data, object.URL, 'POST', (response) => {
-                _component.loading(object.PLANE_BODY, true);
-                let fragment = document.createRange().createContextualFragment(response);
-                object.PLANE_BODY.appendChild(fragment);
-            });
+            _component.loading(object.PLANE_BODY, true);
+            let fragment = document.createRange().createContextualFragment(response);
+            object.PLANE_BODY.appendChild(fragment);
         });
     }
 

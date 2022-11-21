@@ -51,7 +51,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L146'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">支持右键全选,取消<br/>多选择数量可设限制<br/>适用于无限分类,地区选择</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L144'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeDot.php#L32'>CascadeDot::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L144'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeDot.php#L40'>CascadeDot::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">级联管理器</td>

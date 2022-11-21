@@ -91,16 +91,27 @@ window._component = {
             <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
         </div></div>`);
     },
-    alert: function (message, time = 1, callback = null) {
+    alert: function (message, time = 1, callback = null,dom) {
         let div = document.createElement('div');
         div.innerHTML = message;
-        let w = window.innerWidth / 2 - 140;
-        let h = window.innerHeight / 2 - 145;
-        let style = "z-index: 1000000; position: fixed;background-color: rgba(0,0,0,.6);color: #fff;" +
-            "width: 320px;max-height: 450px;line-height: 30px;overflow: hidden;border-radius: 3px;text-align: center;display: block;" +
-            "top:" + h + "px;left:" + w + "px;";
-        div.setAttribute('style', style);
-        document.getElementsByTagName("BODY")[0].appendChild(div);
+        let w,h;
+        div.setAttribute('style',"z-index: 1000000; background-color: rgba(0,0,0,.6);color: #fff;width: 320px;max-height: 450px;line-height: 30px;overflow: hidden;border-radius: 3px;text-align: center;display: block;");
+        if(!dom) {
+            w = window.innerWidth / 2 - 140;
+            h = window.innerHeight / 2 - 145;
+            div.style.position = 'fixed';
+        }else {
+            w = dom.offsetWidth / 2 - 140;
+            h = dom.offsetHeight / 2;
+            div.style.position = 'absolute';
+        }
+        div.style.top = h+'px';
+        div.style.left = w+'px';
+        if(!dom) {
+            document.getElementsByTagName("BODY")[0].appendChild(div);
+        }else {
+            dom.append(div);
+        }
         setTimeout(() => {
             div.parentNode.removeChild(div);
             if (typeof callback === 'function') callback();
@@ -115,7 +126,7 @@ window._component = {
         list.forEach((v) => {
             let li = document.createElement('li');
             li.className = 'dlp dlp-text';
-            li.textContent = v.title;
+            li.insertAdjacentHTML('afterbegin',v.title);
             li.style.width = options.W;
             if (typeof v.func === 'function') {
                 li.addEventListener('click', () => {
@@ -1486,7 +1497,8 @@ window.ComponentCascadeLine = class {
             detail: true,
             insert: true,
             update: true,
-            delete: true
+            delete: true,
+            root: true
         }, options);
         this.DOM = document.getElementById(name);
         this.URL = url;
@@ -1526,8 +1538,8 @@ window.ComponentCascadeLine = class {
             let object = this;
             _component.request(this.URL + '/create', 'GET', {}, function (response) {
                 object.panelContent(response, {key: 0}, object.URL, 'POST', (response) => {
-                    if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
-                    if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
+                    if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3,null,object.DOM);
+                    if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3,null,object.DOM);
                     let key = parseInt(response.data.key);
                     let val = response.data.val;
                     let len = object.dimensional_data[0].push({
@@ -1609,6 +1621,36 @@ window.ComponentCascadeLine = class {
             if (this.OPTIONS.delete) settings.push({
                 title: '删除', func: () => {
                     this.nodeDelete(div, data, stack);
+                }
+            });
+            if (this.OPTIONS.root) settings.push({
+                title: _component.node, func: () => {
+                    let stack = parseInt(div.getAttribute('data-stack'));
+                    let index = parseInt(div.getAttribute('data-k'));
+                    let node_data = this.dimensional_data[stack][index];
+                    this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> 迁移到根节点`, 90);
+                    let M = document.createElement('div');
+                    M.className = 'dlp dlp-text dlp-label';
+                    M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
+                    this.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp" style="display: flex">${_component.node}</div>`);
+                    this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
+                    let object = this;
+                    M.addEventListener('click', (() => {
+                        if(node_data.stack === 0)return;
+                        if (object.submit_block) return;
+                        object.submit_block = true;
+                        M.querySelector('.right').innerHTML = _component.sub_loading;
+                        _component.request(this.URL, 'GET', {event:'root',node_key:node_data.key,node_val:node_data.val}, function (response) {
+                            object.submit_block = false;
+                            response = JSON.parse(response);
+                            if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
+                            object.nodeRootExec(div, node_data);
+                            object.PLANE_DOM.remove();
+                        }, function () {
+                            object.submit_block = false;
+                        });
+                    }));
+                    this.PLANE_BODY.append(M);
                 }
             });
             _component.contextmenu(e, settings);
@@ -1763,7 +1805,7 @@ window.ComponentCascadeLine = class {
             object.submit_block = false;
             element.innerHTML = _component.check;
             if (response.code !== 0) {
-                return _component.alert(response.message, 3);
+                return _component.alert(response.message, 3,null,object.DOM);
             }
             callback(response);
         }, function () {
@@ -1787,9 +1829,9 @@ window.ComponentCascadeLine = class {
         let nextStack = parseInt(stack) + 1;
         _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
             object.panelContent(response, data, object.URL, 'POST', (response) => {
-                if (response.code !== 0) return _component.alert(response.message, 3);
-                if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3);
-                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
+                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
+                if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3,null,object.DOM);
+                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3,null,object.DOM);
                 let key = parseInt(response.data.key);
                 let val = response.data.val;
                 let parents = data.parentNodes.slice(0);
@@ -1849,8 +1891,8 @@ window.ComponentCascadeLine = class {
         let object = this;
         _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
             object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
-                if (response.code !== 0) return _component.alert(response.message, 3);
-                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3);
+                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
+                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3,null,object.DOM);
                 let val = response.data.val;
                 data.val = val;
                 dom.querySelector('span').textContent = val;
@@ -1893,7 +1935,7 @@ window.ComponentCascadeLine = class {
             D.querySelector('.right').innerHTML = _component.sub_loading;
             _component.request(this.URL + '/' + data.key, 'DELETE', {}, function (response) {
                 object.submit_block = false;
-                if (response.code !== 0) return _component.alert(response.message, 3);
+                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
                 object.nodeDeleteExec(data, stack);
                 object.PLANE_DOM.remove();
             }, function () {
@@ -2145,7 +2187,7 @@ window.ComponentCascadeLine = class {
             _component.request(this.URL, 'GET', {event:event, node_key:node_data.key,node_val:node_data.val, aim_node_key:aim_node_data.key,aim_node_val:aim_node_data.val}, function (response) {
                 object.submit_block = false;
                 response = JSON.parse(response);
-                if (response.code !== 0) return _component.alert(response.message, 3);
+                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
                 if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
                 if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
                 object.PLANE_DOM.remove();
@@ -2156,23 +2198,20 @@ window.ComponentCascadeLine = class {
         this.PLANE_BODY.append(M);
     }
 
-    nodeMigrateExec(node, node_data, aim_node, aim_node_data) {
-        let parents = aim_node_data.parentNodes.slice(0);
-        parents.push(aim_node_data.key);
-        node_data.parentNodes = parents;
-        let stack = aim_node_data.stack + 1;
-        let diffStack = stack - node_data.stack;
+    nodeRootExec(node, node_data) {
+        let parent = node_data.parentNodes.slice().pop();
+        let parent_stack = node_data.stack - 1;
+        node_data.parentNodes = [];
+        let diffStack = 0 - node_data.stack;
         let index = parseInt(node.getAttribute('data-k'));
         this.dimensional_data[node_data.stack].splice(index, 1);
-        if (!Array.isArray(this.dimensional_data[stack])) this.dimensional_data[stack] = [];
-        this.dimensional_data[stack].push(node_data);
-
-        this.resetChildrenDimensional(node_data, node_data.stack + 1, diffStack);
-        node_data.stack = stack;
-        /*aim node*/
-        if (!Array.isArray(aim_node_data.nodes)) aim_node_data.nodes = [];
-        aim_node_data.nodes.push(node_data.key);
-
+        this.dimensional_data[0].push(node_data);
+        if(node_data.nodes !== null)this.resetChildrenDimensional(node_data,node_data.stack + 1,diffStack);
+        node_data.stack = 0;
+        this.dimensional_data = this.dimensional_data.filter((d)=>{
+            if(d.length>0)return true;
+            return false;
+        });
         this.CONTENT_DOM.innerHTML = '';
         for (let stack in this.dimensional_data) {
             if (!this.dimensional_data.hasOwnProperty(stack)) continue;
@@ -2181,6 +2220,9 @@ window.ComponentCascadeLine = class {
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
             data.forEach((v, k) => {
+                if(parseInt(stack) === parent_stack && v.key === parent){
+                    v.nodes.splice(v.nodes.indexOf(node_data.key), 1);
+                }
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
                     v.expand = false;
                 } else {
@@ -2195,7 +2237,79 @@ window.ComponentCascadeLine = class {
             this.CONTENT_DOM.append(stackDom);
         }
         this.STACKS = this.CONTENT_DOM.childNodes;
-        if (!this.OPTIONS.movable) return;
+        for (let D of this.DOM.querySelectorAll('i.right')) {
+            this.nodeMigrate(D);
+        }
+    }
+
+    nodeMigrateExec(node, node_data, aim_node, aim_node_data) {
+        /*parent*/
+        let parent_node = node_data.parentNodes.slice().pop();
+        let parent_node_stack = node_data.stack - 1;
+        let parents = aim_node_data.parentNodes.slice(0);
+        parents.push(aim_node_data.key);
+        node_data.parentNodes = parents;
+        /*last_child_node*/
+        let last_child_node;
+        if(aim_node_data.nodes !== null) last_child_node = aim_node_data.nodes.slice(0).pop();
+        /*stack*/
+        let stack = aim_node_data.stack + 1;
+        let diffStack = stack - node_data.stack;
+        /*delete*/
+        let index = parseInt(node.getAttribute('data-k'));
+        this.dimensional_data[node_data.stack].splice(index, 1);
+        if (!Array.isArray(this.dimensional_data[stack])) this.dimensional_data[stack] = [];
+        /*insert*/
+        if(!last_child_node){
+            this.dimensional_data[stack].push(node_data);
+        }else {
+            let index = 0;
+            for (let key in this.dimensional_data[aim_node_data.stack+1]){
+                if(!this.dimensional_data[aim_node_data.stack+1].hasOwnProperty(key))continue;
+                if(this.dimensional_data[aim_node_data.stack+1][key].key === last_child_node){
+                    index = key;
+                    break;
+                }
+            }
+            index++;
+            this.dimensional_data[aim_node_data.stack+1].splice(index,0,node_data);
+        }
+
+        this.resetChildrenDimensional(node_data, node_data.stack + 1, diffStack);
+        this.dimensional_data = this.dimensional_data.filter((d)=>{
+            if(d.length>0)return true;
+            return false;
+        });
+        node_data.stack = stack;
+        /*aim node*/
+        if (!Array.isArray(aim_node_data.nodes)) aim_node_data.nodes = [];
+        aim_node_data.nodes.push(node_data.key);
+
+        this.CONTENT_DOM.innerHTML = '';
+        for (let stack in this.dimensional_data) {
+            if (!this.dimensional_data.hasOwnProperty(stack)) continue;
+            stack = parseInt(stack);
+            let data = this.dimensional_data[stack];
+            let stackDom = document.createElement('div');
+            stackDom.className = 'dot-cascade-stack dlp-scroll';
+            data.forEach((v, k) => {
+                if(parseInt(stack) === parent_node_stack && v.key === parent_node){
+                    v.nodes.splice(v.nodes.indexOf(node_data.key), 1);
+                }
+                if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
+                    v.expand = false;
+                } else {
+                    v.nodes = null;
+                }
+                let labelDom = this.insertLabelDom(v, k, stack);
+                if (v.nodes !== null) {
+                    labelDom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right}</i>`);
+                }
+                stackDom.append(labelDom);
+            });
+            this.CONTENT_DOM.append(stackDom);
+        }
+        this.STACKS = this.CONTENT_DOM.childNodes;
         for (let D of this.DOM.querySelectorAll('i.right')) {
             this.nodeMigrate(D);
         }

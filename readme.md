@@ -13,6 +13,10 @@
     |    |-Assistant   数据处理辅助方法  
     |    |-FormPanel   表单内容生成器
     |    |-CascadeLineTrait   级联管理器的接口抽象类 
+    |
+    |-参考样例
+    |    |-example      组件样例
+    |    |-CascadeLineController  级联管理器 接口样例
     
     
 ### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)

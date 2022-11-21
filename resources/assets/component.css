@@ -414,7 +414,9 @@
 }
 .dlp-contextmenu *{transition:color .4s, background .4s;}
 .dlp-contextmenu li{
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 3px;
     background-color: #fff;
     border-bottom:1px solid #ecf0f1;

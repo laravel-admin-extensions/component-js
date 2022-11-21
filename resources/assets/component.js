@@ -1636,7 +1636,7 @@ window.ComponentCascadeLine = class {
                     this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
                     let object = this;
                     M.addEventListener('click', (() => {
-                        if(node_data.stack === 0)return;
+                        if(node_data.stack === 0)return object.PLANE_DOM.remove();
                         if (object.submit_block) return;
                         object.submit_block = true;
                         M.querySelector('.right').innerHTML = _component.sub_loading;

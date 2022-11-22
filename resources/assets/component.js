@@ -32,38 +32,54 @@ window._component = {
     'node': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"/>
 </svg>`,
-    request: function (url, method = "GET", data = {}, callback = null, error_callback = null) {
+    request: function (settings) {
+        settings = Object.assign({
+            url: '',
+            method: "GET",
+            header: {},
+            data: {},
+            callback: null,
+            error_callback: null,
+            timeout:30000
+        }, settings);
+        console.log(typeof settings.data);
         let xhr = new XMLHttpRequest();
-        if (method === 'GET') url = _component.parseParams(url, data);
-        xhr.open(method, url, true);
-        xhr.timeout = 30000;
+        if (settings.method === 'GET') settings.url = _component.parseParams(settings.url, settings.data);
+        xhr.open(settings.method, settings.url, true);
+        xhr.timeout = settings.timeout;
         let token = '';
         if (document.querySelector('meta[name="csrf-token"]')) {
             token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         }
         xhr.setRequestHeader("X-CSRF-TOKEN", token);
-        if (method === 'GET') {
+        if (settings.header) {
+            for (let header in settings.header) {
+                if (!settings.header.hasOwnProperty(header)) continue;
+                xhr.setRequestHeader(header, settings.header[header]);
+            }
+        }
+        if (settings.method === 'GET') {
             xhr.setRequestHeader("Content-type", "application/text;charset=UTF-8");
             xhr.responseType = "text";
             xhr.send(null);
         } else {
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             xhr.responseType = "json";
-            xhr.send(data);
+            xhr.send(settings.data);
         }
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) return;
-            if (typeof error_callback === 'function') error_callback();
+            if (typeof settings.error_callback === 'function') settings.error_callback();
         };
         xhr.onreadystatechange = function () {
             if (xhr.readyState === xhr.DONE && xhr.status === 200) {
                 let response = xhr.response;
-                if (typeof callback === 'function') callback(response);
+                if (typeof settings.callback === 'function') settings.callback(response);
             }
         };
         xhr.onerror = function (e) {
             console.error(e);
-            if (typeof error_callback === 'function') error_callback(e);
+            if (typeof settings.error_callback === 'function') settings.error_callback(e);
         };
     },
     parseParams(uri, params) {
@@ -91,25 +107,25 @@ window._component = {
             <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
         </div></div>`);
     },
-    alert: function (message, time = 1, callback = null,dom) {
+    alert: function (message, time = 1, callback = null, dom = null) {
         let div = document.createElement('div');
         div.innerHTML = message;
-        let w,h;
-        div.setAttribute('style',"z-index: 1000000; background-color: rgba(0,0,0,.6);color: #fff;width: 320px;max-height: 450px;line-height: 30px;overflow: hidden;border-radius: 3px;text-align: center;display: block;");
-        if(!dom) {
+        let w, h;
+        div.setAttribute('style', "z-index: 1000000; background-color: rgba(0,0,0,.6);color: #fff;width: 320px;max-height: 450px;line-height: 30px;overflow: hidden;border-radius: 3px;text-align: center;display: block;");
+        if (!dom) {
             w = window.innerWidth / 2 - 140;
             h = window.innerHeight / 2 - 145;
             div.style.position = 'fixed';
-        }else {
+        } else {
             w = dom.offsetWidth / 2 - 140;
             h = dom.offsetHeight / 2;
             div.style.position = 'absolute';
         }
-        div.style.top = h+'px';
-        div.style.left = w+'px';
-        if(!dom) {
+        div.style.top = h + 'px';
+        div.style.left = w + 'px';
+        if (!dom) {
             document.getElementsByTagName("BODY")[0].appendChild(div);
-        }else {
+        } else {
             dom.append(div);
         }
         setTimeout(() => {
@@ -126,7 +142,7 @@ window._component = {
         list.forEach((v) => {
             let li = document.createElement('li');
             li.className = 'dlp dlp-text';
-            li.insertAdjacentHTML('afterbegin',v.title);
+            li.insertAdjacentHTML('afterbegin', v.title);
             li.style.width = options.W;
             if (typeof v.func === 'function') {
                 li.addEventListener('click', () => {
@@ -180,7 +196,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, select, selected, limit = 0,menu = {}) {
+    constructor(name, select, selected, limit = 0, menu = {}) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -196,7 +212,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.menu = Object.assign({mode:false,placeholder:'未选择',height:'150px'}, menu);
+        this.menu = Object.assign({mode: false, placeholder: '未选择', height: '150px'}, menu);
 
         this.selected_data = selected;
         this.select_data = [];
@@ -211,19 +227,19 @@ window.ComponentDot = class {
                     queue.push(D);
                 }
             });
-            queue.forEach((D)=>D.click());
-            if(this.menu.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
+            queue.forEach((D) => D.click());
+            if (this.menu.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
         });
-        if(this.menu.mode === false) {
+        if (this.menu.mode === false) {
             this.make(selected, select);
-        }else {
+        } else {
             this.menu_placeholder = this.menu.placeholder;
             this.menuMake(selected, select);
         }
         let search = this.DOM.querySelector(`.dot-search`);
         search.addEventListener('input', () => {
             setTimeout(() => {
-                this.search(search,this.menu.mode);
+                this.search(search, this.menu.mode);
             }, 500);
         });
     }
@@ -247,13 +263,13 @@ window.ComponentDot = class {
         }
     }
 
-    menuMake(selected, select){
+    menuMake(selected, select) {
         let menu = document.createElement('div');
         menu.className = 'dlp-dot-menu';
 
         let menu_select = document.createElement('div');
         menu_select.className = 'dlp-input dlp-dot-menu-select';
-        menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">${this.menu_placeholder}</div><div>▼</div>`);
+        menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${this.menu_placeholder}</div><div>▼</div>`);
 
         let menu_list = document.createElement('div');
         menu_list.className = 'menu-list';
@@ -261,33 +277,33 @@ window.ComponentDot = class {
         search_box.className = 'search-box';
         let input = document.createElement('input');
         input.className = 'dlp dlp-input dot-search';
-        input.setAttribute('placeholder','搜索');
+        input.setAttribute('placeholder', '搜索');
 
         let list = document.createElement('div');
         list.className = 'list dlp-scroll';
         list.style.maxHeight = this.menu.height;
 
         let check = _component.check;
-        check = check.replace(`width="16" height="16"`,`width="12" height="12"`);
+        check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
         this.id_line_hash = [];
         let line = 0;
-        for (let id in select){
-            if(!select.hasOwnProperty(id))continue;
+        for (let id in select) {
+            if (!select.hasOwnProperty(id)) continue;
             this.id_line_hash[id] = line;
             line++;
             let option = document.createElement('div');
             option.className = 'option';
-            option.setAttribute('data-id',id);
-            option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
-            option.addEventListener('click', ()=>{
+            option.setAttribute('data-id', id);
+            option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+            option.addEventListener('click', () => {
                 id = parseInt(id);
-                if(this.select_data.indexOf(id) !== -1){
+                if (this.select_data.indexOf(id) !== -1) {
                     /*cancel*/
                     this.tagCal(id, this.MODE.delete);
                     option.classList.remove('option-active');
-                    if(option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                    if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
                     this.menuSelect(select);
-                    if(this.select_data.length === 0)this.SELECTED_DOM.textContent = this.menu_placeholder;
+                    if (this.select_data.length === 0) this.SELECTED_DOM.textContent = this.menu_placeholder;
                     return;
                 }
                 if (this.limit > 0 && this.select_data.length >= this.limit) {
@@ -295,7 +311,7 @@ window.ComponentDot = class {
                 }
                 option.classList.add('option-active');
                 this.tagCal(id, this.MODE.insert);
-                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin',check);
+                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
                 this.menuSelect(select);
             }, false);
             list.append(option);
@@ -306,14 +322,14 @@ window.ComponentDot = class {
         menu_list.append(search_box);
         menu_list.append(list);
         menu.append(menu_list);
-        menu.addEventListener('click',()=>{
+        menu.addEventListener('click', () => {
             menu_list.style.display = 'flex';
         });
-        menu.addEventListener('mouseleave',()=>{
+        menu.addEventListener('mouseleave', () => {
             menu_list.style.display = 'none';
             let search = this.DOM.querySelector(`.dot-search`);
             search.value = '';
-            for(let node of this.CONTENT_DOM.childNodes){
+            for (let node of this.CONTENT_DOM.childNodes) {
                 node.style.display = 'flex';
             }
         });
@@ -327,13 +343,13 @@ window.ComponentDot = class {
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
     }
 
-    menuSelect(select){
-        if(this.limit === 1){
+    menuSelect(select) {
+        if (this.limit === 1) {
             this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
             return;
         }
         let html = '';
-        for(let id of this.select_data){
+        for (let id of this.select_data) {
             html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
         }
         this.SELECTED_DOM.innerHTML = html;
@@ -392,21 +408,21 @@ window.ComponentDot = class {
         }
     }
 
-    search(search,menu_mode) {
-        if(menu_mode){
+    search(search, menu_mode) {
+        if (menu_mode) {
             if (search.value === '') {
-                for(let node of this.CONTENT_DOM.childNodes){
+                for (let node of this.CONTENT_DOM.childNodes) {
                     node.style.display = 'flex';
                 }
                 return;
             }
-            for (let id in this.select){
-                if(!this.select.hasOwnProperty(id))continue;
+            for (let id in this.select) {
+                if (!this.select.hasOwnProperty(id)) continue;
                 let text = this.select[id];
                 let line = this.id_line_hash[id];
-                if(text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1){
+                if (text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1) {
                     this.CONTENT_DOM.childNodes[line].style.display = 'flex';
-                }else {
+                } else {
                     this.CONTENT_DOM.childNodes[line].style.display = 'none';
                 }
             }
@@ -573,7 +589,7 @@ window.ComponentCascadeDot = class {
         if (data.checked === true) {
             data.checked = false;
             this.tagCal(id, this.MODE.delete);
-            if(data.nodes === null) element.querySelector('i.right').innerHTML = '';
+            if (data.nodes === null) element.querySelector('i.right').innerHTML = '';
             for (let D of this.SELECTED_DOM.childNodes) {
                 if (parseInt(D.getAttribute('data-id')) === id) {
                     D.remove();
@@ -595,7 +611,7 @@ window.ComponentCascadeDot = class {
                 data.checked = true;
                 this.tagCal(id, this.MODE.insert);
                 element.classList.remove('dlp-label-silence');
-                element.querySelector('i.right').insertAdjacentHTML('afterbegin',_component.check);
+                element.querySelector('i.right').insertAdjacentHTML('afterbegin', _component.check);
                 this.selectToChildren(stack + 1, data.nodes);
                 this.selectToSelected(element, stack);
                 this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
@@ -646,7 +662,7 @@ window.ComponentCascadeDot = class {
             }
             if (checked === true && node === data.key && data.mark !== true) {
                 data.mark = true;
-                D.querySelector('.right').insertAdjacentHTML('afterbegin',_component.check_circle);
+                D.querySelector('.right').insertAdjacentHTML('afterbegin', _component.check_circle);
             }
             if (checked === false && node === data.key) {
                 let nodes = this.dimensional_data[stack][index].nodes;
@@ -776,9 +792,9 @@ window.ComponentCascadeDot = class {
             if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
             let div = document.createElement('div');
             div.className = 'dlp dlp-text dlp-label';
-            div.insertAdjacentHTML('afterbegin','<i class="left"></i>');
+            div.insertAdjacentHTML('afterbegin', '<i class="left"></i>');
             div.textContent = d.val;
-            div.insertAdjacentHTML('beforeend','<i class="right"></i>');
+            div.insertAdjacentHTML('beforeend', '<i class="right"></i>');
             if (d.nodes !== null) div.querySelector('i.left').insertAdjacentHTML('afterbegin', _component.caret_right);
             div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
             this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
@@ -868,12 +884,12 @@ window.ComponentLine = class {
             let insert_type = val.insert_type ? val.insert_type : val.type;
             switch (insert_type) {
                 case 'input':
-                    foot.insertAdjacentHTML('beforeend',`<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
+                    foot.insertAdjacentHTML('beforeend', `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
                     break;
                 case 'select':
                     let td = document.createElement('td');
                     td.style = val.style;
-                    td.append(this.menuMake(column,[],val.options,val.options_limit,val.name,true));
+                    td.append(this.menuMake(column, [], val.options, val.options_limit, val.name, true));
                     foot.append(td);
                     break;
                 case 'datetime':
@@ -891,19 +907,19 @@ window.ComponentLine = class {
                     }
                     this.format_settings[column] = format;
                     style = val.style ? `${val.style}` : '';
-                    foot.insertAdjacentHTML('beforeend',`<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`);
+                    foot.insertAdjacentHTML('beforeend', `<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`);
                     break;
                 case 'hidden':
-                    foot.insertAdjacentHTML('beforeend',`<th><input data-column="${column}" type="hidden"/></th>`);
+                    foot.insertAdjacentHTML('beforeend', `<th><input data-column="${column}" type="hidden"/></th>`);
                     break;
                 default:
                     this.COLUMNS[column].insert_type = 'input';
-                    foot.insertAdjacentHTML('beforeend',`<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
+                    foot.insertAdjacentHTML('beforeend', `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
                     break;
             }
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
-        foot.insertAdjacentHTML('beforeend','<th class="insert_handel operate-column" style="width: 48px;"><div></div></th></tr>');
+        foot.insertAdjacentHTML('beforeend', '<th class="insert_handel operate-column" style="width: 48px;"><div></div></th></tr>');
 
         this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
         this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
@@ -921,15 +937,15 @@ window.ComponentLine = class {
             tr.setAttribute('sortable-item', 'sortable-item');
             let record = {};
             for (let name in columns) {
-                if(!columns.hasOwnProperty(name))continue;
+                if (!columns.hasOwnProperty(name)) continue;
                 let column = columns[name];
-                if(!values[name]){
+                if (!values[name]) {
                     this.DATA[key][name] = '';
                     record[name] = '';
                 }
                 let td = document.createElement('td');
                 let v = this.DATA[key][name];
-                if(column.type === 'select') {
+                if (column.type === 'select') {
                     if (/^[0-9]+$/.test(v)) {
                         v = [parseInt(v)];
                     } else if (Array.isArray(v) === false) {
@@ -941,7 +957,7 @@ window.ComponentLine = class {
                 tr.appendChild(td);
             }
             let td = document.createElement('td');
-            td.insertAdjacentHTML('afterbegin','<div></div>');
+            td.insertAdjacentHTML('afterbegin', '<div></div>');
             this.operateButton(td);
             tr.appendChild(td);
             tbody.appendChild(tr);
@@ -984,9 +1000,9 @@ window.ComponentLine = class {
                 let value;
                 if (type === 'input' || type === 'datetime') {
                     value = tfoot.querySelector(`input[data-column="${column}"]`).value;
-                }else if(type === 'select'){
+                } else if (type === 'select') {
                     value = this.INSERT_ROW_MENUE_DATA[column];
-                }else {
+                } else {
                     value = '';
                 }
                 insert[column] = value;
@@ -995,7 +1011,7 @@ window.ComponentLine = class {
             }
 
             let td = document.createElement('td');
-            td.insertAdjacentHTML('afterbegin','<div></div>');
+            td.insertAdjacentHTML('afterbegin', '<div></div>');
             this.operateButton(td);
             tr.appendChild(td);
             this.TBODY_DOM.appendChild(tr);
@@ -1060,7 +1076,7 @@ window.ComponentLine = class {
                 td.style.position = 'relative';
                 break;
             case 'select':
-                td.append(this.menuMake(column,value,settings.options,settings.options_limit,settings.name));
+                td.append(this.menuMake(column, value, settings.options, settings.options_limit, settings.name));
                 break;
             default:
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
@@ -1100,14 +1116,14 @@ window.ComponentLine = class {
         td.className = 'operate-column';
     }
 
-    menuMake(column,selected, select,limit,placeholder,insertRow = false){
+    menuMake(column, selected, select, limit, placeholder, insertRow = false) {
         let menu = document.createElement('div');
         menu.className = 'dlp-dot-menu';
-        if(insertRow)this.INSERT_ROW_MENUE_DATA[column] = [];
+        if (insertRow) this.INSERT_ROW_MENUE_DATA[column] = [];
 
         let menu_select = document.createElement('div');
         menu_select.className = 'dlp-input dlp-dot-menu-select';
-        menu_select.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text">${placeholder}</div><div>▼</div>`);
+        menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${placeholder}</div><div>▼</div>`);
 
         let menu_list = document.createElement('div');
         menu_list.className = 'menu-list';
@@ -1115,20 +1131,20 @@ window.ComponentLine = class {
         search_box.className = 'search-box';
         let input = document.createElement('input');
         input.className = 'dlp dlp-input dot-search';
-        input.setAttribute('placeholder','搜索');
-        input.addEventListener('input',()=>{
+        input.setAttribute('placeholder', '搜索');
+        input.addEventListener('input', () => {
             setTimeout(() => {
-                if(input.value === ''){
-                    for(let node of list.childNodes){
+                if (input.value === '') {
+                    for (let node of list.childNodes) {
                         node.style.display = 'flex';
                     }
                     return;
                 }
-                for(let node of list.childNodes){
+                for (let node of list.childNodes) {
                     let text = node.firstElementChild.innerText;
-                    if(text.indexOf(input.value) !== -1 || input.value.indexOf(text) !== -1){
+                    if (text.indexOf(input.value) !== -1 || input.value.indexOf(text) !== -1) {
                         node.style.display = 'flex';
-                    }else {
+                    } else {
                         node.style.display = 'none';
                     }
                 }
@@ -1139,76 +1155,77 @@ window.ComponentLine = class {
         list.className = 'list dlp-scroll';
 
         let check = _component.check;
-        check = check.replace(`width="16" height="16"`,`width="12" height="12"`);
-        for (let id in select){
-            if(!select.hasOwnProperty(id))continue;
+        check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
+        for (let id in select) {
+            if (!select.hasOwnProperty(id)) continue;
             let option = document.createElement('div');
             option.className = 'option';
-            option.setAttribute('data-id',id);
-            option.insertAdjacentHTML('afterbegin',`<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
-            option.addEventListener('click', ()=>{
+            option.setAttribute('data-id', id);
+            option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+            option.addEventListener('click', () => {
                 id = parseInt(id);
                 let selected;
-                if(insertRow){
+                if (insertRow) {
                     selected = this.INSERT_ROW_MENUE_DATA[column];
-                }else {
+                } else {
                     let key = this.searchChildrenDomIndex(menu.parentNode.parentNode);
                     selected = this.DATA[key][column];
                 }
                 let index = selected.indexOf(id);
-                if(index !== -1){
+                if (index !== -1) {
                     /*cancel*/
-                    selected.splice(index,1);
+                    selected.splice(index, 1);
                     option.classList.remove('option-active');
-                    if(option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
-                    menuSelect(select,selected,limit);
-                    if(selected.length === 0)menu_select.firstElementChild.textContent = placeholder;
-                    if(insertRow === false){
+                    if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                    menuSelect(select, selected, limit);
+                    if (selected.length === 0) menu_select.firstElementChild.textContent = placeholder;
+                    if (insertRow === false) {
                         this.DATA_INPUT.value = JSON.stringify(this.DATA);
                     }
                     return;
                 }
                 if (limit > 0 && selected.length >= limit) {
-                    for (let line of list.childNodes){
-                        if((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString())line.click();
+                    for (let line of list.childNodes) {
+                        if ((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString()) line.click();
                     }
                 }
                 option.classList.add('option-active');
                 selected.push(id);
-                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin',check);
-                menuSelect(select,selected,limit);
-                if(insertRow === false)this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
+                menuSelect(select, selected, limit);
+                if (insertRow === false) this.DATA_INPUT.value = JSON.stringify(this.DATA);
             }, false);
             /*init selected*/
-            if (limit > 0 && selected.length >= limit) selected.slice(0,limit);
-            if(selected.indexOf(parseInt(id)) !== -1) {
+            if (limit > 0 && selected.length >= limit) selected.slice(0, limit);
+            if (selected.indexOf(parseInt(id)) !== -1) {
                 option.classList.add('option-active');
                 (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                menuSelect(select,selected,limit);
+                menuSelect(select, selected, limit);
             }
             list.append(option);
         }
 
-        function menuSelect(select,selected,limit){
-            if(limit === 1){
+        function menuSelect(select, selected, limit) {
+            if (limit === 1) {
                 menu_select.firstElementChild.innerHTML = `<p class="dlp-text">${select[selected[0]]}</p>`;
                 return;
             }
             let html = '';
-            for(let id of selected){
+            for (let id of selected) {
                 html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
             }
             menu_select.firstElementChild.innerHTML = html;
         }
+
         menu.append(menu_select);
         search_box.append(input);
         menu_list.append(search_box);
         menu_list.append(list);
         menu.append(menu_list);
-        menu.addEventListener('click',()=>{
+        menu.addEventListener('click', () => {
             menu_list.style.display = 'flex';
         });
-        menu.addEventListener('mouseleave',()=>{
+        menu.addEventListener('mouseleave', () => {
             menu_list.style.display = 'none';
             let search = this.DOM.querySelector(`.dot-search`);
             search.value = '';
@@ -1229,26 +1246,27 @@ window.ComponentLine = class {
         });
     }
 
-    datepicker(){
+    datepicker() {
         if (typeof jQuery != 'undefined') {
-            setTimeout(()=>{
-                for(let col in this.format_settings){
+            setTimeout(() => {
+                for (let col in this.format_settings) {
                     let format = this.format_settings[col];
-                    $(`#${this.NAME} input.datetime-${col}`).datetimepicker({"format":format,"locale":"zh-CN"});
+                    $(`#${this.NAME} input.datetime-${col}`).datetimepicker({"format": format, "locale": "zh-CN"});
                 }
             });
         }
     }
 
-    searchChildrenDomIndex(dom){
+    searchChildrenDomIndex(dom) {
         let i = 0;
-        while((dom = dom.previousSibling) != null) i++;
+        while ((dom = dom.previousSibling) != null) i++;
         return i;
     }
 };
 
 window.ComponentPlane = class {
     constructor(url, xhr = {}, options = {}) {
+        if(document.querySelector('#dlp-plane') instanceof HTMLElement)return;
         this.URL = url;
         this.XHR = Object.assign({
             url: url,
@@ -1297,21 +1315,28 @@ window.ComponentPlane = class {
         }, false);
         this.DOM.querySelector('.plane-header').append(X);
         this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
+        window.addEventListener("popstate", () =>{
+            this.DOM.remove();
+        }, false);
     }
 
     makeContent() {
         _component.loading(this.MODEL_BODY_DOM);
         let object = this;
-        _component.request(this.URL, 'GET', {}, function (response) {
-            _component.loading(object.MODEL_BODY_DOM, true);
-            let fragment = document.createRange().createContextualFragment(response);
-            object.MODEL_BODY_DOM.appendChild(fragment);
-            let listener = object.XHR.listener;
-            if (typeof listener === 'function') {
-                let target = listener(object.MODEL_BODY_DOM);
-                if (target instanceof HTMLElement) {
-                    target.addEventListener(object.XHR.event,
-                        object.submitEvent.bind(object, target), false);
+        _component.request({
+            url: this.URL,
+            method: 'GET',
+            callback: function (response) {
+                _component.loading(object.MODEL_BODY_DOM, true);
+                let fragment = document.createRange().createContextualFragment(response);
+                object.MODEL_BODY_DOM.appendChild(fragment);
+                let listener = object.XHR.listener;
+                if (typeof listener === 'function') {
+                    let target = listener(object.MODEL_BODY_DOM);
+                    if (target instanceof HTMLElement) {
+                        target.addEventListener(object.XHR.event,
+                            object.submitEvent.bind(object, target), false);
+                    }
                 }
             }
         });
@@ -1325,31 +1350,36 @@ window.ComponentPlane = class {
         for (const pair of formdata.entries()) {
             let key = pair[0];
             let val = pair[1];
-            if(/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')){
+            if (/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')) {
                 val = JSON.parse(val);
-                if(Array.isArray(val) && val.length>0){
-                    val.forEach((v)=>{
-                        formdata.append(`${key}[]`,v);
+                if (Array.isArray(val) && val.length > 0) {
+                    val.forEach((v) => {
+                        formdata.append(`${key}[]`, v);
                     });
-                }else {
-                    formdata.append(`${key}`,'');
+                } else {
+                    formdata.append(`${key}`, '');
                 }
             }
         }
 
-        _component.request(this.XHR.url, this.XHR.method, formdata, (response) => {
-            if (typeof this.XHR.callback == 'function') {
-                this.XHR.callback(response);
-                return;
-            }
-            if(!response)return;
-            if (response.code === 0) {
-                window.location.reload();
-            } else {
-                _component.alert(response.message, 3, function () {
-                    element.removeAttribute('disabled');
-                    element.innerText = '提交';
-                });
+        _component.request({
+            url: this.XHR.url,
+            method: this.XHR.method,
+            data: formdata,
+            callback: (response) => {
+                if (typeof this.XHR.callback == 'function') {
+                    this.XHR.callback(response);
+                    return;
+                }
+                if (!response) return;
+                if (response.code === 0) {
+                    window.location.reload();
+                } else {
+                    _component.alert(response.message, 3, function () {
+                        element.removeAttribute('disabled');
+                        element.innerText = '提交';
+                    });
+                }
             }
         });
     }
@@ -1536,26 +1566,31 @@ window.ComponentCascadeLine = class {
         I.addEventListener('click', (() => {
             this.panel('新增根节点');
             let object = this;
-            _component.request(this.URL + '/create', 'GET', {}, function (response) {
-                object.panelContent(response, {key: 0}, object.URL, 'POST', (response) => {
-                    if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3,null,object.DOM);
-                    if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3,null,object.DOM);
-                    let key = parseInt(response.data.key);
-                    let val = response.data.val;
-                    let len = object.dimensional_data[0].push({
-                        expand: false,
-                        key: key,
-                        val: val,
-                        nodes: null,
-                        parentNodes: []
+            _component.request({
+                url: this.URL + '/create',
+                method: 'GET',
+                data: {},
+                callback: function (response) {
+                    object.panelContent(response, {key: 0}, object.URL, 'POST', (response) => {
+                        if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3, null, object.DOM);
+                        if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3, null, object.DOM);
+                        let key = parseInt(response.data.key);
+                        let val = response.data.val;
+                        let len = object.dimensional_data[0].push({
+                            expand: false,
+                            key: key,
+                            val: val,
+                            nodes: null,
+                            parentNodes: []
+                        });
+                        let lastKey = len - 1;
+                        let currentStackDocuments = object.STACKS[0];
+                        currentStackDocuments.append(object.insertLabelDom(object.dimensional_data[0][lastKey], lastKey, 0));
+                        object.STACKS[0].scrollTo(0, lastKey * 27);
+                        currentStackDocuments.lastChild.click();
+                        object.PLANE_DOM.remove();
                     });
-                    let lastKey = len - 1;
-                    let currentStackDocuments = object.STACKS[0];
-                    currentStackDocuments.append(object.insertLabelDom(object.dimensional_data[0][lastKey], lastKey, 0));
-                    object.STACKS[0].scrollTo(0, lastKey * 27);
-                    currentStackDocuments.lastChild.click();
-                    object.PLANE_DOM.remove();
-                });
+                }
             });
         }));
         I.insertAdjacentHTML('afterbegin', _component.node);
@@ -1636,18 +1671,23 @@ window.ComponentCascadeLine = class {
                     this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
                     let object = this;
                     M.addEventListener('click', (() => {
-                        if(node_data.stack === 0)return object.PLANE_DOM.remove();
+                        if (node_data.stack === 0) return object.PLANE_DOM.remove();
                         if (object.submit_block) return;
                         object.submit_block = true;
                         M.querySelector('.right').innerHTML = _component.sub_loading;
-                        _component.request(this.URL, 'GET', {event:'root',node_key:node_data.key,node_val:node_data.val}, function (response) {
-                            object.submit_block = false;
-                            response = JSON.parse(response);
-                            if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
-                            object.nodeRootExec(div, node_data);
-                            object.PLANE_DOM.remove();
-                        }, function () {
-                            object.submit_block = false;
+                        _component.request({
+                            url: this.URL,
+                            method: 'GET',
+                            data: {event: 'root', node_key: node_data.key, node_val: node_data.val},
+                            callback: function (response) {
+                                object.submit_block = false;
+                                response = JSON.parse(response);
+                                if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                                object.nodeRootExec(div, node_data);
+                                object.PLANE_DOM.remove();
+                            }, error_callback: function () {
+                                object.submit_block = false;
+                            }
                         });
                     }));
                     this.PLANE_BODY.append(M);
@@ -1801,25 +1841,35 @@ window.ComponentCascadeLine = class {
         formdata.set('val', data.val);
         formdata.set('_method', method);
         let object = this;
-        _component.request(xhr, 'POST', formdata, function (response) {
-            object.submit_block = false;
-            element.innerHTML = _component.check;
-            if (response.code !== 0) {
-                return _component.alert(response.message, 3,null,object.DOM);
+        _component.request({
+            url: xhr,
+            method: 'POST',
+            data: formdata,
+            callback: function (response) {
+                object.submit_block = false;
+                element.innerHTML = _component.check;
+                if (response.code !== 0) {
+                    return _component.alert(response.message, 3, null, object.DOM);
+                }
+                callback(response);
+            }, error_callback: function () {
+                object.submit_block = false;
             }
-            callback(response);
-        }, function () {
-            object.submit_block = false;
         });
     }
 
-    nodeDetail(dom, data){
+    nodeDetail(dom, data) {
         this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 详情`);
         let object = this;
-        _component.request(this.URL + '/' + data.key, 'GET', {}, function (response) {
-            _component.loading(object.PLANE_BODY, true);
-            let fragment = document.createRange().createContextualFragment(response);
-            object.PLANE_BODY.appendChild(fragment);
+        _component.request({
+            url: this.URL + '/' + data.key,
+            method: 'GET',
+            data: {},
+            callback: function (response) {
+                _component.loading(object.PLANE_BODY, true);
+                let fragment = document.createRange().createContextualFragment(response);
+                object.PLANE_BODY.appendChild(fragment);
+            }
         });
     }
 
@@ -1827,77 +1877,87 @@ window.ComponentCascadeLine = class {
         this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 新增`);
         let object = this;
         let nextStack = parseInt(stack) + 1;
-        _component.request(this.URL + '/create', 'GET', {id: data.key}, function (response) {
-            object.panelContent(response, data, object.URL, 'POST', (response) => {
-                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
-                if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3,null,object.DOM);
-                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3,null,object.DOM);
-                let key = parseInt(response.data.key);
-                let val = response.data.val;
-                let parents = data.parentNodes.slice(0);
-                parents.push(data.key);
-                if (!Array.isArray(object.dimensional_data[nextStack])) {
-                    object.dimensional_data[nextStack] = [
-                        {expand: false, key: key, val: val, nodes: null, parentNodes: parents}];
-                    let stackDom = document.createElement('div');
-                    stackDom.className = 'dot-cascade-stack dlp-scroll';
-                    stackDom.append(object.insertLabelDom(object.dimensional_data[nextStack][0], 0, nextStack));
-                    object.CONTENT_DOM.append(stackDom);
-                    dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
-                } else if (!Array.isArray(data.nodes) || data.nodes.length === 0) {
-                    let len = object.dimensional_data[nextStack].push(
-                        {expand: false, key: key, val: val, nodes: null, parentNodes: parents});
-                    let index = len - 1;
-                    object.STACKS[nextStack].append(
-                        object.insertLabelDom(object.dimensional_data[nextStack][index], index, nextStack));
-                    dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
-                    object.STACKS[nextStack].scrollTo(0, index * 27);
-                } else {
-                    let lastKey = data.nodes[data.nodes.length - 1];
-                    let currentStackDocuments = object.STACKS[nextStack].childNodes;
-                    let newIndex = 0;
-                    for (let index in object.dimensional_data[nextStack]) {
-                        if (!object.dimensional_data[nextStack].hasOwnProperty(index)) continue;
-                        index = parseInt(index);
-                        newIndex = index + 1;
-                        if (object.dimensional_data[nextStack][index].key === lastKey) {
-                            object.dimensional_data[nextStack].splice(newIndex, 0, {
-                                expand: false,
-                                key: key,
-                                val: val,
-                                nodes: null,
-                                parentNodes: parents
-                            });
-                            let D = currentStackDocuments[index];
-                            D.parentNode.insertBefore(
-                                object.insertLabelDom(object.dimensional_data[nextStack][newIndex], newIndex, nextStack), D.nextSibling);
-                            break;
+        _component.request({
+            url: this.URL + '/create',
+            method: 'GET',
+            data: {id: data.key},
+            callback: function (response) {
+                object.panelContent(response, data, object.URL, 'POST', (response) => {
+                    if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                    if (response.data.key === undefined) return _component.alert('返回数据结构缺少key', 3, null, object.DOM);
+                    if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3, null, object.DOM);
+                    let key = parseInt(response.data.key);
+                    let val = response.data.val;
+                    let parents = data.parentNodes.slice(0);
+                    parents.push(data.key);
+                    if (!Array.isArray(object.dimensional_data[nextStack])) {
+                        object.dimensional_data[nextStack] = [
+                            {expand: false, key: key, val: val, nodes: null, parentNodes: parents}];
+                        let stackDom = document.createElement('div');
+                        stackDom.className = 'dot-cascade-stack dlp-scroll';
+                        stackDom.append(object.insertLabelDom(object.dimensional_data[nextStack][0], 0, nextStack));
+                        object.CONTENT_DOM.append(stackDom);
+                        dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
+                    } else if (!Array.isArray(data.nodes) || data.nodes.length === 0) {
+                        let len = object.dimensional_data[nextStack].push(
+                            {expand: false, key: key, val: val, nodes: null, parentNodes: parents});
+                        let index = len - 1;
+                        object.STACKS[nextStack].append(
+                            object.insertLabelDom(object.dimensional_data[nextStack][index], index, nextStack));
+                        dom.insertAdjacentHTML('afterbegin', `<i class="left">${_component.caret_right_circle}</i>`);
+                        object.STACKS[nextStack].scrollTo(0, index * 27);
+                    } else {
+                        let lastKey = data.nodes[data.nodes.length - 1];
+                        let currentStackDocuments = object.STACKS[nextStack].childNodes;
+                        let newIndex = 0;
+                        for (let index in object.dimensional_data[nextStack]) {
+                            if (!object.dimensional_data[nextStack].hasOwnProperty(index)) continue;
+                            index = parseInt(index);
+                            newIndex = index + 1;
+                            if (object.dimensional_data[nextStack][index].key === lastKey) {
+                                object.dimensional_data[nextStack].splice(newIndex, 0, {
+                                    expand: false,
+                                    key: key,
+                                    val: val,
+                                    nodes: null,
+                                    parentNodes: parents
+                                });
+                                let D = currentStackDocuments[index];
+                                D.parentNode.insertBefore(
+                                    object.insertLabelDom(object.dimensional_data[nextStack][newIndex], newIndex, nextStack), D.nextSibling);
+                                break;
+                            }
                         }
+                        object.dimensional_data[nextStack].forEach((d, index) => {
+                            if (index > newIndex) currentStackDocuments[index].setAttribute('data-k', index);
+                        });
+                        object.STACKS[nextStack].scrollTo(0, newIndex * 27);
                     }
-                    object.dimensional_data[nextStack].forEach((d, index) => {
-                        if (index > newIndex) currentStackDocuments[index].setAttribute('data-k', index);
-                    });
-                    object.STACKS[nextStack].scrollTo(0, newIndex * 27);
-                }
-                if (!Array.isArray(data.nodes)) data.nodes = [];
-                data.nodes.push(key);
-                object.PLANE_DOM.remove();
-            });
+                    if (!Array.isArray(data.nodes)) data.nodes = [];
+                    data.nodes.push(key);
+                    object.PLANE_DOM.remove();
+                });
+            }
         });
     }
 
     nodeUpdate(dom, data) {
         this.panel(`<span class="dlp-text title" title="${data.val}">${data.val}</span> 修改`);
         let object = this;
-        _component.request(this.URL + '/' + data.key + '/edit', 'GET', {val: data.val}, function (response) {
-            object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
-                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
-                if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3,null,object.DOM);
-                let val = response.data.val;
-                data.val = val;
-                dom.querySelector('span').textContent = val;
-                object.PLANE_DOM.remove();
-            });
+        _component.request({
+            url: this.URL + '/' + data.key + '/edit',
+            method: 'GET',
+            data: {val: data.val},
+            callback: function (response) {
+                object.panelContent(response, data, object.URL + '/' + data.key, 'PUT', (response) => {
+                    if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                    if (response.data.val === undefined) return _component.alert('返回数据结构缺少val', 3, null, object.DOM);
+                    let val = response.data.val;
+                    data.val = val;
+                    dom.querySelector('span').textContent = val;
+                    object.PLANE_DOM.remove();
+                });
+            }
         });
     }
 
@@ -1933,13 +1993,18 @@ window.ComponentCascadeLine = class {
             if (object.submit_block) return;
             object.submit_block = true;
             D.querySelector('.right').innerHTML = _component.sub_loading;
-            _component.request(this.URL + '/' + data.key, 'DELETE', {}, function (response) {
-                object.submit_block = false;
-                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
-                object.nodeDeleteExec(data, stack);
-                object.PLANE_DOM.remove();
-            }, function () {
-                object.submit_block = false;
+            _component.request({
+                url: this.URL + '/' + data.key,
+                method: 'DELETE',
+                data: {},
+                callback: function (response) {
+                    object.submit_block = false;
+                    if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                    object.nodeDeleteExec(data, stack);
+                    object.PLANE_DOM.remove();
+                }, function() {
+                    object.submit_block = false;
+                }
             });
         }));
         D.insertAdjacentHTML('afterbegin', `<span>${data.val}</span><i class="right">${_component.trash}</i>`);
@@ -2024,7 +2089,10 @@ window.ComponentCascadeLine = class {
         if (search.value === '') return;
         this.dimensional_data.forEach((data, stack) => {
             data.forEach((d, index) => {
-                if (d.val.indexOf(search.value) !== -1 || search.value.indexOf(d.val) !== -1) this.search_result.push({'stack': stack, 'index': index});
+                if (d.val.indexOf(search.value) !== -1 || search.value.indexOf(d.val) !== -1) this.search_result.push({
+                    'stack': stack,
+                    'index': index
+                });
             });
         });
         if (this.search_result.length === 0) return;
@@ -2184,15 +2252,25 @@ window.ComponentCascadeLine = class {
             if (object.submit_block) return;
             object.submit_block = true;
             M.querySelector('.right').innerHTML = _component.sub_loading;
-            _component.request(this.URL, 'GET', {event:event, node_key:node_data.key,node_val:node_data.val, aim_node_key:aim_node_data.key,aim_node_val:aim_node_data.val}, function (response) {
-                object.submit_block = false;
-                response = JSON.parse(response);
-                if (response.code !== 0) return _component.alert(response.message, 3,null,object.DOM);
-                if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
-                if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
-                object.PLANE_DOM.remove();
-            }, function () {
-                object.submit_block = false;
+            _component.request({
+                url: this.URL,
+                method: 'GET',
+                data: {
+                    event: event,
+                    node_key: node_data.key,
+                    node_val: node_data.val,
+                    aim_node_key: aim_node_data.key,
+                    aim_node_val: aim_node_data.val
+                }, callback: function (response) {
+                    object.submit_block = false;
+                    response = JSON.parse(response);
+                    if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                    if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
+                    if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
+                    object.PLANE_DOM.remove();
+                }, error_callback: function () {
+                    object.submit_block = false;
+                }
             });
         }));
         this.PLANE_BODY.append(M);
@@ -2206,10 +2284,10 @@ window.ComponentCascadeLine = class {
         let index = parseInt(node.getAttribute('data-k'));
         this.dimensional_data[node_data.stack].splice(index, 1);
         this.dimensional_data[0].push(node_data);
-        if(node_data.nodes !== null)this.resetChildrenDimensional(node_data,node_data.stack + 1,diffStack);
+        if (node_data.nodes !== null) this.resetChildrenDimensional(node_data, node_data.stack + 1, diffStack);
         node_data.stack = 0;
-        this.dimensional_data = this.dimensional_data.filter((d)=>{
-            if(d.length>0)return true;
+        this.dimensional_data = this.dimensional_data.filter((d) => {
+            if (d.length > 0) return true;
             return false;
         });
         this.CONTENT_DOM.innerHTML = '';
@@ -2220,7 +2298,7 @@ window.ComponentCascadeLine = class {
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
             data.forEach((v, k) => {
-                if(parseInt(stack) === parent_stack && v.key === parent){
+                if (parseInt(stack) === parent_stack && v.key === parent) {
                     v.nodes.splice(v.nodes.indexOf(node_data.key), 1);
                 }
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
@@ -2251,7 +2329,7 @@ window.ComponentCascadeLine = class {
         node_data.parentNodes = parents;
         /*last_child_node*/
         let last_child_node;
-        if(aim_node_data.nodes !== null) last_child_node = aim_node_data.nodes.slice(0).pop();
+        if (aim_node_data.nodes !== null) last_child_node = aim_node_data.nodes.slice(0).pop();
         /*stack*/
         let stack = aim_node_data.stack + 1;
         let diffStack = stack - node_data.stack;
@@ -2260,24 +2338,24 @@ window.ComponentCascadeLine = class {
         this.dimensional_data[node_data.stack].splice(index, 1);
         if (!Array.isArray(this.dimensional_data[stack])) this.dimensional_data[stack] = [];
         /*insert*/
-        if(!last_child_node){
+        if (!last_child_node) {
             this.dimensional_data[stack].push(node_data);
-        }else {
+        } else {
             let index = 0;
-            for (let key in this.dimensional_data[aim_node_data.stack+1]){
-                if(!this.dimensional_data[aim_node_data.stack+1].hasOwnProperty(key))continue;
-                if(this.dimensional_data[aim_node_data.stack+1][key].key === last_child_node){
+            for (let key in this.dimensional_data[aim_node_data.stack + 1]) {
+                if (!this.dimensional_data[aim_node_data.stack + 1].hasOwnProperty(key)) continue;
+                if (this.dimensional_data[aim_node_data.stack + 1][key].key === last_child_node) {
                     index = key;
                     break;
                 }
             }
             index++;
-            this.dimensional_data[aim_node_data.stack+1].splice(index,0,node_data);
+            this.dimensional_data[aim_node_data.stack + 1].splice(index, 0, node_data);
         }
 
         this.resetChildrenDimensional(node_data, node_data.stack + 1, diffStack);
-        this.dimensional_data = this.dimensional_data.filter((d)=>{
-            if(d.length>0)return true;
+        this.dimensional_data = this.dimensional_data.filter((d) => {
+            if (d.length > 0) return true;
             return false;
         });
         node_data.stack = stack;
@@ -2293,7 +2371,7 @@ window.ComponentCascadeLine = class {
             let stackDom = document.createElement('div');
             stackDom.className = 'dot-cascade-stack dlp-scroll';
             data.forEach((v, k) => {
-                if(parseInt(stack) === parent_node_stack && v.key === parent_node){
+                if (parseInt(stack) === parent_node_stack && v.key === parent_node) {
                     v.nodes.splice(v.nodes.indexOf(node_data.key), 1);
                 }
                 if (Array.isArray(v.nodes) && v.nodes.length !== 0) {

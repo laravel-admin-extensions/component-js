@@ -184,7 +184,7 @@ class ExampleController extends AdminController
                 ['name'=>'01','meta'=>'test info1','url'=>'1','time'=>'2021-05-15 00:00:00','is-small'=>1],
                 ['name'=>'02','meta'=>'test info2','url'=>'2','time'=>'2021-05-15 00:00:00','is-small'=>1],
                 ['name'=>'03','meta'=>'test info3','url'=>'3','time'=>'2021-05-15 00:00:00','is-small'=>1]])
-            ->attribute(['height' => '360px','options'=>['sortable' => true, 'delete' => true, 'insert' => true]]);
+            ->attribute(['height' => '360px','sortable' => true, 'delete' => true, 'insert' => true]);
 
         /**
          * 级联线组件
@@ -203,7 +203,7 @@ class ExampleController extends AdminController
         $form->CascadeLine('cascadeLine','级联管理器')
             ->list($this->cascadeExampleData())
             ->xhr('.../xhr地址')
-            ->attribute(['height' => '200px','options'=>['movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]]);
+            ->attribute(['height' => '200px','movable' => true,'exchange' => true,'insert' => true,'update' => true,'delete' => true]);
         return $form;
     }
 

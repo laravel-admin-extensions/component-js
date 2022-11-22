@@ -42,7 +42,6 @@ window._component = {
             error_callback: null,
             timeout:30000
         }, settings);
-        console.log(typeof settings.data);
         let xhr = new XMLHttpRequest();
         if (settings.method === 'GET') settings.url = _component.parseParams(settings.url, settings.data);
         xhr.open(settings.method, settings.url, true);

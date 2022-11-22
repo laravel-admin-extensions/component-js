@@ -13,6 +13,10 @@
     |    |-Assistant   数据处理辅助方法  
     |    |-FormPanel   表单内容生成器
     |    |-CascadeLineTrait   级联管理器的接口抽象类 
+    |
+    |-参考样例
+    |    |-example      组件样例
+    |    |-CascadeLineController  级联管理器 接口样例
     
     
 ### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
@@ -47,7 +51,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L146'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">支持右键全选,取消<br/>多选择数量可设限制<br/>适用于无限分类,地区选择</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L144'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeDot.php#L32'>CascadeDot::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L144'>$form->CascadeDot</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeDot.php#L40'>CascadeDot::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">级联管理器</td>
@@ -56,13 +60,13 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider"
         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L192'>数据辅助组装</a><br/>
         </td>
         <td style="text-align:left;">右键新增,修改,删除 操作节点<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L13'>需要实现的接口抽象类CascadeLineTrait</a> <br/><br/>example参考<a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/CascadeLineController.php#L8'>test\CascadeLineController</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L190'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeLine.php#L32'>CascadeLine::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L190'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeLine.php#L40'>CascadeLine::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">表单控件</td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
         <td style="text-align:left;">支持拖拽排序 类似JSON组件</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L162'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Linear.php#L44'>Linear::panel</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L162'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Linear.php#L48'>Linear::panel</a></td>
     </tr>
     <tr>
         <td style="text-align:left;">弹出层组件</td>

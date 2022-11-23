@@ -62,7 +62,12 @@ window._component = {
             xhr.responseType = "text";
             xhr.send(null);
         } else {
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            if(settings.data instanceof FormData) {
+                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            }else {
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                settings.data = JSON.stringify(settings.data);
+            }
             xhr.responseType = "json";
             xhr.send(settings.data);
         }

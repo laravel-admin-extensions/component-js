@@ -36,7 +36,7 @@ EOF
     public function render()
     {
         return <<<EOF
-<div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
+<div class="btn-group pull-right grid-create-btn" style="margin-right: 5px">
     <a href='javascript:void(0);' class="btn btn-sm btn-primary" id="{$this->document_id}" title="{$this->title}">
         <span class="hidden-xs">{$this->title}</span>
     </a>

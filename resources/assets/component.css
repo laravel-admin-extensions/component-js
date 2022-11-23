@@ -84,6 +84,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
 }
 .dlp-alert>span{color: white;height: 14px}
 .dlp-label:hover,.dlp-label-active {

@@ -223,12 +223,14 @@ window.ComponentDot = class {
             e.preventDefault();
         });
         this.menu = Object.assign({mode: false, placeholder: '未选择', height: '150px'}, menu);
-
+        selected = selected.filter(d=>{
+            if(select[d] === undefined)return false;
+            return true;
+        });
         this.selected_data = selected;
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
-
         setTimeout(() => {
             let queue = [];
             this.CONTENT_DOM.childNodes.forEach((D) => {
@@ -260,6 +262,7 @@ window.ComponentDot = class {
             if (!select.hasOwnProperty(i)) continue;
             select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
+
         let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
@@ -485,6 +488,10 @@ window.ComponentCascadeDot = class {
             console.error('CascadeDot param selected and select must be array!');
             return;
         }
+        selected = selected.filter(d=>{
+            if(select[d] === undefined)return false;
+            return true;
+        });
         this.name = name;
         this.limit = limit;
         this.DOM = document.getElementById(name);

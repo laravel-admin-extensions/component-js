@@ -991,8 +991,8 @@ window.ComponentLine = class {
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
         tfoot.className = 'dlp-tfoot';
-        tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
         if (!this.OPTIONS.insert) {
+            tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
             this.TABLE_DOM.appendChild(tfoot);
             return;
         }

@@ -241,6 +241,7 @@
     right:0;
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
 }
 .dot-select-cover{background: rgb(43 43 43);position: absolute;top:3px;left:0;bottom:3px;right:0;}
 .dot-select-cascade{

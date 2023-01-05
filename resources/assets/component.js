@@ -118,7 +118,7 @@ window._component = {
         let w, h;
         div.className = 'dlp-alert';
         this._alert_documents.forEach((D)=>{
-           D.style.top = parseInt(D.style.top) - 60 + 'px';
+            D.style.top = parseInt(D.style.top) - 60 + 'px';
         });
         this._alert_documents.push(div);
         if (!dom) {
@@ -1305,12 +1305,14 @@ window.ComponentPlane = class {
     makeModal() {
         let width = this.OPTIONS.w;
         if (this.OPTIONS.w.toString().indexOf('px') === -1 && this.OPTIONS.w.toString().indexOf('%') === -1) {
-            width = window.innerWidth * this.OPTIONS.w - 18;
+            width = window.innerWidth * this.OPTIONS.w;
+            if(width>= (window.innerWidth - 18)) width = window.innerWidth - 18;
             width += 'px';
         }
         let height = this.OPTIONS.h;
         if (this.OPTIONS.h.toString().indexOf('px') === -1 && this.OPTIONS.h.toString().indexOf('%') === -1) {
-            height = window.innerHeight * this.OPTIONS.h - 25;
+            height = window.innerHeight * this.OPTIONS.h;
+            if(height>= (window.innerHeight - 25)) height = window.innerHeight - 25;
             height += 'px';
         }
         let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;

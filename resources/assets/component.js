@@ -1304,12 +1304,12 @@ window.ComponentPlane = class {
 
     makeModal() {
         let width = this.OPTIONS.w;
-        if (this.OPTIONS.w.toString().indexOf('px') === -1 || this.OPTIONS.w.toString().indexOf('%') === -1) {
+        if (this.OPTIONS.w.toString().indexOf('px') === -1 && this.OPTIONS.w.toString().indexOf('%') === -1) {
             width = window.innerWidth * this.OPTIONS.w - 18;
             width += 'px';
         }
         let height = this.OPTIONS.h;
-        if (this.OPTIONS.h.toString().indexOf('px') === -1 || this.OPTIONS.h.toString().indexOf('%') === -1) {
+        if (this.OPTIONS.h.toString().indexOf('px') === -1 && this.OPTIONS.h.toString().indexOf('%') === -1) {
             height = window.innerHeight * this.OPTIONS.h - 25;
             height += 'px';
         }

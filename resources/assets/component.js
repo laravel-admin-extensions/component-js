@@ -991,8 +991,8 @@ window.ComponentLine = class {
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
         tfoot.className = 'dlp-tfoot';
+        tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
         if (!this.OPTIONS.insert) {
-            tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
             this.TABLE_DOM.appendChild(tfoot);
             return;
         }
@@ -1303,17 +1303,15 @@ window.ComponentPlane = class {
     }
 
     makeModal() {
-        let width;
-        if (this.OPTIONS.w.toString().indexOf('.') !== -1) {
-            width = (window.innerWidth * this.OPTIONS.w) + 'px';
-        } else {
-            width = this.OPTIONS.w;
+        let width = this.OPTIONS.w;
+        if (this.OPTIONS.w.toString().indexOf('px') === -1 || this.OPTIONS.w.toString().indexOf('%') === -1) {
+            width = window.innerWidth * this.OPTIONS.w - 18;
+            width += 'px';
         }
-        let height;
-        if (this.OPTIONS.h.toString().indexOf('.') !== -1) {
-            height = (window.innerHeight * this.OPTIONS.h) + 'px';
-        } else {
-            height = this.OPTIONS.h;
+        let height = this.OPTIONS.h;
+        if (this.OPTIONS.h.toString().indexOf('px') === -1 || this.OPTIONS.h.toString().indexOf('%') === -1) {
+            height = window.innerHeight * this.OPTIONS.h - 25;
+            height += 'px';
         }
         let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
         let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${width};margin: ${margin}"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div></div>`;

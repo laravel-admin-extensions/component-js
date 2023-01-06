@@ -967,7 +967,8 @@ window.ComponentLine = class {
             /*delay image loading*/
             if(val.type === 'image'){
                 setTimeout(()=>{
-                   _component.imgDelay(`${this.NAME}-${column}-img`,200,true);
+                    let zoom = val.zoom === false ? false : true;
+                   _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom);
                 });
             }
         }
@@ -1067,8 +1068,8 @@ window.ComponentLine = class {
                     setTimeout(()=>{
                         let src = dom.getAttribute('data-src');
                         dom.setAttribute('src',src);
+                        if(this.COLUMNS[column].zoom === false)return;
                         let img = document.createElement('img');
-                        dom.setAttribute('data-zoom','0');
                         dom.addEventListener('mouseover', function(e) {
                             document.body.append(img);
                             img.style.position = 'absolute';

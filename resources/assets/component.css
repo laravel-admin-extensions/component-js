@@ -325,7 +325,7 @@
 .dlp-table .dlp-input{height: 24px!important;}
 .dlp-table .dlp-tbody{display:block;height:100%;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);}
 .dlp-table .dlp-tr{display:table;width:100%;table-layout:fixed;position: relative;}
-.dlp-tr>th,.dlp-tr>td{padding:  7px 3px 7px 3px;text-align: left}
+.dlp-tr>th,.dlp-tr>td{padding: 3px;text-align: left;height: 38px;}
 .dlp-table .dlp-thead>.dlp-tr{height: 45px;border-bottom: 1px solid #060606;}
 .dlp-table .dlp-tbody>.dlp-tr{background:#1e1e1e}
 .dlp-table .dlp-tbody>.dlp-tr:nth-child(even){background:#2a2a2a}

@@ -197,6 +197,43 @@ window._component = {
         }
         dimension++;
         _component.dimensional(output, data.nodes, dimension, parentNodes);
+    },
+    imgDelay(name,time=200,zoom= false) {
+        let list = document.getElementsByClassName(name);
+        let i = 0;
+        for(let dom of list){
+            setTimeout(()=>{
+                let src = dom.getAttribute('data-src');
+                dom.setAttribute('src',src);
+                dom.onload = function(){
+                    if(!zoom)return;
+                    let img = document.createElement('img');
+                    dom.setAttribute('data-zoom','0');
+                    dom.addEventListener('mouseover', function(e) {
+                        if(dom.getAttribute('data-zoom') === '1')return;
+                        setTimeout(()=>{
+                        dom.setAttribute('data-zoom','1');
+                        document.body.append(img);
+                        img.style.position = 'absolute';
+                        img.style.top = `${e.pageY - 3}px`;
+                        img.style.left = `${e.pageX - 3}px`;
+                        img.style.zIndex = '1000000';
+                        img.style.width = '300px';
+                        img.style.borderRadius = '3px';
+                        img.setAttribute('src', src);
+                        },100);
+                    });
+                    dom.addEventListener('mouseout', function(e) {
+                        e.stopPropagation();
+                        setTimeout(()=>{
+                        dom.setAttribute('data-zoom','0');
+                        img.remove();
+                        },100);
+                    });
+                };
+            },i*time);
+            i++;
+        }
     }
 };
 
@@ -899,6 +936,7 @@ window.ComponentLine = class {
             let style = val.style ? `style="${val.style}"` : '';
             head += `<th class="dlp-text text-white" ${style}>${val.name}</th>`;
             let insert_type = val.insert_type ? val.insert_type : val.type;
+
             switch (insert_type) {
                 case 'input':
                     foot.insertAdjacentHTML('beforeend', `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
@@ -933,6 +971,12 @@ window.ComponentLine = class {
                     this.COLUMNS[column].insert_type = 'input';
                     foot.insertAdjacentHTML('beforeend', `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
                     break;
+            }
+            /*delay image loading*/
+            if(val.type === 'image'){
+                setTimeout(()=>{
+                   _component.imgDelay(`${this.NAME}-${column}-img`,200,true);
+                });
             }
         }
         head += '<th class="operate-column" style="width: 48px;"></th></tr>';
@@ -991,8 +1035,8 @@ window.ComponentLine = class {
     makeFoot(foot) {
         let tfoot = document.createElement('tfoot');
         tfoot.className = 'dlp-tfoot';
-        tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
         if (!this.OPTIONS.insert) {
+            tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
             this.TABLE_DOM.appendChild(tfoot);
             return;
         }
@@ -1025,6 +1069,37 @@ window.ComponentLine = class {
                 insert[column] = value;
                 this.makeTd(td, column, this.COLUMNS[column], value);
                 tr.appendChild(td);
+
+                if(this.COLUMNS[column].type === 'image'){
+                    let dom = td.firstChild;
+                    setTimeout(()=>{
+                        let src = dom.getAttribute('data-src');
+                        dom.setAttribute('src',src);
+                        let img = document.createElement('img');
+                        dom.setAttribute('data-zoom','0');
+                        dom.addEventListener('mouseover', function(e) {
+                            if(dom.getAttribute('data-zoom') === '1')return;
+                            setTimeout(()=>{
+                                dom.setAttribute('data-zoom','1');
+                                document.body.append(img);
+                                img.style.position = 'absolute';
+                                img.style.top = `${e.pageY - 3}px`;
+                                img.style.left = `${e.pageX - 3}px`;
+                                img.style.zIndex = '1000000';
+                                img.style.width = '300px';
+                                img.style.borderRadius = '3px';
+                                img.setAttribute('src', src);
+                            },100);
+                        });
+                        dom.addEventListener('mouseout', function(e) {
+                            e.stopPropagation();
+                            setTimeout(()=>{
+                                dom.setAttribute('data-zoom','0');
+                                img.remove();
+                            },100);
+                        });
+                    },200);
+                }
             }
 
             let td = document.createElement('td');
@@ -1094,6 +1169,9 @@ window.ComponentLine = class {
                 break;
             case 'select':
                 td.append(this.menuMake(column, value, settings.options, settings.options_limit, settings.name));
+                break;
+            case 'image':
+                td.insertAdjacentHTML('afterbegin',`<img class="${this.NAME}-${column}-img" style="max-width: 100%;max-height: 100%;border-radius: 2px" data-src="${value}" />`);
                 break;
             default:
                 td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);

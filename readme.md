@@ -4,7 +4,7 @@
     |    |-Dot         多选择器
     |    |-CascadeDot  级联多选择器
     |    |-CascadeLine 级联管理器
-    |    |-Linear      表单控件  
+    |    |-Linear      列表控件  
     |
     |-弹窗组件.Widget
     |    |-plane       异步弹窗组件
@@ -63,7 +63,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider" --force
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L190'>$form->CascadeLine</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/CascadeLine.php#L40'>CascadeLine::panel</a></td>
     </tr>
     <tr>
-        <td style="text-align:left;">表单控件</td>
+        <td style="text-align:left;">列表控件</td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
         <td style="text-align:left;">支持拖拽排序 类似JSON组件</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L162'>$form->Linear</a><br/><br/><b>直接调用</b>:<br/><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/src/Widget/Linear.php#L48'>Linear::panel</a></td>

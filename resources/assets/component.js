@@ -887,7 +887,7 @@ window.ComponentLine = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.format_settings = {};
+        this.flatpickr_settings = {};
         this.COLUMNS = columns;
         this.DATA = data;
         this.OPTIONS = Object.assign({
@@ -907,8 +907,6 @@ window.ComponentLine = class {
         this.makeBody();
         /*foot*/
         this.makeFoot(foot);
-        /*datetime*/
-        this.datepicker();
         /*sort*/
         if (this.OPTIONS.sortable) this.sortable();
     }
@@ -940,19 +938,7 @@ window.ComponentLine = class {
                     foot.append(td);
                     break;
                 case 'datetime':
-                    let format;
-                    switch (val.format) {
-                        case 1:
-                            format = 'YYYY-MM-DD';
-                            break;
-                        case 2:
-                            format = 'YYYY';
-                            break;
-                        default:
-                            format = 'YYYY-MM-DD HH:mm:ss';
-                            break;
-                    }
-                    this.format_settings[column] = format;
+                    this.flatpickr_settings[column] = val.config;
                     style = val.style ? `${val.style}` : '';
                     foot.insertAdjacentHTML('beforeend', `<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`);
                     break;
@@ -969,6 +955,11 @@ window.ComponentLine = class {
                 setTimeout(()=>{
                     let zoom = val.zoom === false ? false : true;
                    _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom);
+                });
+            }
+            if(val.type === 'datetime' || val.insert_type === 'datetime'){
+                setTimeout(() => {
+                    document.querySelectorAll(`#${this.NAME} input.datetime-${column}`).flatpickr(this.flatpickr_settings[column]);
                 });
             }
         }
@@ -1096,7 +1087,6 @@ window.ComponentLine = class {
             this.DATA.push(insert);
             this.DATA_INPUT.value = JSON.stringify(this.DATA);
             this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
-            this.datepicker();
         }, false);
         this.TABLE_DOM.querySelector('.insert_handel div').appendChild(i);
     }
@@ -1129,19 +1119,7 @@ window.ComponentLine = class {
                 input.setAttribute('class', `dlp dlp-input datetime-${column}`);
                 input.setAttribute('data-column', column);
                 input.value = value;
-                let format;
-                switch (settings.format) {
-                    case 1:
-                        format = 'YYYY-MM-DD';
-                        break;
-                    case 2:
-                        format = 'YYYY';
-                        break;
-                    default:
-                        format = 'YYYY-MM-DD HH:mm:ss';
-                        break;
-                }
-                this.format_settings[column] = format;
+
                 input.addEventListener('blur', () => {
                     let key = this.searchChildrenDomIndex(input.parentNode.parentNode);
                     let column = input.getAttribute('data-column');
@@ -1152,6 +1130,9 @@ window.ComponentLine = class {
                 }, false);
                 td.appendChild(input);
                 td.style.position = 'relative';
+                setTimeout(()=>{
+                    input.flatpickr(settings.config);
+                });
                 break;
             case 'select':
                 td.append(this.menuMake(column, value, settings.options, settings.options_limit, settings.name));
@@ -1325,17 +1306,6 @@ window.ComponentLine = class {
             object.DATA = data;
             object.DATA_INPUT.value = JSON.stringify(object.DATA);
         });
-    }
-
-    datepicker() {
-        if (typeof jQuery != 'undefined') {
-            setTimeout(() => {
-                for (let col in this.format_settings) {
-                    let format = this.format_settings[col];
-                    $(`#${this.NAME} input.datetime-${col}`).datetimepicker({"format": format, "locale": "zh-CN"});
-                }
-            });
-        }
     }
 
     searchChildrenDomIndex(dom) {

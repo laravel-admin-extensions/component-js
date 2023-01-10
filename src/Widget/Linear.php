@@ -54,7 +54,7 @@ EOT;
      *  column.style            自定义style格式
      *  column.options          insert_type或type为select时 多选项
      *  column.options_limit    insert_type或type为select时 多选项选择限制数 数字类型默认0:无限制
-     *  column.format           insert_type或type为datetime时时间格式 数字类型默认0: YYYY-MM-DD HH:mm:ss | 1: YYYY-MM-DD | 2: YYYY
+     *  column.config           insert_type或type为datetime时 配置参考flatpickr官方文档
      * @param array $list 数据集 二维数据集列表格式
      * @param array $style 组件样式设置 宽:width 高:height
      * @param array $options 操作列设置

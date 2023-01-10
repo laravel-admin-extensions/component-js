@@ -6,14 +6,9 @@
     <link rel="stylesheet" href="../resources/assets/component.css">
     <script src="../resources/assets/component.js"></script>
 
-    <!--时间选择器依赖项-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+    <!--flatpickr时间选择器依赖项-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
 </head>
 <body>
 <svg style="position: absolute;top:0;left: 0;right: 0;bottom: 0;" xmlns='http://www.w3.org/2000/svg'
@@ -236,7 +231,10 @@
             "name": {"name": "名称", "type": "input"},
             "meta": {"name": "番号", "type": "text","insert_type":"input"},
             "url": {"name": "图片", "type": "image"},
-            "time": {"name": "更新时间", "type": "datetime","insert_type":"datetime"},
+            "time": {"name": "更新时间", "type": "datetime","insert_type":"datetime","config":{
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                }},
             "is-small": {"name": "高清", "type": "select","options":{1:'是',2:'否'},"options_limit":1, "style": "width:60px"}
         }, [{
             "name": "ごめんなさい、もう別れたいの…別れを拒む彼氏と結んだ《愛人》と言う名の従順契約 美乃すずめ",

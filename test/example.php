@@ -157,20 +157,20 @@ class ExampleController extends AdminController
             ->options($this->cascadeExampleData())
             ->checked([614,550,543])
             ->attribute(['height'=>'200px']);
-
         /**
          * 线组件
          * columns[column...]       列数据格式配置
          *  column.name             列表头名称
-         *  column.type             列数据 输出格式input,text,hidden,datetime,date,select,image,file
+         *  column.type             列数据 输出格式input,text,hidden,datetime,date,select,image
          *  column.insert_type      增加列格式(不填时默认等同于type值) hidden表示置空
-         *  column.options          insert_type或type为select时 多选项
-         *  column.options_limit    insert_type或type为select时 多选项选择限制数 默认0:无限制
+         *  column.options          insert_type或type为select时 多选项配置 例如.[1=>'是',2=>'否']
+         *  column.options_limit    insert_type或type为select时 多选项选择限制数 int 默认0:无限制
+         *  column.config           insert_type或type为datetime时 配置项参考flatpickr官方文档
          *  column.style            自定义style格式
-         *  list 设置数据集 二维数组列表格式
-         *  attribute.width   设置宽度 默认100%
-         *  attribute.height  设置高度 默认355px
-         *  attribute.options 设置操作列 默认开启:可排序/可删除/可新增['sortable' => true, 'delete' => true, 'insert' => true]
+         *  list                    设置数据集 二维数组列表格式
+         *  attribute.width         设置宽度 默认100%
+         *  attribute.height        设置高度 默认355px
+         *  attribute.options       设置操作列 默认开启:可排序/可删除/可新增['sortable' => true, 'delete' => true, 'insert' => true]
          */
         $form->Linear('line', '列表管理器')
             ->columns([

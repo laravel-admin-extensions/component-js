@@ -517,10 +517,7 @@ window.ComponentCascadeDot = class {
             console.error('CascadeDot param selected and select must be array!');
             return;
         }
-        selected = selected.filter(d=>{
-            if(select[d] === undefined)return false;
-            return true;
-        });
+        
         this.name = name;
         this.limit = limit;
         this.DOM = document.getElementById(name);

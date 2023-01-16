@@ -811,42 +811,40 @@ window.ComponentCascadeDot = class {
             this.CONTENT_DOM.parentNode.append(this.SELECT_COVER_DOM);
         }
         this.dimensional_data.forEach((data, stack) => {
-            this.searchPushTag(search, data, stack);
+            data.forEach((d, k) => {
+                if (d.val.indexOf(search.value) === -1 && search.value.indexOf(d.val) === -1) return;
+                if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
+                this.searchPushTag(stack,d,k);
+            });
         });
     }
 
     searchCoverClick(stack, data, dom) {
         if (data.nodes !== null) {
             let nextStack = stack + 1;
-            Array.isArray(this.dimensional_data[nextStack]) &&
-            this.searchPushTag(data.nodes, this.dimensional_data[nextStack], nextStack);
+            if(Array.isArray(this.dimensional_data[nextStack])) {
+                this.SELECT_COVER_DOM.childNodes[nextStack].innerHTML = '';
+                this.dimensional_data[nextStack].forEach((d, k) => {
+                    if (data.nodes.includes(d.key)) this.searchPushTag(nextStack, d, k);
+                });
+            }
             return;
         }
         (dom instanceof HTMLElement) && dom.click();
     }
 
-    searchPushTag(search, data, stack) {
-        data.forEach((d, k) => {
-            if (Array.isArray(search)) {
-                if (search.indexOf(d.key) === -1) return;
-            } else {
-                if (d.val.indexOf(search.value) === -1 && search.value.indexOf(d.val) === -1) return;
-            }
-            if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
-            let div = document.createElement('div');
-            div.className = 'dlp dlp-text dlp-label';
-            div.insertAdjacentHTML('afterbegin', '<i class="left"></i>');
-            div.textContent = d.val;
-            div.insertAdjacentHTML('beforeend', '<i class="right"></i>');
-            if (d.nodes !== null) div.querySelector('i.left').insertAdjacentHTML('afterbegin', _component.caret_right);
-            div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
-            this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
-            if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
-                this.COVER_STACK_HASH_DOM[stack] = [d.key];
-                return;
-            }
-            this.COVER_STACK_HASH_DOM[stack].push(d.key);
-        });
+    searchPushTag(stack,d,k) {
+        let div = document.createElement('div');
+        div.className = 'dlp dlp-text dlp-label';
+        div.insertAdjacentHTML('beforeend', `<i class="left"></i><span>${d.val}</span><i class="right"></i>`);
+        if (d.nodes !== null)div.querySelector('i.left').insertAdjacentHTML('afterbegin', _component.caret_right);
+        div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
+        this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
+        if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
+            this.COVER_STACK_HASH_DOM[stack] = [d.key];
+            return;
+        }
+        this.COVER_STACK_HASH_DOM[stack].push(d.key);
     }
 
     checkAll(stack, nodes, check) {

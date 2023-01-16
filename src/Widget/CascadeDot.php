@@ -37,7 +37,7 @@ EOT;
      * @param array $style 组件样式设置 宽:width 高:height
      * @return string
      */
-    public static function panel($name, array $select, array $selected, int $limit = 0, array $style = [])
+    public static function panel($name, array $select, array $selected = [], int $limit = 0, array $style = [])
     {
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);

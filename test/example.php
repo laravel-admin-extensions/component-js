@@ -146,8 +146,8 @@ class ExampleController extends AdminController
          *          链表结构数据辅助组装(例)
          *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
          *                $select = Model::orderBy('par','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
-         *              2.辅助函数dimension 组装后的结构参考$this->cascadeData()的示例数据
-         *                DLPHelper::dimension($select);
+         *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
+         *                Assistant::dimension($select);
          * checked          已选择 一维数组 值类型integer
          * attribute.width  设置宽度 默认100%
          * attribute.height 设置高度 默认200px
@@ -193,7 +193,7 @@ class ExampleController extends AdminController
          *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
          *                $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
          *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
-         *                DLPHelper::dimension($select);
+         *                Assistant::dimension($select);
          * xhr 接口地址 编码参见文件:test\CascadeLineController 路由配置$router->resource('xhr地址', 'CascadeLineController')
          * attribute.width   设置宽度 默认100%
          * attribute.height  设置高度 默认200px

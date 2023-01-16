@@ -170,6 +170,7 @@
     <div id="test2" style="width: 900px;height: 320px;margin: 0 auto"></div>
 </div>
 </body>
+<script src="china.js"></script>
 <script>
     let test_data = {
         "1": "西宮このみ",
@@ -296,8 +297,9 @@
     document.getElementById('test3').addEventListener('click', function () {
         new ComponentPlane();
     });
+    new ComponentCascadeDot('test4', China, [1050, 1105]);
 
-    let cascadeData = [
+    let cascadeTestData = [
         {
             "key": 1,
             "val": "上装",
@@ -305,7 +307,7 @@
                 {
                     "key": 101,
                     "val": "西服"
-                }, 
+                },
                 {
                     "key": 102,
                     "val": "背心", 'nodes': [
@@ -467,7 +469,7 @@
                             "key": 1055,
                             "val": "开档裤"
                         }
-                    ]  
+                    ]
                 },
                 {
                     "key": 303,
@@ -548,10 +550,6 @@
             ]
         }
     ];
-    let cascadeData_copy = JSON.parse(JSON.stringify(cascadeData));
-
-    new ComponentCascadeDot('test4', cascadeData, [1050, 1105]);
-
-    new ComponentCascadeLine('test5', cascadeData_copy,'http://url...');
+    new ComponentCascadeLine('test5', cascadeTestData,'http://url...');
 </script>
 </html>

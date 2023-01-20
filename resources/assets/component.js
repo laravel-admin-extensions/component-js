@@ -251,7 +251,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.menu = Object.assign({mode: false, placeholder: '未选择', height: '150px'}, menu);
+        this.menu = Object.assign({mode: false, placeholder: '未选择', height: '150px',toward:true}, menu);
         selected = selected.filter(d=>{
             if(select[d] === undefined)return false;
             return true;
@@ -377,6 +377,15 @@ window.ComponentDot = class {
         });
 
         this.DOM.append(menu);
+        if(this.menu.toward === false){
+            menu_list.style.display = 'flex';
+            menu_list.style.top = `-${menu_list.clientHeight}px`;
+            menu_list.style.height = `${menu_list.clientHeight}px`;
+            menu_list.style.flexDirection = 'column-reverse';
+            menu_list.style.display = 'none';
+        }else {
+            menu_list.style.flexDirection = 'column';
+        }
         this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
         this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`).firstElementChild;
         this.CONTENT_DOM = document.querySelector(`#${this.name}  .list`);

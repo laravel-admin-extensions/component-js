@@ -17,9 +17,6 @@
     |-参考样例.Test
     |    |-example      组件样例
     |    |-CascadeLineController  级联管理器 接口样例
-    
-    
-### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)
 
 ### 安装
 ```shell script

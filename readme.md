@@ -1,4 +1,4 @@
-## 前端组件扩展
+## 组件扩展
 
     |-表单类组件扩展.Widget
     |    |-Dot         多选择器
@@ -21,9 +21,6 @@
 ### 安装
 ```shell script
 composer require dlp/component-js
-```
-### 发布
-```shell script
 php artisan vendor:publish --provider="DLP\DLPServiceProvider" --force
 ```
 

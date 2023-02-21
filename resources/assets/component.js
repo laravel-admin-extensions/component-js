@@ -183,13 +183,14 @@ window._component = {
         }else {
             body.style.height = '70px';
         }
-        body.insertAdjacentHTML("afterbegin",`<p>哈哈哈哈哈哈哈哈哈</p>`);
+        body.insertAdjacentHTML("afterbegin",info);
 
         box.append(header);
         box.append(body);
         gauze.append(box);
         this.DOM = gauze;
         document.body.append(gauze);
+        return body;
     },
     contextmenu: function (event, list, options = {}) {
         options = Object.assign({

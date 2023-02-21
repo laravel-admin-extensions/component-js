@@ -183,7 +183,11 @@ window._component = {
         }else {
             body.style.height = '70px';
         }
-        body.insertAdjacentHTML("afterbegin",info);
+        if (info instanceof HTMLElement){
+            body.append(info);
+        }else {
+            body.insertAdjacentHTML("afterbegin", info);
+        }
 
         box.append(header);
         box.append(body);

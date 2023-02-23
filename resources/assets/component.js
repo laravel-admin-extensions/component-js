@@ -251,7 +251,7 @@ window._component = {
         dimension++;
         _component.dimensional(output, data.nodes, dimension, parentNodes);
     },
-    imgDelay(name,time=200,zoom= false) {
+    imgDelay(name,time=200,zoom= false,width=300,height = 0) {
         let list = document.getElementsByClassName(name);
         let i = 0;
         for(let dom of list){
@@ -264,12 +264,45 @@ window._component = {
                     dom.addEventListener('mouseover', function(e) {
                         document.body.append(img);
                         img.style.position = 'absolute';
-                        img.style.top = `${e.pageY + 7}px`;
-                        img.style.left = `${e.pageX + 7}px`;
                         img.style.zIndex = '1000000';
-                        img.style.width = '300px';
                         img.style.borderRadius = '3px';
                         img.setAttribute('src', src);
+
+                        let scale;
+                        if(width === 0){
+                            scale = img.naturalWidth / img.naturalWidth;
+                        }else {
+                            scale = width / img.naturalWidth;
+                        }
+                        let offsetY = img.naturalHeight * scale / 2;
+                        if(height>0){
+                            offsetY = height / 2;
+                            img.style.height = `${height}px`;
+                        }else if (height<0) {
+                            if (img.naturalHeight > window.innerHeight){
+                                let h = (window.innerHeight - 10);
+                                img.style.height = `${h}px`;
+                                offsetY = (h) / 2;
+                                width = 0;
+                            }
+                        }
+                        if(width>0) {
+                            img.style.width = `${width}px`;
+                        }else {
+                            img.style.width = `auto`;
+                        }
+                        img.style.top = `${e.pageY - offsetY}px`;
+                        let distanceToBottom = window.innerHeight - e.clientY;
+                        if (window.innerHeight - e.clientY < offsetY + 5){
+                            img.style.top = `${e.pageY - (offsetY + (offsetY - distanceToBottom) + 5)}px`;
+                        }else if(e.clientY < offsetY - 5){
+                            img.style.top = `${e.pageY - (offsetY - (offsetY - e.clientY) - 5)}px`;
+                        }
+                        if(window.innerWidth - e.clientX < img.naturalWidth){
+                            img.style.left = `${e.pageX - img.naturalWidth - 30}px`;
+                        }else {
+                            img.style.left = `${e.pageX + 25}px`;
+                        }
                     });
                     dom.addEventListener('mouseout', function(e) {
                         e.stopPropagation();
@@ -1006,8 +1039,10 @@ window.ComponentLine = class {
             /*delay image loading*/
             if(val.type === 'image'){
                 setTimeout(()=>{
-                    let zoom = val.zoom === false ? false : true;
-                   _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom);
+                    let zoom = val.zoom !== undefined ? val.zoom : true;
+                    let width = val.w !== undefined ? parseInt(val.w) : 300;
+                    let height = val.h !== undefined ? parseInt(val.h) : 0;
+                   _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom,width,height);
                 });
             }
             if(val.type === 'datetime' || val.insert_type === 'datetime'){

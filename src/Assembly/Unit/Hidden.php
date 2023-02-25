@@ -1,11 +1,11 @@
 <?php
 
 
-namespace DLP\Form;
+namespace DLP\Assembly\Unit;
 
 /**
  * Class Hidden
- * @package DLP\Form
+ * @package DLP\Assembly\Unit
  */
 class Hidden
 {
@@ -21,7 +21,7 @@ class Hidden
     public function compile()
     {
         return <<<EOF
-<input type="hidden" id="{$this->column}" name="{$this->column}" value="{$this->value}" />
+<input type="hidden" name="{$this->column}" value="{$this->value}" />
 EOF;
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
 
-namespace DLP\Form;
+namespace DLP\Assembly\Unit;
 
 /**
  * Class Input
- * @package DLP\Form
+ * @package DLP\Assembly\Unit
  */
 class Input extends Text
 {
@@ -17,9 +17,9 @@ class Input extends Text
     public function compile()
     {
         return <<<EOF
-<div class="dlp-form-row">
+<div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <input type="{$this->type}" id="{$this->column}" name="{$this->column}" value="{$this->value}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}/>
+    <input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->settings}/>
 </div>
 EOF;
     }

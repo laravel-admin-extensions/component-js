@@ -1,11 +1,11 @@
 <?php
 
 
-namespace DLP\Form;
+namespace DLP\Assembly\Unit;
 
 /**
  * Class Textarea
- * @package DLP\Form
+ * @package DLP\Assembly\Unit
  */
 class Textarea extends Text
 {
@@ -13,19 +13,25 @@ class Textarea extends Text
     {
         parent::__construct('textarea',$column, $label);
     }
-    
+
     public function rows(int $rows)
     {
         $this->settings .= " rows={$rows}";
         return $this;
     }
 
+    public function cols(int $cols)
+    {
+        $this->settings .= " cols={$cols}";
+        return $this;
+    }
+
     public function compile()
     {
         return <<<EOF
-<div class="dlp-form-row">
+<div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <textarea id="{$this->column}" name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}>{$this->value}</textarea>
+    <textarea name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}>{$this->value}</textarea>
 </div>
 EOF;
     }

@@ -1,14 +1,21 @@
 <?php
 
-namespace DLP\Form;
+namespace DLP\Assembly;
 
+
+use DLP\Assembly\Unit\Datetime;
+use DLP\Assembly\Unit\FileInput;
+use DLP\Assembly\Unit\Hidden;
+use DLP\Assembly\Unit\Input;
+use DLP\Assembly\Unit\Textarea;
 
 /**
- * Class Panel
- * @package DLP\Form
+ * Class Wing
+ * @package DLP\Assembly
  */
-class Panel
+class Wing
 {
+    private $form;
     private $documents = [];
 
     /**
@@ -73,7 +80,7 @@ class Panel
      */
     public function dot(string $column, string $label, array $select)
     {
-        
+
     }
 
     /**
@@ -108,7 +115,21 @@ class Panel
      */
     public function html(string $column, string $label, string $content)
     {
-       
+
+    }
+
+    public function form(array $attributes = [])
+    {
+        $attrs = '';
+        foreach ($attributes as $attribute=>$value){
+            $attrs .= " {$attribute}='{$value}'";
+        }
+        $this->form = <<<EOF
+<form class="dlp" {$attrs}>
+    <div>%s</div>
+</form>
+EOF;
+        return $this;
     }
 
     public function compile()
@@ -117,10 +138,8 @@ class Panel
         foreach ($this->documents as $document){
             $html .= $document->compile();
         }
-        return <<<EOF
-<form class="dlp" accept-charset="UTF-8" method="post">
-    <div>{$html}</div>
-</form>
-EOF;
+        if($this->form) $html = sprintf($this->form,$html);
+
+        return $html;
     }
 }

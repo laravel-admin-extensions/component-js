@@ -1,16 +1,17 @@
 <?php
 
 
-namespace DLP\Form;
+namespace DLP\Assembly\Unit;
 
 /**
  * Class FileInput
- * @package DLP\Form
+ * @package DLP\Assembly\Unit
  */
 class FileInput
 {
     private $column;
     private $label;
+    private $width;
     private $settings = [];
     private $initialPreview;
     private $attributes;
@@ -35,6 +36,12 @@ class FileInput
     public function fileType(array $types)
     {
         $this->fileType = array_merge($this->fileType,$types);
+        return $this;
+    }
+
+    public function width(string $width)
+    {
+        $this->width = $width;
         return $this;
     }
 
@@ -102,12 +109,16 @@ class FileInput
     public function compile()
     {
         $settings = $this->setInit();
+        $style = 'width:100%;';
+        if($this->width){
+            $style = "width:{$this->width};";
+        }
         return <<<EOF
-<div class="dlp-form-row">
+<div class="dlp dlp-form-row" style="align-items:center;">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <input class='{$this->column}' id="{$this->column}" name='{$this->column}' multiple type='file' {$this->attributes} />
+    <div class="dlp" style="{$style}"><input name='{$this->column}' multiple type='file' {$this->attributes} /></div>
     <script>
-    $('input.{$this->column}').fileinput(JSON.parse('{$settings}')).on('filebeforedelete', function () {
+    $('input[name="{$this->column}"]').fileinput(JSON.parse('{$settings}')).on('filebeforedelete', function () {
         return new Promise(function(resolve, reject) {
                 var remove = resolve;
                 swal({

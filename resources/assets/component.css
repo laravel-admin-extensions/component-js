@@ -18,6 +18,18 @@
     -moz-box-sizing: border-box!important;
     box-sizing: border-box!important;
 }
+.dlp label{
+    display: inline-block!important;
+    margin: 0!important;
+    font-weight: 700!important;
+}
+.dlp textarea{
+    max-height: unset!important;
+    min-height: unset!important;
+    padding: 5px!important;
+    margin-right: auto;
+    margin-left: auto;
+}
 .dlp i{cursor: pointer!important;}
 .dlp p,.dlp span{margin: 0!important;padding: 0!important;}
 .dlp .text-white{color: rgba(255,255,255,.9);}
@@ -300,7 +312,7 @@
 .dlp-form-row{
     display: flex;
     justify-content:left;
-    align-items: center;
+    align-items: baseline;
     margin: 15px 10px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{

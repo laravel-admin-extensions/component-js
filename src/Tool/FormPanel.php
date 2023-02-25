@@ -66,7 +66,7 @@ EOF;
         $selected = json_encode($selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $select = json_encode($select, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $setting = array_merge(['mode'=>true,'placeholder'=>'请选择','width' => '100%','height'=>'200px','menu_height'=>'150px'], $setting);
-        $style = $setting['mode'] === true ? "witdh:{$setting['width']};" : "witdh:{$setting['width']};height:{$setting['height']}";
+        $style = $setting['mode'] === true ? "width:{$setting['width']};" : "width:{$setting['width']};height:{$setting['height']}";
 
         $menu = json_encode(['mode'=>$setting['mode'],'placeholder'=>$setting['placeholder'],'height'=>$setting['menu_height']]);
         $content = <<<EOF

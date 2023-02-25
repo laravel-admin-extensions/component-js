@@ -7,36 +7,20 @@ namespace DLP\Form;
  * Class Input
  * @package DLP\Form
  */
-class Input
+class Input extends Text
 {
-    private $column;
-    private $label;
-    private $value;
-
-    public function __construct(string $column, string $label, string $value)
+    public function __construct(string $type,string $column, string $label)
     {
-        $this->column = $column;
-        $this->label = $label;
-        $this->value = $value;
-    }
-
-    public function readOnly()
-    {
-
-    }
-
-    public function setAttribute()
-    {
-
-    }
-
-    public function setStyle()
-    {
-
+        parent::__construct($type,$column, $label);
     }
 
     public function compile()
     {
-        
+        return <<<EOF
+<div class="dlp-form-row">
+    <label class="dlp-text" for="{$this->column}">{$this->label}</label>
+    <input type="{$this->type}" id="{$this->column}" name="{$this->column}" value="{$this->value}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}/>
+</div>
+EOF;
     }
 }

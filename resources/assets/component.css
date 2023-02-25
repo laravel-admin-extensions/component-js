@@ -300,7 +300,7 @@
 .dlp-form-row{
     display: flex;
     justify-content:left;
-    align-items: baseline;
+    align-items: center;
     margin: 15px 10px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
@@ -311,6 +311,7 @@
     height: auto!important;
 }
 .dlp-form-row>label{
+    line-height: 12px;
     min-width: 7em!important;
     max-width: 7em!important;
     text-align: center!important;

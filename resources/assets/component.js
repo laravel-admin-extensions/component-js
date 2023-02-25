@@ -1513,13 +1513,17 @@ window.ComponentPlane = class {
     }
 
     submitEvent(element) {
-        element.setAttribute('disabled', 'disabled');
-        element.innerText = '提交中...';
         let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
         let formdata = new FormData(form);
-        for (const pair of formdata.entries()) {
+        let flag = false;
+        for (let pair of formdata.entries()) {
             let key = pair[0];
             let val = pair[1];
+            let input = form.querySelector(`input[name=${key}]`);
+            if(input.hasAttribute('required') && input.value === ''){
+                flag = true;
+                input.focus();
+            }
             if (/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')) {
                 val = JSON.parse(val);
                 if (Array.isArray(val) && val.length > 0) {
@@ -1531,7 +1535,9 @@ window.ComponentPlane = class {
                 }
             }
         }
-
+        if(flag)return;
+        element.setAttribute('disabled', 'disabled');
+        element.innerText = '提交中...';
         _component.request({
             url: this.XHR.url,
             method: this.XHR.method,

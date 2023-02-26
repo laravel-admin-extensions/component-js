@@ -126,7 +126,7 @@ class Wing
      */
     public function html(string $column, string $label, string $content)
     {
-        $doc = new Html($column, $label);
+        $doc = new Html($column, $label, $content);
         $this->documents[] = $doc;
         return $doc;
     }

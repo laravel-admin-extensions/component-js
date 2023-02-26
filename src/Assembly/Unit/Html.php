@@ -10,14 +10,14 @@ namespace DLP\Assembly\Unit;
 class Html
 {
     private $column;
-    private $value;
+    private $label;
     private $content;
     private $pure = false;
 
-    public function __construct(string $column, string $value,string $content)
+    public function __construct(string $column, string $label,string $content)
     {
         $this->column = $column;
-        $this->value = $value;
+        $this->label = $label;
         $this->content = $content;
     }
 

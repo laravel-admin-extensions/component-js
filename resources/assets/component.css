@@ -323,7 +323,6 @@
     height: auto!important;
 }
 .dlp-form-row>label{
-    line-height: 12px;
     min-width: 7em!important;
     max-width: 7em!important;
     text-align: center!important;

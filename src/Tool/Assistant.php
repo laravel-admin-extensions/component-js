@@ -108,4 +108,10 @@ class Assistant
             ->header('Content-Type', 'application/json;charset=utf-8')
             ->header('Access-Control-Allow-Origin', '*');
     }
+    public static function arrayKv2String(array $array,$symbol = ":",$separator = ";")
+    {
+        return implode($separator, array_map(function($key, $value)use($symbol) {
+            return "$key{$symbol}$value";
+        }, array_keys($array), $array));
+    }
 }

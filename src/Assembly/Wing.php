@@ -6,7 +6,11 @@ namespace DLP\Assembly;
 use DLP\Assembly\Unit\Datetime;
 use DLP\Assembly\Unit\FileInput;
 use DLP\Assembly\Unit\Hidden;
+use DLP\Assembly\Unit\Html;
 use DLP\Assembly\Unit\Input;
+use DLP\Assembly\Unit\Select;
+use DLP\Assembly\Unit\Dot;
+use DLP\Assembly\Unit\Text;
 use DLP\Assembly\Unit\Textarea;
 
 /**
@@ -24,7 +28,7 @@ class Wing
      */
     public function text(string $column, string $label)
     {
-        $doc = new Input('text', $column, $label);
+        $doc = new Text($column, $label);
         $this->documents[] = $doc;
         return $doc;
     }
@@ -35,8 +39,8 @@ class Wing
      */
     public function display(string $column, string $label)
     {
-        $doc = new Input('text', $column, $label);
-        $doc->disabled();
+        $doc = new Text($column, $label);
+        $doc->disabled()->setStyle(['background' => '#e7e7e7']);
         $this->documents[] = $doc;
         return $doc;
     }
@@ -58,7 +62,20 @@ class Wing
      */
     public function textarea(string $column, string $label)
     {
-        $doc = new Textarea($column,$label);
+        $doc = new Textarea($column, $label);
+        $this->documents[] = $doc;
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param string $label
+     * @param array $select
+     */
+    public function dot(string $column, string $label, array $select)
+    {
+        $doc = new Dot($column, $label, $select);
+        $doc->setStyle(['width' => '100%', 'height' => '220px']);
         $this->documents[] = $doc;
         return $doc;
     }
@@ -70,17 +87,10 @@ class Wing
      */
     public function select(string $column, string $label, array $select)
     {
-
-    }
-
-    /**
-     * @param string $column
-     * @param string $label
-     * @param array $select
-     */
-    public function dot(string $column, string $label, array $select)
-    {
-
+        $doc = new Select($column, $label, $select);
+        $doc->setStyle(['width' => '240px']);
+        $this->documents[] = $doc;
+        return $doc;
     }
 
     /**
@@ -92,7 +102,7 @@ class Wing
      */
     public function datepicker(string $column, string $label)
     {
-        $doc = new Datetime($column,$label);
+        $doc = new Datetime($column, $label);
         $this->documents[] = $doc;
         return $doc;
     }
@@ -103,7 +113,8 @@ class Wing
      */
     public function fileInput(string $column, string $label)
     {
-        $doc = new FileInput($column,$label);
+        $doc = new FileInput($column, $label);
+        $doc->setStyle([]);
         $this->documents[] = $doc;
         return $doc;
     }
@@ -115,13 +126,15 @@ class Wing
      */
     public function html(string $column, string $label, string $content)
     {
-
+        $doc = new Html($column, $label);
+        $this->documents[] = $doc;
+        return $doc;
     }
 
     public function form(array $attributes = [])
     {
         $attrs = '';
-        foreach ($attributes as $attribute=>$value){
+        foreach ($attributes as $attribute => $value) {
             $attrs .= " {$attribute}='{$value}'";
         }
         $this->form = <<<EOF
@@ -135,10 +148,10 @@ EOF;
     public function compile()
     {
         $html = "";
-        foreach ($this->documents as $document){
+        foreach ($this->documents as $document) {
             $html .= $document->compile();
         }
-        if($this->form) $html = sprintf($this->form,$html);
+        if ($this->form) $html = sprintf($this->form, $html);
 
         return $html;
     }

@@ -3,24 +3,85 @@
 
 namespace DLP\Assembly\Unit;
 
+use DLP\Tool\Assistant;
+
 /**
- * Class Input
+ * Class Text
  * @package DLP\Assembly\Unit
  */
-class Input extends Text
+abstract class Input
 {
-    public function __construct(string $type,string $column, string $label)
+    protected $type = 'text';
+    protected $column;
+    protected $label;
+    protected $value;
+    protected $settings = [];
+
+    public function __construct(string $column, string $label)
     {
-        parent::__construct($type,$column, $label);
+        $this->column = $column;
+        $this->label = $label;
     }
 
-    public function compile()
+    public function value($value)
     {
-        return <<<EOF
-<div class="dlp dlp-form-row">
-    <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->settings}/>
-</div>
-EOF;
+        $this->value = $value;
+        return $this;
     }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function readOnly()
+    {
+        $this->settings[] = 'readonly';
+        return $this;
+    }
+
+    public function required()
+    {
+        $this->settings[] = 'required';
+        return $this;
+    }
+
+    public function disabled()
+    {
+        $this->settings[] = 'disabled';
+        return $this;
+    }
+
+    public function setAttribute(array $attributes)
+    {
+        $this->settings[] = Assistant::arrayKv2String($attributes, '=', ' ');
+        return $this;
+    }
+
+    public function setStyle(array $styles)
+    {
+        $this->settings[] = 'style="' . Assistant::arrayKv2String($styles) . '"';
+        return $this;
+    }
+
+    public function maxlength($len)
+    {
+        $this->settings[] = 'maxlength={$len}';
+        return $this;
+    }
+
+    public function minlength($len)
+    {
+        $this->settings[] = 'minlength={$len}';
+        return $this;
+    }
+
+    public function range($min, $max)
+    {
+        $this->settings[] = 'min={$min} max={$max}';
+        return $this;
+    }
+
+    abstract public function compile();
 }

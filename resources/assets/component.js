@@ -321,7 +321,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, select, selected, limit = 0, menu = {}) {
+    constructor(name, select, selected, limit = 0, settings = {}) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -337,7 +337,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.menu = Object.assign({mode: false, placeholder: '未选择', height: '150px'}, menu);
+        this.settings = Object.assign({mode: false, placeholder: '未选择', height: '150px',useSearch:true},settings);
         selected = selected.filter(d=>{
             if(select[d] === undefined)return false;
             return true;
@@ -355,18 +355,19 @@ window.ComponentDot = class {
                 }
             });
             queue.forEach((D) => D.click());
-            if (this.menu.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
+            if (this.settings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
         });
-        if (this.menu.mode === false) {
+        if (this.settings.mode === false) {
             this.make(selected, select);
         } else {
-            this.menu_placeholder = this.menu.placeholder;
+            this.menu_placeholder = this.settings.placeholder;
             this.menuMake(selected, select);
         }
+        if (this.settings.useSearch === false) return;
         let search = this.DOM.querySelector(`.dot-search`);
         search.addEventListener('input', () => {
             setTimeout(() => {
-                this.search(search, this.menu.mode);
+                this.search(search, this.settings.mode);
             }, 500);
         });
     }
@@ -377,8 +378,11 @@ window.ComponentDot = class {
             if (!select.hasOwnProperty(i)) continue;
             select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
-
-        let html = `<div class="dlp dlp-dot" ><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
+        let search = '';
+        if (this.settings.useSearch){
+            search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
+        }
+        let html = `<div class="dlp dlp-dot" ><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
 <input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.SELECTED_DOM = document.querySelector(`#${this.name}  .dot-selected`);
@@ -409,7 +413,7 @@ window.ComponentDot = class {
 
         let list = document.createElement('div');
         list.className = 'list dlp-scroll';
-        list.style.maxHeight = this.menu.height;
+        list.style.maxHeight = this.settings.height;
 
         let check = _component.check;
         check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
@@ -446,8 +450,10 @@ window.ComponentDot = class {
         }
 
         menu.append(menu_select);
-        search_box.append(input);
-        menu_list.append(search_box);
+        if(this.settings.useSearch === true) {
+            search_box.append(input);
+            menu_list.append(search_box);
+        }
         menu_list.append(list);
         menu.append(menu_list);
         menu.addEventListener('click', () => {

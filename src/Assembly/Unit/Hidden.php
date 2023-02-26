@@ -11,7 +11,7 @@ class Hidden
 {
     private $column;
     private $value;
-    
+
     public function __construct(string $column, string $value)
     {
         $this->column = $column;

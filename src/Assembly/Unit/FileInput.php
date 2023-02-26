@@ -3,6 +3,8 @@
 
 namespace DLP\Assembly\Unit;
 
+use DLP\Tool\Assistant;
+
 /**
  * Class FileInput
  * @package DLP\Assembly\Unit
@@ -11,7 +13,7 @@ class FileInput
 {
     private $column;
     private $label;
-    private $width;
+    private $style;
     private $settings = [];
     private $initialPreview;
     private $attributes;
@@ -33,23 +35,22 @@ class FileInput
         $this->label = $label;
     }
 
-    public function fileType(array $types)
+    public function setStyle(array $styles)
     {
-        $this->fileType = array_merge($this->fileType,$types);
+        $styles = array_merge(['width' => '100%'], $styles);
+        $this->style = 'style="' . Assistant::arrayKv2String($styles) . '"';
         return $this;
     }
 
-    public function width(string $width)
+    public function fileType(array $types)
     {
-        $this->width = $width;
+        $this->fileType = array_merge($this->fileType, $types);
         return $this;
     }
 
     public function setAttribute(array $attributes)
     {
-        foreach ($attributes as $attribute=>$value){
-            $this->attributes .= " {$attribute}='{$value}'";
-        }
+        $this->attributes .= Assistant::arrayKv2String($attributes, '=', ' ');
         return $this;
     }
 
@@ -109,14 +110,10 @@ class FileInput
     public function compile()
     {
         $settings = $this->setInit();
-        $style = 'width:100%;';
-        if($this->width){
-            $style = "width:{$this->width};";
-        }
         return <<<EOF
 <div class="dlp dlp-form-row" style="align-items:center;">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <div class="dlp" style="{$style}"><input name='{$this->column}' multiple type='file' {$this->attributes} /></div>
+    <div class="dlp" {$this->style}><input name='{$this->column}' multiple type='file' {$this->attributes} /></div>
     <script>
     $('input[name="{$this->column}"]').fileinput(JSON.parse('{$settings}')).on('filebeforedelete', function () {
         return new Promise(function(resolve, reject) {

@@ -133,10 +133,7 @@ class Wing
 
     public function form(array $attributes = [])
     {
-        $attrs = '';
-        foreach ($attributes as $attribute => $value) {
-            $attrs .= " {$attribute}='{$value}'";
-        }
+        $attrs = Assistant::arrayKv2String($attributes, '=', ' ');
         $this->form = <<<EOF
 <form class="dlp" {$attrs}>
     <div>%s</div>

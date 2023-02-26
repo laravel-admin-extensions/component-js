@@ -14,6 +14,7 @@ class FileInput
     private $column;
     private $label;
     private $style;
+    private $pure = false;
     private $settings = [];
     private $initialPreview;
     private $attributes;
@@ -66,6 +67,11 @@ class FileInput
         return $this;
     }
 
+    public function pure()
+    {
+        $this->pure = true;
+    }
+
     private function setInit()
     {
         $file_input_settings = [
@@ -110,37 +116,44 @@ class FileInput
     public function compile()
     {
         $settings = $this->setInit();
+        $content = <<<EOF
+<div class="dlp" {$this->style}><input name='{$this->column}' multiple type='file' {$this->attributes} /></div>
+<script>
+$('input[name="{$this->column}"]').fileinput(JSON.parse('{$settings}')).on('filebeforedelete', function () {
+    return new Promise(function(resolve, reject) {
+            var remove = resolve;
+            swal({
+                title: "确认删除?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确认",
+                showLoaderOnConfirm: true,
+                cancelButtonText: "取消",
+                preConfirm: function() {
+                    return new Promise(function(resolve) {
+                        resolve(remove());
+                    });
+                }
+            });
+    });
+}).on("filebatchselected", function (event, files) {
+    if(files.length == 0)return;
+    $(this).fileinput("upload");
+}).on('fileerror', function (event, data, msg) {
+    console.error(event, data, msg);
+    alert(msg);
+});
+</script>
+EOF;
+        if($this->pure){
+            return $content;
+        }
+
         return <<<EOF
 <div class="dlp dlp-form-row" style="align-items:center;">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <div class="dlp" {$this->style}><input name='{$this->column}' multiple type='file' {$this->attributes} /></div>
-    <script>
-    $('input[name="{$this->column}"]').fileinput(JSON.parse('{$settings}')).on('filebeforedelete', function () {
-        return new Promise(function(resolve, reject) {
-                var remove = resolve;
-                swal({
-                    title: "确认删除?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "确认",
-                    showLoaderOnConfirm: true,
-                    cancelButtonText: "取消",
-                    preConfirm: function() {
-                        return new Promise(function(resolve) {
-                            resolve(remove());
-                        });
-                    }
-                });
-        });
-    }).on("filebatchselected", function (event, files) {
-        if(files.length == 0)return;
-        $(this).fileinput("upload");
-    }).on('fileerror', function (event, data, msg) {
-        console.error(event, data, msg);
-        alert(msg);
-    });
-    </script>
+    {$content}
 </div>
 EOF;
     }

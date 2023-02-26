@@ -11,6 +11,7 @@ use DLP\Tool\Assistant;
  */
 abstract class Input
 {
+    protected $pure = false;
     protected $type = 'text';
     protected $column;
     protected $label;
@@ -81,6 +82,11 @@ abstract class Input
     {
         $this->settings[] = 'min={$min} max={$max}';
         return $this;
+    }
+
+    public function pure()
+    {
+        $this->pure = true;
     }
 
     abstract public function compile();

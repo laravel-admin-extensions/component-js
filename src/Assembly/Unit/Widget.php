@@ -13,6 +13,7 @@ abstract class Widget
 {
     protected $column;
     protected $label;
+    protected $pure = false;
     protected $settings = [];
 
     public function __construct(string $column, string $label)
@@ -37,6 +38,11 @@ abstract class Widget
     {
         $this->settings[] = 'style="' . Assistant::arrayKv2String($styles) . '"';
         return $this;
+    }
+
+    public function pure()
+    {
+        $this->pure = true;
     }
 
     abstract public function compile();

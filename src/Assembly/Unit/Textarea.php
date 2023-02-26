@@ -29,10 +29,16 @@ class Textarea extends Input
     public function compile()
     {
         $this->settings = (string)join(' ', $this->settings);
+
+        $content = <<<EOF
+<textarea name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}>{$this->value}</textarea>
+EOF;
+        if($this->pure) return $content;
+
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <textarea name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}>{$this->value}</textarea>
+    {$content}
 </div>
 EOF;
     }

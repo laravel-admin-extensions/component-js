@@ -17,10 +17,15 @@ class Text extends Input
     public function compile()
     {
         $this->settings = (string)join(' ', $this->settings);
+        $content = <<<EOF
+<input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->settings}/>
+EOF;
+        if($this->pure) return $content;
+
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->settings}/>
+    {$content}
 </div>
 EOF;
     }

@@ -56,13 +56,18 @@ class Select extends Widget
     public function compile()
     {
         $this->settings = (string)join(' ', $this->settings);
+        $content = <<<EOF
+<div id="{$this->column}" {$this->settings}></div>
+<script>
+new ComponentDot("{$this->column}",{$this->select},{$this->selected},{$this->limit},{mode: true, placeholder: "{$this->placeholder}", height: "{$this->menuHeight}",useSearch:{$this->useSearch}});
+</script>
+EOF;
+        if($this->pure) return $content;
+
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    <div id="{$this->column}" {$this->settings}></div>
-    <script>
-    new ComponentDot("{$this->column}",{$this->select},{$this->selected},{$this->limit},{mode: true, placeholder: "{$this->placeholder}", height: "{$this->menuHeight}",useSearch:{$this->useSearch}});
-    </script>
+    {$content}
 </div>
 EOF;
     }

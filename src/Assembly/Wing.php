@@ -12,6 +12,7 @@ use DLP\Assembly\Unit\Select;
 use DLP\Assembly\Unit\Dot;
 use DLP\Assembly\Unit\Text;
 use DLP\Assembly\Unit\Textarea;
+use DLP\Tool\Assistant;
 
 /**
  * Class Wing
@@ -133,6 +134,7 @@ class Wing
 
     public function form(array $attributes = [])
     {
+        $attributes = array_merge(['accept-charset'=>'UTF-8','enctype'=>'multipart/form-data'],$attributes);
         $attrs = Assistant::arrayKv2String($attributes, '=', ' ');
         $this->form = <<<EOF
 <form class="dlp" {$attrs}>

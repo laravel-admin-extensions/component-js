@@ -16,7 +16,10 @@ abstract class Input
     protected $column;
     protected $label;
     protected $value;
-    protected $settings = [];
+    protected $style = [];
+    protected $attribute = [];
+    protected $enumerate = [];
+    protected $annotation;
 
     public function __construct(string $column, string $label)
     {
@@ -38,55 +41,63 @@ abstract class Input
 
     public function readOnly()
     {
-        $this->settings[] = 'readonly';
+        $this->enumerate[] = 'readonly';
         return $this;
     }
 
     public function required()
     {
-        $this->settings[] = 'required';
+        $this->enumerate[] = 'required';
         return $this;
     }
 
     public function disabled()
     {
-        $this->settings[] = 'disabled';
+        $this->enumerate[] = 'disabled';
         return $this;
     }
 
     public function setAttribute(array $attributes)
     {
-        $this->settings[] = Assistant::arrayKv2String($attributes, '=', ' ');
+        $this->attribute = array_merge($this->attribute,$attributes);
         return $this;
     }
 
     public function setStyle(array $styles)
     {
-        $this->settings[] = 'style="' . Assistant::arrayKv2String($styles) . '"';
+        $this->style = array_merge($this->style,$styles);
         return $this;
     }
 
-    public function maxlength($len)
+    public function maxlength(int $len)
     {
-        $this->settings[] = 'maxlength={$len}';
+        $this->enumerate[] = "maxlength={$len}";
         return $this;
     }
 
-    public function minlength($len)
+    public function minlength(int $len)
     {
-        $this->settings[] = 'minlength={$len}';
+        $this->enumerate[] = "minlength={$len}";
         return $this;
     }
 
-    public function range($min, $max)
+    public function range(int $min,int $max)
     {
-        $this->settings[] = 'min={$min} max={$max}';
+        $this->enumerate[] = "min={$min} max={$max}";
         return $this;
     }
 
     public function pure()
     {
         $this->pure = true;
+    }
+    
+    public function annotate()
+    {
+        $style = Assistant::arrayKv2String($this->style);
+        $attribute = Assistant::arrayKv2String($this->attribute,'=',' ');
+        $enumerate = join(' ',$this->enumerate);
+        $this->annotation = "{$attribute} {$enumerate} style=\"{$style}\"";
     }
 
     abstract public function compile();

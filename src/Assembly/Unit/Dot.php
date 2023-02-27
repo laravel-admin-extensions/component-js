@@ -41,9 +41,9 @@ class Dot extends Widget
 
     public function compile()
     {
-        $this->settings = (string)join(' ', $this->settings);
+        $this->annotate();
         $content = <<<EOF
-<div id="{$this->column}" {$this->settings}></div>
+<div id="{$this->column}" {$this->annotation}></div>
 <script>
 new ComponentDot("{$this->column}",{$this->select},{$this->selected},{$this->limit},{useSearch:{$this->useSearch}});
 </script>

@@ -28,10 +28,9 @@ class Textarea extends Input
 
     public function compile()
     {
-        $this->settings = (string)join(' ', $this->settings);
-
+        $this->annotate();
         $content = <<<EOF
-<textarea name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->settings}>{$this->value}</textarea>
+<textarea name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->annotation}>{$this->value}</textarea>
 EOF;
         if($this->pure) return $content;
 

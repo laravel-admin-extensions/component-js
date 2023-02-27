@@ -16,9 +16,9 @@ class Text extends Input
 
     public function compile()
     {
-        $this->settings = (string)join(' ', $this->settings);
+        $this->annotate();
         $content = <<<EOF
-<input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->settings}/>
+<input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->annotation}/>
 EOF;
         if($this->pure) return $content;
 

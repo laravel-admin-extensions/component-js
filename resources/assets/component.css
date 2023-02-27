@@ -316,7 +316,6 @@
     margin: 15px 10px;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
-    flex: auto;
     color: #0c0c0c;
 }
 .dlp-form-row>textarea{

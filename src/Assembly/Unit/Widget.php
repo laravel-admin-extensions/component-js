@@ -14,7 +14,10 @@ abstract class Widget
     protected $column;
     protected $label;
     protected $pure = false;
-    protected $settings = [];
+    protected $style = [];
+    protected $attribute = [];
+    protected $enumerate = [];
+    protected $annotation;
 
     public function __construct(string $column, string $label)
     {
@@ -24,25 +27,33 @@ abstract class Widget
 
     public function required()
     {
-        $this->settings[] = 'required';
+        $this->enumerate[] = 'required';
         return $this;
     }
 
     public function setAttribute(array $attributes)
     {
-        $this->settings[] = Assistant::arrayKv2String($attributes, '=', ' ');
+        $this->attribute = array_merge($this->attribute,$attributes);
         return $this;
     }
 
     public function setStyle(array $styles)
     {
-        $this->settings[] = 'style="' . Assistant::arrayKv2String($styles) . '"';
+        $this->style = array_merge($this->style,$styles);
         return $this;
     }
 
     public function pure()
     {
         $this->pure = true;
+    }
+
+    public function annotate()
+    {
+        $style = Assistant::arrayKv2String($this->style);
+        $attribute = Assistant::arrayKv2String($this->attribute,'=',' ');
+        $enumerate = join(' ',$this->enumerate);
+        $this->annotation = "{$attribute} {$enumerate} style=\"{$style}\"";
     }
 
     abstract public function compile();

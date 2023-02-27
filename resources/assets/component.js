@@ -405,11 +405,16 @@ window.ComponentDot = class {
 
         let menu_list = document.createElement('div');
         menu_list.className = 'menu-list';
-        let search_box = document.createElement('div');
-        search_box.className = 'search-box';
-        let input = document.createElement('input');
-        input.className = 'dlp dlp-input dot-search';
-        input.setAttribute('placeholder', '搜索');
+
+        let search_box;
+        let input;
+        if(this.settings.useSearch) {
+            search_box = document.createElement('div');
+            search_box.className = 'search-box';
+            input = document.createElement('input');
+            input.className = 'dlp dlp-input dot-search';
+            input.setAttribute('placeholder', '搜索');
+        }
 
         let list = document.createElement('div');
         list.className = 'list dlp-scroll';
@@ -461,8 +466,7 @@ window.ComponentDot = class {
         });
         menu.addEventListener('mouseleave', () => {
             menu_list.style.display = 'none';
-            let search = this.DOM.querySelector(`.dot-search`);
-            search.value = '';
+            if(this.settings.useSearch === true) this.DOM.querySelector(`.dot-search`).value = '';
             for (let node of this.CONTENT_DOM.childNodes) {
                 node.style.display = 'flex';
             }

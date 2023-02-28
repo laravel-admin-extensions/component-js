@@ -299,7 +299,7 @@
         ]).sortableAction().insertAction().updateAction().deleteAction().make();
 
     document.getElementById('test3').addEventListener('click', function () {
-        new ComponentPlane().make();
+        new ComponentPlane("<button>server</button>").bindSubmitEvent('button',{url:"xxx"}).appendF().appendX().make();
     });
     new ComponentCascadeDot('test4', China, [2261,2262,2263]).useSearch().trigger(function (select,insert,del) {
         console.log(select,insert,del)

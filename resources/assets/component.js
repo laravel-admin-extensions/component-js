@@ -1474,19 +1474,23 @@ window.ComponentPlane = class {
     WIDTH;
     HEIGHT;
     FULLSCREEN;
-    constructor(content, xhr = {}, options = {}) {
-        if(content instanceof HTMLElement){
-            this.content = content;
+    XHR;
+    CONTENT;
+    DELAY_BIND = [];
+    constructor(content, options = {}) {
+        if(typeof content === 'object' && content.hasOwnProperty('url')){
+            this.XHR = content;
+            this.XHR = Object.assign({
+                method: 'GET',
+                data: {},
+                callback: null,
+            }, content);
+        }else if(typeof content === 'string' || content instanceof HTMLElement) {
+            this.CONTENT = content;
         }else {
-            this.URL = content;
+            console.error('type of content error!');
         }
-        /*this.XHR = Object.assign({
-            url: this.URL,
-            method: 'POST',
-            listener: null,
-            event: 'click',
-            callback: null,
-        }, xhr);*/
+
         this.OPTIONS = Object.assign({
             w: 0.8,
             h: 0.8,
@@ -1518,8 +1522,24 @@ window.ComponentPlane = class {
         this.DOM = Plane;
         this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
 
-        this._submitEvent = function(element) {
-            let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
+        this._xhrContent = function () {
+            _component.loading(this.MODEL_BODY_DOM);
+            let object = this;
+            _component.request({
+                url: this.XHR.url,
+                data:this.XHR.data,
+                method: this.XHR.method,
+                callback: function (response) {
+                    _component.loading(object.MODEL_BODY_DOM, true);
+                    let fragment = document.createRange().createContextualFragment(response);
+                    object.MODEL_BODY_DOM.appendChild(fragment);
+                    this._delayBind();
+                }
+            });
+        };
+
+        this._submitEvent = function(element,xhr){
+            let form = this.DOM.querySelector('form.dlp');
             let formdata = new FormData(form);
             let flag = false;
             for (let pair of formdata.entries()) {
@@ -1550,12 +1570,12 @@ window.ComponentPlane = class {
             element.setAttribute('disabled', 'disabled');
             element.innerText = '提交中...';
             _component.request({
-                url: this.XHR.url,
-                method: this.XHR.method,
+                url: xhr.url,
+                method: xhr.method,
                 data: formdata,
                 callback: (response) => {
-                    if (typeof this.XHR.callback == 'function') {
-                        this.XHR.callback(response);
+                    if (typeof xhr.callback == 'function') {
+                        xhr.callback(response);
                         return;
                     }
                     if (!response) return;
@@ -1570,25 +1590,20 @@ window.ComponentPlane = class {
                 }
             });
         };
-        this._xhrContent = function () {
-            _component.loading(this.MODEL_BODY_DOM);
-            let object = this;
-            _component.request({
-                url: this.URL,
-                method: 'GET',
-                callback: function (response) {
-                    _component.loading(object.MODEL_BODY_DOM, true);
-                    let fragment = document.createRange().createContextualFragment(response);
-                    object.MODEL_BODY_DOM.appendChild(fragment);
-                    let listener = object.XHR.listener;
-                    if (typeof listener === 'function') {
-                        let target = listener(object.MODEL_BODY_DOM);
-                        if (target instanceof HTMLElement) {
-                            target.addEventListener(object.XHR.event, ()=>object._submitEvent(target), false);
-                        }
+
+        this._delayBind = function () {
+            for(let delay of this.DELAY_BIND){
+                try {
+                    let dom = this.DOM.querySelector(delay.selector);
+                    if(delay.trigger === 'submit'){
+                        this._submitEvent(dom,delay.event);
+                        continue;
                     }
+                    dom.addEventListener(delay.trigger,()=>delay.event(this.DOM));
+                }catch (e) {
+                    console.error('cannot find document by selector :'+delay.selector);
                 }
-            });
+            }
         }
     }
 
@@ -1639,12 +1654,28 @@ window.ComponentPlane = class {
         return this;
     }
 
-    bindEvent(dom,event=function () {}){
+    bindSubmitEvent(selector,xhr={url:'',method:'POST',data:{},callback:null}){
+        xhr = Object.assign({url:'',method:'POST',data:{},callback:null}, xhr);
+        this.DELAY_BIND.push({selector:selector,trigger:'submit',event:xhr});
+        return this;
+    }
 
+    bindEvent(selector,trigger='click',event=function () {}){
+        this.DELAY_BIND.push({selector:selector,trigger:trigger,event:event});
+        return this;
     }
 
     make(){
-
+        if(this.XHR){
+            this._xhrContent()
+        }else {
+            if(this.CONTENT instanceof HTMLElement){
+                this.MODEL_BODY_DOM.append(this.CONTENT);
+                return;
+            }
+            this.MODEL_BODY_DOM.innerHTML = this.CONTENT;
+            this._delayBind();
+        }
     }
 };
 

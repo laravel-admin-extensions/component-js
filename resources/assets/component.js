@@ -321,7 +321,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, select, selected, limit = 0, settings = {}) {
+    constructor(name, select, selected, limit = 0) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -337,7 +337,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.settings = Object.assign({mode: false, placeholder: '未选择', height: '150px',useSearch:true},settings);
+
         selected = selected.filter(d=>{
             if(select[d] === undefined)return false;
             return true;
@@ -346,40 +346,260 @@ window.ComponentDot = class {
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
-        setTimeout(() => {
-            let queue = [];
-            this.CONTENT_DOM.childNodes.forEach((D) => {
-                let id = parseInt(D.getAttribute('data-id'));
-                if (selected.indexOf(id) !== -1) {
-                    queue.push(D);
+        this._modSettings = {mode: false};
+        this._useSearchMod = false;
+        this._triggerEvent = null;
+
+        this._tagSelect = function(element) {
+            if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
+                this.SELECTED_DOM.firstChild.click();
+            }
+            let clone = element.cloneNode(true);
+            clone.addEventListener('click', ()=>this._tagCancel(clone), false);
+            this.SELECTED_DOM.appendChild(clone);
+            element.remove();
+            this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
+            this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
+        };
+
+        this._tagCancel = function(element) {
+            let clone = element.cloneNode(true);
+            clone.addEventListener('click', ()=>this._tagSelect(clone), false);
+            this.CONTENT_DOM.appendChild(clone);
+            element.remove();
+            this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
+        };
+
+        this._tagCal = function(id, operate) {
+            let index = this.select_data.indexOf(id);
+            if (operate === this.MODE.insert) {
+                if (index === -1) {
+                    this.select_data.push(id);
+                    this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
-            });
-            queue.forEach((D) => D.click());
-            if (this.settings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
-        });
-        if (this.settings.mode === false) {
-            this.make(selected, select);
-        } else {
-            this.menu_placeholder = this.settings.placeholder;
-            this.menuMake(selected, select);
-        }
-        if (this.settings.useSearch === false) return;
-        let search = this.DOM.querySelector(`.dot-search`);
-        search.addEventListener('input', () => {
+                if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
+                    this.insert_data.push(id);
+                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                }
+                index = this.delete_data.indexOf(id);
+                if (index !== -1) {
+                    this.delete_data.splice(index, 1);
+                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                }
+            } else {
+                if (index !== -1) {
+                    this.select_data.splice(index, 1);
+                    this.selectInputDOM.value = JSON.stringify(this.select_data);
+                }
+                if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
+                    this.delete_data.push(id);
+                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                }
+                index = this.insert_data.indexOf(id);
+                if (index !== -1) {
+                    this.insert_data.splice(index, 1);
+                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                }
+            }
+            if (typeof this._triggerEvent == 'function'){
+                this._triggerEvent(this.select_data,this.insert_data,this.delete_data);
+            }
+        };
+
+        this._search = function(search) {
+            if (this._modSettings.mode) {
+                if (search.value === '') {
+                    for (let node of this.CONTENT_DOM.childNodes) {
+                        node.style.display = 'flex';
+                    }
+                    return;
+                }
+                for (let id in this.select) {
+                    if (!this.select.hasOwnProperty(id)) continue;
+                    let text = this.select[id];
+                    let line = this.id_line_hash[id];
+                    if (text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1) {
+                        this.CONTENT_DOM.childNodes[line].style.display = 'flex';
+                    } else {
+                        this.CONTENT_DOM.childNodes[line].style.display = 'none';
+                    }
+                }
+                return;
+            }
+            if (search.value === '') {
+                if (this.SELECT_COVER_DOM instanceof HTMLElement) {
+                    let elements = [];
+                    this.SELECT_COVER_DOM.childNodes.forEach((D) => {
+                        elements.push(D);
+                    });
+                    this.CONTENT_DOM.append(...elements);
+                    this.SELECT_COVER_DOM.remove();
+                    this.SELECT_COVER_DOM = null;
+                }
+                return;
+            }
+            if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
+                this.SELECT_COVER_DOM = document.createElement('div');
+                this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
+                this.CONTENT_DOM.parentNode.appendChild(this.SELECT_COVER_DOM);
+            } else {
+                let elements = [];
+                this.SELECT_COVER_DOM.childNodes.forEach((D) => {
+                    elements.push(D);
+                });
+                this.CONTENT_DOM.append(...elements);
+            }
+            let elements = [];
+            for (let element of this.CONTENT_DOM.childNodes) {
+                if (element.className.indexOf('dlp-label') === -1) {
+                    continue;
+                }
+                if (element.innerText.indexOf(search.value) !== -1 || search.value.indexOf(element.innerText) !== -1) {
+                    elements.push(element);
+                }
+            }
+            this.SELECT_COVER_DOM.append(...elements);
+        };
+
+        this._menuSelect = function(select) {
+            if (this.limit === 1) {
+                this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
+                return;
+            }
+            let html = '';
+            for (let id of this.select_data) {
+                html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
+            }
+            this.SELECTED_DOM.innerHTML = html;
+        };
+
+        this._bindEvent = function(){
             setTimeout(() => {
-                this.search(search, this.settings.mode);
-            }, 500);
-        });
+                let queue = [];
+                this.CONTENT_DOM.childNodes.forEach((D) => {
+                    let id = parseInt(D.getAttribute('data-id'));
+                    if (selected.indexOf(id) !== -1) {
+                        queue.push(D);
+                    }
+                });
+                queue.forEach((D) => D.click());
+                if (this._modSettings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
+            });
+            if (this._useSearchMod === false) return;
+            let search = this.DOM.querySelector(`.dot-search`);
+            search.addEventListener('input', () => {
+                setTimeout(() => {
+                    this._search(search);
+                }, 500);
+            });
+        };
+        return this;
     }
 
-    make(selected, select) {
+    mod(settings= {mode: false, placeholder: '未选择', height: '150px'}){
+        this._modSettings = Object.assign({mode: false, placeholder: '未选择', height: '150px',useSearch:true},settings);
+        return this;
+    }
+
+    useSearch(){
+        this._useSearchMod = true;
+        return this;
+    }
+
+    trigger(f = function () {}){
+        this._triggerEvent = f;
+        return this;
+    }
+
+    make() {
+        let selected = this.selected_data;
+        let select = this.select;
+        if(this._modSettings.mode === true){
+            let menu = document.createElement('div');
+            menu.className = 'dlp-dot-menu';
+            let menu_select = document.createElement('div');
+            menu_select.className = 'dlp-input dlp-dot-menu-select';
+            menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${this._modSettings.placeholder}</div><div>▼</div>`);
+            let menu_list = document.createElement('div');
+            menu_list.className = 'menu-list';
+            let list = document.createElement('div');
+            list.className = 'list dlp-scroll';
+            list.style.maxHeight = this._modSettings.height;
+            let check = _component.check;
+            check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
+            this.id_line_hash = [];
+            let line = 0;
+            for (let id in select) {
+                if (!select.hasOwnProperty(id)) continue;
+                this.id_line_hash[id] = line;
+                line++;
+                let option = document.createElement('div');
+                option.className = 'option';
+                option.setAttribute('data-id', id);
+                option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+                option.addEventListener('click', () => {
+                    id = parseInt(id);
+                    if (this.select_data.indexOf(id) !== -1) {
+                        /*cancel*/
+                        this._tagCal(id, this.MODE.delete);
+                        option.classList.remove('option-active');
+                        if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                        this._menuSelect(select);
+                        if (this.select_data.length === 0) this.SELECTED_DOM.textContent = this._modSettings.placeholder;
+                        return;
+                    }
+                    if (this.limit > 0 && this.select_data.length >= this.limit) {
+                        list.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
+                    }
+                    option.classList.add('option-active');
+                    this._tagCal(id, this.MODE.insert);
+                    (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
+                    this._menuSelect(select);
+                }, false);
+                list.append(option);
+            }
+
+            menu.append(menu_select);
+            if(this._useSearchMod === true) {
+                let search_box = document.createElement('div');
+                search_box.className = 'search-box';
+                let input = document.createElement('input');
+                input.className = 'dlp dlp-input dot-search';
+                input.setAttribute('placeholder', '搜索');
+                search_box.append(input);
+                menu_list.append(search_box);
+            }
+            menu_list.append(list);
+            menu.append(menu_list);
+            menu.addEventListener('click', () => {
+                menu_list.style.display = 'flex';
+            });
+            menu.addEventListener('mouseleave', () => {
+                menu_list.style.display = 'none';
+                if(this._useSearchMod === true) this.DOM.querySelector(`.dot-search`).value = '';
+                for (let node of this.CONTENT_DOM.childNodes) {
+                    node.style.display = 'flex';
+                }
+            });
+
+            this.DOM.append(menu);
+            this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
+            this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`).firstElementChild;
+            this.CONTENT_DOM = document.querySelector(`#${this.name}  .list`);
+            this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
+            this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
+            this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
+
+            this._bindEvent();
+            return
+        }
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
             select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
         let search = '';
-        if (this.settings.useSearch){
+        if (this._useSearchMod){
             search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
         }
         let html = `<div class="dlp dlp-dot" ><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
@@ -391,214 +611,9 @@ window.ComponentDot = class {
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagSelect.bind(this, element), false);
+            element.addEventListener('click', ()=>this._tagSelect(element), false);
         }
-    }
-
-    menuMake(selected, select) {
-        let menu = document.createElement('div');
-        menu.className = 'dlp-dot-menu';
-
-        let menu_select = document.createElement('div');
-        menu_select.className = 'dlp-input dlp-dot-menu-select';
-        menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${this.menu_placeholder}</div><div>▼</div>`);
-
-        let menu_list = document.createElement('div');
-        menu_list.className = 'menu-list';
-
-        let search_box;
-        let input;
-        if(this.settings.useSearch) {
-            search_box = document.createElement('div');
-            search_box.className = 'search-box';
-            input = document.createElement('input');
-            input.className = 'dlp dlp-input dot-search';
-            input.setAttribute('placeholder', '搜索');
-        }
-
-        let list = document.createElement('div');
-        list.className = 'list dlp-scroll';
-        list.style.maxHeight = this.settings.height;
-
-        let check = _component.check;
-        check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
-        this.id_line_hash = [];
-        let line = 0;
-        for (let id in select) {
-            if (!select.hasOwnProperty(id)) continue;
-            this.id_line_hash[id] = line;
-            line++;
-            let option = document.createElement('div');
-            option.className = 'option';
-            option.setAttribute('data-id', id);
-            option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
-            option.addEventListener('click', () => {
-                id = parseInt(id);
-                if (this.select_data.indexOf(id) !== -1) {
-                    /*cancel*/
-                    this.tagCal(id, this.MODE.delete);
-                    option.classList.remove('option-active');
-                    if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
-                    this.menuSelect(select);
-                    if (this.select_data.length === 0) this.SELECTED_DOM.textContent = this.menu_placeholder;
-                    return;
-                }
-                if (this.limit > 0 && this.select_data.length >= this.limit) {
-                    list.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
-                }
-                option.classList.add('option-active');
-                this.tagCal(id, this.MODE.insert);
-                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                this.menuSelect(select);
-            }, false);
-            list.append(option);
-        }
-
-        menu.append(menu_select);
-        if(this.settings.useSearch === true) {
-            search_box.append(input);
-            menu_list.append(search_box);
-        }
-        menu_list.append(list);
-        menu.append(menu_list);
-        menu.addEventListener('click', () => {
-            menu_list.style.display = 'flex';
-        });
-        menu.addEventListener('mouseleave', () => {
-            menu_list.style.display = 'none';
-            if(this.settings.useSearch === true) this.DOM.querySelector(`.dot-search`).value = '';
-            for (let node of this.CONTENT_DOM.childNodes) {
-                node.style.display = 'flex';
-            }
-        });
-
-        this.DOM.append(menu);
-        this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
-        this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`).firstElementChild;
-        this.CONTENT_DOM = document.querySelector(`#${this.name}  .list`);
-        this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
-        this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
-        this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
-    }
-
-    menuSelect(select) {
-        if (this.limit === 1) {
-            this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
-            return;
-        }
-        let html = '';
-        for (let id of this.select_data) {
-            html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
-        }
-        this.SELECTED_DOM.innerHTML = html;
-    }
-
-    tagSelect(element) {
-        if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
-            this.SELECTED_DOM.firstChild.click();
-        }
-        let clone = element.cloneNode(true);
-        clone.addEventListener('click', this.tagCancel.bind(this, clone), false);
-        this.SELECTED_DOM.appendChild(clone);
-        element.remove();
-        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
-        this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
-    }
-
-    tagCancel(element) {
-        let clone = element.cloneNode(true);
-        clone.addEventListener('click', this.tagSelect.bind(this, clone), false);
-        this.CONTENT_DOM.appendChild(clone);
-        element.remove();
-        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
-    }
-
-    tagCal(id, operate) {
-        let index = this.select_data.indexOf(id);
-        if (operate === this.MODE.insert) {
-            if (index === -1) {
-                this.select_data.push(id);
-                this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
-                this.insert_data.push(id);
-                this.insertInputDOM.value = JSON.stringify(this.insert_data);
-            }
-            index = this.delete_data.indexOf(id);
-            if (index !== -1) {
-                this.delete_data.splice(index, 1);
-                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
-            }
-        } else {
-            if (index !== -1) {
-                this.select_data.splice(index, 1);
-                this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
-                this.delete_data.push(id);
-                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
-            }
-            index = this.insert_data.indexOf(id);
-            if (index !== -1) {
-                this.insert_data.splice(index, 1);
-                this.insertInputDOM.value = JSON.stringify(this.insert_data);
-            }
-        }
-    }
-
-    search(search, menu_mode) {
-        if (menu_mode) {
-            if (search.value === '') {
-                for (let node of this.CONTENT_DOM.childNodes) {
-                    node.style.display = 'flex';
-                }
-                return;
-            }
-            for (let id in this.select) {
-                if (!this.select.hasOwnProperty(id)) continue;
-                let text = this.select[id];
-                let line = this.id_line_hash[id];
-                if (text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1) {
-                    this.CONTENT_DOM.childNodes[line].style.display = 'flex';
-                } else {
-                    this.CONTENT_DOM.childNodes[line].style.display = 'none';
-                }
-            }
-            return;
-        }
-        if (search.value === '') {
-            if (this.SELECT_COVER_DOM instanceof HTMLElement) {
-                let elements = [];
-                this.SELECT_COVER_DOM.childNodes.forEach((D) => {
-                    elements.push(D);
-                });
-                this.CONTENT_DOM.append(...elements);
-                this.SELECT_COVER_DOM.remove();
-                this.SELECT_COVER_DOM = null;
-            }
-            return;
-        }
-        if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
-            this.SELECT_COVER_DOM = document.createElement('div');
-            this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
-            this.CONTENT_DOM.parentNode.appendChild(this.SELECT_COVER_DOM);
-        } else {
-            let elements = [];
-            this.SELECT_COVER_DOM.childNodes.forEach((D) => {
-                elements.push(D);
-            });
-            this.CONTENT_DOM.append(...elements);
-        }
-        let elements = [];
-        for (let element of this.CONTENT_DOM.childNodes) {
-            if (element.className.indexOf('dlp-label') === -1) {
-                continue;
-            }
-            if (element.innerText.indexOf(search.value) !== -1 || search.value.indexOf(element.innerText) !== -1) {
-                elements.push(element);
-            }
-        }
-        this.SELECT_COVER_DOM.append(...elements);
+        this._bindEvent();
     }
 };
 

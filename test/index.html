@@ -224,9 +224,11 @@
         "49": "木南日菜",
         "50": "上原亜衣"
     };
-    new ComponentDot('test', test_data, [2, 5, 10]);
+    new ComponentDot('test', test_data, [2, 5, 10]).useSearch().trigger(function (select,insert,del) {
+        console.log(select,insert,del)
+    }).make();
 
-    new ComponentDot('test7', test_data,[2],3,{mode:true,placeholder: '选择女优',height:'120px'});
+    new ComponentDot('test7', test_data,[2],1).mod({mode:true,placeholder: '选择女优',height:'120px'}).make();
 
     new ComponentLine("test2", {
             "name": {"name": "名称", "type": "input"},

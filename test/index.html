@@ -238,14 +238,16 @@
                     enableTime: true,
                     dateFormat: "Y-m-d H:i",
                 }},
-            "is-small": {"name": "高清", "type": "select","options":{1:'是',2:'否'},"options_limit":1, "style": "width:60px"}
-        }, [{
+            "is-small": {"name": "高清", "type": "select","options":{1:'是',2:'否'},"limit":1,"useSearch":false, "style": "width:60px"}
+        }, [
+            {
             "name": "ごめんなさい、もう別れたいの…別れを拒む彼氏と結んだ《愛人》と言う名の従順契約 美乃すずめ",
             "url": "https://img.9618599.com/resources/javdb.com/6180fad2d93894236f287bb2/small_cover.jpg",
             "meta": "DLDSS-035",
             "time": "2021-05-14 00:00:00",
             "is-small": 1
-        }, {
+        },
+        {
             "name": "母姉W相姦 木下あずみ 沖田杏梨",
             "url": "https://img.9618599.com/resources//d41d8cd98f00b204e9800998ecf8427e/1eeef553b3a975f5.jpg",
             "meta": "MIMK-020",
@@ -294,10 +296,10 @@
                 "time": "2022-02-08 10:22:37",
                 "is-small": 1
             },
-        ]);
+        ]).sortableAction().insertAction().updateAction().deleteAction().make();
 
     document.getElementById('test3').addEventListener('click', function () {
-        new ComponentPlane();
+        new ComponentPlane().make();
     });
     new ComponentCascadeDot('test4', China, [2261,2262,2263]).useSearch().trigger(function (select,insert,del) {
         console.log(select,insert,del)

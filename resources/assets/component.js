@@ -321,7 +321,7 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(name, select, selected, limit = 0, settings = {}) {
+    constructor(name, select, selected, limit = 0) {
         if (!Array.isArray(selected)) {
             console.error('Dot param selected must be array!');
             return;
@@ -337,7 +337,7 @@ window.ComponentDot = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.settings = Object.assign({mode: false, placeholder: '未选择', height: '150px',useSearch:true},settings);
+
         selected = selected.filter(d=>{
             if(select[d] === undefined)return false;
             return true;
@@ -346,40 +346,260 @@ window.ComponentDot = class {
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
-        setTimeout(() => {
-            let queue = [];
-            this.CONTENT_DOM.childNodes.forEach((D) => {
-                let id = parseInt(D.getAttribute('data-id'));
-                if (selected.indexOf(id) !== -1) {
-                    queue.push(D);
+        this._modSettings = {mode: false};
+        this._useSearchMod = false;
+        this._triggerEvent = null;
+
+        this._tagSelect = function(element) {
+            if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
+                this.SELECTED_DOM.firstChild.click();
+            }
+            let clone = element.cloneNode(true);
+            clone.addEventListener('click', ()=>this._tagCancel(clone), false);
+            this.SELECTED_DOM.appendChild(clone);
+            element.remove();
+            this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
+            this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
+        };
+
+        this._tagCancel = function(element) {
+            let clone = element.cloneNode(true);
+            clone.addEventListener('click', ()=>this._tagSelect(clone), false);
+            this.CONTENT_DOM.appendChild(clone);
+            element.remove();
+            this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
+        };
+
+        this._tagCal = function(id, operate) {
+            let index = this.select_data.indexOf(id);
+            if (operate === this.MODE.insert) {
+                if (index === -1) {
+                    this.select_data.push(id);
+                    this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
-            });
-            queue.forEach((D) => D.click());
-            if (this.settings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
-        });
-        if (this.settings.mode === false) {
-            this.make(selected, select);
-        } else {
-            this.menu_placeholder = this.settings.placeholder;
-            this.menuMake(selected, select);
-        }
-        if (this.settings.useSearch === false) return;
-        let search = this.DOM.querySelector(`.dot-search`);
-        search.addEventListener('input', () => {
+                if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
+                    this.insert_data.push(id);
+                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                }
+                index = this.delete_data.indexOf(id);
+                if (index !== -1) {
+                    this.delete_data.splice(index, 1);
+                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                }
+            } else {
+                if (index !== -1) {
+                    this.select_data.splice(index, 1);
+                    this.selectInputDOM.value = JSON.stringify(this.select_data);
+                }
+                if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
+                    this.delete_data.push(id);
+                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                }
+                index = this.insert_data.indexOf(id);
+                if (index !== -1) {
+                    this.insert_data.splice(index, 1);
+                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                }
+            }
+            if (typeof this._triggerEvent == 'function'){
+                this._triggerEvent(this.select_data,this.insert_data,this.delete_data);
+            }
+        };
+
+        this._search = function(search) {
+            if (this._modSettings.mode) {
+                if (search.value === '') {
+                    for (let node of this.CONTENT_DOM.childNodes) {
+                        node.style.display = 'flex';
+                    }
+                    return;
+                }
+                for (let id in this.select) {
+                    if (!this.select.hasOwnProperty(id)) continue;
+                    let text = this.select[id];
+                    let line = this.id_line_hash[id];
+                    if (text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1) {
+                        this.CONTENT_DOM.childNodes[line].style.display = 'flex';
+                    } else {
+                        this.CONTENT_DOM.childNodes[line].style.display = 'none';
+                    }
+                }
+                return;
+            }
+            if (search.value === '') {
+                if (this.SELECT_COVER_DOM instanceof HTMLElement) {
+                    let elements = [];
+                    this.SELECT_COVER_DOM.childNodes.forEach((D) => {
+                        elements.push(D);
+                    });
+                    this.CONTENT_DOM.append(...elements);
+                    this.SELECT_COVER_DOM.remove();
+                    this.SELECT_COVER_DOM = null;
+                }
+                return;
+            }
+            if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
+                this.SELECT_COVER_DOM = document.createElement('div');
+                this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
+                this.CONTENT_DOM.parentNode.appendChild(this.SELECT_COVER_DOM);
+            } else {
+                let elements = [];
+                this.SELECT_COVER_DOM.childNodes.forEach((D) => {
+                    elements.push(D);
+                });
+                this.CONTENT_DOM.append(...elements);
+            }
+            let elements = [];
+            for (let element of this.CONTENT_DOM.childNodes) {
+                if (element.className.indexOf('dlp-label') === -1) {
+                    continue;
+                }
+                if (element.innerText.indexOf(search.value) !== -1 || search.value.indexOf(element.innerText) !== -1) {
+                    elements.push(element);
+                }
+            }
+            this.SELECT_COVER_DOM.append(...elements);
+        };
+
+        this._menuSelect = function(select) {
+            if (this.limit === 1) {
+                this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
+                return;
+            }
+            let html = '';
+            for (let id of this.select_data) {
+                html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
+            }
+            this.SELECTED_DOM.innerHTML = html;
+        };
+
+        this._bind = function(){
             setTimeout(() => {
-                this.search(search, this.settings.mode);
-            }, 500);
-        });
+                let queue = [];
+                this.CONTENT_DOM.childNodes.forEach((D) => {
+                    let id = parseInt(D.getAttribute('data-id'));
+                    if (selected.indexOf(id) !== -1) {
+                        queue.push(D);
+                    }
+                });
+                queue.forEach((D) => D.click());
+                if (this._modSettings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
+            });
+            if (this._useSearchMod === false) return;
+            let search = this.DOM.querySelector(`.dot-search`);
+            search.addEventListener('input', () => {
+                setTimeout(() => {
+                    this._search(search);
+                }, 500);
+            });
+        };
+        return this;
     }
 
-    make(selected, select) {
+    mod(settings= {mode: false, placeholder: '未选择', height: '150px'}){
+        this._modSettings = Object.assign({mode: false, placeholder: '未选择', height: '150px',useSearch:true},settings);
+        return this;
+    }
+
+    useSearch(){
+        this._useSearchMod = true;
+        return this;
+    }
+
+    trigger(f = function () {}){
+        this._triggerEvent = f;
+        return this;
+    }
+
+    make() {
+        let selected = this.selected_data;
+        let select = this.select;
+        if(this._modSettings.mode === true){
+            let menu = document.createElement('div');
+            menu.className = 'dlp-dot-menu';
+            let menu_select = document.createElement('div');
+            menu_select.className = 'dlp-input dlp-dot-menu-select';
+            menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${this._modSettings.placeholder}</div><div>▼</div>`);
+            let menu_list = document.createElement('div');
+            menu_list.className = 'menu-list';
+            let list = document.createElement('div');
+            list.className = 'list dlp-scroll';
+            list.style.maxHeight = this._modSettings.height;
+            let check = _component.check;
+            check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
+            this.id_line_hash = [];
+            let line = 0;
+            for (let id in select) {
+                if (!select.hasOwnProperty(id)) continue;
+                this.id_line_hash[id] = line;
+                line++;
+                let option = document.createElement('div');
+                option.className = 'option';
+                option.setAttribute('data-id', id);
+                option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+                option.addEventListener('click', () => {
+                    id = parseInt(id);
+                    if (this.select_data.indexOf(id) !== -1) {
+                        /*cancel*/
+                        this._tagCal(id, this.MODE.delete);
+                        option.classList.remove('option-active');
+                        if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                        this._menuSelect(select);
+                        if (this.select_data.length === 0) this.SELECTED_DOM.textContent = this._modSettings.placeholder;
+                        return;
+                    }
+                    if (this.limit > 0 && this.select_data.length >= this.limit) {
+                        list.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
+                    }
+                    option.classList.add('option-active');
+                    this._tagCal(id, this.MODE.insert);
+                    (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
+                    this._menuSelect(select);
+                }, false);
+                list.append(option);
+            }
+
+            menu.append(menu_select);
+            if(this._useSearchMod === true) {
+                let search_box = document.createElement('div');
+                search_box.className = 'search-box';
+                let input = document.createElement('input');
+                input.className = 'dlp dlp-input dot-search';
+                input.setAttribute('placeholder', '搜索');
+                search_box.append(input);
+                menu_list.append(search_box);
+            }
+            menu_list.append(list);
+            menu.append(menu_list);
+            menu.addEventListener('click', () => {
+                menu_list.style.display = 'flex';
+            });
+            menu.addEventListener('mouseleave', () => {
+                menu_list.style.display = 'none';
+                if(this._useSearchMod === true) this.DOM.querySelector(`.dot-search`).value = '';
+                for (let node of this.CONTENT_DOM.childNodes) {
+                    node.style.display = 'flex';
+                }
+            });
+
+            this.DOM.append(menu);
+            this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
+            this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`).firstElementChild;
+            this.CONTENT_DOM = document.querySelector(`#${this.name}  .list`);
+            this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
+            this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
+            this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
+
+            this._bind();
+            return
+        }
         let select_dom = '';
         for (let i in select) {
             if (!select.hasOwnProperty(i)) continue;
             select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
         let search = '';
-        if (this.settings.useSearch){
+        if (this._useSearchMod){
             search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
         }
         let html = `<div class="dlp dlp-dot" ><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
@@ -391,214 +611,9 @@ window.ComponentDot = class {
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', this.tagSelect.bind(this, element), false);
+            element.addEventListener('click', ()=>this._tagSelect(element), false);
         }
-    }
-
-    menuMake(selected, select) {
-        let menu = document.createElement('div');
-        menu.className = 'dlp-dot-menu';
-
-        let menu_select = document.createElement('div');
-        menu_select.className = 'dlp-input dlp-dot-menu-select';
-        menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${this.menu_placeholder}</div><div>▼</div>`);
-
-        let menu_list = document.createElement('div');
-        menu_list.className = 'menu-list';
-
-        let search_box;
-        let input;
-        if(this.settings.useSearch) {
-            search_box = document.createElement('div');
-            search_box.className = 'search-box';
-            input = document.createElement('input');
-            input.className = 'dlp dlp-input dot-search';
-            input.setAttribute('placeholder', '搜索');
-        }
-
-        let list = document.createElement('div');
-        list.className = 'list dlp-scroll';
-        list.style.maxHeight = this.settings.height;
-
-        let check = _component.check;
-        check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
-        this.id_line_hash = [];
-        let line = 0;
-        for (let id in select) {
-            if (!select.hasOwnProperty(id)) continue;
-            this.id_line_hash[id] = line;
-            line++;
-            let option = document.createElement('div');
-            option.className = 'option';
-            option.setAttribute('data-id', id);
-            option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
-            option.addEventListener('click', () => {
-                id = parseInt(id);
-                if (this.select_data.indexOf(id) !== -1) {
-                    /*cancel*/
-                    this.tagCal(id, this.MODE.delete);
-                    option.classList.remove('option-active');
-                    if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
-                    this.menuSelect(select);
-                    if (this.select_data.length === 0) this.SELECTED_DOM.textContent = this.menu_placeholder;
-                    return;
-                }
-                if (this.limit > 0 && this.select_data.length >= this.limit) {
-                    list.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
-                }
-                option.classList.add('option-active');
-                this.tagCal(id, this.MODE.insert);
-                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                this.menuSelect(select);
-            }, false);
-            list.append(option);
-        }
-
-        menu.append(menu_select);
-        if(this.settings.useSearch === true) {
-            search_box.append(input);
-            menu_list.append(search_box);
-        }
-        menu_list.append(list);
-        menu.append(menu_list);
-        menu.addEventListener('click', () => {
-            menu_list.style.display = 'flex';
-        });
-        menu.addEventListener('mouseleave', () => {
-            menu_list.style.display = 'none';
-            if(this.settings.useSearch === true) this.DOM.querySelector(`.dot-search`).value = '';
-            for (let node of this.CONTENT_DOM.childNodes) {
-                node.style.display = 'flex';
-            }
-        });
-
-        this.DOM.append(menu);
-        this.DOM.insertAdjacentHTML('beforeend', `<input name="${this.name}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`);
-        this.SELECTED_DOM = document.querySelector(`#${this.name}  .dlp-dot-menu-select`).firstElementChild;
-        this.CONTENT_DOM = document.querySelector(`#${this.name}  .list`);
-        this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
-        this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
-        this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
-    }
-
-    menuSelect(select) {
-        if (this.limit === 1) {
-            this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
-            return;
-        }
-        let html = '';
-        for (let id of this.select_data) {
-            html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
-        }
-        this.SELECTED_DOM.innerHTML = html;
-    }
-
-    tagSelect(element) {
-        if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
-            this.SELECTED_DOM.firstChild.click();
-        }
-        let clone = element.cloneNode(true);
-        clone.addEventListener('click', this.tagCancel.bind(this, clone), false);
-        this.SELECTED_DOM.appendChild(clone);
-        element.remove();
-        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
-        this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
-    }
-
-    tagCancel(element) {
-        let clone = element.cloneNode(true);
-        clone.addEventListener('click', this.tagSelect.bind(this, clone), false);
-        this.CONTENT_DOM.appendChild(clone);
-        element.remove();
-        this.tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
-    }
-
-    tagCal(id, operate) {
-        let index = this.select_data.indexOf(id);
-        if (operate === this.MODE.insert) {
-            if (index === -1) {
-                this.select_data.push(id);
-                this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
-                this.insert_data.push(id);
-                this.insertInputDOM.value = JSON.stringify(this.insert_data);
-            }
-            index = this.delete_data.indexOf(id);
-            if (index !== -1) {
-                this.delete_data.splice(index, 1);
-                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
-            }
-        } else {
-            if (index !== -1) {
-                this.select_data.splice(index, 1);
-                this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
-                this.delete_data.push(id);
-                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
-            }
-            index = this.insert_data.indexOf(id);
-            if (index !== -1) {
-                this.insert_data.splice(index, 1);
-                this.insertInputDOM.value = JSON.stringify(this.insert_data);
-            }
-        }
-    }
-
-    search(search, menu_mode) {
-        if (menu_mode) {
-            if (search.value === '') {
-                for (let node of this.CONTENT_DOM.childNodes) {
-                    node.style.display = 'flex';
-                }
-                return;
-            }
-            for (let id in this.select) {
-                if (!this.select.hasOwnProperty(id)) continue;
-                let text = this.select[id];
-                let line = this.id_line_hash[id];
-                if (text.indexOf(search.value) !== -1 || search.value.indexOf(text) !== -1) {
-                    this.CONTENT_DOM.childNodes[line].style.display = 'flex';
-                } else {
-                    this.CONTENT_DOM.childNodes[line].style.display = 'none';
-                }
-            }
-            return;
-        }
-        if (search.value === '') {
-            if (this.SELECT_COVER_DOM instanceof HTMLElement) {
-                let elements = [];
-                this.SELECT_COVER_DOM.childNodes.forEach((D) => {
-                    elements.push(D);
-                });
-                this.CONTENT_DOM.append(...elements);
-                this.SELECT_COVER_DOM.remove();
-                this.SELECT_COVER_DOM = null;
-            }
-            return;
-        }
-        if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
-            this.SELECT_COVER_DOM = document.createElement('div');
-            this.SELECT_COVER_DOM.className = 'dot-select dlp-scroll dot-select-cover';
-            this.CONTENT_DOM.parentNode.appendChild(this.SELECT_COVER_DOM);
-        } else {
-            let elements = [];
-            this.SELECT_COVER_DOM.childNodes.forEach((D) => {
-                elements.push(D);
-            });
-            this.CONTENT_DOM.append(...elements);
-        }
-        let elements = [];
-        for (let element of this.CONTENT_DOM.childNodes) {
-            if (element.className.indexOf('dlp-label') === -1) {
-                continue;
-            }
-            if (element.innerText.indexOf(search.value) !== -1 || search.value.indexOf(element.innerText) !== -1) {
-                elements.push(element);
-            }
-        }
-        this.SELECT_COVER_DOM.append(...elements);
+        this._bind();
     }
 };
 
@@ -609,39 +624,375 @@ window.ComponentCascadeDot = class {
     };
 
     constructor(name, select, selected, limit = 0) {
-        if (!Array.isArray(selected) || !Array.isArray(select)) {
-            console.error('CascadeDot param selected and select must be array!');
+        if (!Array.isArray(selected)) {
+            console.error('CascadeDot param selected must be array!');
             return;
         }
-        selected = selected.filter(d=>{
-            if(select[d] === undefined)return false;
-            return true;
-        });
+        if (!Array.isArray(select) || (typeof select[0] !== 'object' || Array.isArray(select[0]))) {
+            console.error('CascadeDot param select must be object such as [{"key":1,"val":"北京","nodes":[]},...] !');
+            return;
+        }
+
         this.name = name;
         this.limit = limit;
         this.DOM = document.getElementById(name);
+        this.select = select;
         this.selected_data = selected;
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
-        this.make().makeSelect(select);
-        setTimeout(() => {
-            this.selected_label_dom.forEach((D) => {
-                D.click();
+
+        this._makeSelect = function(select) {
+            this.dimensional_data = [];
+            this.selected_label_dom = [];
+            _component.dimensional(this.dimensional_data, select);
+            let object = this;
+            for (let stack in this.dimensional_data) {
+                if (!this.dimensional_data.hasOwnProperty(stack)) continue;
+                stack = parseInt(stack);
+                let data = this.dimensional_data[stack];
+                let stackDom = document.createElement('div');
+                stackDom.className = 'dot-cascade-stack dlp-scroll';
+                data.forEach((v, k) => {
+                    if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
+                        v.nodes = v.nodes.map((N) => N.key);
+                    } else {
+                        v.nodes = null;
+                        v.checked = false;
+                    }
+                    let div = document.createElement('div');
+                    div.className = 'dlp dlp-text dlp-label';
+                    div.insertAdjacentHTML('afterbegin', `<i class="left"></i><span>${v.val}</span><i class="right"></i>`);
+                    div.setAttribute('data-id', v.key);
+                    div.setAttribute('data-k', k);
+                    div.addEventListener('click', this._select.bind(this, div, stack));
+                    if (v.nodes !== null) {
+                        div.querySelector('i.left').insertAdjacentHTML('afterbegin', `${_component.caret_right}`);
+                        div.addEventListener("contextmenu", (e) => {
+                            if (e.target instanceof HTMLElement) e.target.click();
+                            e.preventDefault();
+                            let k = parseInt(div.getAttribute('data-k'));
+                            _component.contextmenu(e, [
+                                {
+                                    title: '全选', func: () => {
+                                        object._checkAll(stack + 1,
+                                            this.dimensional_data[stack][k].nodes, true);
+                                        if (e.target instanceof HTMLElement) e.target.click();
+                                    }
+                                },
+                                {
+                                    title: '取消', func: () => {
+                                        object._checkAll(stack + 1,
+                                            this.dimensional_data[stack][k].nodes, false);
+                                    }
+                                }
+                            ]);
+                        });
+                    } else {
+                        div.addEventListener("contextmenu", (e) => {
+                            e.preventDefault();
+                        });
+                    }
+                    stackDom.append(div);
+                    /*selected append*/
+                    let index = this.selected_data.indexOf(parseInt(v.key));
+                    if (v.checked !== false && index !== -1) {
+                        this.selected_data.splice(index, 1);
+                        return;
+                    }
+                    if (index !== -1) {
+                        this.selected_label_dom.push(div);
+                    }
+                });
+                this.CONTENT_DOM.append(stackDom);
+            }
+            this.STACKS = this.CONTENT_DOM.childNodes;
+        };
+
+        this._select = function(element, stack) {
+            let id = parseInt(element.getAttribute('data-id'));
+            let k = parseInt(element.getAttribute('data-k'));
+            let data = this.dimensional_data[stack][k];
+            let currentStackDocuments = this.STACKS[stack].childNodes;
+            let parentNode = data.parentNodes[data.parentNodes.length - 1];
+            if (data.checked === true) {
+                data.checked = false;
+                this._tagCal(id, this.MODE.delete);
+                if (data.nodes === null) element.querySelector('i.right').innerHTML = '';
+                for (let D of this.SELECTED_DOM.childNodes) {
+                    if (parseInt(D.getAttribute('data-id')) === id) {
+                        D.remove();
+                        break;
+                    }
+                }
+            } else {
+                this.dimensional_data[stack].forEach((data, index) => {
+                    if (data.parentNodes.indexOf(parentNode) !== -1) {
+                        currentStackDocuments[index].classList.remove('dlp-label-silence');
+                    } else {
+                        currentStackDocuments[index].classList.add('dlp-label-silence');
+                    }
+                });
+                if (data.checked === false) {
+                    if (this.limit > 0 && this.select_data.length >= this.limit && (this.SELECTED_DOM.firstChild instanceof HTMLElement)) {
+                        this.SELECTED_DOM.firstChild.click();
+                    }
+                    data.checked = true;
+                    this._tagCal(id, this.MODE.insert);
+                    element.classList.remove('dlp-label-silence');
+                    element.querySelector('i.right').insertAdjacentHTML('afterbegin', _component.check);
+                    this._selectToChildren(stack + 1, data.nodes);
+                    this._selectToSelected(element, stack);
+                    this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
+                } else {
+                    element.classList.remove('dlp-label-silence');
+                    this._selectToChildren(stack + 1, data.nodes);
+                }
+            }
+            if (Array.isArray(data.parentNodes) && data.parentNodes.length > 0) {
+                let parentNodes = data.parentNodes.slice(0);
+                this._selectToParent(parentNodes, data.checked);
+            }
+        };
+
+        this._selectToSelected = function(element, stack) {
+            let div = document.createElement('div');
+            div.className = 'dlp dlp-text dlp-label';
+            div.setAttribute('data-id', element.getAttribute('data-id'));
+            div.setAttribute('stack', stack);
+            div.insertAdjacentHTML('afterbegin', `<span>${element.querySelector('span').textContent}</span>`);
+            div.addEventListener('click', () => {
+                this._select(element, stack);
             });
-        });
-        this.selectInputDOM.value = JSON.stringify(this.select_data);
-        let search = document.querySelector(`#${this.name} .dot-search`);
-        search.addEventListener('input', () => {
+            this.SELECTED_DOM.append(div);
+        };
+
+        this._selectToParent = function(nodes, checked) {
+            let stack = nodes.length - 1;
+            let node = nodes.pop();
+            let parentNode = nodes[stack - 1];
+            let currentStackDocuments = this.STACKS[stack].childNodes;
+            let to_first_index = null;
+            this.dimensional_data[stack].forEach((data, index) => {
+                let D = currentStackDocuments[index];
+                let parents = data.parentNodes;
+                if (checked === true || checked === undefined) {
+                    if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
+                        D.classList.add('dlp-label-silence');
+                    } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
+                        D.classList.add('dlp-label-silence');
+                    } else {
+                        D.classList.remove('dlp-label-silence');
+                        if (parseInt(D.getAttribute('data-id')) === node) {
+                            if (to_first_index === null) to_first_index = index;
+                        } else {
+                        }
+                    }
+                }
+                if (checked === true && node === data.key && data.mark !== true) {
+                    data.mark = true;
+                    D.querySelector('.right').insertAdjacentHTML('afterbegin', _component.check_circle);
+                }
+                if (checked === false && node === data.key) {
+                    let nodes = this.dimensional_data[stack][index].nodes;
+                    let cancel = true;
+                    for (let d of this.dimensional_data[stack + 1]) {
+                        if (nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)) {
+                            cancel = false;
+                            break;
+                        }
+                    }
+                    if (cancel) {
+                        data.mark = false;
+                        D.querySelector('i.right').innerHTML = '';
+                    }
+                }
+            });
+            if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
+            if (nodes.length > 0) {
+                this._selectToParent(nodes, checked);
+            }
+        };
+
+        this._selectToChildren = function(stack, nodes) {
+            if (stack > (this.dimensional_data.length - 1)) return;
+            let currentStackDocuments = this.STACKS[stack].childNodes;
+            let children = [];
+            let to_first_index = null;
+            this.dimensional_data[stack].forEach((data, index) => {
+                let D = currentStackDocuments[index];
+                if (nodes === null) {
+                    D.classList.add('dlp-label-silence');
+                    return;
+                }
+                if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
+                    D.classList.remove('dlp-label-silence');
+                    let child = data.nodes;
+                    if (Array.isArray(child)) {
+                        child.forEach((c) => {
+                            if (children.indexOf(child) === -1) children.push(c);
+                        });
+                    }
+                    if (to_first_index === null) to_first_index = index;
+                } else {
+                    D.classList.add('dlp-label-silence');
+                }
+            });
+            if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
+            this._selectToChildren(stack + 1, children);
+        };
+
+        this._tagCal = function(id, operate) {
+            if (operate === this.MODE.insert) {
+                if (this.select_data.indexOf(id) === -1) {
+                    this.select_data.push(id);
+                    this.selectInputDOM.value = JSON.stringify(this.select_data);
+                }
+                if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
+                    this.insert_data.push(id);
+                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                }
+                let index = this.delete_data.indexOf(id);
+                if (index !== -1) {
+                    this.delete_data.splice(index, 1);
+                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                }
+            } else if (operate === this.MODE.delete) {
+                let index = this.select_data.indexOf(id);
+                if (index !== -1) {
+                    this.select_data.splice(index, 1);
+                    this.selectInputDOM.value = JSON.stringify(this.select_data);
+                }
+                if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
+                    this.delete_data.push(id);
+                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                }
+                index = this.insert_data.indexOf(id);
+                if (index !== -1) {
+                    this.insert_data.splice(index, 1);
+                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                }
+            }
+            if (typeof this._triggerEvent == 'function'){
+                this._triggerEvent(this.select_data,this.insert_data,this.delete_data);
+            }
+        };
+
+        this._search = function(search) {
+            if (search.value === '') {
+                if (this.SELECT_COVER_DOM instanceof HTMLElement) {
+                    this.SELECT_COVER_DOM.remove();
+                    this.SELECT_COVER_DOM = null;
+                    this.COVER_STACK_HASH_DOM = [];
+                }
+                return;
+            } else if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
+                this.COVER_STACK_HASH_DOM = [];
+                this.SELECT_COVER_DOM = document.createElement('div');
+                this.SELECT_COVER_DOM.className = 'dot-select-cover dlp-scroll dot-select-cascade';
+                for (let stack = 1; stack <= this.dimensional_data.length; stack++) {
+                    let div = document.createElement('div');
+                    div.className = 'dot-cascade-stack dlp-scroll';
+                    this.SELECT_COVER_DOM.append(div);
+                }
+                this.CONTENT_DOM.parentNode.append(this.SELECT_COVER_DOM);
+            }
+            this.dimensional_data.forEach((data, stack) => {
+                this._searchPushTag(search, data, stack);
+            });
+        };
+
+        this._searchCoverClick = function(stack, data, dom) {
+            if (data.nodes !== null) {
+                let nextStack = stack + 1;
+                Array.isArray(this.dimensional_data[nextStack]) &&
+                this._searchPushTag(data.nodes, this.dimensional_data[nextStack], nextStack);
+                return;
+            }
+            (dom instanceof HTMLElement) && dom.click();
+        };
+
+        this._searchPushTag = function(search, data, stack) {
+            data.forEach((d, k) => {
+                if (Array.isArray(search)) {
+                    if (search.indexOf(d.key) === -1) return;
+                } else {
+                    if (d.val.indexOf(search.value) === -1 && search.value.indexOf(d.val) === -1) return;
+                }
+                if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
+                let div = document.createElement('div');
+                div.className = 'dlp dlp-text dlp-label';
+                div.insertAdjacentHTML('afterbegin', `<i class="left"></i><span>${d.val}</span><i class="right"></i>`);
+                if (d.nodes !== null) div.querySelector('i.left').insertAdjacentHTML('afterbegin', _component.caret_right);
+                div.addEventListener('click', () => this._searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
+                this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
+                if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
+                    this.COVER_STACK_HASH_DOM[stack] = [d.key];
+                    return;
+                }
+                this.COVER_STACK_HASH_DOM[stack].push(d.key);
+            });
+        };
+
+        this._checkAll = function(stack, nodes, check) {
+            if (stack > (this.dimensional_data.length - 1)) return;
+            if (!Array.isArray(nodes) || nodes.length <= 0) return;
+            let currentStackDocuments = this.STACKS[stack].childNodes;
+            let children = [];
+            let to_first_index = null;
+            currentStackDocuments.forEach((D, index) => {
+                if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
+                    let checked = this.dimensional_data[stack][index].checked;
+                    if (check === true) {
+                        checked === false && D.click();
+                    } else if (check === false) {
+                        checked === true && D.click();
+                    }
+                    let child = this.dimensional_data[stack][index].nodes;
+                    if (Array.isArray(child)) {
+                        child.forEach((c) => {
+                            if (children.indexOf(child) === -1) children.push(c);
+                        });
+                    }
+                    if (to_first_index === null) to_first_index = index;
+                }
+            });
+            if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
+            this._checkAll(stack + 1, children, check);
+        };
+
+        this._bind = function () {
             setTimeout(() => {
-                this.search(search);
-            }, 500);
-        });
+                this.selected_label_dom.forEach((D) => {
+                    D.click();
+                });
+            });
+            this.selectInputDOM.value = JSON.stringify(this.select_data);
+            if(this._useSearchMod === true) {
+                let search = document.querySelector(`#${this.name} .dot-search`);
+                search.addEventListener('input', () => {
+                    setTimeout(() => {
+                        this._search(search);
+                    }, 500);
+                });
+            }
+        }
+    }
+
+    useSearch(){
+        this._useSearchMod = true;
+        return this;
+    }
+
+    trigger(f = function () {}){
+        this._triggerEvent = f;
+        return this;
     }
 
     make() {
-        let html = `<div class="dlp dlp-dot"><div class="dot-top"><input type="text" class="dlp dot-search" placeholder="搜索名称"><div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>
-<input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
+        let search = '';
+        if(this._useSearchMod === true) search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
+        let html = `<div class="dlp dlp-dot"><div class="dot-top">${search}<div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div><input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
@@ -651,333 +1002,13 @@ window.ComponentCascadeDot = class {
         this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
-        return this;
-    }
-
-    makeSelect(select) {
-        this.dimensional_data = [];
-        this.selected_label_dom = [];
-        _component.dimensional(this.dimensional_data, select);
-        let object = this;
-        for (let stack in this.dimensional_data) {
-            if (!this.dimensional_data.hasOwnProperty(stack)) continue;
-            stack = parseInt(stack);
-            let data = this.dimensional_data[stack];
-            let stackDom = document.createElement('div');
-            stackDom.className = 'dot-cascade-stack dlp-scroll';
-            data.forEach((v, k) => {
-                if (Array.isArray(v.nodes) && v.nodes.length !== 0) {
-                    v.nodes = v.nodes.map((N) => N.key);
-                } else {
-                    v.nodes = null;
-                    v.checked = false;
-                }
-                let div = document.createElement('div');
-                div.className = 'dlp dlp-text dlp-label';
-                div.insertAdjacentHTML('afterbegin', `<i class="left"></i><span>${v.val}</span><i class="right"></i>`);
-                div.setAttribute('data-id', v.key);
-                div.setAttribute('data-k', k);
-                div.addEventListener('click', this.select.bind(this, div, stack));
-                if (v.nodes !== null) {
-                    div.querySelector('i.left').insertAdjacentHTML('afterbegin', `${_component.caret_right}`);
-                    div.addEventListener("contextmenu", (e) => {
-                        if (e.target instanceof HTMLElement) e.target.click();
-                        e.preventDefault();
-                        let k = parseInt(div.getAttribute('data-k'));
-                        _component.contextmenu(e, [
-                            {
-                                title: '全选', func: () => {
-                                    object.checkAll(stack + 1,
-                                        this.dimensional_data[stack][k].nodes, true);
-                                    if (e.target instanceof HTMLElement) e.target.click();
-                                }
-                            },
-                            {
-                                title: '取消', func: () => {
-                                    object.checkAll(stack + 1,
-                                        this.dimensional_data[stack][k].nodes, false);
-                                }
-                            }
-                        ]);
-                    });
-                } else {
-                    div.addEventListener("contextmenu", (e) => {
-                        e.preventDefault();
-                    });
-                }
-                stackDom.append(div);
-                /*selected append*/
-                let index = this.selected_data.indexOf(parseInt(v.key));
-                if (v.checked !== false && index !== -1) {
-                    this.selected_data.splice(index, 1);
-                    return;
-                }
-                if (index !== -1) {
-                    this.selected_label_dom.push(div);
-                }
-            });
-            this.CONTENT_DOM.append(stackDom);
-        }
-        this.STACKS = this.CONTENT_DOM.childNodes;
-        return this;
-    }
-
-    select(element, stack) {
-        let id = parseInt(element.getAttribute('data-id'));
-        let k = parseInt(element.getAttribute('data-k'));
-        let data = this.dimensional_data[stack][k];
-        let currentStackDocuments = this.STACKS[stack].childNodes;
-        let parentNode = data.parentNodes[data.parentNodes.length - 1];
-        if (data.checked === true) {
-            data.checked = false;
-            this.tagCal(id, this.MODE.delete);
-            if (data.nodes === null) element.querySelector('i.right').innerHTML = '';
-            for (let D of this.SELECTED_DOM.childNodes) {
-                if (parseInt(D.getAttribute('data-id')) === id) {
-                    D.remove();
-                    break;
-                }
-            }
-        } else {
-            this.dimensional_data[stack].forEach((data, index) => {
-                if (data.parentNodes.indexOf(parentNode) !== -1) {
-                    currentStackDocuments[index].classList.remove('dlp-label-silence');
-                } else {
-                    currentStackDocuments[index].classList.add('dlp-label-silence');
-                }
-            });
-            if (data.checked === false) {
-                if (this.limit > 0 && this.select_data.length >= this.limit && (this.SELECTED_DOM.firstChild instanceof HTMLElement)) {
-                    this.SELECTED_DOM.firstChild.click();
-                }
-                data.checked = true;
-                this.tagCal(id, this.MODE.insert);
-                element.classList.remove('dlp-label-silence');
-                element.querySelector('i.right').insertAdjacentHTML('afterbegin', _component.check);
-                this.selectToChildren(stack + 1, data.nodes);
-                this.selectToSelected(element, stack);
-                this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
-            } else {
-                element.classList.remove('dlp-label-silence');
-                this.selectToChildren(stack + 1, data.nodes);
-            }
-        }
-        if (Array.isArray(data.parentNodes) && data.parentNodes.length > 0) {
-            let parentNodes = data.parentNodes.slice(0);
-            this.selectToParent(parentNodes, data.checked);
-        }
-    }
-
-    selectToSelected(element, stack) {
-        let div = document.createElement('div');
-        div.className = 'dlp dlp-text dlp-label';
-        div.setAttribute('data-id', element.getAttribute('data-id'));
-        div.setAttribute('stack', stack);
-        div.insertAdjacentHTML('afterbegin', `<span>${element.querySelector('span').textContent}</span>`);
-        div.addEventListener('click', () => {
-            this.select(element, stack);
-        });
-        this.SELECTED_DOM.append(div);
-    }
-
-    selectToParent(nodes, checked) {
-        let stack = nodes.length - 1;
-        let node = nodes.pop();
-        let parentNode = nodes[stack - 1];
-        let currentStackDocuments = this.STACKS[stack].childNodes;
-        let to_first_index = null;
-        this.dimensional_data[stack].forEach((data, index) => {
-            let D = currentStackDocuments[index];
-            let parents = data.parentNodes;
-            if (checked === true || checked === undefined) {
-                if (parents.length > 0 && (parents[stack - 1] !== parentNode)) {
-                    D.classList.add('dlp-label-silence');
-                } else if (parents.length === 0 && parseInt(D.getAttribute('data-id')) !== node) {
-                    D.classList.add('dlp-label-silence');
-                } else {
-                    D.classList.remove('dlp-label-silence');
-                    if (parseInt(D.getAttribute('data-id')) === node) {
-                        if (to_first_index === null) to_first_index = index;
-                    } else {
-                    }
-                }
-            }
-            if (checked === true && node === data.key && data.mark !== true) {
-                data.mark = true;
-                D.querySelector('.right').insertAdjacentHTML('afterbegin', _component.check_circle);
-            }
-            if (checked === false && node === data.key) {
-                let nodes = this.dimensional_data[stack][index].nodes;
-                let cancel = true;
-                for (let d of this.dimensional_data[stack + 1]) {
-                    if (nodes.indexOf(d.key) !== -1 && (d.checked === true || d.mark === true)) {
-                        cancel = false;
-                        break;
-                    }
-                }
-                if (cancel) {
-                    data.mark = false;
-                    D.querySelector('i.right').innerHTML = '';
-                }
-            }
-        });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
-        if (nodes.length > 0) {
-            this.selectToParent(nodes, checked);
-        }
-    }
-
-    selectToChildren(stack, nodes) {
-        if (stack > (this.dimensional_data.length - 1)) return;
-        let currentStackDocuments = this.STACKS[stack].childNodes;
-        let children = [];
-        let to_first_index = null;
-        this.dimensional_data[stack].forEach((data, index) => {
-            let D = currentStackDocuments[index];
-            if (nodes === null) {
-                D.classList.add('dlp-label-silence');
-                return;
-            }
-            if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
-                D.classList.remove('dlp-label-silence');
-                let child = data.nodes;
-                if (Array.isArray(child)) {
-                    child.forEach((c) => {
-                        if (children.indexOf(child) === -1) children.push(c);
-                    });
-                }
-                if (to_first_index === null) to_first_index = index;
-            } else {
-                D.classList.add('dlp-label-silence');
-            }
-        });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
-        this.selectToChildren(stack + 1, children);
-    }
-
-    tagCal(id, operate) {
-        if (operate === this.MODE.insert) {
-            if (this.select_data.indexOf(id) === -1) {
-                this.select_data.push(id);
-                this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
-                this.insert_data.push(id);
-                this.insertInputDOM.value = JSON.stringify(this.insert_data);
-            }
-            let index = this.delete_data.indexOf(id);
-            if (index !== -1) {
-                this.delete_data.splice(index, 1);
-                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
-            }
-            return;
-        }
-        if (operate === this.MODE.delete) {
-            let index = this.select_data.indexOf(id);
-            if (index !== -1) {
-                this.select_data.splice(index, 1);
-                this.selectInputDOM.value = JSON.stringify(this.select_data);
-            }
-            if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
-                this.delete_data.push(id);
-                this.deleteInputDOM.value = JSON.stringify(this.delete_data);
-            }
-            index = this.insert_data.indexOf(id);
-            if (index !== -1) {
-                this.insert_data.splice(index, 1);
-                this.insertInputDOM.value = JSON.stringify(this.insert_data);
-            }
-        }
-    }
-
-    search(search) {
-        if (search.value === '') {
-            if (this.SELECT_COVER_DOM instanceof HTMLElement) {
-                this.SELECT_COVER_DOM.remove();
-                this.SELECT_COVER_DOM = null;
-                this.COVER_STACK_HASH_DOM = [];
-            }
-            return;
-        } else if (!(this.SELECT_COVER_DOM instanceof HTMLElement)) {
-            this.COVER_STACK_HASH_DOM = [];
-            this.SELECT_COVER_DOM = document.createElement('div');
-            this.SELECT_COVER_DOM.className = 'dot-select-cover dlp-scroll dot-select-cascade';
-            for (let stack = 1; stack <= this.dimensional_data.length; stack++) {
-                let div = document.createElement('div');
-                div.className = 'dot-cascade-stack dlp-scroll';
-                this.SELECT_COVER_DOM.append(div);
-            }
-            this.CONTENT_DOM.parentNode.append(this.SELECT_COVER_DOM);
-        }
-        this.dimensional_data.forEach((data, stack) => {
-            this.searchPushTag(search, data, stack);
-        });
-    }
-
-    searchCoverClick(stack, data, dom) {
-        if (data.nodes !== null) {
-            let nextStack = stack + 1;
-            Array.isArray(this.dimensional_data[nextStack]) &&
-            this.searchPushTag(data.nodes, this.dimensional_data[nextStack], nextStack);
-            return;
-        }
-        (dom instanceof HTMLElement) && dom.click();
-    }
-
-    searchPushTag(search, data, stack) {
-        data.forEach((d, k) => {
-            if (Array.isArray(search)) {
-                if (search.indexOf(d.key) === -1) return;
-            } else {
-                if (d.val.indexOf(search.value) === -1 && search.value.indexOf(d.val) === -1) return;
-            }
-            if (Array.isArray(this.COVER_STACK_HASH_DOM[stack]) && this.COVER_STACK_HASH_DOM[stack].indexOf(d.key) !== -1) return;
-            let div = document.createElement('div');
-            div.className = 'dlp dlp-text dlp-label';
-            div.insertAdjacentHTML('afterbegin', '<i class="left"></i>');
-            div.textContent = d.val;
-            div.insertAdjacentHTML('beforeend', '<i class="right"></i>');
-            if (d.nodes !== null) div.querySelector('i.left').insertAdjacentHTML('afterbegin', _component.caret_right);
-            div.addEventListener('click', () => this.searchCoverClick(stack, d, this.STACKS[stack].childNodes[k]));
-            this.SELECT_COVER_DOM.childNodes[stack].prepend(div);
-            if (!Array.isArray(this.COVER_STACK_HASH_DOM[stack])) {
-                this.COVER_STACK_HASH_DOM[stack] = [d.key];
-                return;
-            }
-            this.COVER_STACK_HASH_DOM[stack].push(d.key);
-        });
-    }
-
-    checkAll(stack, nodes, check) {
-        if (stack > (this.dimensional_data.length - 1)) return;
-        if (!Array.isArray(nodes) || nodes.length <= 0) return;
-        let currentStackDocuments = this.STACKS[stack].childNodes;
-        let children = [];
-        let to_first_index = null;
-        currentStackDocuments.forEach((D, index) => {
-            if (nodes.indexOf(parseInt(D.getAttribute('data-id'))) !== -1) {
-                let checked = this.dimensional_data[stack][index].checked;
-                if (check === true) {
-                    checked === false && D.click();
-                } else if (check === false) {
-                    checked === true && D.click();
-                }
-                let child = this.dimensional_data[stack][index].nodes;
-                if (Array.isArray(child)) {
-                    child.forEach((c) => {
-                        if (children.indexOf(child) === -1) children.push(c);
-                    });
-                }
-                if (to_first_index === null) to_first_index = index;
-            }
-        });
-        if (to_first_index !== null) this.STACKS[stack].scrollTo(0, to_first_index * 27);
-        this.checkAll(stack + 1, children, check);
+        this._makeSelect(this.select);
+        this._bind();
     }
 };
 
 window.ComponentLine = class {
-    constructor(name, columns, data, options = {}) {
+    constructor(name, columns, data) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -986,430 +1017,456 @@ window.ComponentLine = class {
         this.flatpickr_settings = {};
         this.COLUMNS = columns;
         this.DATA = data;
-        this.OPTIONS = Object.assign({
-            sortable: true,
-            delete: true,
-            insert: true
-        }, options);
-        /*head foot*/
-        let foot = this.makeHeadFoot();
-        /*hidden data container*/
+        this.OPTIONS = {
+            sortable: false,
+            delete: false,
+            insert: false
+        };
+        this.INSERT_COLUMNS = {};
         this.DATA_INPUT = document.createElement('input');
         this.DATA_INPUT.setAttribute('name', name);
         this.DATA_INPUT.setAttribute('type', 'hidden');
         this.DATA_INPUT.value = '[]';
         this.DOM.appendChild(this.DATA_INPUT);
-        /*tbody list*/
-        this.makeBody();
-        /*foot*/
-        this.makeFoot(foot);
-        /*sort*/
-        if (this.OPTIONS.sortable) this.sortable();
-    }
 
-    makeHeadFoot() {
-        let head = '<tr class="dlp-tr">';
-        let foot = document.createElement('tr');
-        foot.className = 'dlp-tr';
-        let columns = this.COLUMNS;
-        this.INSERT_ROW_MENUE_DATA = {};
-        for (let column in columns) {
-            if (!columns.hasOwnProperty(column)) continue;
-            let val = columns[column];
-            if (val.type === 'hidden') {
-                continue;
+        this._makeHead = function() {
+            let head = '<tr class="dlp-tr">';
+            let columns = this.COLUMNS;
+            this.INSERT_ROW_MENUE_DATA = {};
+            for (let column in columns) {
+                if (!columns.hasOwnProperty(column)) continue;
+                let val = columns[column];
+                if (val.type === 'hidden') {
+                    continue;
+                }
+                let style = val.style ? `style="${val.style}"` : '';
+                head += `<th class="dlp-text text-white" ${style}>${val.name}</th>`;
             }
-            let style = val.style ? `style="${val.style}"` : '';
-            head += `<th class="dlp-text text-white" ${style}>${val.name}</th>`;
-            let insert_type = val.insert_type ? val.insert_type : val.type;
+            head += '<th class="operate-column" style="width: 48px;"></th></tr>';
+            this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
+            this.TABLE_DOM = this.DOM.querySelector('table');
+        };
 
-            switch (insert_type) {
-                case 'input':
-                    foot.insertAdjacentHTML('beforeend', `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
-                    break;
-                case 'select':
+        this._makeBody = function() {
+            let records = [];
+            let tbody = document.createElement('tbody');
+            let columns = this.COLUMNS;
+            if (Array.isArray(this.DATA) === false) return;
+            this.DATA.forEach((values, key) => {
+                let tr = document.createElement('tr');
+                tr.className = 'dlp-tr';
+                tr.setAttribute('sortable-item', 'sortable-item');
+                let record = {};
+                for (let name in columns) {
+                    if (!columns.hasOwnProperty(name)) continue;
+                    let column = columns[name];
+                    if (!values[name]) {
+                        this.DATA[key][name] = '';
+                        record[name] = '';
+                    }
                     let td = document.createElement('td');
-                    td.style = val.style;
-                    td.append(this.menuMake(column, [], val.options, val.options_limit, val.name, true));
-                    foot.append(td);
-                    break;
-                case 'datetime':
-                    this.flatpickr_settings[column] = val.config;
-                    style = val.style ? `${val.style}` : '';
-                    foot.insertAdjacentHTML('beforeend', `<th style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></th>`);
-                    break;
-                case 'hidden':
-                    foot.insertAdjacentHTML('beforeend', `<th><input data-column="${column}" type="hidden"/></th>`);
-                    break;
-                default:
-                    this.COLUMNS[column].insert_type = 'input';
-                    foot.insertAdjacentHTML('beforeend', `<th ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></th>`);
-                    break;
-            }
-            /*delay image loading*/
-            if(val.type === 'image'){
-                setTimeout(()=>{
-                    let zoom = val.zoom !== undefined ? val.zoom : true;
-                    let width = val.w !== undefined ? parseInt(val.w) : 300;
-                    let height = val.h !== undefined ? parseInt(val.h) : 0;
-                   _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom,width,height);
-                });
-            }
-            if(val.type === 'datetime' || val.insert_type === 'datetime'){
-                setTimeout(() => {
-                    document.querySelectorAll(`#${this.NAME} input.datetime-${column}`).flatpickr(this.flatpickr_settings[column]);
-                });
-            }
-        }
-        head += '<th class="operate-column" style="width: 48px;"></th></tr>';
-        foot.insertAdjacentHTML('beforeend', '<th class="insert_handel operate-column" style="width: 48px;"><div></div></th></tr>');
-
-        this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
-        this.TABLE_DOM = this.DOM.getElementsByTagName('table')[0];
-        return foot;
-    }
-
-    makeBody() {
-        let records = [];
-        let tbody = document.createElement('tbody');
-        let columns = this.COLUMNS;
-        if (Array.isArray(this.DATA) === false) return;
-        this.DATA.forEach((values, key) => {
-            let tr = document.createElement('tr');
-            tr.className = 'dlp-tr';
-            tr.setAttribute('sortable-item', 'sortable-item');
-            let record = {};
-            for (let name in columns) {
-                if (!columns.hasOwnProperty(name)) continue;
-                let column = columns[name];
-                if (!values[name]) {
-                    this.DATA[key][name] = '';
-                    record[name] = '';
-                }
-                let td = document.createElement('td');
-                let v = this.DATA[key][name];
-                if (column.type === 'select') {
-                    if (/^[0-9]+$/.test(v)) {
-                        v = [parseInt(v)];
-                    } else if (Array.isArray(v) === false) {
-                        v = [];
+                    let v = this.DATA[key][name];
+                    if (column.type === 'select') {
+                        if (/^[0-9]+$/.test(v)) {
+                            v = [parseInt(v)];
+                        } else if (Array.isArray(v) === false) {
+                            v = [];
+                        }
                     }
+                    this._makeTd(td, name, column, v);
+                    record[name] = v;
+                    tr.appendChild(td);
                 }
-                this.makeTd(td, name, column, v);
-                record[name] = v;
-                tr.appendChild(td);
-            }
-            let td = document.createElement('td');
-            td.insertAdjacentHTML('afterbegin', '<div></div>');
-            this.operateButton(td);
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            records.push(record);
-        });
-        this.DATA = records;
-        this.DATA_INPUT.value = JSON.stringify(records);
-        tbody.setAttribute('sortable-list', 'sortable-list');
-        tbody.className = 'dlp-tbody dlp-scroll';
-        this.TBODY_DOM = tbody;
-        this.TABLE_DOM.appendChild(tbody);
-    }
-
-    makeFoot(foot) {
-        let tfoot = document.createElement('tfoot');
-        tfoot.className = 'dlp-tfoot';
-        if (!this.OPTIONS.insert) {
-            tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
-            this.TABLE_DOM.appendChild(tfoot);
-            return;
-        }
-        tfoot.append(foot);
-        this.TABLE_DOM.appendChild(tfoot);
-        /*insert action*/
-        let i = document.createElement('i');
-        i.className = 'dlp text-white';
-        i.style.cursor = 'pointer';
-        i.insertAdjacentHTML('afterbegin', _component.write);
-        i.addEventListener('click', () => {
-            let tfoot = this.DOM.getElementsByTagName('tfoot')[0];
-            let insert = {};
-            let tr = document.createElement('tr');
-            tr.className = 'dlp-tr';
-            tr.setAttribute('sortable-item', 'sortable-item');
-
-            for (let column in this.COLUMNS) {
-                if (!this.COLUMNS.hasOwnProperty(column)) continue;
-                let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
                 let td = document.createElement('td');
-                let value;
-                if (type === 'input' || type === 'datetime') {
-                    value = tfoot.querySelector(`input[data-column="${column}"]`).value;
-                } else if (type === 'select') {
-                    value = this.INSERT_ROW_MENUE_DATA[column];
-                } else {
-                    value = '';
-                }
-                insert[column] = value;
-                this.makeTd(td, column, this.COLUMNS[column], value);
+                td.insertAdjacentHTML('afterbegin', '<div></div>');
+                this._operateButton(td);
                 tr.appendChild(td);
+                tbody.appendChild(tr);
+                records.push(record);
+            });
+            this.DATA = records;
+            this.DATA_INPUT.value = JSON.stringify(records);
+            tbody.setAttribute('sortable-list', 'sortable-list');
+            tbody.className = 'dlp-tbody dlp-scroll';
+            this.TBODY_DOM = tbody;
+            this.TABLE_DOM.appendChild(tbody);
+        };
 
-                if(this.COLUMNS[column].type === 'image'){
-                    let dom = td.firstChild;
+        this._makeFoot = function() {
+            let foot = document.createElement('tr');
+            foot.className = 'dlp-tr';
+            let columns = this.COLUMNS;
+            for (let column in columns) {
+                if (!columns.hasOwnProperty(column)) continue;
+                let val = columns[column];
+                if (val.type === 'hidden') {
+                    continue;
+                }
+                let style = val.style ? `style="${val.style}"` : '';
+                let type = val.type;
+                if(this.INSERT_COLUMNS.hasOwnProperty(column)){
+                    type = this.INSERT_COLUMNS[column].type;
+                }
+
+                switch (type) {
+                    case 'input':
+                        foot.insertAdjacentHTML('beforeend', `<td ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></td>`);
+                        break;
+                    case 'select':
+                        let td = document.createElement('td');
+                        td.style = val.style;
+                        td.append(this._menuMake(column, [], val.options, val.limit, val.name, true));
+                        foot.append(td);
+                        break;
+                    case 'datetime':
+                        this.flatpickr_settings[column] = val.config;
+                        style = val.style ? `${val.style}` : '';
+                        foot.insertAdjacentHTML('beforeend', `<td style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></td>`);
+                        break;
+                    case 'hidden':
+                        foot.insertAdjacentHTML('beforeend', `<td><input data-column="${column}" type="hidden"/></td>`);
+                        break;
+                    default:
+                        this.COLUMNS[column].insert_type = 'input';
+                        foot.insertAdjacentHTML('beforeend', `<td ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></td>`);
+                        break;
+                }
+                if(val.type === 'image'){
                     setTimeout(()=>{
-                        let src = dom.getAttribute('data-src');
-                        dom.setAttribute('src',src);
-                        if(this.COLUMNS[column].zoom === false)return;
-                        let img = document.createElement('img');
-                        dom.addEventListener('mouseover', function(e) {
-                            document.body.append(img);
-                            img.style.position = 'absolute';
-                            img.style.top = `${e.pageY + 7}px`;
-                            img.style.left = `${e.pageX + 7}px`;
-                            img.style.zIndex = '1000000';
-                            img.style.width = '300px';
-                            img.style.borderRadius = '3px';
-                            img.setAttribute('src', src);
-                        });
-                        dom.addEventListener('mouseout', function(e) {
-                            e.stopPropagation();
-                            img.remove();
-                        });
-                    },200);
+                        let zoom = val.zoom !== undefined ? val.zoom : true;
+                        let width = val.w !== undefined ? parseInt(val.w) : 300;
+                        let height = val.h !== undefined ? parseInt(val.h) : 0;
+                        _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom,width,height);
+                    });
+                }
+                if(val.type === 'datetime' || val.insert_type === 'datetime'){
+                    setTimeout(() => {
+                        document.querySelectorAll(`#${this.NAME} input.datetime-${column}`).flatpickr(this.flatpickr_settings[column]);
+                    });
                 }
             }
-
-            let td = document.createElement('td');
-            td.insertAdjacentHTML('afterbegin', '<div></div>');
-            this.operateButton(td);
-            tr.appendChild(td);
-            this.TBODY_DOM.appendChild(tr);
-            this.DATA.push(insert);
-            this.DATA_INPUT.value = JSON.stringify(this.DATA);
-            this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
-        }, false);
-        this.TABLE_DOM.querySelector('.insert_handel div').appendChild(i);
-    }
-
-    makeTd(td, column, settings, value) {
-        let input;
-        let DATA = this.DATA;
-        let DATA_INPUT = this.DATA_INPUT;
-        switch (settings.type) {
-            case 'text':
-                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
-                break;
-            case 'input':
-                input = document.createElement('input');
-                input.className = 'dlp dlp-input';
-                input.setAttribute('data-column', column);
-                input.value = value;
-                input.addEventListener('input', () => {
-                    let key = this.searchChildrenDomIndex(input.parentNode.parentNode);
-                    let column = input.getAttribute('data-column');
-                    if (DATA[key]) {
-                        DATA[key][column] = input.value;
-                        DATA_INPUT.value = JSON.stringify(DATA);
-                    }
-                }, false);
-                td.appendChild(input);
-                break;
-            case 'datetime':
-                input = document.createElement('input');
-                input.setAttribute('class', `dlp dlp-input datetime-${column}`);
-                input.setAttribute('data-column', column);
-                input.value = value;
-
-                input.addEventListener('blur', () => {
-                    let key = this.searchChildrenDomIndex(input.parentNode.parentNode);
-                    let column = input.getAttribute('data-column');
-                    if (DATA[key]) {
-                        DATA[key][column] = input.value;
-                        DATA_INPUT.value = JSON.stringify(DATA);
-                    }
-                }, false);
-                td.appendChild(input);
-                td.style.position = 'relative';
-                setTimeout(()=>{
-                    input.flatpickr(settings.config);
-                });
-                break;
-            case 'select':
-                td.append(this.menuMake(column, value, settings.options, settings.options_limit, settings.name));
-                break;
-            case 'image':
-                td.insertAdjacentHTML('afterbegin',`<img class="${this.NAME}-${column}-img" style="max-width: 100%;max-height: 100%;border-radius: 2px" data-src="${value}" />`);
-                break;
-            default:
-                td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
-                break;
-        }
-        if (settings.style) {
-            td.style = settings.style;
-        }
-    }
-
-    operateButton(td) {
-        if (this.OPTIONS.sortable) {
-            let M = document.createElement('i');
-            M.className = 'dlp text-white';
-            M.setAttribute('style', 'cursor: pointer;');
-            M.setAttribute('sortable-handle', 'sortable-handle');
-            M.insertAdjacentHTML('afterbegin', _component.move);
-            td.firstElementChild.appendChild(M);
-        }
-
-        if (this.OPTIONS.delete) {
-            let D = document.createElement('i');
-            D.className = 'dlp text-white';
-            D.setAttribute('style', 'cursor: pointer;');
-            D.insertAdjacentHTML('afterbegin', _component.trash);
-            D.addEventListener('click', () => {
-                let tr = D.parentNode.parentNode.parentNode;
-                let tbody = tr.parentNode;
-                let key = this.searchChildrenDomIndex(tr);
-
-                this.DATA.splice(key, 1);
-                tbody.removeChild(tr);
-                this.DATA_INPUT.value = JSON.stringify(this.DATA);
-            }, false);
-            td.firstElementChild.appendChild(D);
-        }
-        td.className = 'operate-column';
-    }
-
-    menuMake(column, selected, select, limit, placeholder, insertRow = false) {
-        let menu = document.createElement('div');
-        menu.className = 'dlp-dot-menu';
-        if (insertRow) this.INSERT_ROW_MENUE_DATA[column] = [];
-
-        let menu_select = document.createElement('div');
-        menu_select.className = 'dlp-input dlp-dot-menu-select';
-        menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${placeholder}</div><div>▼</div>`);
-
-        let menu_list = document.createElement('div');
-        menu_list.className = 'menu-list';
-        let search_box = document.createElement('div');
-        search_box.className = 'search-box';
-        let input = document.createElement('input');
-        input.className = 'dlp dlp-input dot-search';
-        input.setAttribute('placeholder', '搜索');
-        input.addEventListener('input', () => {
-            setTimeout(() => {
-                if (input.value === '') {
-                    for (let node of list.childNodes) {
-                        node.style.display = 'flex';
-                    }
-                    return;
-                }
-                for (let node of list.childNodes) {
-                    let text = node.firstElementChild.innerText;
-                    if (text.indexOf(input.value) !== -1 || input.value.indexOf(text) !== -1) {
-                        node.style.display = 'flex';
-                    } else {
-                        node.style.display = 'none';
-                    }
-                }
-            }, 300);
-        });
-
-        let list = document.createElement('div');
-        list.className = 'list dlp-scroll';
-
-        let check = _component.check;
-        check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
-        for (let id in select) {
-            if (!select.hasOwnProperty(id)) continue;
-            let option = document.createElement('div');
-            option.className = 'option';
-            option.setAttribute('data-id', id);
-            option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
-            option.addEventListener('click', () => {
-                id = parseInt(id);
-                let selected;
-                if (insertRow) {
-                    selected = this.INSERT_ROW_MENUE_DATA[column];
-                } else {
-                    let key = this.searchChildrenDomIndex(menu.parentNode.parentNode);
-                    selected = this.DATA[key][column];
-                }
-                let index = selected.indexOf(id);
-                if (index !== -1) {
-                    /*cancel*/
-                    selected.splice(index, 1);
-                    option.classList.remove('option-active');
-                    if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
-                    menuSelect(select, selected, limit);
-                    if (selected.length === 0) menu_select.firstElementChild.textContent = placeholder;
-                    if (insertRow === false) {
-                        this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                    }
-                    return;
-                }
-                if (limit > 0 && selected.length >= limit) {
-                    for (let line of list.childNodes) {
-                        if ((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString()) line.click();
-                    }
-                }
-                option.classList.add('option-active');
-                selected.push(id);
-                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                menuSelect(select, selected, limit);
-                if (insertRow === false) this.DATA_INPUT.value = JSON.stringify(this.DATA);
-            }, false);
-            /*init selected*/
-            if (limit > 0 && selected.length >= limit) selected.slice(0, limit);
-            if (selected.indexOf(parseInt(id)) !== -1) {
-                option.classList.add('option-active');
-                (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                menuSelect(select, selected, limit);
-            }
-            list.append(option);
-        }
-
-        function menuSelect(select, selected, limit) {
-            if (limit === 1) {
-                menu_select.firstElementChild.innerHTML = `<p class="dlp-text">${select[selected[0]]}</p>`;
+            let tfoot = document.createElement('tfoot');
+            tfoot.className = 'dlp-tfoot';
+            if (!this.OPTIONS.insert) {
+                tfoot.insertAdjacentHTML('afterbegin', `<tr class="dlp-tr"></tr>`);
+                this.TABLE_DOM.appendChild(tfoot);
                 return;
             }
-            let html = '';
-            for (let id of selected) {
-                html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
+            tfoot.append(foot);
+            this.TABLE_DOM.appendChild(tfoot);
+            /*insert action*/
+            let i = document.createElement('i');
+            i.className = 'dlp text-white';
+            i.style.cursor = 'pointer';
+            i.insertAdjacentHTML('afterbegin', _component.write);
+            i.addEventListener('click', () => {
+                let tfoot = this.DOM.getElementsByTagName('tfoot')[0];
+                let insert = {};
+                let tr = document.createElement('tr');
+                tr.className = 'dlp-tr';
+                tr.setAttribute('sortable-item', 'sortable-item');
+
+                for (let column in this.COLUMNS) {
+                    if (!this.COLUMNS.hasOwnProperty(column)) continue;
+                    let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
+                    let td = document.createElement('td');
+                    let value;
+                    if (type === 'input' || type === 'datetime') {
+                        value = tfoot.querySelector(`input[data-column="${column}"]`).value;
+                    } else if (type === 'select') {
+                        value = this.INSERT_ROW_MENUE_DATA[column];
+                    } else {
+                        value = '';
+                    }
+                    insert[column] = value;
+                    this._makeTd(td, column, this.COLUMNS[column], value);
+                    tr.appendChild(td);
+
+                    if(this.COLUMNS[column].type === 'image'){
+                        let dom = td.firstChild;
+                        setTimeout(()=>{
+                            let src = dom.getAttribute('data-src');
+                            dom.setAttribute('src',src);
+                            if(this.COLUMNS[column].zoom === false)return;
+                            let img = document.createElement('img');
+                            dom.addEventListener('mouseover', function(e) {
+                                document.body.append(img);
+                                img.style.position = 'absolute';
+                                img.style.top = `${e.pageY + 7}px`;
+                                img.style.left = `${e.pageX + 7}px`;
+                                img.style.zIndex = '1000000';
+                                img.style.width = '300px';
+                                img.style.borderRadius = '3px';
+                                img.setAttribute('src', src);
+                            });
+                            dom.addEventListener('mouseout', function(e) {
+                                e.stopPropagation();
+                                img.remove();
+                            });
+                        },200);
+                    }
+                }
+
+                let td = document.createElement('td');
+                td.insertAdjacentHTML('afterbegin', '<div></div>');
+                this._operateButton(td);
+                tr.appendChild(td);
+                this.TBODY_DOM.appendChild(tr);
+                this.DATA.push(insert);
+                this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
+            }, false);
+        };
+
+        this._makeTd = function(td, column, settings, value) {
+            let input;
+            let DATA = this.DATA;
+            let DATA_INPUT = this.DATA_INPUT;
+            switch (settings.type) {
+                case 'text':
+                    td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
+                    break;
+                case 'input':
+                    input = document.createElement('input');
+                    input.className = 'dlp dlp-input';
+                    input.setAttribute('data-column', column);
+                    input.value = value;
+                    input.addEventListener('input', () => {
+                        let key = this._searchChildrenDomIndex(input.parentNode.parentNode);
+                        let column = input.getAttribute('data-column');
+                        if (DATA[key]) {
+                            DATA[key][column] = input.value;
+                            DATA_INPUT.value = JSON.stringify(DATA);
+                        }
+                    }, false);
+                    td.appendChild(input);
+                    break;
+                case 'datetime':
+                    input = document.createElement('input');
+                    input.setAttribute('class', `dlp dlp-input datetime-${column}`);
+                    input.setAttribute('data-column', column);
+                    input.value = value;
+
+                    input.addEventListener('blur', () => {
+                        let key = this._searchChildrenDomIndex(input.parentNode.parentNode);
+                        let column = input.getAttribute('data-column');
+                        if (DATA[key]) {
+                            DATA[key][column] = input.value;
+                            DATA_INPUT.value = JSON.stringify(DATA);
+                        }
+                    }, false);
+                    td.appendChild(input);
+                    td.style.position = 'relative';
+                    setTimeout(()=>{
+                        input.flatpickr(settings.config);
+                    });
+                    break;
+                case 'select':
+                    td.append(this._menuMake(column, value, settings.options, settings.limit, settings.name));
+                    break;
+                case 'image':
+                    td.insertAdjacentHTML('afterbegin',`<img class="${this.NAME}-${column}-img" style="max-width: 100%;max-height: 100%;border-radius: 2px" data-src="${value}" />`);
+                    break;
+                default:
+                    td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
+                    break;
             }
-            menu_select.firstElementChild.innerHTML = html;
-        }
+            if (settings.style) {
+                td.style = settings.style;
+            }
+        };
 
-        menu.append(menu_select);
-        search_box.append(input);
-        menu_list.append(search_box);
-        menu_list.append(list);
-        menu.append(menu_list);
-        menu.addEventListener('click', () => {
-            menu_list.style.display = 'flex';
-        });
-        menu.addEventListener('mouseleave', () => {
-            menu_list.style.display = 'none';
-            let search = this.DOM.querySelector(`.dot-search`);
-            search.value = '';
-        });
+        this._operateButton = function(td) {
+            if (this.OPTIONS.sortable) {
+                let M = document.createElement('i');
+                M.className = 'dlp text-white';
+                M.setAttribute('style', 'cursor: pointer;');
+                M.setAttribute('sortable-handle', 'sortable-handle');
+                M.insertAdjacentHTML('afterbegin', _component.move);
+                td.firstElementChild.appendChild(M);
+            }
 
-        return menu;
-    }
+            if (this.OPTIONS.delete) {
+                let D = document.createElement('i');
+                D.className = 'dlp text-white';
+                D.setAttribute('style', 'cursor: pointer;');
+                D.insertAdjacentHTML('afterbegin', _component.trash);
+                D.addEventListener('click', () => {
+                    let tr = D.parentNode.parentNode.parentNode;
+                    let tbody = tr.parentNode;
+                    let key = this._searchChildrenDomIndex(tr);
 
-    sortable() {
-        let object = this;
-        new ComponentSortable(this.TBODY_DOM, function (sort) {
-            let data = [];
-            sort.forEach(function (k) {
-                data.push(object.DATA[k]);
+                    this.DATA.splice(key, 1);
+                    tbody.removeChild(tr);
+                    this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                }, false);
+                td.firstElementChild.appendChild(D);
+            }
+            td.className = 'operate-column';
+        };
+
+        this._menuMake = function(column, selected, select, limit, placeholder, insertRow = false) {
+            let menu = document.createElement('div');
+            menu.className = 'dlp-dot-menu';
+            if (insertRow) this.INSERT_ROW_MENUE_DATA[column] = [];
+
+            let menu_select = document.createElement('div');
+            menu_select.className = 'dlp-input dlp-dot-menu-select';
+            menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${placeholder}</div><div>▼</div>`);
+
+            let menu_list = document.createElement('div');
+            menu_list.className = 'menu-list';
+            let search_box = document.createElement('div');
+            search_box.className = 'search-box';
+            let input = document.createElement('input');
+            input.className = 'dlp dlp-input dot-search';
+            input.setAttribute('placeholder', '搜索');
+            input.addEventListener('input', () => {
+                setTimeout(() => {
+                    if (input.value === '') {
+                        for (let node of list.childNodes) {
+                            node.style.display = 'flex';
+                        }
+                        return;
+                    }
+                    for (let node of list.childNodes) {
+                        let text = node.firstElementChild.innerText;
+                        if (text.indexOf(input.value) !== -1 || input.value.indexOf(text) !== -1) {
+                            node.style.display = 'flex';
+                        } else {
+                            node.style.display = 'none';
+                        }
+                    }
+                }, 300);
             });
-            object.DATA = data;
-            object.DATA_INPUT.value = JSON.stringify(object.DATA);
-        });
+
+            let list = document.createElement('div');
+            list.className = 'list dlp-scroll';
+
+            let check = _component.check;
+            check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
+            for (let id in select) {
+                if (!select.hasOwnProperty(id)) continue;
+                let option = document.createElement('div');
+                option.className = 'option';
+                option.setAttribute('data-id', id);
+                option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
+                option.addEventListener('click', () => {
+                    id = parseInt(id);
+                    let selected;
+                    if (insertRow) {
+                        selected = this.INSERT_ROW_MENUE_DATA[column];
+                    } else {
+                        let key = this._searchChildrenDomIndex(menu.parentNode.parentNode);
+                        selected = this.DATA[key][column];
+                    }
+                    let index = selected.indexOf(id);
+                    if (index !== -1) {
+                        /*cancel*/
+                        selected.splice(index, 1);
+                        option.classList.remove('option-active');
+                        if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
+                        menuSelect(select, selected, limit);
+                        if (selected.length === 0) menu_select.firstElementChild.textContent = placeholder;
+                        if (insertRow === false) {
+                            this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                        }
+                        return;
+                    }
+                    if (limit > 0 && selected.length >= limit) {
+                        for (let line of list.childNodes) {
+                            if ((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString()) line.click();
+                        }
+                    }
+                    option.classList.add('option-active');
+                    selected.push(id);
+                    (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
+                    menuSelect(select, selected, limit);
+                    if (insertRow === false) this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                }, false);
+                /*init selected*/
+                if (limit > 0 && selected.length >= limit) selected.slice(0, limit);
+                if (selected.indexOf(parseInt(id)) !== -1) {
+                    option.classList.add('option-active');
+                    (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
+                    menuSelect(select, selected, limit);
+                }
+                list.append(option);
+            }
+
+            function menuSelect(select, selected, limit) {
+                if (limit === 1) {
+                    menu_select.firstElementChild.innerHTML = `<p class="dlp-text">${select[selected[0]]}</p>`;
+                    return;
+                }
+                let html = '';
+                for (let id of selected) {
+                    html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
+                }
+                menu_select.firstElementChild.innerHTML = html;
+            }
+
+            menu.append(menu_select);
+            search_box.append(input);
+            menu_list.append(search_box);
+            menu_list.append(list);
+            menu.append(menu_list);
+            menu.addEventListener('click', () => {
+                menu_list.style.display = 'flex';
+            });
+            menu.addEventListener('mouseleave', () => {
+                menu_list.style.display = 'none';
+                let search = this.DOM.querySelector(`.dot-search`);
+                search.value = '';
+            });
+
+            return menu;
+        };
+
+        this._sortable = function() {
+            let object = this;
+            new ComponentSortable(this.TBODY_DOM, function (sort) {
+                let data = [];
+                sort.forEach(function (k) {
+                    data.push(object.DATA[k]);
+                });
+                object.DATA = data;
+                object.DATA_INPUT.value = JSON.stringify(object.DATA);
+            });
+        };
+
+        this._searchChildrenDomIndex = function(dom) {
+            let i = 0;
+            while ((dom = dom.previousSibling) != null) i++;
+            return i;
+        };
     }
 
-    searchChildrenDomIndex(dom) {
-        let i = 0;
-        while ((dom = dom.previousSibling) != null) i++;
-        return i;
+    sortableAction(){
+        this.OPTIONS.sortable = true;
+        return this;
+    }
+
+    insertAction(){
+        this.OPTIONS.insert = true;
+        return this;
+    }
+
+    updateAction(){
+        this.OPTIONS.update = true;
+        return this;
+    }
+
+    deleteAction(){
+        this.OPTIONS.delete = true;
+        return this;
+    }
+
+    make(){
+        this._makeHead();
+        this._makeBody();
+        this._makeFoot();
+        if (this.OPTIONS.sortable) this._sortable();
     }
 };
 
@@ -1417,16 +1474,19 @@ window.ComponentPlane = class {
     WIDTH;
     HEIGHT;
     FULLSCREEN;
-    constructor(url, xhr = {}, options = {}) {
-        if(document.querySelector('#dlp-plane') instanceof HTMLElement)return;
-        this.URL = url;
-        this.XHR = Object.assign({
-            url: url,
+    constructor(content, xhr = {}, options = {}) {
+        if(content instanceof HTMLElement){
+            this.content = content;
+        }else {
+            this.URL = content;
+        }
+        /*this.XHR = Object.assign({
+            url: this.URL,
             method: 'POST',
             listener: null,
             event: 'click',
             callback: null,
-        }, xhr);
+        }, xhr);*/
         this.OPTIONS = Object.assign({
             w: 0.8,
             h: 0.8,
@@ -1434,11 +1494,7 @@ window.ComponentPlane = class {
             left: 'auto'
         }, options);
         this.FULLSCREEN = false;
-        this.makeModal();
-        this.makeContent();
-    }
 
-    makeModal() {
         let width = this.OPTIONS.w;
         if (this.OPTIONS.w.toString().indexOf('px') === -1 && this.OPTIONS.w.toString().indexOf('%') === -1) {
             width = window.innerWidth * this.OPTIONS.w;
@@ -1454,9 +1510,89 @@ window.ComponentPlane = class {
         this.WIDTH = width;
         this.HEIGHT = height;
         let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
-        let html = `<div id="dlp-plane" class="dlp-plane-gauze"><div style="width: ${width};margin: ${margin}"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div></div>`;
-        document.body.insertAdjacentHTML('beforeEnd', html);
-        this.DOM = document.getElementById('dlp-plane');
+        let Plane = document.createElement('div');
+        Plane.className = 'dlp-plane-gauze';
+        let html = `<div style="width: ${width};margin: ${margin}"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div>`;
+        Plane.insertAdjacentHTML('afterbegin', html);
+        document.body.append(Plane);
+        this.DOM = Plane;
+        this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
+
+        this._submitEvent = function(element) {
+            let form = this.MODEL_BODY_DOM.getElementsByTagName('form')[0];
+            let formdata = new FormData(form);
+            let flag = false;
+            for (let pair of formdata.entries()) {
+                let key = pair[0];
+                let val = pair[1];
+                let input;
+                try {
+                    input = form.querySelector(`input[name=${key}]`);
+                }catch (e) {
+                    continue;
+                }
+                if(input.hasAttribute('required') && input.value === ''){
+                    flag = true;
+                    input.focus();
+                }
+                if (/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')) {
+                    val = JSON.parse(val);
+                    if (Array.isArray(val) && val.length > 0) {
+                        val.forEach((v) => {
+                            formdata.append(`${key}[]`, v);
+                        });
+                    } else {
+                        formdata.append(`${key}`, '');
+                    }
+                }
+            }
+            if(flag)return;
+            element.setAttribute('disabled', 'disabled');
+            element.innerText = '提交中...';
+            _component.request({
+                url: this.XHR.url,
+                method: this.XHR.method,
+                data: formdata,
+                callback: (response) => {
+                    if (typeof this.XHR.callback == 'function') {
+                        this.XHR.callback(response);
+                        return;
+                    }
+                    if (!response) return;
+                    if (response.code === 0) {
+                        window.location.reload();
+                    } else {
+                        _component.alert(response.message, 3, function () {
+                            element.removeAttribute('disabled');
+                            element.innerText = '提交';
+                        });
+                    }
+                }
+            });
+        };
+        this._xhrContent = function () {
+            _component.loading(this.MODEL_BODY_DOM);
+            let object = this;
+            _component.request({
+                url: this.URL,
+                method: 'GET',
+                callback: function (response) {
+                    _component.loading(object.MODEL_BODY_DOM, true);
+                    let fragment = document.createRange().createContextualFragment(response);
+                    object.MODEL_BODY_DOM.appendChild(fragment);
+                    let listener = object.XHR.listener;
+                    if (typeof listener === 'function') {
+                        let target = listener(object.MODEL_BODY_DOM);
+                        if (target instanceof HTMLElement) {
+                            target.addEventListener(object.XHR.event, ()=>object._submitEvent(target), false);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    appendF() {
         /*F*/
         let F = document.createElement('i');
         F.style.marginRight = '10px';
@@ -1481,7 +1617,10 @@ window.ComponentPlane = class {
             }
         }, false);
         this.DOM.querySelector('.plane-header').append(F);
-        /*X*/
+        return this;
+    }
+
+    appendX(){
         let X = document.createElement('i');
         X.insertAdjacentHTML('afterbegin', _component.close);
         X.style.marginRight = '5px';
@@ -1494,85 +1633,18 @@ window.ComponentPlane = class {
             }
         }, false);
         this.DOM.querySelector('.plane-header').append(X);
-        this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
         window.addEventListener("popstate", () =>{
             this.DOM.remove();
         }, false);
+        return this;
     }
 
-    makeContent() {
-        _component.loading(this.MODEL_BODY_DOM);
-        let object = this;
-        _component.request({
-            url: this.URL,
-            method: 'GET',
-            callback: function (response) {
-                _component.loading(object.MODEL_BODY_DOM, true);
-                let fragment = document.createRange().createContextualFragment(response);
-                object.MODEL_BODY_DOM.appendChild(fragment);
-                let listener = object.XHR.listener;
-                if (typeof listener === 'function') {
-                    let target = listener(object.MODEL_BODY_DOM);
-                    if (target instanceof HTMLElement) {
-                        target.addEventListener(object.XHR.event,
-                            ()=>object.submitEvent(target), false);
-                    }
-                }
-            }
-        });
+    bindEvent(dom,event=function () {}){
+
     }
 
-    submitEvent(element) {
-        let form = this.MODEL_BODY_DOM.querySelector('form');
-        let formdata = new FormData(form);
-        let flag = false;
-        for (let pair of formdata.entries()) {
-            let key = pair[0];
-            let val = pair[1];
-            let input;
-            try {
-                input = form.querySelector(`input[name=${key}]`);
-            }catch (e) {
-                continue;
-            }
-            if(input.hasAttribute('required') && input.value === ''){
-                flag = true;
-                input.focus();
-            }
-            if (/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')) {
-                val = JSON.parse(val);
-                if (Array.isArray(val) && val.length > 0) {
-                    val.forEach((v) => {
-                        formdata.append(`${key}[]`, v);
-                    });
-                } else {
-                    formdata.append(`${key}`, '');
-                }
-            }
-        }
-        if(flag)return;
-        element.setAttribute('disabled', 'disabled');
-        element.innerText = '提交中...';
-        _component.request({
-            url: this.XHR.url,
-            method: this.XHR.method,
-            data: formdata,
-            callback: (response) => {
-                if (typeof this.XHR.callback == 'function') {
-                    this.XHR.callback(response);
-                    return;
-                }
-                if (!response) return;
-                if (response.code === 0) {
-                    window.location.reload();
-                } else {
-                    _component.alert(response.message, 3, function () {
-                        element.removeAttribute('disabled');
-                        element.innerText = '提交';
-                    });
-                }
-            }
-        });
+    make(){
+
     }
 };
 
@@ -1706,7 +1778,15 @@ window.ComponentSortable = class {
 };
 
 window.ComponentCascadeLine = class {
-    constructor(name, select, url, options) {
+    constructor(name, select, url, options = {
+        movable: true,
+        exchange: true,
+        detail: true,
+        insert: true,
+        update: true,
+        delete: true,
+        root: true
+    }) {
         if (!Array.isArray(select)) {
             console.error('CascadeLine param select must be array!');
             return;

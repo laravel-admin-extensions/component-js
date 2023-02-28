@@ -299,7 +299,9 @@
     document.getElementById('test3').addEventListener('click', function () {
         new ComponentPlane();
     });
-    new ComponentCascadeDot('test4', China, [2262]);
+    new ComponentCascadeDot('test4', China, [2261,2262,2263]).useSearch().trigger(function (select,insert,del) {
+        console.log(select,insert,del)
+    }).make();
 
     let cascadeTestData = [
         {

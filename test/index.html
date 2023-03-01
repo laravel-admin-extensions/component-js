@@ -225,11 +225,13 @@
         "49": "木南日菜",
         "50": "上原亜衣"
     };
-    new ComponentDot('test', test_data, [2, 5, 10]).useSearch().trigger(function (select,insert,del) {
+    new ComponentDot('#test', test_data, [2, 5, 10]).useSearch().trigger(function (select,insert,del) {
         console.log(select,insert,del)
     }).make();
 
-    new ComponentDot('test7', test_data,[2],1).mod({mode:true,placeholder: '选择女优',height:'120px'}).make();
+    new ComponentDot('#test7', test_data,[2]).mod({mode:true,placeholder: '选择女优',height:'120px'}).trigger(function (select,insert,del) {
+        console.log(select,insert,del)
+    }).make();
 
     new ComponentLine("test2", {
             "name": {"name": "名称", "type": "input"},
@@ -239,7 +241,7 @@
                     enableTime: true,
                     dateFormat: "Y-m-d H:i",
                 }},
-            //"is-small": {"name": "高清", "type": "select","options":{1:'是',2:'否'},"limit":1,"useSearch":false, "style": "width:60px"}
+            "is-small": {"name": "高清", "type": "select","select":{1:'是',2:'否'},"options":{limit:1}}
         }).load([
         {
             "name": "ごめんなさい、もう別れたいの…別れを拒む彼氏と結んだ《愛人》と言う名の従順契約 美乃すずめ",
@@ -297,8 +299,7 @@
             "time": "2022-02-08 10:22:37",
             "is-small": 1
         },
-    ]).bindDeleteAction(function (d) {
-    }).make();
+    ]).make();
 
     document.getElementById('test3').addEventListener('click', function (e) {
         new ComponentPlane({url:"http://333"}).make();

@@ -6,7 +6,7 @@ namespace DLP\Assembly\Unit;
 use DLP\Tool\Assistant;
 
 /**
- * Class Wiget
+ * Class Widget
  * @package DLP\Assembly\Unit
  */
 abstract class Widget

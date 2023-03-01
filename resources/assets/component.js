@@ -146,56 +146,6 @@ window._component = {
             if (typeof callback === 'function') callback();
         }, time * 1000);
     },
-    dialog:function(info,width,height){
-        let gauze = document.createElement('div');
-        gauze.className = 'dlp-plane-gauze';
-        let box = document.createElement('div');
-        if (width) {
-            box.style.width = width;
-        }else {
-            box.style.width = '450px';
-        }
-        let top;
-        if(height){
-            top = (window.innerHeight - height - 24) / 2;
-        }else {
-            top = (window.innerHeight - 94) / 2;
-        }
-        box.style.margin = `${top}px auto`;
-        let header = document.createElement('div');
-        header.className = 'dlp plane-header';
-        /*X*/
-        let X = document.createElement('i');
-        X.insertAdjacentHTML('afterbegin', _component.close);
-        X.addEventListener('click', () => {
-            if (this.DOM instanceof HTMLElement) {
-                this.DOM.remove();
-            }
-            if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
-                document.getElementById('kvFileinputModal').remove();
-            }
-        }, false);
-        header.append(X);
-        let body = document.createElement('div');
-        body.className = 'plane-body';
-        if(height){
-            body.style.height = height;
-        }else {
-            body.style.height = '70px';
-        }
-        if (info instanceof HTMLElement){
-            body.append(info);
-        }else {
-            body.insertAdjacentHTML("afterbegin", info);
-        }
-
-        box.append(header);
-        box.append(body);
-        gauze.append(box);
-        this.DOM = gauze;
-        document.body.append(gauze);
-        return body;
-    },
     contextmenu: function (event, list, options = {}) {
         options = Object.assign({
             W: '70px'
@@ -478,7 +428,7 @@ window.ComponentDot = class {
                 let queue = [];
                 this.CONTENT_DOM.childNodes.forEach((D) => {
                     let id = parseInt(D.getAttribute('data-id'));
-                    if (selected.indexOf(id) !== -1) {
+                    if (this.selected_data.indexOf(id) !== -1) {
                         queue.push(D);
                     }
                 });
@@ -641,7 +591,6 @@ window.ComponentCascadeDot = class {
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
-
         this._makeSelect = function(select) {
             this.dimensional_data = [];
             this.selected_label_dom = [];
@@ -976,7 +925,7 @@ window.ComponentCascadeDot = class {
                     }, 500);
                 });
             }
-        }
+        };
     }
 
     useSearch(){
@@ -1477,7 +1426,15 @@ window.ComponentPlane = class {
     XHR;
     CONTENT;
     DELAY_BIND = [];
-    constructor(content, options = {}) {
+
+    constructor(content, options = {
+        w: 0.8,
+        h: 0.8,
+        top: '30px',
+        left: 'auto',
+        f:true,
+        x:true,
+    }) {
         if(typeof content === 'object' && content.hasOwnProperty('url')){
             this.XHR = content;
             this.XHR = Object.assign({
@@ -1495,7 +1452,9 @@ window.ComponentPlane = class {
             w: 0.8,
             h: 0.8,
             top: '30px',
-            left: 'auto'
+            left: 'auto',
+            f:true,
+            x:true,
         }, options);
         this.FULLSCREEN = false;
 
@@ -1521,6 +1480,50 @@ window.ComponentPlane = class {
         document.body.append(Plane);
         this.DOM = Plane;
         this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
+
+        this._appendF = function(){
+            let F = document.createElement('i');
+            F.style.marginRight = '10px';
+            F.insertAdjacentHTML('afterbegin', _component.aspect);
+            F.addEventListener('click', () => {
+                if (this.FULLSCREEN === false){
+                    this.FULLSCREEN = true;
+                    this.DOM.firstChild.style.width = '100%';
+                    this.DOM.firstChild.style.margin = '0';
+                    this.DOM.querySelector('.plane-body').style.height = (window.innerHeight - 25)+'px';
+                }else {
+                    this.FULLSCREEN = false;
+                    this.DOM.firstChild.style.width = this.WIDTH;
+                    this.DOM.firstChild.style.marginTop = this.OPTIONS.top;
+                    if(this.OPTIONS.left === 'auto'){
+                        this.DOM.firstChild.style.margin = `${this.OPTIONS.top} auto`;
+                    }else {
+                        this.DOM.firstChild.style.marginTop = this.OPTIONS.top;
+                        this.DOM.firstChild.style.marginLeft = this.OPTIONS.left;
+                    }
+                    this.DOM.querySelector('.plane-body').style.height = this.HEIGHT;
+                }
+            }, false);
+            this.DOM.querySelector('.plane-header').append(F);
+        };
+
+        this._appendX = function(){
+            let X = document.createElement('i');
+            X.insertAdjacentHTML('afterbegin', _component.close);
+            X.style.marginRight = '5px';
+            X.addEventListener('click', () => {
+                if (this.DOM instanceof HTMLElement) {
+                    this.DOM.remove();
+                }
+                if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
+                    document.getElementById('kvFileinputModal').remove();
+                }
+            }, false);
+            this.DOM.querySelector('.plane-header').append(X);
+            window.addEventListener("popstate", () =>{
+                this.DOM.remove();
+            }, false);
+        };
 
         this._xhrContent = function () {
             _component.loading(this.MODEL_BODY_DOM);
@@ -1599,59 +1602,12 @@ window.ComponentPlane = class {
                         this._submitEvent(dom,delay.event);
                         continue;
                     }
-                    dom.addEventListener(delay.trigger,()=>delay.event(this.DOM));
+                    dom.addEventListener(delay.trigger,()=>delay.event(this));
                 }catch (e) {
                     console.error('cannot find document by selector :'+delay.selector);
                 }
             }
-        }
-    }
-
-    appendF() {
-        /*F*/
-        let F = document.createElement('i');
-        F.style.marginRight = '10px';
-        F.insertAdjacentHTML('afterbegin', _component.aspect);
-        F.addEventListener('click', () => {
-            if (this.FULLSCREEN === false){
-                this.FULLSCREEN = true;
-                this.DOM.firstChild.style.width = '100%';
-                this.DOM.firstChild.style.margin = '0';
-                this.DOM.querySelector('.plane-body').style.height = (window.innerHeight - 25)+'px';
-            }else {
-                this.FULLSCREEN = false;
-                this.DOM.firstChild.style.width = this.WIDTH;
-                this.DOM.firstChild.style.marginTop = this.OPTIONS.top;
-                if(this.OPTIONS.left === 'auto'){
-                    this.DOM.firstChild.style.margin = `${this.OPTIONS.top} auto`;
-                }else {
-                    this.DOM.firstChild.style.marginTop = this.OPTIONS.top;
-                    this.DOM.firstChild.style.marginLeft = this.OPTIONS.left;
-                }
-                this.DOM.querySelector('.plane-body').style.height = this.HEIGHT;
-            }
-        }, false);
-        this.DOM.querySelector('.plane-header').append(F);
-        return this;
-    }
-
-    appendX(){
-        let X = document.createElement('i');
-        X.insertAdjacentHTML('afterbegin', _component.close);
-        X.style.marginRight = '5px';
-        X.addEventListener('click', () => {
-            if (this.DOM instanceof HTMLElement) {
-                this.DOM.remove();
-            }
-            if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
-                document.getElementById('kvFileinputModal').remove();
-            }
-        }, false);
-        this.DOM.querySelector('.plane-header').append(X);
-        window.addEventListener("popstate", () =>{
-            this.DOM.remove();
-        }, false);
-        return this;
+        };
     }
 
     bindSubmitEvent(selector,xhr={url:'',method:'POST',data:{},callback:null}){
@@ -1665,7 +1621,13 @@ window.ComponentPlane = class {
         return this;
     }
 
+    getDom(){
+        return this.DOM;
+    }
+
     make(){
+        if(this.OPTIONS.f) this._appendF();
+        if(this.OPTIONS.x) this._appendX();
         if(this.XHR){
             this._xhrContent()
         }else {

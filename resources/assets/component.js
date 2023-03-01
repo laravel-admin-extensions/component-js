@@ -102,8 +102,7 @@ window._component = {
     },
     loading: function (DOM, remove = false) {
         if (remove) {
-            DOM.innerHTML = '';
-            return;
+            if(DOM.querySelector('div.dlp-loader')) DOM.querySelector('div.dlp-loader').remove();
         }
         DOM.insertAdjacentHTML('afterbegin', `<div class="dlp-loader">
         <div class="dlp-loader-inner">
@@ -957,7 +956,10 @@ window.ComponentCascadeDot = class {
 };
 
 window.ComponentLine = class {
-    constructor(name, columns, data) {
+    constructor(name, columns,options={
+        sortable: true,
+        delete: true,
+        insert: true}) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -965,12 +967,11 @@ window.ComponentLine = class {
         });
         this.flatpickr_settings = {};
         this.COLUMNS = columns;
-        this.DATA = data;
-        this.OPTIONS = {
-            sortable: false,
-            delete: false,
-            insert: false
-        };
+        this.OPTIONS = Object.assign({
+            sortable: true,
+            delete: true,
+            insert: true
+        },options);
         this.INSERT_COLUMNS = {};
         this.DATA_INPUT = document.createElement('input');
         this.DATA_INPUT.setAttribute('name', name);
@@ -997,10 +998,34 @@ window.ComponentLine = class {
         };
 
         this._makeBody = function() {
-            let records = [];
             let tbody = document.createElement('tbody');
+            tbody.setAttribute('sortable-list', 'sortable-list');
+            tbody.className = 'dlp-tbody dlp-scroll';
+            this.TBODY_DOM = tbody;
+            this.TABLE_DOM.appendChild(tbody);
+            if(typeof this.DATA === 'object' && Array.isArray(this.DATA)){
+                this._loadData();
+            }else {
+                _component.loading(this.TBODY_DOM);
+                let object = this;
+                this.DATA = Object.assign({
+                    url:'',
+                    method: 'GET',
+                    data: {},
+                    callback: function (response) {
+                        if(response.code === 1)return _component.alert(response.message,3, null, object.TBODY_DOM);
+                        _component.loading(object.TBODY_DOM,false);
+                        let data = response.data;
+                        object._loadData(data);
+                    },
+                }, this.DATA);
+                _component.request(this.DATA)
+            }
+        };
+
+        this._loadData = function(){
+            let records = [];
             let columns = this.COLUMNS;
-            if (Array.isArray(this.DATA) === false) return;
             this.DATA.forEach((values, key) => {
                 let tr = document.createElement('tr');
                 tr.className = 'dlp-tr';
@@ -1030,15 +1055,11 @@ window.ComponentLine = class {
                 td.insertAdjacentHTML('afterbegin', '<div></div>');
                 this._operateButton(td);
                 tr.appendChild(td);
-                tbody.appendChild(tr);
+                this.TBODY_DOM.appendChild(tr);
                 records.push(record);
             });
             this.DATA = records;
             this.DATA_INPUT.value = JSON.stringify(records);
-            tbody.setAttribute('sortable-list', 'sortable-list');
-            tbody.className = 'dlp-tbody dlp-scroll';
-            this.TBODY_DOM = tbody;
-            this.TABLE_DOM.appendChild(tbody);
         };
 
         this._makeFoot = function() {
@@ -1101,70 +1122,9 @@ window.ComponentLine = class {
                 this.TABLE_DOM.appendChild(tfoot);
                 return;
             }
+            this._insertButton(foot);
             tfoot.append(foot);
             this.TABLE_DOM.appendChild(tfoot);
-            /*insert action*/
-            let i = document.createElement('i');
-            i.className = 'dlp text-white';
-            i.style.cursor = 'pointer';
-            i.insertAdjacentHTML('afterbegin', _component.write);
-            i.addEventListener('click', () => {
-                let tfoot = this.DOM.getElementsByTagName('tfoot')[0];
-                let insert = {};
-                let tr = document.createElement('tr');
-                tr.className = 'dlp-tr';
-                tr.setAttribute('sortable-item', 'sortable-item');
-
-                for (let column in this.COLUMNS) {
-                    if (!this.COLUMNS.hasOwnProperty(column)) continue;
-                    let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
-                    let td = document.createElement('td');
-                    let value;
-                    if (type === 'input' || type === 'datetime') {
-                        value = tfoot.querySelector(`input[data-column="${column}"]`).value;
-                    } else if (type === 'select') {
-                        value = this.INSERT_ROW_MENUE_DATA[column];
-                    } else {
-                        value = '';
-                    }
-                    insert[column] = value;
-                    this._makeTd(td, column, this.COLUMNS[column], value);
-                    tr.appendChild(td);
-
-                    if(this.COLUMNS[column].type === 'image'){
-                        let dom = td.firstChild;
-                        setTimeout(()=>{
-                            let src = dom.getAttribute('data-src');
-                            dom.setAttribute('src',src);
-                            if(this.COLUMNS[column].zoom === false)return;
-                            let img = document.createElement('img');
-                            dom.addEventListener('mouseover', function(e) {
-                                document.body.append(img);
-                                img.style.position = 'absolute';
-                                img.style.top = `${e.pageY + 7}px`;
-                                img.style.left = `${e.pageX + 7}px`;
-                                img.style.zIndex = '1000000';
-                                img.style.width = '300px';
-                                img.style.borderRadius = '3px';
-                                img.setAttribute('src', src);
-                            });
-                            dom.addEventListener('mouseout', function(e) {
-                                e.stopPropagation();
-                                img.remove();
-                            });
-                        },200);
-                    }
-                }
-
-                let td = document.createElement('td');
-                td.insertAdjacentHTML('afterbegin', '<div></div>');
-                this._operateButton(td);
-                tr.appendChild(td);
-                this.TBODY_DOM.appendChild(tr);
-                this.DATA.push(insert);
-                this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
-            }, false);
         };
 
         this._makeTd = function(td, column, settings, value) {
@@ -1248,10 +1208,80 @@ window.ComponentLine = class {
                     this.DATA.splice(key, 1);
                     tbody.removeChild(tr);
                     this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                    if(typeof this.deleteAction === 'function') this.deleteAction(this.DATA);
                 }, false);
                 td.firstElementChild.appendChild(D);
             }
             td.className = 'operate-column';
+        };
+
+        this._insertButton = function (tr) {
+            let i = document.createElement('i');
+            i.className = 'dlp text-white';
+            i.style.cursor = 'pointer';
+            i.insertAdjacentHTML('afterbegin', _component.write);
+            i.addEventListener('click', () => {
+                let tfoot = this.DOM.querySelector('tfoot');
+                let insert = {};
+                let tr = document.createElement('tr');
+                tr.className = 'dlp-tr';
+                tr.setAttribute('sortable-item', 'sortable-item');
+
+                for (let column in this.COLUMNS) {
+                    if (!this.COLUMNS.hasOwnProperty(column)) continue;
+                    let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
+                    let td = document.createElement('td');
+                    let value;
+                    if (type === 'input' || type === 'datetime') {
+                        value = tfoot.querySelector(`input[data-column="${column}"]`).value;
+                    } else if (type === 'select') {
+                        value = this.INSERT_ROW_MENUE_DATA[column];
+                    } else {
+                        value = '';
+                    }
+                    insert[column] = value;
+                    this._makeTd(td, column, this.COLUMNS[column], value);
+                    tr.appendChild(td);
+
+                    if(this.COLUMNS[column].type === 'image'){
+                        let dom = td.firstChild;
+                        setTimeout(()=>{
+                            let src = dom.getAttribute('data-src');
+                            dom.setAttribute('src',src);
+                            if(this.COLUMNS[column].zoom === false)return;
+                            let img = document.createElement('img');
+                            dom.addEventListener('mouseover', function(e) {
+                                document.body.append(img);
+                                img.style.position = 'absolute';
+                                img.style.top = `${e.pageY + 7}px`;
+                                img.style.left = `${e.pageX + 7}px`;
+                                img.style.zIndex = '1000000';
+                                img.style.width = '300px';
+                                img.style.borderRadius = '3px';
+                                img.setAttribute('src', src);
+                            });
+                            dom.addEventListener('mouseout', function(e) {
+                                e.stopPropagation();
+                                img.remove();
+                            });
+                        },200);
+                    }
+                }
+
+                let td = document.createElement('td');
+                td.insertAdjacentHTML('afterbegin', '<div></div>');
+                this._operateButton(td);
+                tr.appendChild(td);
+                this.TBODY_DOM.appendChild(tr);
+                this.DATA.push(insert);
+                this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
+                if(typeof this.insertAction === 'function') this.insertAction(this.DATA);
+            }, false);
+            let td = document.createElement('td');
+            td.className = 'operate-column';
+            td.append(i);
+            tr.append(td);
         };
 
         this._menuMake = function(column, selected, select, limit, placeholder, insertRow = false) {
@@ -1381,6 +1411,7 @@ window.ComponentLine = class {
                 });
                 object.DATA = data;
                 object.DATA_INPUT.value = JSON.stringify(object.DATA);
+                if(typeof object.sortableAction === 'function') object.sortableAction(object.DATA);
             });
         };
 
@@ -1391,23 +1422,28 @@ window.ComponentLine = class {
         };
     }
 
-    sortableAction(){
-        this.OPTIONS.sortable = true;
+    load(data){
+        this.DATA = data;
         return this;
     }
 
-    insertAction(){
-        this.OPTIONS.insert = true;
+    bindSortableAction(f){
+        if(typeof f === 'function') this.sortableAction = f;
         return this;
     }
 
-    updateAction(){
-        this.OPTIONS.update = true;
+    bindInsertAction(f){
+        if(typeof f === 'function') this.insertAction = f;
         return this;
     }
 
-    deleteAction(){
-        this.OPTIONS.delete = true;
+    bindUpdateAction(f){
+        if(typeof f === 'function') this.updateAction = f;
+        return this;
+    }
+
+    bindDeleteAction(f){
+        if(typeof f === 'function') this.deleteAction = f;
         return this;
     }
 
@@ -1525,7 +1561,7 @@ window.ComponentPlane = class {
         this._xhrContent = function () {
             _component.loading(this.MODEL_BODY_DOM);
             let object = this;
-            _component.request({
+            /*_component.request({
                 url: this.XHR.url,
                 data:this.XHR.data,
                 method: this.XHR.method,
@@ -1535,7 +1571,7 @@ window.ComponentPlane = class {
                     object.MODEL_BODY_DOM.appendChild(fragment);
                     this._delayBind();
                 }
-            });
+            });*/
         };
 
         this._submitEvent = function(element,xhr){
@@ -1658,15 +1694,15 @@ window.ComponentPlane = class {
         if(this.OPTIONS.f) this._appendF();
         if(this.OPTIONS.x) this._appendX();
         if(this.XHR){
-            this._xhrContent()
+            this._xhrContent();
         }else {
             if(this.CONTENT instanceof HTMLElement){
                 this.MODEL_BODY_DOM.append(this.CONTENT);
-                return;
+            }else {
+                this.MODEL_BODY_DOM.innerHTML = this.CONTENT;
             }
-            this.MODEL_BODY_DOM.innerHTML = this.CONTENT;
-            this._delayBind();
         }
+        this._delayBind();
     }
 };
 

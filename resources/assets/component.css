@@ -334,7 +334,7 @@
     background: #181818;
 }
 .dlp-table .dlp-input{height: 24px!important;}
-.dlp-table .dlp-tbody{display:block;height:100%;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);}
+.dlp-table .dlp-tbody{display:block;height:100%;overflow-y:scroll!important;background: rgb(50 50 50 / 80%);position: relative;}
 .dlp-table .dlp-tr{display:table;width:100%;table-layout:fixed;position: relative;}
 .dlp-tr>th,.dlp-tr>td{padding: 3px;text-align: left;height: 38px;}
 .dlp-table .dlp-thead>.dlp-tr{height: 45px;border-bottom: 1px solid #060606;}

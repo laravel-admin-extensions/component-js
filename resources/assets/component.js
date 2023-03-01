@@ -1426,6 +1426,7 @@ window.ComponentPlane = class {
     XHR;
     CONTENT;
     DELAY_BIND = [];
+    PARENT_DOM = null;
 
     constructor(content, options = {
         w: 0.8,
@@ -1434,6 +1435,8 @@ window.ComponentPlane = class {
         left: 'auto',
         f:true,
         x:true,
+        gauze:true,
+        style:{zIndex:'1050',position:'relative'},
     }) {
         if(typeof content === 'object' && content.hasOwnProperty('url')){
             this.XHR = content;
@@ -1455,6 +1458,8 @@ window.ComponentPlane = class {
             left: 'auto',
             f:true,
             x:true,
+            gauze:true,
+            style:{zIndex:'1050',position:'relative'},
         }, options);
         this.FULLSCREEN = false;
 
@@ -1472,14 +1477,6 @@ window.ComponentPlane = class {
         }
         this.WIDTH = width;
         this.HEIGHT = height;
-        let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
-        let Plane = document.createElement('div');
-        Plane.className = 'dlp-plane-gauze';
-        let html = `<div style="width: ${width};margin: ${margin}"><div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${height};"></div></div>`;
-        Plane.insertAdjacentHTML('afterbegin', html);
-        document.body.append(Plane);
-        this.DOM = Plane;
-        this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
 
         this._appendF = function(){
             let F = document.createElement('i');
@@ -1621,11 +1618,43 @@ window.ComponentPlane = class {
         return this;
     }
 
+    setParentDom(document) {
+        if (document instanceof HTMLElement) this.PARENT_DOM = document;
+        return this;
+    }
+
     getDom(){
-        return this.DOM;
+        if (this.DOM) return this.DOM;
     }
 
     make(){
+        let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
+        let Plane = document.createElement('div');
+        Plane.style.width = this.WIDTH;
+        Plane.style.margin = margin;
+        for (let k in this.OPTIONS.style){
+            if(this.OPTIONS.style.hasOwnProperty(k)) {
+                Plane.style[k] = this.OPTIONS.style[k];
+            }
+        }
+        Plane.insertAdjacentHTML('afterbegin',`<div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${this.HEIGHT};"></div>`);
+        if(this.OPTIONS.gauze){
+            let gauze = document.createElement('div');
+            gauze.className = 'dlp-plane-gauze';
+            gauze.append(Plane);
+            Plane = gauze;
+        }
+        if(this.PARENT_DOM instanceof HTMLElement){
+            this.PARENT_DOM.append(Plane);
+        }else {
+            document.body.append(Plane);
+        }
+        this.DOM = Plane;
+        this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
+        if(this.OPTIONS.background){
+            this.MODEL_BODY_DOM.style.background = this.OPTIONS.background;
+        }
+
         if(this.OPTIONS.f) this._appendF();
         if(this.OPTIONS.x) this._appendX();
         if(this.XHR){

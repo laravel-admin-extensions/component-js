@@ -234,12 +234,12 @@
     new ComponentLine("test2", {
             "name": {"name": "名称", "type": "input"},
             "meta": {"name": "番号", "type": "text","insert_type":"hidden"},
-            "url": {"name": "图片", "type": "image","w":200,"h":0},
+            "url": {"name": "图片", "type": "image","delay":true,"options":{zoom:true}},
             "time": {"name": "更新时间", "type": "datetime","config":{
                     enableTime: true,
                     dateFormat: "Y-m-d H:i",
                 }},
-            "is-small": {"name": "高清", "type": "select","options":{1:'是',2:'否'},"limit":1,"useSearch":false, "style": "width:60px"}
+            //"is-small": {"name": "高清", "type": "select","options":{1:'是',2:'否'},"limit":1,"useSearch":false, "style": "width:60px"}
         }).load([
         {
             "name": "ごめんなさい、もう別れたいの…別れを拒む彼氏と結んだ《愛人》と言う名の従順契約 美乃すずめ",

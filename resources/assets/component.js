@@ -43,7 +43,7 @@ window._component = {
             data: {},
             callback: null,
             error_callback: null,
-            timeout:30000
+            timeout: 30000
         }, settings);
         let xhr = new XMLHttpRequest();
         if (settings.method === 'GET') settings.url = _component.parseParams(settings.url, settings.data);
@@ -65,9 +65,9 @@ window._component = {
             xhr.responseType = "text";
             xhr.send(null);
         } else {
-            if(settings.data instanceof FormData) {
+            if (settings.data instanceof FormData) {
                 xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            }else {
+            } else {
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 settings.data = JSON.stringify(settings.data);
             }
@@ -102,7 +102,7 @@ window._component = {
     },
     loading: function (DOM, remove = false) {
         if (remove) {
-            if(DOM.querySelector('div.dlp-loader')) DOM.querySelector('div.dlp-loader').remove();
+            if (DOM.querySelector('div.dlp-loader')) DOM.querySelector('div.dlp-loader').remove();
         }
         DOM.insertAdjacentHTML('afterbegin', `<div class="dlp-loader">
         <div class="dlp-loader-inner">
@@ -113,13 +113,13 @@ window._component = {
             <div class="dlp-loader-line-wrap"><div class="dlp-loader-line"></div></div>
         </div></div>`);
     },
-    _alert_documents:[],
+    _alert_documents: [],
     alert: function (message, time = 1, callback = null, dom = null) {
         let div = document.createElement('div');
-        div.insertAdjacentHTML('afterbegin',`<span class="dlp dlp-text">${message}</span>`);
+        div.insertAdjacentHTML('afterbegin', `<span class="dlp dlp-text">${message}</span>`);
         let w, h;
         div.className = 'dlp-alert';
-        this._alert_documents.forEach((D)=>{
+        this._alert_documents.forEach((D) => {
             D.style.top = parseInt(D.style.top) - 60 + 'px';
         });
         this._alert_documents.push(div);
@@ -200,17 +200,26 @@ window._component = {
         dimension++;
         _component.dimensional(output, data.nodes, dimension, parentNodes);
     },
-    imgDelay(name,time=200,zoom= false,width=300,height = 0) {
-        let list = document.getElementsByClassName(name);
+    imgDelay(selector, options= {time : 200, zoom : false, width : 300, height : 0}) {
+        let list;
+        if(typeof selector === 'string'){
+            list = document.querySelectorAll(selector);
+        }else if(Array.isArray(selector) && selector[0] instanceof HTMLElement){
+            list = selector;
+        }else {
+            console.error('type of selector is error!');
+            return;
+        }
+        options = Object.assign({time : 200, zoom : false, width : 300, height : 0},options);
         let i = 0;
-        for(let dom of list){
-            setTimeout(()=>{
+        for (let dom of list) {
+            setTimeout(() => {
                 let src = dom.getAttribute('data-src');
-                dom.setAttribute('src',src);
-                dom.onload = function(){
-                    if(!zoom)return;
+                dom.setAttribute('src', src);
+                dom.onload = function () {
+                    if (!options.zoom) return;
                     let img = document.createElement('img');
-                    dom.addEventListener('mouseover', function(e) {
+                    dom.addEventListener('mouseover', function (e) {
                         document.body.append(img);
                         img.style.position = 'absolute';
                         img.style.zIndex = '1000000';
@@ -218,47 +227,47 @@ window._component = {
                         img.setAttribute('src', src);
 
                         let scale;
-                        if(width === 0){
+                        if (options.width === 0) {
                             scale = img.naturalWidth / img.naturalWidth;
-                        }else {
-                            scale = width / img.naturalWidth;
+                        } else {
+                            scale = options.width / img.naturalWidth;
                         }
                         let offsetY = img.naturalHeight * scale / 2;
-                        if(height>0){
-                            offsetY = height / 2;
+                        if (options.height > 0) {
+                            offsetY = options.height / 2;
                             img.style.height = `${height}px`;
-                        }else if (height<0) {
-                            if (img.naturalHeight > window.innerHeight){
+                        } else if (options.height < 0) {
+                            if (img.naturalHeight > window.innerHeight) {
                                 let h = (window.innerHeight - 10);
                                 img.style.height = `${h}px`;
                                 offsetY = (h) / 2;
-                                width = 0;
+                                options.width = 0;
                             }
                         }
-                        if(width>0) {
-                            img.style.width = `${width}px`;
-                        }else {
+                        if (options.width > 0) {
+                            img.style.width = `${options.width}px`;
+                        } else {
                             img.style.width = `auto`;
                         }
                         img.style.top = `${e.pageY - offsetY}px`;
                         let distanceToBottom = window.innerHeight - e.clientY;
-                        if (window.innerHeight - e.clientY < offsetY + 5){
+                        if (window.innerHeight - e.clientY < offsetY + 5) {
                             img.style.top = `${e.pageY - (offsetY + (offsetY - distanceToBottom) + 5)}px`;
-                        }else if(e.clientY < offsetY - 5){
+                        } else if (e.clientY < offsetY - 5) {
                             img.style.top = `${e.pageY - (offsetY - (offsetY - e.clientY) - 5)}px`;
                         }
-                        if(window.innerWidth - e.clientX < img.naturalWidth){
+                        if (window.innerWidth - e.clientX < img.naturalWidth) {
                             img.style.left = `${e.pageX - img.naturalWidth - 30}px`;
-                        }else {
+                        } else {
                             img.style.left = `${e.pageX + 25}px`;
                         }
                     });
-                    dom.addEventListener('mouseout', function(e) {
+                    dom.addEventListener('mouseout', function (e) {
                         e.stopPropagation();
                         img.remove();
                     });
                 };
-            },i*time);
+            }, i * options.time);
             i++;
         }
     }
@@ -287,8 +296,8 @@ window.ComponentDot = class {
             e.preventDefault();
         });
 
-        selected = selected.filter(d=>{
-            if(select[d] === undefined)return false;
+        selected = selected.filter(d => {
+            if (select[d] === undefined) return false;
             return true;
         });
         this.selected_data = selected;
@@ -299,27 +308,27 @@ window.ComponentDot = class {
         this._useSearchMod = false;
         this._triggerEvent = null;
 
-        this._tagSelect = function(element) {
+        this._tagSelect = function (element) {
             if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
                 this.SELECTED_DOM.firstChild.click();
             }
             let clone = element.cloneNode(true);
-            clone.addEventListener('click', ()=>this._tagCancel(clone), false);
+            clone.addEventListener('click', () => this._tagCancel(clone), false);
             this.SELECTED_DOM.appendChild(clone);
             element.remove();
             this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
             this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
         };
 
-        this._tagCancel = function(element) {
+        this._tagCancel = function (element) {
             let clone = element.cloneNode(true);
-            clone.addEventListener('click', ()=>this._tagSelect(clone), false);
+            clone.addEventListener('click', () => this._tagSelect(clone), false);
             this.CONTENT_DOM.appendChild(clone);
             element.remove();
             this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
         };
 
-        this._tagCal = function(id, operate) {
+        this._tagCal = function (id, operate) {
             let index = this.select_data.indexOf(id);
             if (operate === this.MODE.insert) {
                 if (index === -1) {
@@ -350,12 +359,12 @@ window.ComponentDot = class {
                     this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
-            if (typeof this._triggerEvent == 'function'){
-                this._triggerEvent(this.select_data,this.insert_data,this.delete_data);
+            if (typeof this._triggerEvent == 'function') {
+                this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
             }
         };
 
-        this._search = function(search) {
+        this._search = function (search) {
             if (this._modSettings.mode) {
                 if (search.value === '') {
                     for (let node of this.CONTENT_DOM.childNodes) {
@@ -410,7 +419,7 @@ window.ComponentDot = class {
             this.SELECT_COVER_DOM.append(...elements);
         };
 
-        this._menuSelect = function(select) {
+        this._menuSelect = function (select) {
             if (this.limit === 1) {
                 this.SELECTED_DOM.innerHTML = `<p class="dlp-text">${select[this.select_data[0]]}</p>`;
                 return;
@@ -422,7 +431,7 @@ window.ComponentDot = class {
             this.SELECTED_DOM.innerHTML = html;
         };
 
-        this._bind = function(){
+        this._bind = function () {
             setTimeout(() => {
                 let queue = [];
                 this.CONTENT_DOM.childNodes.forEach((D) => {
@@ -445,17 +454,23 @@ window.ComponentDot = class {
         return this;
     }
 
-    mod(settings= {mode: false, placeholder: '未选择', height: '150px'}){
-        this._modSettings = Object.assign({mode: false, placeholder: '未选择', height: '150px',useSearch:true},settings);
+    mod(settings = {mode: false, placeholder: '未选择', height: '150px'}) {
+        this._modSettings = Object.assign({
+            mode: false,
+            placeholder: '未选择',
+            height: '150px',
+            useSearch: true
+        }, settings);
         return this;
     }
 
-    useSearch(){
+    useSearch() {
         this._useSearchMod = true;
         return this;
     }
 
-    trigger(f = function () {}){
+    trigger(f = function () {
+    }) {
         this._triggerEvent = f;
         return this;
     }
@@ -463,7 +478,7 @@ window.ComponentDot = class {
     make() {
         let selected = this.selected_data;
         let select = this.select;
-        if(this._modSettings.mode === true){
+        if (this._modSettings.mode === true) {
             let menu = document.createElement('div');
             menu.className = 'dlp-dot-menu';
             let menu_select = document.createElement('div');
@@ -509,7 +524,7 @@ window.ComponentDot = class {
             }
 
             menu.append(menu_select);
-            if(this._useSearchMod === true) {
+            if (this._useSearchMod === true) {
                 let search_box = document.createElement('div');
                 search_box.className = 'search-box';
                 let input = document.createElement('input');
@@ -525,7 +540,7 @@ window.ComponentDot = class {
             });
             menu.addEventListener('mouseleave', () => {
                 menu_list.style.display = 'none';
-                if(this._useSearchMod === true) this.DOM.querySelector(`.dot-search`).value = '';
+                if (this._useSearchMod === true) this.DOM.querySelector(`.dot-search`).value = '';
                 for (let node of this.CONTENT_DOM.childNodes) {
                     node.style.display = 'flex';
                 }
@@ -548,7 +563,7 @@ window.ComponentDot = class {
             select_dom += `<div class="dlp dlp-label dlp-text" data-id="${i}" title="${select[i]}"><span>${select[i]}</span></div>`;
         }
         let search = '';
-        if (this._useSearchMod){
+        if (this._useSearchMod) {
             search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
         }
         let html = `<div class="dlp dlp-dot" ><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>
@@ -560,7 +575,7 @@ window.ComponentDot = class {
         this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
         this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
         for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
-            element.addEventListener('click', ()=>this._tagSelect(element), false);
+            element.addEventListener('click', () => this._tagSelect(element), false);
         }
         this._bind();
     }
@@ -590,7 +605,7 @@ window.ComponentCascadeDot = class {
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
-        this._makeSelect = function(select) {
+        this._makeSelect = function (select) {
             this.dimensional_data = [];
             this.selected_label_dom = [];
             _component.dimensional(this.dimensional_data, select);
@@ -657,7 +672,7 @@ window.ComponentCascadeDot = class {
             this.STACKS = this.CONTENT_DOM.childNodes;
         };
 
-        this._select = function(element, stack) {
+        this._select = function (element, stack) {
             let id = parseInt(element.getAttribute('data-id'));
             let k = parseInt(element.getAttribute('data-k'));
             let data = this.dimensional_data[stack][k];
@@ -703,7 +718,7 @@ window.ComponentCascadeDot = class {
             }
         };
 
-        this._selectToSelected = function(element, stack) {
+        this._selectToSelected = function (element, stack) {
             let div = document.createElement('div');
             div.className = 'dlp dlp-text dlp-label';
             div.setAttribute('data-id', element.getAttribute('data-id'));
@@ -715,7 +730,7 @@ window.ComponentCascadeDot = class {
             this.SELECTED_DOM.append(div);
         };
 
-        this._selectToParent = function(nodes, checked) {
+        this._selectToParent = function (nodes, checked) {
             let stack = nodes.length - 1;
             let node = nodes.pop();
             let parentNode = nodes[stack - 1];
@@ -762,7 +777,7 @@ window.ComponentCascadeDot = class {
             }
         };
 
-        this._selectToChildren = function(stack, nodes) {
+        this._selectToChildren = function (stack, nodes) {
             if (stack > (this.dimensional_data.length - 1)) return;
             let currentStackDocuments = this.STACKS[stack].childNodes;
             let children = [];
@@ -790,7 +805,7 @@ window.ComponentCascadeDot = class {
             this._selectToChildren(stack + 1, children);
         };
 
-        this._tagCal = function(id, operate) {
+        this._tagCal = function (id, operate) {
             if (operate === this.MODE.insert) {
                 if (this.select_data.indexOf(id) === -1) {
                     this.select_data.push(id);
@@ -821,12 +836,12 @@ window.ComponentCascadeDot = class {
                     this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
-            if (typeof this._triggerEvent == 'function'){
-                this._triggerEvent(this.select_data,this.insert_data,this.delete_data);
+            if (typeof this._triggerEvent == 'function') {
+                this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
             }
         };
 
-        this._search = function(search) {
+        this._search = function (search) {
             if (search.value === '') {
                 if (this.SELECT_COVER_DOM instanceof HTMLElement) {
                     this.SELECT_COVER_DOM.remove();
@@ -850,7 +865,7 @@ window.ComponentCascadeDot = class {
             });
         };
 
-        this._searchCoverClick = function(stack, data, dom) {
+        this._searchCoverClick = function (stack, data, dom) {
             if (data.nodes !== null) {
                 let nextStack = stack + 1;
                 Array.isArray(this.dimensional_data[nextStack]) &&
@@ -860,7 +875,7 @@ window.ComponentCascadeDot = class {
             (dom instanceof HTMLElement) && dom.click();
         };
 
-        this._searchPushTag = function(search, data, stack) {
+        this._searchPushTag = function (search, data, stack) {
             data.forEach((d, k) => {
                 if (Array.isArray(search)) {
                     if (search.indexOf(d.key) === -1) return;
@@ -882,7 +897,7 @@ window.ComponentCascadeDot = class {
             });
         };
 
-        this._checkAll = function(stack, nodes, check) {
+        this._checkAll = function (stack, nodes, check) {
             if (stack > (this.dimensional_data.length - 1)) return;
             if (!Array.isArray(nodes) || nodes.length <= 0) return;
             let currentStackDocuments = this.STACKS[stack].childNodes;
@@ -916,7 +931,7 @@ window.ComponentCascadeDot = class {
                 });
             });
             this.selectInputDOM.value = JSON.stringify(this.select_data);
-            if(this._useSearchMod === true) {
+            if (this._useSearchMod === true) {
                 let search = document.querySelector(`#${this.name} .dot-search`);
                 search.addEventListener('input', () => {
                     setTimeout(() => {
@@ -927,19 +942,20 @@ window.ComponentCascadeDot = class {
         };
     }
 
-    useSearch(){
+    useSearch() {
         this._useSearchMod = true;
         return this;
     }
 
-    trigger(f = function () {}){
+    trigger(f = function () {
+    }) {
         this._triggerEvent = f;
         return this;
     }
 
     make() {
         let search = '';
-        if(this._useSearchMod === true) search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
+        if (this._useSearchMod === true) search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
         let html = `<div class="dlp dlp-dot"><div class="dot-top">${search}<div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div><input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -956,10 +972,14 @@ window.ComponentCascadeDot = class {
 };
 
 window.ComponentLine = class {
-    constructor(name, columns,options={
+    IMG_DELAY_QUEUE = [];
+    IMG_DELAY_SETTINGS = {};
+
+    constructor(name, columns, options = {
         sortable: true,
         delete: true,
-        insert: true}) {
+        insert: true
+    }) {
         this.DOM = document.getElementById(name);
         this.NAME = name;
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -971,7 +991,7 @@ window.ComponentLine = class {
             sortable: true,
             delete: true,
             insert: true
-        },options);
+        }, options);
         this.INSERT_COLUMNS = {};
         this.DATA_INPUT = document.createElement('input');
         this.DATA_INPUT.setAttribute('name', name);
@@ -979,7 +999,7 @@ window.ComponentLine = class {
         this.DATA_INPUT.value = '[]';
         this.DOM.appendChild(this.DATA_INPUT);
 
-        this._makeHead = function() {
+        this._makeHead = function () {
             let head = '<tr class="dlp-tr">';
             let columns = this.COLUMNS;
             this.INSERT_ROW_MENUE_DATA = {};
@@ -992,29 +1012,29 @@ window.ComponentLine = class {
                 let style = val.style ? `style="${val.style}"` : '';
                 head += `<th class="dlp-text text-white" ${style}>${val.name}</th>`;
             }
-            head += '<th class="operate-column" style="width: 48px;"></th></tr>';
+            head += '<th class="operate-column"></th></tr>';
             this.DOM.insertAdjacentHTML('afterbegin', `<table class="dlp dlp-table" style="height: 100%"><thead class="dlp-thead">${head}</thead></table>`);
             this.TABLE_DOM = this.DOM.querySelector('table');
         };
 
-        this._makeBody = function() {
+        this._makeBody = function () {
             let tbody = document.createElement('tbody');
             tbody.setAttribute('sortable-list', 'sortable-list');
             tbody.className = 'dlp-tbody dlp-scroll';
             this.TBODY_DOM = tbody;
             this.TABLE_DOM.appendChild(tbody);
-            if(typeof this.DATA === 'object' && Array.isArray(this.DATA)){
+            if (typeof this.DATA === 'object' && Array.isArray(this.DATA)) {
                 this._loadData();
-            }else {
+            } else {
                 _component.loading(this.TBODY_DOM);
                 let object = this;
                 this.DATA = Object.assign({
-                    url:'',
+                    url: '',
                     method: 'GET',
                     data: {},
                     callback: function (response) {
-                        if(response.code === 1)return _component.alert(response.message,3, null, object.TBODY_DOM);
-                        _component.loading(object.TBODY_DOM,false);
+                        if (response.code === 1) return _component.alert(response.message, 3, null, object.TBODY_DOM);
+                        _component.loading(object.TBODY_DOM, false);
                         let data = response.data;
                         object._loadData(data);
                     },
@@ -1023,13 +1043,14 @@ window.ComponentLine = class {
             }
         };
 
-        this._loadData = function(){
+        this._loadData = function () {
             let records = [];
             let columns = this.COLUMNS;
             this.DATA.forEach((values, key) => {
                 let tr = document.createElement('tr');
                 tr.className = 'dlp-tr';
                 tr.setAttribute('sortable-item', 'sortable-item');
+                tr.setAttribute('data-index', key.toString());
                 let record = {};
                 for (let name in columns) {
                     if (!columns.hasOwnProperty(name)) continue;
@@ -1058,11 +1079,16 @@ window.ComponentLine = class {
                 this.TBODY_DOM.appendChild(tr);
                 records.push(record);
             });
+            this._assetsDelayEvent();
             this.DATA = records;
             this.DATA_INPUT.value = JSON.stringify(records);
         };
 
-        this._makeFoot = function() {
+        this._assetsDelayEvent = function () {
+            if(this.IMG_DELAY_QUEUE.length>0)_component.imgDelay(this.IMG_DELAY_QUEUE,this.IMG_DELAY_SETTINGS);
+        };
+
+        this._makeFoot = function () {
             let foot = document.createElement('tr');
             foot.className = 'dlp-tr';
             let columns = this.COLUMNS;
@@ -1074,11 +1100,11 @@ window.ComponentLine = class {
                 }
                 let style = val.style ? `style="${val.style}"` : '';
                 let type = val.type;
-                if(this.INSERT_COLUMNS.hasOwnProperty(column)){
+                if (this.INSERT_COLUMNS.hasOwnProperty(column)) {
                     type = this.INSERT_COLUMNS[column].type;
                 }
 
-                switch (type) {
+                /*switch (type) {
                     case 'input':
                         foot.insertAdjacentHTML('beforeend', `<td ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></td>`);
                         break;
@@ -1113,7 +1139,7 @@ window.ComponentLine = class {
                     setTimeout(() => {
                         document.querySelectorAll(`#${this.NAME} input.datetime-${column}`).flatpickr(this.flatpickr_settings[column]);
                     });
-                }
+                }*/
             }
             let tfoot = document.createElement('tfoot');
             tfoot.className = 'dlp-tfoot';
@@ -1127,10 +1153,9 @@ window.ComponentLine = class {
             this.TABLE_DOM.appendChild(tfoot);
         };
 
-        this._makeTd = function(td, column, settings, value) {
+        this._makeTd = function (td, column, settings, value) {
             let input;
-            let DATA = this.DATA;
-            let DATA_INPUT = this.DATA_INPUT;
+            if (settings.style) td.style = settings.style;
             switch (settings.type) {
                 case 'text':
                     td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
@@ -1140,52 +1165,54 @@ window.ComponentLine = class {
                     input.className = 'dlp dlp-input';
                     input.setAttribute('data-column', column);
                     input.value = value;
-                    input.addEventListener('input', () => {
-                        let key = this._searchChildrenDomIndex(input.parentNode.parentNode);
-                        let column = input.getAttribute('data-column');
-                        if (DATA[key]) {
-                            DATA[key][column] = input.value;
-                            DATA_INPUT.value = JSON.stringify(DATA);
-                        }
-                    }, false);
                     td.appendChild(input);
+                    this._bindExchangeAction('input',input);
                     break;
                 case 'datetime':
                     input = document.createElement('input');
                     input.setAttribute('class', `dlp dlp-input datetime-${column}`);
                     input.setAttribute('data-column', column);
                     input.value = value;
-
-                    input.addEventListener('blur', () => {
-                        let key = this._searchChildrenDomIndex(input.parentNode.parentNode);
-                        let column = input.getAttribute('data-column');
-                        if (DATA[key]) {
-                            DATA[key][column] = input.value;
-                            DATA_INPUT.value = JSON.stringify(DATA);
-                        }
-                    }, false);
-                    td.appendChild(input);
+                    this._bindExchangeAction('blur',input);
                     td.style.position = 'relative';
-                    setTimeout(()=>{
-                        input.flatpickr(settings.config);
-                    });
+                    td.appendChild(input);
+                    input.flatpickr(settings.config);
                     break;
                 case 'select':
-                    td.append(this._menuMake(column, value, settings.options, settings.limit, settings.name));
+                    //td.append(this._menuMake(column, value, settings.options, settings.limit, settings.name));
                     break;
                 case 'image':
-                    td.insertAdjacentHTML('afterbegin',`<img class="${this.NAME}-${column}-img" style="max-width: 100%;max-height: 100%;border-radius: 2px" data-src="${value}" />`);
+                    let img = document.createElement('img');
+                    img.setAttribute('style','max-width: 100%;max-height: 100%;border-radius: 2px');
+                    if(settings.hasOwnProperty('delay')){
+                        img.setAttribute('data-src',value);
+                        this.IMG_DELAY_QUEUE.push(img);
+                        if(settings.hasOwnProperty('options') && (Object.keys(this.IMG_DELAY_SETTINGS).length === 0)) {
+                            this.IMG_DELAY_SETTINGS = settings.options;
+                        }
+                    }else {
+                        img.setAttribute('src', value);
+                    }
+                    td.append(img);
                     break;
                 default:
                     td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                     break;
             }
-            if (settings.style) {
-                td.style = settings.style;
-            }
         };
 
-        this._operateButton = function(td) {
+        this._bindExchangeAction = function (trigger,input) {
+            input.addEventListener(trigger,()=>{
+                let key = parseInt(input.parentNode.parentNode.getAttribute('data-index'));
+                let column = input.getAttribute('data-column');
+                if (this.DATA[key]) {
+                    this.DATA[key][column] = input.value;
+                    this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                }
+            });
+        };
+
+        this._operateButton = function (td) {
             if (this.OPTIONS.sortable) {
                 let M = document.createElement('i');
                 M.className = 'dlp text-white';
@@ -1203,12 +1230,13 @@ window.ComponentLine = class {
                 D.addEventListener('click', () => {
                     let tr = D.parentNode.parentNode.parentNode;
                     let tbody = tr.parentNode;
-                    let key = this._searchChildrenDomIndex(tr);
+                    let key = parseInt(tr.getAttribute('data-index'));
 
                     this.DATA.splice(key, 1);
                     tbody.removeChild(tr);
                     this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                    if(typeof this.deleteAction === 'function') this.deleteAction(this.DATA);
+                    this._resetTrSortIndex();
+                    if (typeof this.deleteAction === 'function') this.deleteAction(this.DATA);
                 }, false);
                 td.firstElementChild.appendChild(D);
             }
@@ -1226,6 +1254,7 @@ window.ComponentLine = class {
                 let tr = document.createElement('tr');
                 tr.className = 'dlp-tr';
                 tr.setAttribute('sortable-item', 'sortable-item');
+                tr.setAttribute('data-index', `${this.TBODY_DOM.childNodes.length+1}`);
 
                 for (let column in this.COLUMNS) {
                     if (!this.COLUMNS.hasOwnProperty(column)) continue;
@@ -1243,14 +1272,14 @@ window.ComponentLine = class {
                     this._makeTd(td, column, this.COLUMNS[column], value);
                     tr.appendChild(td);
 
-                    if(this.COLUMNS[column].type === 'image'){
+                    if (this.COLUMNS[column].type === 'image') {
                         let dom = td.firstChild;
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             let src = dom.getAttribute('data-src');
-                            dom.setAttribute('src',src);
-                            if(this.COLUMNS[column].zoom === false)return;
+                            dom.setAttribute('src', src);
+                            if (this.COLUMNS[column].zoom === false) return;
                             let img = document.createElement('img');
-                            dom.addEventListener('mouseover', function(e) {
+                            dom.addEventListener('mouseover', function (e) {
                                 document.body.append(img);
                                 img.style.position = 'absolute';
                                 img.style.top = `${e.pageY + 7}px`;
@@ -1260,11 +1289,11 @@ window.ComponentLine = class {
                                 img.style.borderRadius = '3px';
                                 img.setAttribute('src', src);
                             });
-                            dom.addEventListener('mouseout', function(e) {
+                            dom.addEventListener('mouseout', function (e) {
                                 e.stopPropagation();
                                 img.remove();
                             });
-                        },200);
+                        }, 200);
                     }
                 }
 
@@ -1276,7 +1305,7 @@ window.ComponentLine = class {
                 this.DATA.push(insert);
                 this.DATA_INPUT.value = JSON.stringify(this.DATA);
                 this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
-                if(typeof this.insertAction === 'function') this.insertAction(this.DATA);
+                if (typeof this.insertAction === 'function') this.insertAction(this.DATA);
             }, false);
             let td = document.createElement('td');
             td.className = 'operate-column';
@@ -1284,125 +1313,7 @@ window.ComponentLine = class {
             tr.append(td);
         };
 
-        this._menuMake = function(column, selected, select, limit, placeholder, insertRow = false) {
-            let menu = document.createElement('div');
-            menu.className = 'dlp-dot-menu';
-            if (insertRow) this.INSERT_ROW_MENUE_DATA[column] = [];
-
-            let menu_select = document.createElement('div');
-            menu_select.className = 'dlp-input dlp-dot-menu-select';
-            menu_select.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text">${placeholder}</div><div>▼</div>`);
-
-            let menu_list = document.createElement('div');
-            menu_list.className = 'menu-list';
-            let search_box = document.createElement('div');
-            search_box.className = 'search-box';
-            let input = document.createElement('input');
-            input.className = 'dlp dlp-input dot-search';
-            input.setAttribute('placeholder', '搜索');
-            input.addEventListener('input', () => {
-                setTimeout(() => {
-                    if (input.value === '') {
-                        for (let node of list.childNodes) {
-                            node.style.display = 'flex';
-                        }
-                        return;
-                    }
-                    for (let node of list.childNodes) {
-                        let text = node.firstElementChild.innerText;
-                        if (text.indexOf(input.value) !== -1 || input.value.indexOf(text) !== -1) {
-                            node.style.display = 'flex';
-                        } else {
-                            node.style.display = 'none';
-                        }
-                    }
-                }, 300);
-            });
-
-            let list = document.createElement('div');
-            list.className = 'list dlp-scroll';
-
-            let check = _component.check;
-            check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
-            for (let id in select) {
-                if (!select.hasOwnProperty(id)) continue;
-                let option = document.createElement('div');
-                option.className = 'option';
-                option.setAttribute('data-id', id);
-                option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
-                option.addEventListener('click', () => {
-                    id = parseInt(id);
-                    let selected;
-                    if (insertRow) {
-                        selected = this.INSERT_ROW_MENUE_DATA[column];
-                    } else {
-                        let key = this._searchChildrenDomIndex(menu.parentNode.parentNode);
-                        selected = this.DATA[key][column];
-                    }
-                    let index = selected.indexOf(id);
-                    if (index !== -1) {
-                        /*cancel*/
-                        selected.splice(index, 1);
-                        option.classList.remove('option-active');
-                        if (option.lastChild instanceof HTMLElement) option.lastChild.innerHTML = '';
-                        menuSelect(select, selected, limit);
-                        if (selected.length === 0) menu_select.firstElementChild.textContent = placeholder;
-                        if (insertRow === false) {
-                            this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                        }
-                        return;
-                    }
-                    if (limit > 0 && selected.length >= limit) {
-                        for (let line of list.childNodes) {
-                            if ((selected.hasOwnProperty('0')) && line.getAttribute('data-id') === selected[0].toString()) line.click();
-                        }
-                    }
-                    option.classList.add('option-active');
-                    selected.push(id);
-                    (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                    menuSelect(select, selected, limit);
-                    if (insertRow === false) this.DATA_INPUT.value = JSON.stringify(this.DATA);
-                }, false);
-                /*init selected*/
-                if (limit > 0 && selected.length >= limit) selected.slice(0, limit);
-                if (selected.indexOf(parseInt(id)) !== -1) {
-                    option.classList.add('option-active');
-                    (option.lastChild instanceof HTMLElement) && option.lastChild.insertAdjacentHTML('afterbegin', check);
-                    menuSelect(select, selected, limit);
-                }
-                list.append(option);
-            }
-
-            function menuSelect(select, selected, limit) {
-                if (limit === 1) {
-                    menu_select.firstElementChild.innerHTML = `<p class="dlp-text">${select[selected[0]]}</p>`;
-                    return;
-                }
-                let html = '';
-                for (let id of selected) {
-                    html += `<span class="dlp-text" title="${select[id]}">${select[id]}</span>`;
-                }
-                menu_select.firstElementChild.innerHTML = html;
-            }
-
-            menu.append(menu_select);
-            search_box.append(input);
-            menu_list.append(search_box);
-            menu_list.append(list);
-            menu.append(menu_list);
-            menu.addEventListener('click', () => {
-                menu_list.style.display = 'flex';
-            });
-            menu.addEventListener('mouseleave', () => {
-                menu_list.style.display = 'none';
-                let search = this.DOM.querySelector(`.dot-search`);
-                search.value = '';
-            });
-
-            return menu;
-        };
-
-        this._sortable = function() {
+        this._sortable = function () {
             let object = this;
             new ComponentSortable(this.TBODY_DOM, function (sort) {
                 let data = [];
@@ -1411,43 +1322,44 @@ window.ComponentLine = class {
                 });
                 object.DATA = data;
                 object.DATA_INPUT.value = JSON.stringify(object.DATA);
-                if(typeof object.sortableAction === 'function') object.sortableAction(object.DATA);
+                object._resetTrSortIndex();
+                if (typeof object.sortableAction === 'function') object.sortableAction(object.DATA);
             });
         };
 
-        this._searchChildrenDomIndex = function(dom) {
-            let i = 0;
-            while ((dom = dom.previousSibling) != null) i++;
-            return i;
+        this._resetTrSortIndex = function () {
+            this.TBODY_DOM.childNodes.forEach((D, k) => {
+                D.setAttribute('data-index', k.toString());
+            });
         };
     }
 
-    load(data){
+    load(data) {
         this.DATA = data;
         return this;
     }
 
-    bindSortableAction(f){
-        if(typeof f === 'function') this.sortableAction = f;
+    bindSortableAction(f) {
+        if (typeof f === 'function') this.sortableAction = f;
         return this;
     }
 
-    bindInsertAction(f){
-        if(typeof f === 'function') this.insertAction = f;
+    bindInsertAction(f) {
+        if (typeof f === 'function') this.insertAction = f;
         return this;
     }
 
-    bindUpdateAction(f){
-        if(typeof f === 'function') this.updateAction = f;
+    bindUpdateAction(f) {
+        if (typeof f === 'function') this.updateAction = f;
         return this;
     }
 
-    bindDeleteAction(f){
-        if(typeof f === 'function') this.deleteAction = f;
+    bindDeleteAction(f) {
+        if (typeof f === 'function') this.deleteAction = f;
         return this;
     }
 
-    make(){
+    make() {
         this._makeHead();
         this._makeBody();
         this._makeFoot();
@@ -1469,21 +1381,21 @@ window.ComponentPlane = class {
         h: 0.8,
         top: '30px',
         left: 'auto',
-        f:true,
-        x:true,
-        gauze:true,
-        style:{zIndex:'1050',position:'relative'},
+        f: true,
+        x: true,
+        gauze: true,
+        style: {zIndex: '1050', position: 'relative'},
     }) {
-        if(typeof content === 'object' && content.hasOwnProperty('url')){
+        if (typeof content === 'object' && content.hasOwnProperty('url')) {
             this.XHR = content;
             this.XHR = Object.assign({
                 method: 'GET',
                 data: {},
                 callback: null,
             }, content);
-        }else if(typeof content === 'string' || content instanceof HTMLElement) {
+        } else if (typeof content === 'string' || content instanceof HTMLElement) {
             this.CONTENT = content;
-        }else {
+        } else {
             console.error('type of content error!');
         }
 
@@ -1492,45 +1404,45 @@ window.ComponentPlane = class {
             h: 0.8,
             top: '30px',
             left: 'auto',
-            f:true,
-            x:true,
-            gauze:true,
-            style:{zIndex:'1050',position:'relative'},
+            f: true,
+            x: true,
+            gauze: true,
+            style: {zIndex: '1050', position: 'relative'},
         }, options);
         this.FULLSCREEN = false;
 
         let width = this.OPTIONS.w;
         if (this.OPTIONS.w.toString().indexOf('px') === -1 && this.OPTIONS.w.toString().indexOf('%') === -1) {
             width = window.innerWidth * this.OPTIONS.w;
-            if(width>= (window.innerWidth - 18)) width = window.innerWidth - 18;
+            if (width >= (window.innerWidth - 18)) width = window.innerWidth - 18;
             width += 'px';
         }
         let height = this.OPTIONS.h;
         if (this.OPTIONS.h.toString().indexOf('px') === -1 && this.OPTIONS.h.toString().indexOf('%') === -1) {
             height = window.innerHeight * this.OPTIONS.h;
-            if(height>= (window.innerHeight - 25)) height = window.innerHeight - 25;
+            if (height >= (window.innerHeight - 25)) height = window.innerHeight - 25;
             height += 'px';
         }
         this.WIDTH = width;
         this.HEIGHT = height;
 
-        this._appendF = function(){
+        this._appendF = function () {
             let F = document.createElement('i');
             F.style.marginRight = '10px';
             F.insertAdjacentHTML('afterbegin', _component.aspect);
             F.addEventListener('click', () => {
-                if (this.FULLSCREEN === false){
+                if (this.FULLSCREEN === false) {
                     this.FULLSCREEN = true;
                     this.DOM.firstChild.style.width = '100%';
                     this.DOM.firstChild.style.margin = '0';
-                    this.DOM.querySelector('.plane-body').style.height = (window.innerHeight - 25)+'px';
-                }else {
+                    this.DOM.querySelector('.plane-body').style.height = (window.innerHeight - 25) + 'px';
+                } else {
                     this.FULLSCREEN = false;
                     this.DOM.firstChild.style.width = this.WIDTH;
                     this.DOM.firstChild.style.marginTop = this.OPTIONS.top;
-                    if(this.OPTIONS.left === 'auto'){
+                    if (this.OPTIONS.left === 'auto') {
                         this.DOM.firstChild.style.margin = `${this.OPTIONS.top} auto`;
-                    }else {
+                    } else {
                         this.DOM.firstChild.style.marginTop = this.OPTIONS.top;
                         this.DOM.firstChild.style.marginLeft = this.OPTIONS.left;
                     }
@@ -1540,7 +1452,7 @@ window.ComponentPlane = class {
             this.DOM.querySelector('.plane-header').append(F);
         };
 
-        this._appendX = function(){
+        this._appendX = function () {
             let X = document.createElement('i');
             X.insertAdjacentHTML('afterbegin', _component.close);
             X.style.marginRight = '5px';
@@ -1553,7 +1465,7 @@ window.ComponentPlane = class {
                 }
             }, false);
             this.DOM.querySelector('.plane-header').append(X);
-            window.addEventListener("popstate", () =>{
+            window.addEventListener("popstate", () => {
                 this.DOM.remove();
             }, false);
         };
@@ -1574,7 +1486,7 @@ window.ComponentPlane = class {
             });*/
         };
 
-        this._submitEvent = function(element,xhr){
+        this._submitEvent = function (element, xhr) {
             let form = this.DOM.querySelector('form.dlp');
             let formdata = new FormData(form);
             let flag = false;
@@ -1584,10 +1496,10 @@ window.ComponentPlane = class {
                 let input;
                 try {
                     input = form.querySelector(`input[name=${key}]`);
-                }catch (e) {
+                } catch (e) {
                     continue;
                 }
-                if(input.hasAttribute('required') && input.value === ''){
+                if (input.hasAttribute('required') && input.value === '') {
                     flag = true;
                     input.focus();
                 }
@@ -1602,7 +1514,7 @@ window.ComponentPlane = class {
                     }
                 }
             }
-            if(flag)return;
+            if (flag) return;
             element.setAttribute('disabled', 'disabled');
             element.innerText = '提交中...';
             _component.request({
@@ -1628,29 +1540,30 @@ window.ComponentPlane = class {
         };
 
         this._delayBind = function () {
-            for(let delay of this.DELAY_BIND){
+            for (let delay of this.DELAY_BIND) {
                 try {
                     let dom = this.DOM.querySelector(delay.selector);
-                    if(delay.trigger === 'submit'){
-                        this._submitEvent(dom,delay.event);
+                    if (delay.trigger === 'submit') {
+                        this._submitEvent(dom, delay.event);
                         continue;
                     }
-                    dom.addEventListener(delay.trigger,()=>delay.event(this));
-                }catch (e) {
-                    console.error('cannot find document by selector :'+delay.selector);
+                    dom.addEventListener(delay.trigger, () => delay.event(this));
+                } catch (e) {
+                    console.error('cannot find document by selector :' + delay.selector);
                 }
             }
         };
     }
 
-    bindSubmitEvent(selector,xhr={url:'',method:'POST',data:{},callback:null}){
-        xhr = Object.assign({url:'',method:'POST',data:{},callback:null}, xhr);
-        this.DELAY_BIND.push({selector:selector,trigger:'submit',event:xhr});
+    bindSubmitEvent(selector, xhr = {url: '', method: 'POST', data: {}, callback: null}) {
+        xhr = Object.assign({url: '', method: 'POST', data: {}, callback: null}, xhr);
+        this.DELAY_BIND.push({selector: selector, trigger: 'submit', event: xhr});
         return this;
     }
 
-    bindEvent(selector,trigger='click',event=function () {}){
-        this.DELAY_BIND.push({selector:selector,trigger:trigger,event:event});
+    bindEvent(selector, trigger = 'click', event = function () {
+    }) {
+        this.DELAY_BIND.push({selector: selector, trigger: trigger, event: event});
         return this;
     }
 
@@ -1659,46 +1572,46 @@ window.ComponentPlane = class {
         return this;
     }
 
-    getDom(){
+    getDom() {
         if (this.DOM) return this.DOM;
     }
 
-    make(){
+    make() {
         let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
         let Plane = document.createElement('div');
         Plane.style.width = this.WIDTH;
         Plane.style.margin = margin;
-        for (let k in this.OPTIONS.style){
-            if(this.OPTIONS.style.hasOwnProperty(k)) {
+        for (let k in this.OPTIONS.style) {
+            if (this.OPTIONS.style.hasOwnProperty(k)) {
                 Plane.style[k] = this.OPTIONS.style[k];
             }
         }
-        Plane.insertAdjacentHTML('afterbegin',`<div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${this.HEIGHT};"></div>`);
-        if(this.OPTIONS.gauze){
+        Plane.insertAdjacentHTML('afterbegin', `<div class="dlp plane-header"></div><div class="plane-body dlp-scroll" style="height:${this.HEIGHT};"></div>`);
+        if (this.OPTIONS.gauze) {
             let gauze = document.createElement('div');
             gauze.className = 'dlp-plane-gauze';
             gauze.append(Plane);
             Plane = gauze;
         }
-        if(this.PARENT_DOM instanceof HTMLElement){
+        if (this.PARENT_DOM instanceof HTMLElement) {
             this.PARENT_DOM.append(Plane);
-        }else {
+        } else {
             document.body.append(Plane);
         }
         this.DOM = Plane;
         this.MODEL_BODY_DOM = this.DOM.querySelector('.plane-body');
-        if(this.OPTIONS.background){
+        if (this.OPTIONS.background) {
             this.MODEL_BODY_DOM.style.background = this.OPTIONS.background;
         }
 
-        if(this.OPTIONS.f) this._appendF();
-        if(this.OPTIONS.x) this._appendX();
-        if(this.XHR){
+        if (this.OPTIONS.f) this._appendF();
+        if (this.OPTIONS.x) this._appendX();
+        if (this.XHR) {
             this._xhrContent();
-        }else {
-            if(this.CONTENT instanceof HTMLElement){
+        } else {
+            if (this.CONTENT instanceof HTMLElement) {
                 this.MODEL_BODY_DOM.append(this.CONTENT);
-            }else {
+            } else {
                 this.MODEL_BODY_DOM.innerHTML = this.CONTENT;
             }
         }
@@ -1797,7 +1710,6 @@ window.ComponentSortable = class {
         this.item.style.transition = `all ${this.options.animationSpeed}ms ${this.options.animationEasing}`;
         this.item.style.transform = `translateY(${this.position * this.itemHeight}px)`;
         this.item.classList.remove('is-dragging');
-        if (typeof this.callback == 'function') this.callback(this.positions);
 
         setTimeout(() => {
             this.list.style.position = '';
@@ -1818,6 +1730,7 @@ window.ComponentSortable = class {
                 }
             });
             this.animation = false;
+            if (typeof this.callback == 'function') this.callback(this.positions);
         }, this.options.animationSpeed);
 
         window.removeEventListener((this.touch ? 'touchmove' : 'mousemove'), this.dragMove);

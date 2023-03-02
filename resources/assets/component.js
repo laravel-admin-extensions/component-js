@@ -975,6 +975,7 @@ window.ComponentLine = class {
     IMG_DELAY_SETTINGS = {};
     rowH;
     InputDOM;
+    InsertRowData = {};
 
     constructor(selector, columns, options = {
         sortable: true,
@@ -1004,6 +1005,7 @@ window.ComponentLine = class {
             for (let column in columns) {
                 if (!columns.hasOwnProperty(column)) continue;
                 let val = columns[column];
+                this.InsertRowData[column] = '';
                 if (val.type === 'hidden') {
                     continue;
                 }
@@ -1048,7 +1050,7 @@ window.ComponentLine = class {
             });
             this._assetsDelayEvent();
             this.DATA = records;
-            if (this.DATA_INPUT instanceof HTMLElement) this.DATA_INPUT.value = JSON.stringify(records);
+            if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
         };
 
         this._loadRow = function (values, key) {
@@ -1060,7 +1062,7 @@ window.ComponentLine = class {
             for (let name in this.COLUMNS) {
                 if (!this.COLUMNS.hasOwnProperty(name)) continue;
                 let column = this.COLUMNS[name];
-                if(!values.hasOwnProperty(name)) values[name] = '';
+                if (!values.hasOwnProperty(name)) values[name] = '';
                 let v = values[name];
                 let td = document.createElement('td');
                 if (this.rowH) td.style.height = this.rowH;
@@ -1099,10 +1101,7 @@ window.ComponentLine = class {
             for (let name in columns) {
                 if (!columns.hasOwnProperty(name)) continue;
                 let column = columns[name];
-                if (column.type === 'hidden') {
-                    continue;
-                }
-                let type = column.type;
+                if (column.type === 'hidden') continue;
 
                 let td = document.createElement('td');
                 if (column.width) td.style.width = column.width;
@@ -1111,14 +1110,15 @@ window.ComponentLine = class {
             }
             this._insertButton(foot);
             tfoot.append(foot);
-            this.TFOOT_DOM = tfoot;
             this.TABLE_DOM.appendChild(tfoot);
         };
 
         this._makeTd = function (td, name, column, value, insertPosition = false) {
             let input;
             if (column.hasOwnProperty('width')) td.style.width = column.width;
-            switch (column.type) {
+            let type = column.type;
+            if (insertPosition === true) type = column.insert_type ? column.insert_type : column.type;
+            switch (type) {
                 case 'text':
                     td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                     break;
@@ -1128,17 +1128,25 @@ window.ComponentLine = class {
                     input.setAttribute('data-column', name);
                     input.value = value;
                     td.appendChild(input);
-                    if (insertPosition === false) this._bindExchangeAction('input', input,td);
+                    if (insertPosition === true) {
+                        this._bindInsertColumnAction('input', input, name);
+                    } else {
+                        this._bindExchangeColumnAction('input', input, td);
+                    }
                     break;
                 case 'datetime':
                     input = document.createElement('input');
                     input.setAttribute('class', `dlp dlp-input`);
                     input.setAttribute('data-column', name);
                     input.value = value;
-                    if (insertPosition === false) this._bindExchangeAction('input', input,td);
                     td.style.position = 'relative';
                     td.appendChild(input);
                     input.flatpickr(column.config);
+                    if (insertPosition === true) {
+                        this._bindInsertColumnAction('input', input, name);
+                    } else {
+                        this._bindExchangeColumnAction('input', input, td);
+                    }
                     break;
                 case 'select':
                     let menu = document.createElement('div');
@@ -1158,13 +1166,20 @@ window.ComponentLine = class {
                     if (modSettings.useSearch) {
                         dot.useSearch();
                     }
-                    dot.trigger((select)=> {
-                        let index = parseInt(td.parentNode.getAttribute('data-index'));
-                        if (this.DATA[index]) {
-                            this.DATA[index][name] = select;
-                            if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
-                        }
-                    }).make();
+                    if (insertPosition === true) {
+                        dot.trigger((select) => {
+                            this.InsertRowData[name] = select;
+                        });
+                    } else {
+                        dot.trigger((select) => {
+                            let index = parseInt(td.parentNode.getAttribute('data-index'));
+                            if (this.DATA[index]) {
+                                this.DATA[index][name] = select;
+                                if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
+                            }
+                        });
+                    }
+                    dot.make();
                     break;
                 case 'image':
                     let img = document.createElement('img');
@@ -1186,13 +1201,19 @@ window.ComponentLine = class {
             }
         };
 
-        this._bindExchangeAction = function (trigger, input,td) {
+        this._bindInsertColumnAction = function (trigger, input, name) {
+            input.addEventListener(trigger, () => {
+                this.InsertRowData[name] = input.value;
+            });
+        };
+
+        this._bindExchangeColumnAction = function (trigger, input, td) {
             input.addEventListener(trigger, () => {
                 let index = parseInt(td.parentNode.getAttribute('data-index'));
                 let column = input.getAttribute('data-column');
                 if (this.DATA[index]) {
                     this.DATA[index][column] = input.value;
-                    if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
+                    if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
                 }
             });
         };
@@ -1219,7 +1240,7 @@ window.ComponentLine = class {
 
                     this.DATA.splice(key, 1);
                     tbody.removeChild(tr);
-                    if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
+                    if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
                     this._resetTrSortIndex();
                     if (typeof this.deleteAction === 'function') this.deleteAction(this.DATA);
                 }, false);
@@ -1234,25 +1255,9 @@ window.ComponentLine = class {
             i.style.cursor = 'pointer';
             i.insertAdjacentHTML('afterbegin', _component.write);
             i.addEventListener('click', () => {
-                let insert = {};
                 let newIndex = `${this.TBODY_DOM.childNodes.length}`;
-
-                for (let column in this.COLUMNS) {
-                    if (!this.COLUMNS.hasOwnProperty(column)) continue;
-                    let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
-                    let value;
-                    if (type === 'input' || type === 'datetime') {
-                        value = this.TFOOT_DOM.querySelector(`input[data-column="${column}"]`).value;
-                        console.log(value)
-                    } else if (type === 'select') {
-                        value = '';
-                    } else {
-                        value = '';
-                    }
-                    insert[column] = value;
-                }
-                this._loadRow(insert, newIndex);
-                this.DATA.push(insert);
+                this._loadRow(this.InsertRowData, newIndex);
+                this.DATA.push(this.InsertRowData);
                 if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
                 this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
                 if (typeof this.insertAction === 'function') this.insertAction(this.DATA);
@@ -1326,7 +1331,6 @@ window.ComponentLine = class {
         this._makeHead();
         this._makeBody();
         this._makeFoot();
-        if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
         if (this.OPTIONS.sortable) this._sortable();
     }
 };

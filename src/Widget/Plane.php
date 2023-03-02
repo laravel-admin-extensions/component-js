@@ -17,8 +17,8 @@ class Plane
     /**
      * 列表页 头部按钮
      * @param string $title
-     * @param string $url   弹窗页接口地址
-     * @param array $xhr    ajax配置
+     * @param string $url 弹窗页接口地址
+     * @param array $xhr ajax配置
      *      xhr.url         string  触发事件ajax地址
      *      xhr.method      string  GET,POST,PUT,DELETE
      *      xhr.callback    string  js回调函数
@@ -29,16 +29,16 @@ class Plane
      *      options.left    string          5%,50px,auto
      * @return HeadPosAction
      */
-    public static function headAction(string $title,string $url,array $xhr=[],array $options=[])
+    public static function headAction(string $title, string $url, array $xhr = [], array $options = [], $bind = ['selector' => 'submit', 'event' => 'null', 'params' => '{}'])
     {
-        return new HeadPosAction($title,$url,$xhr,$options);
+        return new HeadPosAction($title, $url, $xhr, $options, $bind);
     }
 
     /**
      * 列表页 行操作按钮
      * @param string $title
-     * @param string $url   弹窗页接口地址
-     * @param array $xhr    ajax配置
+     * @param string $url 弹窗页接口地址
+     * @param array $xhr ajax配置
      *      xhr.url         string  触发事件ajax地址
      *      xhr.method      string  GET,POST,PUT,DELETE
      *      xhr.callback    string  js回调函数
@@ -49,9 +49,9 @@ class Plane
      *      options.left    string          5%,50px,auto
      * @return RowPosAction
      */
-    public static function rowAction(string $title,string $url,array $xhr=[],array $options=[])
+    public static function rowAction(string $title, string $url, array $xhr = [], array $options = [], $bind = ['selector' => 'submit', 'event' => 'null', 'params' => '{}'])
     {
-        return new RowPosAction($title,$url,$xhr,$options);
+        return new RowPosAction($title, $url, $xhr, $options, $bind);
     }
 
     /**

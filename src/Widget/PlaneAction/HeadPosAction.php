@@ -11,7 +11,7 @@ use Encore\Admin\Admin;
  */
 class HeadPosAction extends RowAction
 {
-    public function __construct($title,$url,$xhr,$options)
+    public function __construct($title, $url, $xhr, $options, $bind)
     {
         parent::__construct();
         $this->title = $title;
@@ -19,15 +19,24 @@ class HeadPosAction extends RowAction
         unset($xhr['callback']);
         $xhr = json_encode($xhr);
         $options = json_encode($options);
-        $this->document_id = substr(md5($title.$url),16);
+        $this->document_id = substr(md5($title . $url), 16);
+
+        $binding = '';
+        $bind = array_merge(['selector'=>'submit','event'=>'null','params'=>'{}'],$bind);
+        $bind['params'] = json_encode($bind['params']);
+        if($bind['selector'] == 'submit'){
+            $binding = ".bindRequest('button[type=\"submit\"]','click','request',XHR)";
+        }else{
+            $binding = ".bindEvent('{$bind['selector']}','click',{$bind['event']}, {$bind['params']})";
+        }
+
         Admin::script(<<<EOF
             $('#{$this->document_id}').click(function(){
                 let url = '{$url}';
                 let XHR = JSON.parse('{$xhr}');
-                XHR.callback = {$callback};
                 XHR.url = XHR.url !== undefined ? XHR.url : url;
-                XHR.listener = (DOM)=>DOM.querySelector('.box-footer button[type="submit"]');
-                new ComponentPlane(url,XHR,{$options});
+                XHR.callback = {$callback};
+                new ComponentPlane({url:url},{$options}){$binding}.make();
             });
 EOF
         );

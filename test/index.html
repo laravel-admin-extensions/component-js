@@ -233,7 +233,7 @@
         console.log(select,insert,del)
     }).make();
 
-    new ComponentLine("test2", {
+    new ComponentLine("#test2", {
             "name": {"name": "名称", "type": "input"},
             "meta": {"name": "番号", "type": "text","insert_type":"hidden"},
             "url": {"name": "图片", "type": "image","delay":true,"options":{zoom:true}},
@@ -299,12 +299,16 @@
             "time": "2022-02-08 10:22:37",
             "is-small": 1
         },
-    ]).make();
+    ]).useHiddenInput('line').bindUpdateAction(function (data,k) {
+        console.log(data,k)
+    }).bindDeleteAction(function (data,ori,k) {
+        console.log(data,ori,k)
+    }).make();
 
     document.getElementById('test3').addEventListener('click', function (e) {
         new ComponentPlane({url:"http://333"}).make();
     });
-    new ComponentCascadeDot('test4', China, [2261,2262,2263]).useSearch().trigger(function (select,insert,del) {
+    new ComponentCascadeDot('#test4', China, [2261,2262,2263]).useSearch().trigger(function (select,insert,del) {
         console.log(select,insert,del)
     }).make();
 

@@ -11,7 +11,7 @@ use Encore\Admin\Admin;
  */
 class RowPosAction extends RowAction
 {
-    public function __construct($title,$url,$xhr,$options)
+    public function __construct($title, $url, $xhr, $options, $bind)
     {
         parent::__construct();
         $this->title = $title;
@@ -19,23 +19,33 @@ class RowPosAction extends RowAction
         unset($xhr['callback']);
         $xhr = json_encode($xhr);
         $options = json_encode($options);
-        $this->document_class = substr(md5($title.$url),16);
+        $this->document_class = substr(md5($title . $url), 16);
+
+        $binding = '';
+        $bind = array_merge(['selector'=>'submit','event'=>'null','params'=>'{}'],$bind);
+        $bind['params'] = json_encode($bind['params']);
+        if($bind['selector'] == 'submit'){
+            $binding = ".bindRequest('button[type=\"submit\"]','click','request',XHR)";
+        }else if($bind['event'] == 'request'){
+            $binding = ".bindRequest('{$bind['selector']}','click','request',XHR)";
+        }else{
+            $binding = ".bindEvent('{$bind['selector']}','click',{$bind['event']}, {$bind['params']})";
+        }
+
         Admin::script(<<<EOF
             $('.{$this->document_class}').click(function(){
-                let url = '{$url}'.replace('{id}',$(this).attr('data-id'));
+                let url = '{$url}';
                 let XHR = JSON.parse('{$xhr}');
+                XHR.url = XHR.url !== undefined ? XHR.url : url;
                 XHR.callback = {$callback};
-                let xhr_url = XHR.url !== undefined ? XHR.url : url;
-                XHR.url = xhr_url.replace('{id}',$(this).attr('data-id'));
-                XHR.listener = (DOM)=>DOM.querySelector('.box-footer button[type="submit"]');
-                new ComponentPlane(url,XHR,{$options});
+                new ComponentPlane({url:url},{$options}){$binding}.make();
             });
 EOF
-    );
+        );
     }
 
     public function render()
     {
-        return "<a href='javascript:void(0);' class='{$this->document_class}' data-id='{$this->getKey()}'>{$this->title}</a>";
+        return "<a href='javascript:void(0);' class='{$this->document_class}'>{$this->title}</a>";
     }
 }

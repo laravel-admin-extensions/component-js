@@ -586,8 +586,9 @@ window.ComponentCascadeDot = class {
         insert: 'insert',
         delete: 'delete'
     };
+    NAME;
 
-    constructor(name, select, selected, limit = 0) {
+    constructor(selector, select, selected, limit = 0) {
         if (!Array.isArray(selected)) {
             console.error('CascadeDot param selected must be array!');
             return;
@@ -597,9 +598,12 @@ window.ComponentCascadeDot = class {
             return;
         }
 
-        this.name = name;
+        if(selector instanceof HTMLElement){
+            this.DOM = selector;
+        }else {
+            this.DOM = document.querySelector(selector);
+        }
         this.limit = limit;
-        this.DOM = document.getElementById(name);
         this.select = select;
         this.selected_data = selected;
         this.select_data = [];
@@ -809,36 +813,34 @@ window.ComponentCascadeDot = class {
             if (operate === this.MODE.insert) {
                 if (this.select_data.indexOf(id) === -1) {
                     this.select_data.push(id);
-                    this.selectInputDOM.value = JSON.stringify(this.select_data);
+                    if(this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
                 if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                     this.insert_data.push(id);
-                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                    if(this.insertInputDOM instanceof HTMLElement)this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
                 let index = this.delete_data.indexOf(id);
                 if (index !== -1) {
                     this.delete_data.splice(index, 1);
-                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                    if(this.deleteInputDOM instanceof HTMLElement)this.deleteInputDOM.value = JSON.stringify(this.delete_data);
                 }
             } else if (operate === this.MODE.delete) {
                 let index = this.select_data.indexOf(id);
                 if (index !== -1) {
                     this.select_data.splice(index, 1);
-                    this.selectInputDOM.value = JSON.stringify(this.select_data);
+                    if(this.selectInputDOM instanceof HTMLElement)this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
                 if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                     this.delete_data.push(id);
-                    this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                    if(this.deleteInputDOM instanceof HTMLElement)this.deleteInputDOM.value = JSON.stringify(this.delete_data);
                 }
                 index = this.insert_data.indexOf(id);
                 if (index !== -1) {
                     this.insert_data.splice(index, 1);
-                    this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                    if(this.insertInputDOM instanceof HTMLElement)this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
-            if (typeof this._triggerEvent == 'function') {
-                this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
-            }
+            if (typeof this._triggerEvent == 'function') this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
         };
 
         this._search = function (search) {
@@ -930,9 +932,9 @@ window.ComponentCascadeDot = class {
                     D.click();
                 });
             });
-            this.selectInputDOM.value = JSON.stringify(this.select_data);
+            if(this.selectInputDOM instanceof HTMLElement)this.selectInputDOM.value = JSON.stringify(this.select_data);
             if (this._useSearchMod === true) {
-                let search = document.querySelector(`#${this.name} .dot-search`);
+                let search = this.DOM.querySelector(`.dot-search`);
                 search.addEventListener('input', () => {
                     setTimeout(() => {
                         this._search(search);
@@ -953,19 +955,30 @@ window.ComponentCascadeDot = class {
         return this;
     }
 
+    useHiddenInput(name){
+        this.NAME = name;
+        return this;
+    }
+
     make() {
         let search = '';
         if (this._useSearchMod === true) search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
-        let html = `<div class="dlp dlp-dot"><div class="dot-top">${search}<div id="${this.name}-select" class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div><input name="${this.name}[select]" value="[]" type="hidden"><input name="${this.name}[insert]" value="[]" type="hidden"><input name="${this.name}[delete]" value="[]" type="hidden">`;
+        let hiddenInput = '';
+        if(this.NAME){
+            hiddenInput = `<input name="${this.NAME}[select]" value="[]" type="hidden" /><input name="${this.NAME}[insert]" value="[]" type="hidden" /><input name="${this.NAME}[delete]" value="[]" type="hidden" />`;
+        }
+        let html = `<div class="dlp dlp-dot"><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>${hiddenInput}`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.SELECTED_DOM = document.querySelector(`#${this.name} .dot-selected`);
-        this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
-        this.selectInputDOM = document.querySelector(`input[name='${this.name}[select]']`);
-        this.insertInputDOM = document.querySelector(`input[name='${this.name}[insert]']`);
-        this.deleteInputDOM = document.querySelector(`input[name='${this.name}[delete]']`);
+        this.SELECTED_DOM = this.DOM.querySelector(`.dot-selected`);
+        this.CONTENT_DOM = this.DOM.querySelector(`.dot-select`);
+        if(this.NAME) {
+            this.selectInputDOM = document.querySelector(`input[name='${this.NAME}[select]']`);
+            this.insertInputDOM = document.querySelector(`input[name='${this.NAME}[insert]']`);
+            this.deleteInputDOM = document.querySelector(`input[name='${this.NAME}[delete]']`);
+        }
         this._makeSelect(this.select);
         this._bind();
     }

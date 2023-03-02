@@ -226,29 +226,24 @@ window._component = {
                         img.style.borderRadius = '3px';
                         img.setAttribute('src', src);
 
-                        let scale;
-                        if (options.width === 0) {
-                            scale = img.naturalWidth / img.naturalWidth;
-                        } else {
-                            scale = options.width / img.naturalWidth;
+                        let width = img.naturalWidth;
+                        let height = img.naturalHeight;
+                        if (options.width !== 0)  {
+                            width = options.width;
+                            height = img.naturalHeight * (options.width / img.naturalWidth);
                         }
-                        let offsetY = img.naturalHeight * scale / 2;
                         if (options.height > 0) {
-                            offsetY = options.height / 2;
-                            img.style.height = `${height}px`;
+                            height = options.height;
                         } else if (options.height < 0) {
                             if (img.naturalHeight > window.innerHeight) {
-                                let h = (window.innerHeight - 10);
-                                img.style.height = `${h}px`;
-                                offsetY = (h) / 2;
-                                options.width = 0;
+                                height = (window.innerHeight - 10);
+                                width = img.naturalWidth * (height / img.naturalHeight);
                             }
                         }
-                        if (options.width > 0) {
-                            img.style.width = `${options.width}px`;
-                        } else {
-                            img.style.width = `auto`;
-                        }
+                        img.style.width = `${width}px`;
+                        img.style.height = `${height}px`;
+                        let offsetY = height / 2;
+
                         img.style.top = `${e.pageY - offsetY}px`;
                         let distanceToBottom = window.innerHeight - e.clientY;
                         if (window.innerHeight - e.clientY < offsetY + 5) {
@@ -256,8 +251,8 @@ window._component = {
                         } else if (e.clientY < offsetY - 5) {
                             img.style.top = `${e.pageY - (offsetY - (offsetY - e.clientY) - 5)}px`;
                         }
-                        if (window.innerWidth - e.clientX < img.naturalWidth) {
-                            img.style.left = `${e.pageX - img.naturalWidth - 30}px`;
+                        if (window.innerWidth - e.clientX < width) {
+                            img.style.left = `${e.pageX - width - 30}px`;
                         } else {
                             img.style.left = `${e.pageX + 25}px`;
                         }

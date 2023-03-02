@@ -64,7 +64,7 @@ class Linear extends Widget
         $content = <<<EOF
 <div id="{$this->column}" {$this->annotation}></div>
 <script>
-new ComponentLine("#{$this->column}",{$this->options}){$execute};
+new ComponentLine("#{$this->column}",{$this->columns},{$this->options}){$execute};
 </script>
 EOF;
         if($this->pure) return $content;

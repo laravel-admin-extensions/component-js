@@ -3,6 +3,7 @@
 
 namespace DLP\Assembly\Unit;
 
+use DLP\Assembly\Abs\Input;
 /**
  * Class Textarea
  * @package DLP\Assembly\Unit

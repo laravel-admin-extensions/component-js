@@ -3,7 +3,7 @@
 
 namespace DLP\Assembly\Unit;
 
-
+use DLP\Assembly\Abs\Widget;
 /**
  * Class Dot
  * @package DLP\Assembly\Unit
@@ -13,7 +13,8 @@ class Dot extends Widget
     protected $select;
     protected $selected = '[]';
     protected $limit = 0;
-    protected $useSearch = 'false';
+    protected $useSearch = false;
+    protected $useHiddenInput = true;
 
     public function __construct(string $column, string $label, array $select)
     {
@@ -35,17 +36,31 @@ class Dot extends Widget
 
     public function useSearch()
     {
-        $this->useSearch ='true';
+        $this->useSearch = true;
+        return $this;
+    }
+
+    public function withoutHiddenInput()
+    {
+        $this->useHiddenInput = false;
         return $this;
     }
 
     public function compile()
     {
         $this->annotate();
+        $execute = '';
+        if($this->useSearch){
+            $execute .= '.useSearch()';
+        }
+        if($this->useHiddenInput){
+            $execute .= ".useHiddenInput('{$this->column}')";
+        }
+        $execute .= '.make()';
         $content = <<<EOF
 <div id="{$this->column}" {$this->annotation}></div>
 <script>
-new ComponentDot("{$this->column}",{$this->select},{$this->selected},{$this->limit},{useSearch:{$this->useSearch}});
+new ComponentDot("#{$this->column}",{$this->select},{$this->selected},{$this->limit}){$execute};
 </script>
 EOF;
         if($this->pure) return $content;

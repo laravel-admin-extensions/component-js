@@ -3,7 +3,7 @@
 
 namespace DLP\Assembly\Unit;
 
-
+use DLP\Assembly\Abs\Widget;
 /**
  * Class Select
  * @package DLP\Assembly\Unit
@@ -15,7 +15,8 @@ class Select extends Widget
     protected $limit = 1;
     protected $placeholder = '未选择';
     protected $menuHeight = '150px';
-    protected $useSearch = 'false';
+    protected $useSearch = false;
+    protected $useHiddenInput = true;
 
     public function __construct(string $column, string $label, array $select)
     {
@@ -49,17 +50,31 @@ class Select extends Widget
 
     public function useSearch()
     {
-        $this->useSearch = 'true';
+        $this->useSearch = true;
+        return $this;
+    }
+
+    public function withoutHiddenInput()
+    {
+        $this->useHiddenInput = false;
         return $this;
     }
 
     public function compile()
     {
         $this->annotate();
+        $execute = ".mod({mode:true,placeholder: '{$this->placeholder}',height:'{$this->menuHeight}'})";
+        if($this->useSearch){
+            $execute .= '.useSearch()';
+        }
+        if($this->useHiddenInput){
+            $execute .= ".useHiddenInput('{$this->column}')";
+        }
+        $execute .= '.make()';
         $content = <<<EOF
 <div id="{$this->column}" {$this->annotation}></div>
 <script>
-new ComponentDot("{$this->column}",{$this->select},{$this->selected},{$this->limit},{mode: true, placeholder: "{$this->placeholder}", height: "{$this->menuHeight}",useSearch:{$this->useSearch}});
+new ComponentDot("#{$this->column}",{$this->select},{$this->selected},{$this->limit}){$execute};
 </script>
 EOF;
         if($this->pure) return $content;

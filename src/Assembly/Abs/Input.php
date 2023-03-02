@@ -1,13 +1,13 @@
 <?php
 
 
-namespace DLP\Assembly\Unit;
+namespace DLP\Assembly\Abs;
 
 use DLP\Tool\Assistant;
 
 /**
- * Class Text
- * @package DLP\Assembly\Unit
+ * Class Input
+ * @package DLP\Assembly\Abs
  */
 abstract class Input
 {
@@ -91,7 +91,7 @@ abstract class Input
     {
         $this->pure = true;
     }
-    
+
     public function annotate()
     {
         $style = Assistant::arrayKv2String($this->style);

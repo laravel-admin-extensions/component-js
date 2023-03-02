@@ -1,13 +1,13 @@
 <?php
 
 
-namespace DLP\Assembly\Unit;
+namespace DLP\Assembly\Abs;
 
 use DLP\Tool\Assistant;
 
 /**
  * Class Widget
- * @package DLP\Assembly\Unit
+ * @package DLP\Assembly\Abs
  */
 abstract class Widget
 {

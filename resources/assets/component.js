@@ -1442,7 +1442,7 @@ window.ComponentPlane = class {
         this._xhrContent = function () {
             _component.loading(this.MODEL_BODY_DOM);
             let object = this;
-            /*_component.request({
+            _component.request({
                 url: this.XHR.url,
                 data:this.XHR.data,
                 method: this.XHR.method,
@@ -1452,7 +1452,7 @@ window.ComponentPlane = class {
                     object.MODEL_BODY_DOM.appendChild(fragment);
                     this._delayBind();
                 }
-            });*/
+            });
         };
 
         this._submitEvent = function (element, xhr) {

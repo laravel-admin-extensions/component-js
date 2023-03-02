@@ -1214,6 +1214,7 @@ window.ComponentLine = class {
                 if (this.DATA[index]) {
                     this.DATA[index][column] = input.value;
                     if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
+                    if (typeof this.updateAction === 'function') this.updateAction(this.DATA, index);
                 }
             });
         };
@@ -1237,12 +1238,12 @@ window.ComponentLine = class {
                     let tr = D.parentNode.parentNode.parentNode;
                     let tbody = tr.parentNode;
                     let key = parseInt(tr.getAttribute('data-index'));
-
+                    let ori = this.DATA.slice();
                     this.DATA.splice(key, 1);
                     tbody.removeChild(tr);
                     if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
                     this._resetTrSortIndex();
-                    if (typeof this.deleteAction === 'function') this.deleteAction(this.DATA);
+                    if (typeof this.deleteAction === 'function') this.deleteAction(this.DATA, ori, key);
                 }, false);
                 td.firstElementChild.appendChild(D);
             }
@@ -1260,7 +1261,7 @@ window.ComponentLine = class {
                 this.DATA.push(this.InsertRowData);
                 if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
                 this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
-                if (typeof this.insertAction === 'function') this.insertAction(this.DATA);
+                if (typeof this.insertAction === 'function') this.insertAction(this.DATA, newIndex, this.InsertRowData);
             }, false);
             let td = document.createElement('td');
             td.className = 'operate-column';
@@ -1280,7 +1281,7 @@ window.ComponentLine = class {
                 object.DATA = data;
                 object.InputDOM.value = JSON.stringify(object.DATA);
                 object._resetTrSortIndex();
-                if (typeof object.sortableAction === 'function') object.sortableAction(object.DATA);
+                if (typeof object.sortableAction === 'function') object.sortableAction(object.DATA, sort);
             });
         };
 

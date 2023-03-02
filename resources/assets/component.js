@@ -1024,7 +1024,7 @@ window.ComponentLine = class {
             tbody.className = 'dlp-tbody dlp-scroll';
             this.TBODY_DOM = tbody;
             this.TABLE_DOM.appendChild(tbody);
-            if (typeof this.DATA === 'object' && Array.isArray(this.DATA)) {
+            if (Array.isArray(this.DATA)) {
                 this._loadData();
             } else {
                 _component.loading(this.TBODY_DOM);
@@ -1032,14 +1032,14 @@ window.ComponentLine = class {
                 this.DATA = Object.assign({
                     url: '',
                     method: 'GET',
-                    data: {},
-                    callback: function (response) {
-                        if (response.code === 1) return _component.alert(response.message, 3, null, object.TBODY_DOM);
-                        _component.loading(object.TBODY_DOM, false);
-                        let data = response.data;
-                        object._loadData(data);
-                    },
+                    data: {}
                 }, this.DATA);
+                this.DATA.callback = function (response) {
+                    if (response.code === 1) return _component.alert(response.message, 3, null, object.TBODY_DOM);
+                    _component.loading(object.TBODY_DOM, false);
+                    let data = response.data;
+                    object._loadData(data);
+                };
                 _component.request(this.DATA)
             }
         };
@@ -1513,11 +1513,11 @@ window.ComponentPlane = class {
             for (let delay of this.DELAY_BIND) {
                 try {
                     let dom = this.MODEL_BODY_DOM.querySelector(delay.selector);
-                    if(delay.trigger === 'submit'){
-                        dom.addEventListener('click', () => this._submitEvent(dom,delay.params));
+                    if (delay.event === 'request') {
+                        dom.addEventListener(delay.trigger, () => this._submitEvent(dom, delay.params));
                         continue;
                     }
-                    dom.addEventListener(delay.trigger, () => delay.event(dom,delay.params));
+                    dom.addEventListener(delay.trigger, () => delay.event(dom, delay.params));
                 } catch (e) {
                     console.error('cannot find document by selector : ' + delay.selector);
                 }
@@ -1525,9 +1525,9 @@ window.ComponentPlane = class {
         };
     }
 
-    bindSubmitEvent(selector, xhr = {url: '', method: 'POST', data: {}, callback: null}) {
+    bindRequest(selector, trigger = 'click', xhr = {url: '', method: 'POST', data: {}, callback: null}) {
         xhr = Object.assign({url: '', method: 'POST', data: {}, callback: null}, xhr);
-        this.DELAY_BIND.push({selector: selector, trigger: 'submit', params: xhr});
+        this.DELAY_BIND.push({selector: selector, trigger: trigger, event: 'request', params: xhr});
         return this;
     }
 

@@ -90,6 +90,7 @@ abstract class Input
     public function pure()
     {
         $this->pure = true;
+        return $this;
     }
 
     public function annotate()

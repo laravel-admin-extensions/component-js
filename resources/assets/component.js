@@ -200,17 +200,17 @@ window._component = {
         dimension++;
         _component.dimensional(output, data.nodes, dimension, parentNodes);
     },
-    imgDelay(selector, options= {time : 200, zoom : false, width : 300, height : 0}) {
+    imgDelay(selector, options = {time: 200, zoom: false, width: 300, height: 0}) {
         let list;
-        if(typeof selector === 'string'){
+        if (typeof selector === 'string') {
             list = document.querySelectorAll(selector);
-        }else if(Array.isArray(selector) && selector[0] instanceof HTMLElement){
+        } else if (Array.isArray(selector) && selector[0] instanceof HTMLElement) {
             list = selector;
-        }else {
+        } else {
             console.error('type of selector is error!');
             return;
         }
-        options = Object.assign({time : 200, zoom : false, width : 300, height : 0},options);
+        options = Object.assign({time: 200, zoom: false, width: 300, height: 0}, options);
         let i = 0;
         for (let dom of list) {
             setTimeout(() => {
@@ -228,7 +228,7 @@ window._component = {
 
                         let width = img.naturalWidth;
                         let height = img.naturalHeight;
-                        if (options.width !== 0)  {
+                        if (options.width !== 0) {
                             width = options.width;
                             height = img.naturalHeight * (options.width / img.naturalWidth);
                         }
@@ -273,7 +273,6 @@ window.ComponentDot = class {
         insert: 'insert',
         delete: 'delete'
     };
-    NAME;
 
     constructor(selector, select, selected, limit = 0) {
         if (!Array.isArray(selected)) {
@@ -286,9 +285,9 @@ window.ComponentDot = class {
         }
         this.select = select;
         this.limit = limit;
-        if(selector instanceof HTMLElement){
+        if (selector instanceof HTMLElement) {
             this.DOM = selector;
-        }else {
+        } else {
             this.DOM = document.querySelector(selector);
         }
         this.DOM.addEventListener("contextmenu", (e) => {
@@ -332,30 +331,30 @@ window.ComponentDot = class {
             if (operate === this.MODE.insert) {
                 if (index === -1) {
                     this.select_data.push(id);
-                    if(this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
+                    if (this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
                 if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                     this.insert_data.push(id);
-                    if(this.selectInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                    if (this.selectInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
                 index = this.delete_data.indexOf(id);
                 if (index !== -1) {
                     this.delete_data.splice(index, 1);
-                    if(this.deleteInputDOM instanceof HTMLElement) this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                    if (this.deleteInputDOM instanceof HTMLElement) this.deleteInputDOM.value = JSON.stringify(this.delete_data);
                 }
             } else {
                 if (index !== -1) {
                     this.select_data.splice(index, 1);
-                    if(this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
+                    if (this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
                 if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                     this.delete_data.push(id);
-                    if(this.deleteInputDOM instanceof HTMLElement) this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                    if (this.deleteInputDOM instanceof HTMLElement) this.deleteInputDOM.value = JSON.stringify(this.delete_data);
                 }
                 index = this.insert_data.indexOf(id);
                 if (index !== -1) {
                     this.insert_data.splice(index, 1);
-                    if(this.insertInputDOM instanceof HTMLElement)this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                    if (this.insertInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
             if (typeof this._triggerEvent == 'function') this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
@@ -472,16 +471,16 @@ window.ComponentDot = class {
         return this;
     }
 
-    useHiddenInput(name){
-        this.NAME = name;
+    useHiddenInput(name) {
+        this.DOM.insertAdjacentHTML('beforeend', `<input name="${name}[select]" value='[]' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`)
+        this.selectInputDOM = document.querySelector(`input[name='${name}[select]']`);
+        this.insertInputDOM = document.querySelector(`input[name='${name}[insert]']`);
+        this.deleteInputDOM = document.querySelector(`input[name='${name}[delete]']`);
         return this;
     }
 
     make() {
-        let selected = this.selected_data;
         let select = this.select;
-        let hiddenInput = '';
-        if(this.NAME) hiddenInput = `<input name="${this.NAME}[select]" value='${JSON.stringify(selected)}' type="hidden"><input name="${this.NAME}[insert]" value="[]" type="hidden"><input name="${this.NAME}[delete]" value="[]" type="hidden">`;
         if (this._modSettings.mode === true) {
             let menu = document.createElement('div');
             menu.className = 'dlp-dot-menu';
@@ -551,10 +550,9 @@ window.ComponentDot = class {
             });
 
             this.DOM.append(menu);
-            this.DOM.insertAdjacentHTML('beforeend', hiddenInput);
             this.SELECTED_DOM = this.DOM.querySelector(`.dlp-dot-menu-select`).firstElementChild;
             this.CONTENT_DOM = this.DOM.querySelector(`.list`);
-        }else {
+        } else {
             let select_dom = '';
             for (let i in select) {
                 if (!select.hasOwnProperty(i)) continue;
@@ -564,18 +562,13 @@ window.ComponentDot = class {
             if (this._useSearchMod) {
                 search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
             }
-            let html = `<div class="dlp dlp-dot" ><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>${hiddenInput}`;
+            let html = `<div class="dlp dlp-dot" ><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dlp-scroll">${select_dom}</div></div></div>`;
             this.DOM.insertAdjacentHTML('afterbegin', html);
             this.SELECTED_DOM = this.DOM.querySelector(`.dot-selected`);
             this.CONTENT_DOM = this.DOM.querySelector(`.dot-select`);
             for (let element of this.CONTENT_DOM.getElementsByClassName("dlp-label")) {
                 element.addEventListener('click', () => this._tagSelect(element), false);
             }
-        }
-        if(this.NAME) {
-            this.selectInputDOM = document.querySelector(`input[name='${this.NAME}[select]']`);
-            this.insertInputDOM = document.querySelector(`input[name='${this.NAME}[insert]']`);
-            this.deleteInputDOM = document.querySelector(`input[name='${this.NAME}[delete]']`);
         }
         this._bind();
     }
@@ -586,7 +579,6 @@ window.ComponentCascadeDot = class {
         insert: 'insert',
         delete: 'delete'
     };
-    NAME;
 
     constructor(selector, select, selected, limit = 0) {
         if (!Array.isArray(selected)) {
@@ -598,9 +590,9 @@ window.ComponentCascadeDot = class {
             return;
         }
 
-        if(selector instanceof HTMLElement){
+        if (selector instanceof HTMLElement) {
             this.DOM = selector;
-        }else {
+        } else {
             this.DOM = document.querySelector(selector);
         }
         this.limit = limit;
@@ -813,31 +805,31 @@ window.ComponentCascadeDot = class {
             if (operate === this.MODE.insert) {
                 if (this.select_data.indexOf(id) === -1) {
                     this.select_data.push(id);
-                    if(this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
+                    if (this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
                 if (this.selected_data.indexOf(id) === -1 && this.insert_data.indexOf(id) === -1) {
                     this.insert_data.push(id);
-                    if(this.insertInputDOM instanceof HTMLElement)this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                    if (this.insertInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
                 let index = this.delete_data.indexOf(id);
                 if (index !== -1) {
                     this.delete_data.splice(index, 1);
-                    if(this.deleteInputDOM instanceof HTMLElement)this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                    if (this.deleteInputDOM instanceof HTMLElement) this.deleteInputDOM.value = JSON.stringify(this.delete_data);
                 }
             } else if (operate === this.MODE.delete) {
                 let index = this.select_data.indexOf(id);
                 if (index !== -1) {
                     this.select_data.splice(index, 1);
-                    if(this.selectInputDOM instanceof HTMLElement)this.selectInputDOM.value = JSON.stringify(this.select_data);
+                    if (this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
                 }
                 if (this.selected_data.indexOf(id) !== -1 && this.delete_data.indexOf(id) === -1) {
                     this.delete_data.push(id);
-                    if(this.deleteInputDOM instanceof HTMLElement)this.deleteInputDOM.value = JSON.stringify(this.delete_data);
+                    if (this.deleteInputDOM instanceof HTMLElement) this.deleteInputDOM.value = JSON.stringify(this.delete_data);
                 }
                 index = this.insert_data.indexOf(id);
                 if (index !== -1) {
                     this.insert_data.splice(index, 1);
-                    if(this.insertInputDOM instanceof HTMLElement)this.insertInputDOM.value = JSON.stringify(this.insert_data);
+                    if (this.insertInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
             if (typeof this._triggerEvent == 'function') this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
@@ -932,7 +924,7 @@ window.ComponentCascadeDot = class {
                     D.click();
                 });
             });
-            if(this.selectInputDOM instanceof HTMLElement)this.selectInputDOM.value = JSON.stringify(this.select_data);
+            if (this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
             if (this._useSearchMod === true) {
                 let search = this.DOM.querySelector(`.dot-search`);
                 search.addEventListener('input', () => {
@@ -955,30 +947,24 @@ window.ComponentCascadeDot = class {
         return this;
     }
 
-    useHiddenInput(name){
-        this.NAME = name;
+    useHiddenInput(name) {
+        this.DOM.insertAdjacentHTML('beforeend', `<input name="${name}[select]" value="[]" type="hidden" /><input name="${name}[insert]" value="[]" type="hidden" /><input name="${name}[delete]" value="[]" type="hidden" />`);
+        this.selectInputDOM = this.DOM.querySelector(`input[name='${name}[select]']`);
+        this.insertInputDOM = this.DOM.querySelector(`input[name='${name}[insert]']`);
+        this.deleteInputDOM = this.DOM.querySelector(`input[name='${name}[delete]']`);
         return this;
     }
 
     make() {
         let search = '';
         if (this._useSearchMod === true) search = '<input type="text" class="dlp dot-search" placeholder="搜索名称">';
-        let hiddenInput = '';
-        if(this.NAME){
-            hiddenInput = `<input name="${this.NAME}[select]" value="[]" type="hidden" /><input name="${this.NAME}[insert]" value="[]" type="hidden" /><input name="${this.NAME}[delete]" value="[]" type="hidden" />`;
-        }
-        let html = `<div class="dlp dlp-dot"><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>${hiddenInput}`;
+        let html = `<div class="dlp dlp-dot"><div class="dot-top">${search}<div class="dot-selected dlp-scroll"></div></div><div class="dot-body"><div class="dot-select dot-select-cascade"></div></div></div>`;
         this.DOM.insertAdjacentHTML('afterbegin', html);
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
         this.SELECTED_DOM = this.DOM.querySelector(`.dot-selected`);
         this.CONTENT_DOM = this.DOM.querySelector(`.dot-select`);
-        if(this.NAME) {
-            this.selectInputDOM = document.querySelector(`input[name='${this.NAME}[select]']`);
-            this.insertInputDOM = document.querySelector(`input[name='${this.NAME}[insert]']`);
-            this.deleteInputDOM = document.querySelector(`input[name='${this.NAME}[delete]']`);
-        }
         this._makeSelect(this.select);
         this._bind();
     }
@@ -988,14 +974,18 @@ window.ComponentLine = class {
     IMG_DELAY_QUEUE = [];
     IMG_DELAY_SETTINGS = {};
     rowH;
+    InputDOM;
 
-    constructor(name, columns, options = {
+    constructor(selector, columns, options = {
         sortable: true,
         delete: true,
         insert: true
     }) {
-        this.DOM = document.getElementById(name);
-        this.NAME = name;
+        if (selector instanceof HTMLElement) {
+            this.DOM = selector;
+        } else {
+            this.DOM = document.querySelector(selector);
+        }
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
@@ -1006,11 +996,6 @@ window.ComponentLine = class {
             delete: true,
             insert: true
         }, options);
-        this.DATA_INPUT = document.createElement('input');
-        this.DATA_INPUT.setAttribute('name', name);
-        this.DATA_INPUT.setAttribute('type', 'hidden');
-        this.DATA_INPUT.value = '[]';
-        this.DOM.appendChild(this.DATA_INPUT);
 
         this._makeHead = function () {
             let head = '<tr class="dlp-tr">';
@@ -1059,37 +1044,28 @@ window.ComponentLine = class {
         this._loadData = function () {
             let records = [];
             this.DATA.forEach((values, key) => {
-                records.push(this._loadRow(values,key));
+                records.push(this._loadRow(values, key));
             });
             this._assetsDelayEvent();
             this.DATA = records;
-            if(this.DATA_INPUT instanceof HTMLElement)this.DATA_INPUT.value = JSON.stringify(records);
+            if (this.DATA_INPUT instanceof HTMLElement) this.DATA_INPUT.value = JSON.stringify(records);
         };
 
-        this._loadRow = function (values,key) {
+        this._loadRow = function (values, key) {
             let tr = document.createElement('tr');
             tr.className = 'dlp-tr';
             tr.setAttribute('sortable-item', 'sortable-item');
             tr.setAttribute('data-index', key.toString());
             let record = {};
-            if(!this.DATA.hasOwnProperty(key)) this.DATA[key] = {};
             for (let name in this.COLUMNS) {
                 if (!this.COLUMNS.hasOwnProperty(name)) continue;
                 let column = this.COLUMNS[name];
-                if (!values[name]) {
-                    this.DATA[key][name] = '';
-                    record[name] = '';
-                }
+                if(!values.hasOwnProperty(name)) values[name] = '';
+                let v = values[name];
                 let td = document.createElement('td');
-                let v = this.DATA[key][name];
-                if (column.type === 'select') {
-                    if (/^[0-9]+$/.test(v)) {
-                        v = [parseInt(v)];
-                    } else if (Array.isArray(v) === false) {
-                        v = [];
-                    }
-                }
-                if(this.rowH) td.style.height = this.rowH;
+                if (this.rowH) td.style.height = this.rowH;
+                if (column.type === 'select' && Array.isArray(values[name]) === false) v = [parseInt(v)];
+
                 this._makeTd(td, name, column, v);
                 record[name] = v;
                 tr.appendChild(td);
@@ -1103,8 +1079,8 @@ window.ComponentLine = class {
         };
 
         this._assetsDelayEvent = function () {
-            if(this.IMG_DELAY_QUEUE.length>0){
-                _component.imgDelay(this.IMG_DELAY_QUEUE,this.IMG_DELAY_SETTINGS);
+            if (this.IMG_DELAY_QUEUE.length > 0) {
+                _component.imgDelay(this.IMG_DELAY_QUEUE, this.IMG_DELAY_SETTINGS);
                 this.IMG_DELAY_QUEUE = [];
             }
         };
@@ -1129,8 +1105,8 @@ window.ComponentLine = class {
                 let type = column.type;
 
                 let td = document.createElement('td');
-                if(column.width) td.style.width = column.width;
-                this._makeTd(td,name,column,'',true);
+                if (column.width) td.style.width = column.width;
+                this._makeTd(td, name, column, '', true);
                 foot.append(td);
             }
             this._insertButton(foot);
@@ -1139,7 +1115,7 @@ window.ComponentLine = class {
             this.TABLE_DOM.appendChild(tfoot);
         };
 
-        this._makeTd = function (td, name, column, value,insertPosition = false) {
+        this._makeTd = function (td, name, column, value, insertPosition = false) {
             let input;
             if (column.hasOwnProperty('width')) td.style.width = column.width;
             switch (column.type) {
@@ -1152,14 +1128,14 @@ window.ComponentLine = class {
                     input.setAttribute('data-column', name);
                     input.value = value;
                     td.appendChild(input);
-                    if(insertPosition === false)this._bindExchangeAction('input',input);
+                    if (insertPosition === false) this._bindExchangeAction('input', input);
                     break;
                 case 'datetime':
                     input = document.createElement('input');
                     input.setAttribute('class', `dlp dlp-input`);
                     input.setAttribute('data-column', name);
                     input.value = value;
-                    if(insertPosition === false)this._bindExchangeAction('blur',input);
+                    if (insertPosition === false) this._bindExchangeAction('blur', input);
                     td.style.position = 'relative';
                     td.appendChild(input);
                     input.flatpickr(column.config);
@@ -1167,23 +1143,33 @@ window.ComponentLine = class {
                 case 'select':
                     let menu = document.createElement('div');
                     td.append(menu);
-                    let modSettings = Object.assign({placeholder: '未选择',height:'120px',limit:1,useSearch:false},column.options);
-                    let dot = new ComponentDot(menu,column.select,[],modSettings.limit).mod({mode:true,placeholder: modSettings.placeholder,height:modSettings.height});
-                    if(modSettings.useSearch){
+                    let modSettings = Object.assign({
+                        placeholder: '未选择',
+                        height: '120px',
+                        limit: 1,
+                        useSearch: false
+                    }, column.options);
+                    if (Array.isArray(value) === false) value = [parseInt(value)];
+                    let dot = new ComponentDot(menu, column.select, value, modSettings.limit).mod({
+                        mode: true,
+                        placeholder: modSettings.placeholder,
+                        height: modSettings.height
+                    });
+                    if (modSettings.useSearch) {
                         dot.useSearch();
                     }
                     dot.make();
                     break;
                 case 'image':
                     let img = document.createElement('img');
-                    img.setAttribute('style','max-width: 100%;max-height: 100%;border-radius: 2px');
-                    if(column.hasOwnProperty('delay')){
-                        img.setAttribute('data-src',value);
+                    img.setAttribute('style', 'max-width: 100%;max-height: 100%;border-radius: 2px');
+                    if (column.hasOwnProperty('delay')) {
+                        img.setAttribute('data-src', value);
                         this.IMG_DELAY_QUEUE.push(img);
-                        if(column.hasOwnProperty('options') && (Object.keys(this.IMG_DELAY_SETTINGS).length === 0)) {
+                        if (column.hasOwnProperty('options') && (Object.keys(this.IMG_DELAY_SETTINGS).length === 0)) {
                             this.IMG_DELAY_SETTINGS = column.options;
                         }
-                    }else {
+                    } else {
                         img.setAttribute('src', value);
                     }
                     td.append(img);
@@ -1194,13 +1180,13 @@ window.ComponentLine = class {
             }
         };
 
-        this._bindExchangeAction = function (trigger,input) {
-            input.addEventListener(trigger,()=>{
+        this._bindExchangeAction = function (trigger, input) {
+            input.addEventListener(trigger, () => {
                 let key = parseInt(input.parentNode.parentNode.getAttribute('data-index'));
                 let column = input.getAttribute('data-column');
                 if (this.DATA[key]) {
                     this.DATA[key][column] = input.value;
-                    this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                    if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
                 }
             });
         };
@@ -1227,7 +1213,7 @@ window.ComponentLine = class {
 
                     this.DATA.splice(key, 1);
                     tbody.removeChild(tr);
-                    this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                    if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
                     this._resetTrSortIndex();
                     if (typeof this.deleteAction === 'function') this.deleteAction(this.DATA);
                 }, false);
@@ -1243,7 +1229,7 @@ window.ComponentLine = class {
             i.insertAdjacentHTML('afterbegin', _component.write);
             i.addEventListener('click', () => {
                 let insert = {};
-                let newIndex = `${this.TBODY_DOM.childNodes.length+1}`;
+                let newIndex = `${this.TBODY_DOM.childNodes.length}`;
 
                 for (let column in this.COLUMNS) {
                     if (!this.COLUMNS.hasOwnProperty(column)) continue;
@@ -1251,6 +1237,7 @@ window.ComponentLine = class {
                     let value;
                     if (type === 'input' || type === 'datetime') {
                         value = this.TFOOT_DOM.querySelector(`input[data-column="${column}"]`).value;
+                        console.log(value)
                     } else if (type === 'select') {
                         value = '';
                     } else {
@@ -1258,9 +1245,9 @@ window.ComponentLine = class {
                     }
                     insert[column] = value;
                 }
-                this._loadRow(insert,newIndex);
+                this._loadRow(insert, newIndex);
                 this.DATA.push(insert);
-                if(this.DATA_INPUT instanceof HTMLElement)this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                if (this.InputDOM instanceof HTMLElement) this.InputDOM.value = JSON.stringify(this.DATA);
                 this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
                 if (typeof this.insertAction === 'function') this.insertAction(this.DATA);
             }, false);
@@ -1278,7 +1265,7 @@ window.ComponentLine = class {
                     data.push(object.DATA[k]);
                 });
                 object.DATA = data;
-                object.DATA_INPUT.value = JSON.stringify(object.DATA);
+                object.InputDOM.value = JSON.stringify(object.DATA);
                 object._resetTrSortIndex();
                 if (typeof object.sortableAction === 'function') object.sortableAction(object.DATA);
             });
@@ -1296,7 +1283,7 @@ window.ComponentLine = class {
         return this;
     }
 
-    setRowHeight(height){
+    setRowHeight(height) {
         this.rowH = parseInt(height) + 'px';
         return this;
     }
@@ -1321,10 +1308,17 @@ window.ComponentLine = class {
         return this;
     }
 
+    useHiddenInput(name) {
+        this.DOM.insertAdjacentHTML('beforeend', `<input type="hidden" name="${name}" value="[]" />`);
+        this.InputDOM = this.DOM.querySelector(`input[name=${name}]`);
+        return this;
+    }
+
     make() {
         this._makeHead();
         this._makeBody();
         this._makeFoot();
+        if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
         if (this.OPTIONS.sortable) this._sortable();
     }
 };

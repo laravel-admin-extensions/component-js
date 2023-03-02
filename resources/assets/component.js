@@ -1006,7 +1006,6 @@ window.ComponentLine = class {
             delete: true,
             insert: true
         }, options);
-        this.INSERT_COLUMNS = {};
         this.DATA_INPUT = document.createElement('input');
         this.DATA_INPUT.setAttribute('name', name);
         this.DATA_INPUT.setAttribute('type', 'hidden');
@@ -1059,103 +1058,58 @@ window.ComponentLine = class {
 
         this._loadData = function () {
             let records = [];
-            let columns = this.COLUMNS;
             this.DATA.forEach((values, key) => {
-                let tr = document.createElement('tr');
-                tr.className = 'dlp-tr';
-                tr.setAttribute('sortable-item', 'sortable-item');
-                tr.setAttribute('data-index', key.toString());
-                let record = {};
-                for (let name in columns) {
-                    if (!columns.hasOwnProperty(name)) continue;
-                    let column = columns[name];
-                    if (!values[name]) {
-                        this.DATA[key][name] = '';
-                        record[name] = '';
-                    }
-                    let td = document.createElement('td');
-                    let v = this.DATA[key][name];
-                    if (column.type === 'select') {
-                        if (/^[0-9]+$/.test(v)) {
-                            v = [parseInt(v)];
-                        } else if (Array.isArray(v) === false) {
-                            v = [];
-                        }
-                    }
-                    if(this.rowH) td.style.height = this.rowH;
-                    this._makeTd(td, name, column, v);
-                    record[name] = v;
-                    tr.appendChild(td);
-                }
-                let td = document.createElement('td');
-                td.insertAdjacentHTML('afterbegin', '<div></div>');
-                this._operateButton(td);
-                tr.appendChild(td);
-                this.TBODY_DOM.appendChild(tr);
-                records.push(record);
+                records.push(this._loadRow(values,key));
             });
             this._assetsDelayEvent();
             this.DATA = records;
-            this.DATA_INPUT.value = JSON.stringify(records);
+            if(this.DATA_INPUT instanceof HTMLElement)this.DATA_INPUT.value = JSON.stringify(records);
+        };
+
+        this._loadRow = function (values,key) {
+            let tr = document.createElement('tr');
+            tr.className = 'dlp-tr';
+            tr.setAttribute('sortable-item', 'sortable-item');
+            tr.setAttribute('data-index', key.toString());
+            let record = {};
+            if(!this.DATA.hasOwnProperty(key)) this.DATA[key] = {};
+            for (let name in this.COLUMNS) {
+                if (!this.COLUMNS.hasOwnProperty(name)) continue;
+                let column = this.COLUMNS[name];
+                if (!values[name]) {
+                    this.DATA[key][name] = '';
+                    record[name] = '';
+                }
+                let td = document.createElement('td');
+                let v = this.DATA[key][name];
+                if (column.type === 'select') {
+                    if (/^[0-9]+$/.test(v)) {
+                        v = [parseInt(v)];
+                    } else if (Array.isArray(v) === false) {
+                        v = [];
+                    }
+                }
+                if(this.rowH) td.style.height = this.rowH;
+                this._makeTd(td, name, column, v);
+                record[name] = v;
+                tr.appendChild(td);
+            }
+            let td = document.createElement('td');
+            td.insertAdjacentHTML('afterbegin', '<div></div>');
+            this._operateButton(td);
+            tr.appendChild(td);
+            this.TBODY_DOM.appendChild(tr);
+            return record;
         };
 
         this._assetsDelayEvent = function () {
-            if(this.IMG_DELAY_QUEUE.length>0)_component.imgDelay(this.IMG_DELAY_QUEUE,this.IMG_DELAY_SETTINGS);
+            if(this.IMG_DELAY_QUEUE.length>0){
+                _component.imgDelay(this.IMG_DELAY_QUEUE,this.IMG_DELAY_SETTINGS);
+                this.IMG_DELAY_QUEUE = [];
+            }
         };
 
         this._makeFoot = function () {
-            let foot = document.createElement('tr');
-            foot.className = 'dlp-tr';
-            let columns = this.COLUMNS;
-            for (let column in columns) {
-                if (!columns.hasOwnProperty(column)) continue;
-                let val = columns[column];
-                if (val.type === 'hidden') {
-                    continue;
-                }
-                let style = val.style ? `style="${val.style}"` : '';
-                let type = val.type;
-                if (this.INSERT_COLUMNS.hasOwnProperty(column)) {
-                    type = this.INSERT_COLUMNS[column].type;
-                }
-
-                /*switch (type) {
-                    case 'input':
-                        foot.insertAdjacentHTML('beforeend', `<td ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></td>`);
-                        break;
-                    case 'select':
-                        let td = document.createElement('td');
-                        td.style = val.style;
-                        td.append(this._menuMake(column, [], val.options, val.limit, val.name, true));
-                        foot.append(td);
-                        break;
-                    case 'datetime':
-                        this.flatpickr_settings[column] = val.config;
-                        style = val.style ? `${val.style}` : '';
-                        foot.insertAdjacentHTML('beforeend', `<td style="position: relative;overflow: unset;${style}"><input class="dlp dlp-input datetime-${column}" data-column="${column}"/></td>`);
-                        break;
-                    case 'hidden':
-                        foot.insertAdjacentHTML('beforeend', `<td><input data-column="${column}" type="hidden"/></td>`);
-                        break;
-                    default:
-                        this.COLUMNS[column].insert_type = 'input';
-                        foot.insertAdjacentHTML('beforeend', `<td ${style}><input class="dlp dlp-input" data-column="${column}" placeholder=":${val.name}"/></td>`);
-                        break;
-                }
-                if(val.type === 'image'){
-                    setTimeout(()=>{
-                        let zoom = val.zoom !== undefined ? val.zoom : true;
-                        let width = val.w !== undefined ? parseInt(val.w) : 300;
-                        let height = val.h !== undefined ? parseInt(val.h) : 0;
-                        _component.imgDelay(`${this.NAME}-${column}-img`,200,zoom,width,height);
-                    });
-                }
-                if(val.type === 'datetime' || val.insert_type === 'datetime'){
-                    setTimeout(() => {
-                        document.querySelectorAll(`#${this.NAME} input.datetime-${column}`).flatpickr(this.flatpickr_settings[column]);
-                    });
-                }*/
-            }
             let tfoot = document.createElement('tfoot');
             tfoot.className = 'dlp-tfoot';
             if (!this.OPTIONS.insert) {
@@ -1163,41 +1117,58 @@ window.ComponentLine = class {
                 this.TABLE_DOM.appendChild(tfoot);
                 return;
             }
+            let foot = document.createElement('tr');
+            foot.className = 'dlp-tr';
+            let columns = this.COLUMNS;
+            for (let name in columns) {
+                if (!columns.hasOwnProperty(name)) continue;
+                let column = columns[name];
+                if (column.type === 'hidden') {
+                    continue;
+                }
+                let type = column.type;
+
+                let td = document.createElement('td');
+                if(column.width) td.style.width = column.width;
+                this._makeTd(td,name,column,'',true);
+                foot.append(td);
+            }
             this._insertButton(foot);
             tfoot.append(foot);
+            this.TFOOT_DOM = tfoot;
             this.TABLE_DOM.appendChild(tfoot);
         };
 
-        this._makeTd = function (td, column, settings, value) {
+        this._makeTd = function (td, name, column, value,insertPosition = false) {
             let input;
-            if (settings.hasOwnProperty('width')) td.style.width = settings.width;
-            switch (settings.type) {
+            if (column.hasOwnProperty('width')) td.style.width = column.width;
+            switch (column.type) {
                 case 'text':
                     td.insertAdjacentHTML('afterbegin', `<p style="display: block;" class="dlp text-white dlp-text" title="${value}">${value}</p>`);
                     break;
                 case 'input':
                     input = document.createElement('input');
                     input.className = 'dlp dlp-input';
-                    input.setAttribute('data-column', column);
+                    input.setAttribute('data-column', name);
                     input.value = value;
                     td.appendChild(input);
-                    this._bindExchangeAction('input',input);
+                    if(insertPosition === false)this._bindExchangeAction('input',input);
                     break;
                 case 'datetime':
                     input = document.createElement('input');
-                    input.setAttribute('class', `dlp dlp-input datetime-${column}`);
-                    input.setAttribute('data-column', column);
+                    input.setAttribute('class', `dlp dlp-input`);
+                    input.setAttribute('data-column', name);
                     input.value = value;
-                    this._bindExchangeAction('blur',input);
+                    if(insertPosition === false)this._bindExchangeAction('blur',input);
                     td.style.position = 'relative';
                     td.appendChild(input);
-                    input.flatpickr(settings.config);
+                    input.flatpickr(column.config);
                     break;
                 case 'select':
                     let menu = document.createElement('div');
                     td.append(menu);
-                    let modSettings = Object.assign({placeholder: '未选择',height:'120px',limit:1,useSearch:false},settings.options);
-                    let dot = new ComponentDot(menu,settings.select,[],modSettings.limit).mod({mode:true,placeholder: modSettings.placeholder,height:modSettings.height});
+                    let modSettings = Object.assign({placeholder: '未选择',height:'120px',limit:1,useSearch:false},column.options);
+                    let dot = new ComponentDot(menu,column.select,[],modSettings.limit).mod({mode:true,placeholder: modSettings.placeholder,height:modSettings.height});
                     if(modSettings.useSearch){
                         dot.useSearch();
                     }
@@ -1206,11 +1177,11 @@ window.ComponentLine = class {
                 case 'image':
                     let img = document.createElement('img');
                     img.setAttribute('style','max-width: 100%;max-height: 100%;border-radius: 2px');
-                    if(settings.hasOwnProperty('delay')){
+                    if(column.hasOwnProperty('delay')){
                         img.setAttribute('data-src',value);
                         this.IMG_DELAY_QUEUE.push(img);
-                        if(settings.hasOwnProperty('options') && (Object.keys(this.IMG_DELAY_SETTINGS).length === 0)) {
-                            this.IMG_DELAY_SETTINGS = settings.options;
+                        if(column.hasOwnProperty('options') && (Object.keys(this.IMG_DELAY_SETTINGS).length === 0)) {
+                            this.IMG_DELAY_SETTINGS = column.options;
                         }
                     }else {
                         img.setAttribute('src', value);
@@ -1271,61 +1242,25 @@ window.ComponentLine = class {
             i.style.cursor = 'pointer';
             i.insertAdjacentHTML('afterbegin', _component.write);
             i.addEventListener('click', () => {
-                let tfoot = this.DOM.querySelector('tfoot');
                 let insert = {};
-                let tr = document.createElement('tr');
-                tr.className = 'dlp-tr';
-                tr.setAttribute('sortable-item', 'sortable-item');
-                tr.setAttribute('data-index', `${this.TBODY_DOM.childNodes.length+1}`);
+                let newIndex = `${this.TBODY_DOM.childNodes.length+1}`;
 
                 for (let column in this.COLUMNS) {
                     if (!this.COLUMNS.hasOwnProperty(column)) continue;
                     let type = this.COLUMNS[column].insert_type ? this.COLUMNS[column].insert_type : this.COLUMNS[column].type;
-                    let td = document.createElement('td');
                     let value;
                     if (type === 'input' || type === 'datetime') {
-                        value = tfoot.querySelector(`input[data-column="${column}"]`).value;
+                        value = this.TFOOT_DOM.querySelector(`input[data-column="${column}"]`).value;
                     } else if (type === 'select') {
-                        value = this.INSERT_ROW_MENUE_DATA[column];
+                        value = '';
                     } else {
                         value = '';
                     }
                     insert[column] = value;
-                    this._makeTd(td, column, this.COLUMNS[column], value);
-                    tr.appendChild(td);
-
-                    if (this.COLUMNS[column].type === 'image') {
-                        let dom = td.firstChild;
-                        setTimeout(() => {
-                            let src = dom.getAttribute('data-src');
-                            dom.setAttribute('src', src);
-                            if (this.COLUMNS[column].zoom === false) return;
-                            let img = document.createElement('img');
-                            dom.addEventListener('mouseover', function (e) {
-                                document.body.append(img);
-                                img.style.position = 'absolute';
-                                img.style.top = `${e.pageY + 7}px`;
-                                img.style.left = `${e.pageX + 7}px`;
-                                img.style.zIndex = '1000000';
-                                img.style.width = '300px';
-                                img.style.borderRadius = '3px';
-                                img.setAttribute('src', src);
-                            });
-                            dom.addEventListener('mouseout', function (e) {
-                                e.stopPropagation();
-                                img.remove();
-                            });
-                        }, 200);
-                    }
                 }
-
-                let td = document.createElement('td');
-                td.insertAdjacentHTML('afterbegin', '<div></div>');
-                this._operateButton(td);
-                tr.appendChild(td);
-                this.TBODY_DOM.appendChild(tr);
+                this._loadRow(insert,newIndex);
                 this.DATA.push(insert);
-                this.DATA_INPUT.value = JSON.stringify(this.DATA);
+                if(this.DATA_INPUT instanceof HTMLElement)this.DATA_INPUT.value = JSON.stringify(this.DATA);
                 this.TBODY_DOM.scrollTop = this.TBODY_DOM.scrollHeight;
                 if (typeof this.insertAction === 'function') this.insertAction(this.DATA);
             }, false);

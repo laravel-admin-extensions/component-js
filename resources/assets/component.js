@@ -1135,7 +1135,7 @@ window.ComponentLine = class {
                     input.setAttribute('class', `dlp dlp-input`);
                     input.setAttribute('data-column', name);
                     input.value = value;
-                    if (insertPosition === false) this._bindExchangeAction('blur', input);
+                    if (insertPosition === false) this._bindExchangeAction('input', input);
                     td.style.position = 'relative';
                     td.appendChild(input);
                     input.flatpickr(column.config);

@@ -102,7 +102,8 @@ window._component = {
     },
     loading: function (DOM, remove = false) {
         if (remove) {
-            if (DOM.querySelector('div.dlp-loader')) DOM.querySelector('div.dlp-loader').remove();
+            DOM.querySelector('div.dlp-loader').remove();
+            return;
         }
         DOM.insertAdjacentHTML('afterbegin', `<div class="dlp-loader">
         <div class="dlp-loader-inner">
@@ -1444,19 +1445,19 @@ window.ComponentPlane = class {
             let object = this;
             _component.request({
                 url: this.XHR.url,
-                data:this.XHR.data,
+                data: this.XHR.data,
                 method: this.XHR.method,
                 callback: function (response) {
                     _component.loading(object.MODEL_BODY_DOM, true);
                     let fragment = document.createRange().createContextualFragment(response);
                     object.MODEL_BODY_DOM.appendChild(fragment);
-                    this._delayBind();
+                    object._delayBind();
                 }
             });
         };
 
         this._submitEvent = function (element, xhr) {
-            let form = this.DOM.querySelector('form.dlp');
+            let form = this.DOM.querySelector('form');
             let formdata = new FormData(form);
             let flag = false;
             for (let pair of formdata.entries()) {
@@ -1464,7 +1465,7 @@ window.ComponentPlane = class {
                 let val = pair[1];
                 let input;
                 try {
-                    input = form.querySelector(`input[name=${key}]`);
+                    input = form.querySelector(`[name="${key}"]`);
                 } catch (e) {
                     continue;
                 }
@@ -1511,14 +1512,14 @@ window.ComponentPlane = class {
         this._delayBind = function () {
             for (let delay of this.DELAY_BIND) {
                 try {
-                    let dom = this.DOM.querySelector(delay.selector);
-                    if (delay.trigger === 'submit') {
-                        this._submitEvent(dom, delay.event);
+                    let dom = this.MODEL_BODY_DOM.querySelector(delay.selector);
+                    if(delay.trigger === 'submit'){
+                        dom.addEventListener('click', () => this._submitEvent(dom,delay.params));
                         continue;
                     }
-                    dom.addEventListener(delay.trigger, () => delay.event(this));
+                    dom.addEventListener(delay.trigger, () => delay.event(dom,delay.params));
                 } catch (e) {
-                    console.error('cannot find document by selector :' + delay.selector);
+                    console.error('cannot find document by selector : ' + delay.selector);
                 }
             }
         };
@@ -1526,13 +1527,12 @@ window.ComponentPlane = class {
 
     bindSubmitEvent(selector, xhr = {url: '', method: 'POST', data: {}, callback: null}) {
         xhr = Object.assign({url: '', method: 'POST', data: {}, callback: null}, xhr);
-        this.DELAY_BIND.push({selector: selector, trigger: 'submit', event: xhr});
+        this.DELAY_BIND.push({selector: selector, trigger: 'submit', params: xhr});
         return this;
     }
 
-    bindEvent(selector, trigger = 'click', event = function () {
-    }) {
-        this.DELAY_BIND.push({selector: selector, trigger: trigger, event: event});
+    bindEvent(selector, trigger = 'click', event = null, params = {}) {
+        this.DELAY_BIND.push({selector: selector, trigger: trigger, event: event, params: params});
         return this;
     }
 
@@ -1577,12 +1577,12 @@ window.ComponentPlane = class {
         if (this.OPTIONS.x) this._appendX();
         if (this.XHR) {
             this._xhrContent();
+            return;
+        }
+        if (this.CONTENT instanceof HTMLElement) {
+            this.MODEL_BODY_DOM.append(this.CONTENT);
         } else {
-            if (this.CONTENT instanceof HTMLElement) {
-                this.MODEL_BODY_DOM.append(this.CONTENT);
-            } else {
-                this.MODEL_BODY_DOM.innerHTML = this.CONTENT;
-            }
+            this.MODEL_BODY_DOM.innerHTML = this.CONTENT;
         }
         this._delayBind();
     }
@@ -2046,7 +2046,7 @@ window.ComponentCascadeLine = class {
         if (this.submit_block) return;
         this.submit_block = true;
         element.innerHTML = _component.sub_loading;
-        let form = this.DOM.getElementsByTagName('form')[0];
+        let form = this.DOM.querySelector('form');
         let formdata = new FormData(form);
         formdata.set('key', data.key);
         formdata.set('val', data.val);

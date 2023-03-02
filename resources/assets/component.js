@@ -1128,14 +1128,14 @@ window.ComponentLine = class {
                     input.setAttribute('data-column', name);
                     input.value = value;
                     td.appendChild(input);
-                    if (insertPosition === false) this._bindExchangeAction('input', input);
+                    if (insertPosition === false) this._bindExchangeAction('input', input,td);
                     break;
                 case 'datetime':
                     input = document.createElement('input');
                     input.setAttribute('class', `dlp dlp-input`);
                     input.setAttribute('data-column', name);
                     input.value = value;
-                    if (insertPosition === false) this._bindExchangeAction('input', input);
+                    if (insertPosition === false) this._bindExchangeAction('input', input,td);
                     td.style.position = 'relative';
                     td.appendChild(input);
                     input.flatpickr(column.config);
@@ -1158,7 +1158,13 @@ window.ComponentLine = class {
                     if (modSettings.useSearch) {
                         dot.useSearch();
                     }
-                    dot.make();
+                    dot.trigger((select)=> {
+                        let index = parseInt(td.parentNode.getAttribute('data-index'));
+                        if (this.DATA[index]) {
+                            this.DATA[index][name] = select;
+                            if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
+                        }
+                    }).make();
                     break;
                 case 'image':
                     let img = document.createElement('img');
@@ -1180,12 +1186,12 @@ window.ComponentLine = class {
             }
         };
 
-        this._bindExchangeAction = function (trigger, input) {
+        this._bindExchangeAction = function (trigger, input,td) {
             input.addEventListener(trigger, () => {
-                let key = parseInt(input.parentNode.parentNode.getAttribute('data-index'));
+                let index = parseInt(td.parentNode.getAttribute('data-index'));
                 let column = input.getAttribute('data-column');
-                if (this.DATA[key]) {
-                    this.DATA[key][column] = input.value;
+                if (this.DATA[index]) {
+                    this.DATA[index][column] = input.value;
                     if(this.InputDOM instanceof HTMLElement)this.InputDOM.value = JSON.stringify(this.DATA);
                 }
             });
@@ -1253,7 +1259,9 @@ window.ComponentLine = class {
             }, false);
             let td = document.createElement('td');
             td.className = 'operate-column';
-            td.append(i);
+            let div = document.createElement('div');
+            div.append(i);
+            td.append(div);
             tr.append(td);
         };
 

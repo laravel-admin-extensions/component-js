@@ -4,6 +4,7 @@ namespace DLP\Assembly;
 
 
 use DLP\Assembly\Unit\CascadeDot;
+use DLP\Assembly\Unit\CascadeLine;
 use DLP\Assembly\Unit\Datetime;
 use DLP\Assembly\Unit\FileInput;
 use DLP\Assembly\Unit\Hidden;
@@ -90,6 +91,19 @@ class Wing
     public function cascadeDot(string $column, array $select)
     {
         $doc = new CascadeDot($column, $select);
+        $doc->setStyle(['width' => '100%', 'height' => '240px']);
+        $this->documents[] = $doc;
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param array $data
+     * @return Dot
+     */
+    public function cascadeLine(string $column, array $data)
+    {
+        $doc = new CascadeLine($column, $data);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
         $this->documents[] = $doc;
         return $doc;

@@ -1349,7 +1349,7 @@ window.ComponentPlane = class {
     constructor(content, options = {
         w: 0.8,
         h: 0.8,
-        top: '30px',
+        top: 'auto',
         left: 'auto',
         f: true,
         x: true,
@@ -1372,7 +1372,7 @@ window.ComponentPlane = class {
         this.OPTIONS = Object.assign({
             w: 0.8,
             h: 0.8,
-            top: '30px',
+            top: 'auto',
             left: 'auto',
             f: true,
             x: true,
@@ -1385,14 +1385,17 @@ window.ComponentPlane = class {
         if (this.OPTIONS.w.toString().indexOf('px') === -1 && this.OPTIONS.w.toString().indexOf('%') === -1) {
             width = window.innerWidth * this.OPTIONS.w;
             if (width >= (window.innerWidth - 18)) width = window.innerWidth - 18;
-            width += 'px';
         }
         let height = this.OPTIONS.h;
         if (this.OPTIONS.h.toString().indexOf('px') === -1 && this.OPTIONS.h.toString().indexOf('%') === -1) {
             height = window.innerHeight * this.OPTIONS.h;
             if (height >= (window.innerHeight - 25)) height = window.innerHeight - 25;
-            height += 'px';
         }
+        if(this.OPTIONS.top === 'auto'){
+            this.OPTIONS.top = ((window.innerHeight - height - 25) / 2) + 'px';
+        }
+        width += 'px';
+        height += 'px';
         this.WIDTH = width;
         this.HEIGHT = height;
 

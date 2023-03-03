@@ -13,39 +13,50 @@ abstract class Widget
 {
     protected $column;
     protected $label;
-    protected $pure = false;
     protected $style = [];
     protected $attribute = [];
     protected $enumerate = [];
     protected $annotation;
 
-    public function __construct(string $column, string $label)
+    public function __construct(string $column)
     {
         $this->column = $column;
-        $this->label = $label;
     }
 
+    /**
+     * @param $title
+     */
+    public function label($title)
+    {
+        $this->label = $title;
+    }
+
+    /**
+     * @return $this
+     */
     public function required()
     {
         $this->enumerate[] = 'required';
         return $this;
     }
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     public function setAttribute(array $attributes)
     {
         $this->attribute = array_merge($this->attribute,$attributes);
         return $this;
     }
 
+    /**
+     * @param array $styles
+     * @return $this
+     */
     public function setStyle(array $styles)
     {
         $this->style = array_merge($this->style,$styles);
-        return $this;
-    }
-
-    public function pure()
-    {
-        $this->pure = true;
         return $this;
     }
 

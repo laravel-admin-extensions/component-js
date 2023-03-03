@@ -10,9 +10,9 @@ use DLP\Assembly\Abs\Input;
  */
 class Text extends Input
 {
-    public function __construct(string $column, string $label)
+    public function __construct(string $column)
     {
-        parent::__construct($column, $label);
+        parent::__construct($column);
     }
 
     public function compile()
@@ -21,7 +21,7 @@ class Text extends Input
         $content = <<<EOF
 <input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->annotation}/>
 EOF;
-        if($this->pure) return $content;
+        if(!$this->label) return $content;
 
         return <<<EOF
 <div class="dlp dlp-form-row">

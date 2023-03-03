@@ -19,30 +19,46 @@ class Linear extends Widget
     protected $data;
     protected $useHiddenInput = true;
 
-    public function __construct(string $column, string $label)
+    public function __construct(string $column)
     {
-        parent::__construct($column, $label);
+        parent::__construct($column);
 
     }
 
+    /**
+     * @param array $columns
+     * @return $this
+     */
     public function columns(array $columns)
     {
         $this->columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_FORCE_OBJECT);
         return $this;
     }
 
-    public function options($options)
+    /**
+     * @param $options
+     * @example ['sortable' => true,'delete' => true,'insert' => true,]
+     * @return $this
+     */
+    public function options(array $options)
     {
         $this->options = array_merge($this->options,$options);
         return $this;
     }
 
+    /**
+     * @param $data
+     * @return $this
+     */
     public function load($data)
     {
         $this->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function withoutHiddenInput()
     {
         $this->useHiddenInput = false;

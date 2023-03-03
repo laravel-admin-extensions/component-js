@@ -25,22 +25,21 @@ class Wing
 
     /**
      * @param string $column
-     * @param string $label
      */
-    public function text(string $column, string $label)
+    public function text(string $column)
     {
-        $doc = new Text($column, $label);
+        $doc = new Text($column);
         $this->documents[] = $doc;
         return $doc;
     }
 
     /**
      * @param string $column
-     * @param string $label
+     * @return Text
      */
-    public function display(string $column, string $label)
+    public function display(string $column)
     {
-        $doc = new Text($column, $label);
+        $doc = new Text($column);
         $doc->disabled()->setStyle(['background' => '#e7e7e7']);
         $this->documents[] = $doc;
         return $doc;
@@ -49,6 +48,7 @@ class Wing
     /**
      * @param string $column
      * @param string $value
+     * @return Hidden
      */
     public function hidden(string $column, string $value)
     {
@@ -59,23 +59,23 @@ class Wing
 
     /**
      * @param string $column
-     * @param string $label
+     * @return Textarea
      */
-    public function textarea(string $column, string $label)
+    public function textarea(string $column)
     {
-        $doc = new Textarea($column, $label);
+        $doc = new Textarea($column);
         $this->documents[] = $doc;
         return $doc;
     }
 
     /**
      * @param string $column
-     * @param string $label
      * @param array $select
+     * @return Dot
      */
-    public function dot(string $column, string $label, array $select)
+    public function dot(string $column, array $select)
     {
-        $doc = new Dot($column, $label, $select);
+        $doc = new Dot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '220px']);
         $this->documents[] = $doc;
         return $doc;
@@ -83,12 +83,12 @@ class Wing
 
     /**
      * @param string $column
-     * @param string $label
      * @param array $select
+     * @return Select
      */
-    public function select(string $column, string $label, array $select)
+    public function select(string $column, array $select)
     {
-        $doc = new Select($column, $label, $select);
+        $doc = new Select($column, $select);
         $doc->setStyle(['width' => '240px']);
         $this->documents[] = $doc;
         return $doc;
@@ -96,25 +96,22 @@ class Wing
 
     /**
      * @param string $column
-     * @param string $label
-     * @param array $settings
-     *          format: [YYYY-MM-DD HH:mm:ss | YYYY-MM-DD | YYYY ]
-     *          locale 语言配置
+     * @return Datetime
      */
-    public function datepicker(string $column, string $label)
+    public function datepicker(string $column)
     {
-        $doc = new Datetime($column, $label);
+        $doc = new Datetime($column);
         $this->documents[] = $doc;
         return $doc;
     }
 
     /**
      * @param string $column
-     * @param string $label
+     * @return FileInput
      */
-    public function fileInput(string $column, string $label)
+    public function fileInput(string $column)
     {
-        $doc = new FileInput($column, $label);
+        $doc = new FileInput($column);
         $doc->setStyle([]);
         $this->documents[] = $doc;
         return $doc;
@@ -122,16 +119,20 @@ class Wing
 
     /**
      * @param string $column
-     * @param string $label
      * @param string $content
+     * @return Html
      */
-    public function html(string $column, string $label, string $content)
+    public function html(string $column, string $content)
     {
-        $doc = new Html($column, $label, $content);
+        $doc = new Html($column, $content);
         $this->documents[] = $doc;
         return $doc;
     }
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     public function form(array $attributes = [])
     {
         $attributes = array_merge(['accept-charset'=>'UTF-8','enctype'=>'multipart/form-data'],$attributes);

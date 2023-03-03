@@ -12,26 +12,27 @@ class Html
     private $column;
     private $label;
     private $content;
-    private $pure = false;
 
-    public function __construct(string $column, string $label,string $content)
+    public function __construct(string $column,string $content)
     {
         $this->column = $column;
-        $this->label = $label;
         $this->content = $content;
     }
 
-    public function pure()
+    /**
+     * @param $title
+     * @return $this
+     */
+    public function label($title)
     {
-        $this->pure = true;
+        $this->label = $title;
         return $this;
     }
 
     public function compile()
     {
-        if($this->pure){
-            return $this->content;
-        }
+        if(!$this->label) return $this->content;
+
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>

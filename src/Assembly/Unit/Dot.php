@@ -16,30 +16,44 @@ class Dot extends Widget
     protected $useSearch = false;
     protected $useHiddenInput = true;
 
-    public function __construct(string $column, string $label, array $select)
+    public function __construct(string $column, array $select)
     {
-        parent::__construct($column, $label);
+        parent::__construct($column);
         $this->select = json_encode($select, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
     }
 
+    /**
+     * @param array $data
+     * @return $this
+     */
     public function selected(array $data)
     {
         $this->selected = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         return $this;
     }
 
+    /**
+     * @param int $num
+     * @return $this
+     */
     public function limit(int $num)
     {
         $this->limit = $num;
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function useSearch()
     {
         $this->useSearch = true;
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function withoutHiddenInput()
     {
         $this->useHiddenInput = false;
@@ -63,7 +77,7 @@ class Dot extends Widget
 new ComponentDot("#{$this->column}",{$this->select},{$this->selected},{$this->limit}){$execute};
 </script>
 EOF;
-        if($this->pure) return $content;
+        if(!$this->label) return $content;
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>

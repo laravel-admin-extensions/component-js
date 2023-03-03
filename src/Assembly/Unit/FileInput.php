@@ -30,12 +30,25 @@ class FileInput
         'flash' => '/^(swf)$/i',
     ];
 
-    public function __construct(string $column, string $label)
+    public function __construct(string $column)
     {
         $this->column = $column;
-        $this->label = $label;
     }
 
+    /**
+     * @param $title
+     * @return $this
+     */
+    public function label($title)
+    {
+        $this->label = $title;
+        return $this;
+    }
+
+    /**
+     * @param array $styles
+     * @return $this
+     */
     public function setStyle(array $styles)
     {
         $styles = array_merge(['width' => '100%'], $styles);
@@ -43,33 +56,44 @@ class FileInput
         return $this;
     }
 
+    /**
+     * @param array $types
+     * @return $this
+     */
     public function fileType(array $types)
     {
         $this->fileType = array_merge($this->fileType, $types);
         return $this;
     }
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     public function setAttribute(array $attributes)
     {
         $this->attributes .= Assistant::arrayKv2String($attributes, '=', ' ');
         return $this;
     }
 
+    /**
+     * @param array $settings
+     * @return $this
+     */
     public function settings(array $settings)
     {
         $this->settings = $settings;
         return $this;
     }
 
+    /**
+     * @param array $initialPreview
+     * @return $this
+     */
     public function initialPreview(array $initialPreview = ['files' => null, 'url' => null])
     {
         $this->initialPreview = $initialPreview;
         return $this;
-    }
-
-    public function pure()
-    {
-        $this->pure = true;
     }
 
     private function setInit()
@@ -146,9 +170,7 @@ $('input[name="{$this->column}"]').fileinput(JSON.parse('{$settings}')).on('file
 });
 </script>
 EOF;
-        if($this->pure){
-            return $content;
-        }
+        if(!$this->label) return $content;
 
         return <<<EOF
 <div class="dlp dlp-form-row" style="align-items:center;">

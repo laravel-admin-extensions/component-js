@@ -10,17 +10,25 @@ use DLP\Assembly\Abs\Input;
  */
 class Textarea extends Input
 {
-    public function __construct(string $column, string $label)
+    public function __construct(string $column)
     {
-        parent::__construct($column, $label);
+        parent::__construct($column);
     }
 
+    /**
+     * @param int $rows
+     * @return $this
+     */
     public function rows(int $rows)
     {
         $this->settings[] = "rows={$rows}";
         return $this;
     }
 
+    /**
+     * @param int $cols
+     * @return $this
+     */
     public function cols(int $cols)
     {
         $this->settings[] = "cols={$cols}";
@@ -33,7 +41,7 @@ class Textarea extends Input
         $content = <<<EOF
 <textarea name="{$this->column}" class="dlp-input {$this->column}" placeholder="输入 {$this->label}" {$this->annotation}>{$this->value}</textarea>
 EOF;
-        if($this->pure) return $content;
+        if(!$this->label) return $content;
 
         return <<<EOF
 <div class="dlp dlp-form-row">

@@ -12,20 +12,30 @@ class Datetime extends Input
 {
     private $pickerSettings = [];
 
-    public function __construct(string $column, string $label)
+    public function __construct(string $column)
     {
-        parent::__construct($column, $label);
+        parent::__construct($column);
     }
 
-    public function format()
+    /**
+     * @param string $pattern
+     * @example YYYY-MM-DD HH:mm:ss | YYYY-MM-DD | YYYY |...
+     * @return $this
+     */
+    public function format($pattern = 'YYYY-MM-DD HH:mm:ss')
     {
-        $this->pickerSettings['format'] = 'YYYY-MM-DD HH:mm:ss';
+        $this->pickerSettings['format'] = $pattern;
         return $this;
     }
 
-    public function locale()
+    /**
+     * @param string $lan
+     * @example zh-CN
+     * @return $this
+     */
+    public function locale($lan = 'zh-CN')
     {
-        $this->pickerSettings['locale'] = 'zh-CN';
+        $this->pickerSettings['locale'] = $lan;
         return $this;
     }
 
@@ -37,7 +47,7 @@ class Datetime extends Input
 <input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->annotation}/>
 <script>$('input[name="{$this->column}"]').datetimepicker({$pickerSettings});</script>
 EOF;
-        if($this->pure) return $content;
+        if(!$this->label) return $content;
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>

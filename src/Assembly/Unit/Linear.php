@@ -83,7 +83,7 @@ class Linear extends Widget
 new ComponentLine("#{$this->column}",{$this->columns},{$this->options}){$execute};
 </script>
 EOF;
-        if($this->pure) return $content;
+        if(!$this->label) return $content;
         return <<<EOF
 <div class="dlp dlp-form-row">
     <label class="dlp-text" for="{$this->column}">{$this->label}</label>

@@ -1347,8 +1347,8 @@ window.ComponentPlane = class {
     PARENT_DOM = null;
 
     constructor(content, options = {
-        w: 0.8,
-        h: 0.8,
+        width: 0.8,
+        height: 0.8,
         top: 'auto',
         left: 'auto',
         f: true,
@@ -1370,8 +1370,8 @@ window.ComponentPlane = class {
         }
 
         this.OPTIONS = Object.assign({
-            w: 0.8,
-            h: 0.8,
+            width: 0.8,
+            height: 0.8,
             top: 'auto',
             left: 'auto',
             f: true,
@@ -1381,15 +1381,15 @@ window.ComponentPlane = class {
         }, options);
         this.FULLSCREEN = false;
 
-        let width = this.OPTIONS.w;
-        if (this.OPTIONS.w.toString().indexOf('px') === -1 && this.OPTIONS.w.toString().indexOf('%') === -1) {
-            width = window.innerWidth * this.OPTIONS.w;
+        let width = this.OPTIONS.width;
+        if (this.OPTIONS.width.toString().indexOf('px') === -1 && this.OPTIONS.width.toString().indexOf('%') === -1) {
+            width = window.innerWidth * this.OPTIONS.width;
             if (width >= (window.innerWidth - 18)) width = window.innerWidth - 18;
             width += 'px';
         }
-        let height = this.OPTIONS.h;
-        if (this.OPTIONS.h.toString().indexOf('px') === -1 && this.OPTIONS.h.toString().indexOf('%') === -1) {
-            height = window.innerHeight * this.OPTIONS.h;
+        let height = this.OPTIONS.height;
+        if (this.OPTIONS.height.toString().indexOf('px') === -1 && this.OPTIONS.height.toString().indexOf('%') === -1) {
+            height = window.innerHeight * this.OPTIONS.height;
             if (height >= (window.innerHeight - 25)) height = window.innerHeight - 25;
             height += 'px';
         }

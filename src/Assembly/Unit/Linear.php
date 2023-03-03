@@ -16,6 +16,7 @@ class Linear extends Widget
         'delete' => true,
         'insert' => true,
     ];
+    protected $style = ['height'=>'270px'];
     protected $data;
     protected $useHiddenInput = true;
 

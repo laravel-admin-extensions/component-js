@@ -23,15 +23,15 @@ class Plane
      *      xhr.method      string  GET,POST,PUT,DELETE
      *      xhr.callback    string  js回调函数
      * @param array $options
-     *      options.w       float|string    0.5,50%,500px
-     *      options.h       float|string    0.5,50%,500px
+     *      options.width   float|string    0.5,50%,500px
+     *      options.height  float|string    0.5,50%,500px
      *      options.top     string          5%,50px
      *      options.left    string          5%,50px,auto
      * @return HeadPosAction
      */
-    public static function headAction(string $title, string $url, array $xhr = [], array $options = [], $bind = ['selector' => 'submit', 'event' => 'null', 'params' => '{}'])
+    public static function headAction(string $title, string $url, array $xhr = [], array $options = [])
     {
-        return new HeadPosAction($title, $url, $xhr, $options, $bind);
+        return new HeadPosAction($title, $url, $xhr, $options);
     }
 
     /**
@@ -43,15 +43,15 @@ class Plane
      *      xhr.method      string  GET,POST,PUT,DELETE
      *      xhr.callback    string  js回调函数
      * @param array $options
-     *      options.w       float|string    0.5,50%,500px
-     *      options.h       float|string    0.5,50%,500px
+     *      options.width   float|string    0.5,50%,500px
+     *      options.height  float|string    0.5,50%,500px
      *      options.top     string          5%,50px
      *      options.left    string          5%,50px,auto
      * @return RowPosAction
      */
-    public static function rowAction(string $title, string $url, array $xhr = [], array $options = [], $bind = ['selector' => 'submit', 'event' => 'null', 'params' => '{}'])
+    public static function rowAction(string $title, string $url, array $xhr = [], array $options = [])
     {
-        return new RowPosAction($title, $url, $xhr, $options, $bind);
+        return new RowPosAction($title, $url, $xhr, $options);
     }
 
     /**

@@ -21,29 +21,39 @@ class HeadPosAction extends RowAction
         $options = json_encode($options);
         $this->document_id = substr(md5($title . $url), 16);
 
-        $binding = '';
-        $bind = array_merge(['selector'=>'submit','event'=>'null','params'=>'{}'],$bind);
-        $bind['params'] = json_encode($bind['params']);
-        if($bind['selector'] == 'submit'){
-            $binding = ".bindRequest('button[type=\"submit\"]','click','request',XHR)";
-        }else{
-            $binding = ".bindEvent('{$bind['selector']}','click',{$bind['event']}, {$bind['params']})";
-        }
+        $this->binding = ".bindRequest('button[type=\"submit\"]','click',XHR)";
+        $this->url = $url;
+        $this->xhr = $xhr;
+        $this->callback = $callback;
+        $this->options = $options;
+    }
 
-        Admin::script(<<<EOF
-            $('#{$this->document_id}').click(function(){
-                let url = '{$url}';
-                let XHR = JSON.parse('{$xhr}');
-                XHR.url = XHR.url !== undefined ? XHR.url : url;
-                XHR.callback = {$callback};
-                new ComponentPlane({url:url},{$options}){$binding}.make();
-            });
-EOF
-        );
+    public function bindEvent($bind)
+    {
+        $bind = array_merge(['selector'=>'','event'=>'click','params'=>'{}'],$bind);
+        $params = json_encode($bind['params']);
+        $this->binding = ".bindEvent('{$bind['selector']}','click',{$bind['event']}, {$params})";
+        return $this;
+    }
+
+    public function withoutBind()
+    {
+        $this->binding = '';
+        return $this;
     }
 
     public function render()
     {
+        Admin::script(<<<EOF
+            $('#{$this->document_id}').click(function(){
+                let url = '{$this->url}';
+                let XHR = JSON.parse('{$this->xhr}');
+                XHR.url = XHR.url !== undefined ? XHR.url : url;
+                XHR.callback = {$this->callback};
+                new ComponentPlane({url:url},{$this->options}){$this->binding}.make();
+            });
+EOF
+        );
         return <<<EOF
 <div class="btn-group pull-right grid-create-btn" style="margin-right: 5px">
     <a href='javascript:void(0);' class="btn btn-sm btn-primary" id="{$this->document_id}" title="{$this->title}">

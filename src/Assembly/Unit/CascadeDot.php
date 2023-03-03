@@ -63,7 +63,7 @@ class CascadeDot extends Widget
     }
 
     public function compile()
-    { 
+    {
         $this->selected = json_encode($this->selected);
         $this->annotate();
         $execute = '';

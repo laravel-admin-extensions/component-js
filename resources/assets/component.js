@@ -991,7 +991,6 @@ window.ComponentLine = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.flatpickr_settings = {};
         this.COLUMNS = columns;
         this.OPTIONS = Object.assign({
             sortable: true,
@@ -1002,7 +1001,6 @@ window.ComponentLine = class {
         this._makeHead = function () {
             let head = '<tr class="dlp-tr">';
             let columns = this.COLUMNS;
-            this.INSERT_ROW_MENUE_DATA = {};
             for (let column in columns) {
                 if (!columns.hasOwnProperty(column)) continue;
                 let val = columns[column];
@@ -1721,7 +1719,7 @@ window.ComponentSortable = class {
 };
 
 window.ComponentCascadeLine = class {
-    constructor(name, select, url, options = {
+    constructor(selector, select, url, options = {
         movable: true,
         exchange: true,
         detail: true,
@@ -1734,7 +1732,6 @@ window.ComponentCascadeLine = class {
             console.error('CascadeLine param select must be array!');
             return;
         }
-        this.name = name;
         this.OPTIONS = Object.assign({
             movable: true,
             exchange: true,
@@ -1744,12 +1741,16 @@ window.ComponentCascadeLine = class {
             delete: true,
             root: true
         }, options);
-        this.DOM = document.getElementById(name);
+        if (selector instanceof HTMLElement) {
+            this.DOM = selector;
+        } else {
+            this.DOM = document.querySelector(selector);
+        }
         this.URL = url;
         this.make().makeSelect(select);
         if (this.OPTIONS.insert) this.makeHeader();
 
-        let search = document.querySelector(`#${this.name} .dot-search`);
+        let search = this.DOM.querySelector(`.dot-search`);
         search.addEventListener('input', () => {
             setTimeout(() => {
                 this.search(search);
@@ -1768,9 +1769,9 @@ window.ComponentCascadeLine = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        this.HEADER_DOM = document.querySelector(`#${this.name} .dot-top`);
-        this.CONTENT_DOM = document.querySelector(`#${this.name} .dot-select`);
-        this.SEARCH_BOX = document.querySelector(`#${this.name} .search-box`);
+        this.HEADER_DOM = this.DOM.querySelector(`.dot-top`);
+        this.CONTENT_DOM = this.DOM.querySelector(`.dot-select`);
+        this.SEARCH_BOX = this.DOM.querySelector(`.search-box`);
         return this;
     }
 

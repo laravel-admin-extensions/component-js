@@ -11,7 +11,7 @@ use DLP\Assembly\Abs\Widget;
 class Dot extends Widget
 {
     protected $select;
-    protected $selected = '[]';
+    protected $selected = [];
     protected $limit = 0;
     protected $useSearch = false;
     protected $useHiddenInput = true;
@@ -28,7 +28,7 @@ class Dot extends Widget
      */
     public function selected(array $data)
     {
-        $this->selected = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $this->selected = $data;
         return $this;
     }
 
@@ -62,6 +62,7 @@ class Dot extends Widget
 
     public function compile()
     {
+        $this->selected = json_encode($this->selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $this->annotate();
         $execute = '';
         if($this->useSearch){

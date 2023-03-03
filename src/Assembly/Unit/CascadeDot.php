@@ -13,7 +13,6 @@ class CascadeDot extends Widget
 {
     protected $select;
     protected $selected = [];
-    protected $style = ['height'=>'270px'];
     protected $limit = 0;
     protected $useSearch = false;
     protected $useHiddenInput = true;
@@ -21,7 +20,7 @@ class CascadeDot extends Widget
     public function __construct(string $column, array $select)
     {
         parent::__construct($column);
-        $this->select = json_encode($select, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $this->select = json_encode($select, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
     }
 
     /**

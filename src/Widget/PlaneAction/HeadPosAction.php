@@ -11,7 +11,7 @@ use Encore\Admin\Admin;
  */
 class HeadPosAction extends RowAction
 {
-    public function __construct($title, $url, $xhr, $options, $bind)
+    public function __construct($title, $url, $xhr, $options)
     {
         parent::__construct();
         $this->title = $title;

@@ -25,10 +25,12 @@ abstract class Widget
 
     /**
      * @param $title
+     * @return $this
      */
     public function label($title)
     {
         $this->label = $title;
+        return $this;
     }
 
     /**

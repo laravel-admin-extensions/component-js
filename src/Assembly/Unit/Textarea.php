@@ -21,7 +21,7 @@ class Textarea extends Input
      */
     public function rows(int $rows)
     {
-        $this->settings[] = "rows={$rows}";
+        $this->enumerate[] = "rows={$rows}";
         return $this;
     }
 
@@ -31,7 +31,7 @@ class Textarea extends Input
      */
     public function cols(int $cols)
     {
-        $this->settings[] = "cols={$cols}";
+        $this->enumerate[] = "cols={$cols}";
         return $this;
     }
 

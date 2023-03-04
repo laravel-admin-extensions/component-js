@@ -34,28 +34,27 @@ EOF;
     {
         $this->information = <<<EOF
 info = document.createElement('div');
-info.style = "text-align: center;height:30px;line-height: 30px;";
+info.className = 'dlp-scroll';
+info.style = 'justify-content: center;display: flex;align-items: center;';
 info.innerText = "{$information}";
 dialog.append(info);
 EOF;
         return $this;
     }
 
-    public function button($title, $style = '', $params = [], $callback = 'function(response){if(response.code!==0){_component.alert(response.message,3);}else{window.location.reload();}}')
+    public function button($title, $params = [], $callback = 'function(response){if(response.code!==0){_component.alert(response.message,3);}else{window.location.reload();}}')
     {
-
+        $params = json_encode($params);
         $this->button .= <<<EOF
 button = document.createElement('button');
 button.type = "button";
 button.className = "dlp-button";
-button.style = '{$style}';
+button.style = 'margin:0 10px;';
 button.innerText = "{$title}";
 operates.append(button);
-XHR = {$this->xhr};
-XHR.callback = {$callback};
-button.addEventListener('click', function () {
-    button.setAttribute('disabled','disabled');
-    _component.request(XHR);
+button.addEventListener('click', function (e) {
+    e.target.setAttribute('disabled','disabled');
+    _component.request({url:XHR.url,method:XHR.method,data:{$params},callback:{$callback}});
 });
 EOF;
         return $this;
@@ -68,11 +67,12 @@ EOF;
 new ComponentPlane(function(){
     let buttoon;
     let info;
-    let XHR;
+    let XHR = {$this->xhr};
     let dialog = document.createElement('div');
     let operates = document.createElement('div');
-    operates.style = 'display:flex;justify-content: center;align-items: center;height:50px';
-    dialog.style = 'padding: 5px;height: 100%;overflow: auto;';
+    operates.style = 'display:flex;justify-content: center;align-items: center;height:40px;';
+    dialog.style = 'padding: 5px;height: 100%;display: grid;grid-template-rows: auto 40px;';
+    dialog.className = 'dlp';
     {$this->information}
     {$this->button}
     dialog.append(operates);

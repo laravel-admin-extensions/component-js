@@ -15,6 +15,11 @@ class Dialog
         $this->xhr = json_encode(array_merge($this->xhr, $xhr));
     }
 
+    /**
+     * @param $selector
+     * @param string $event
+     * @return $this
+     */
     public function trigger($selector, $event = 'click')
     {
         $this->trigger = <<<EOF
@@ -25,11 +30,18 @@ EOF;
         return $this;
     }
 
+    /**
+     * @param array $options
+     */
     public function options(array $options)
     {
         $this->options = array_merge($this->options, $options);
     }
 
+    /**
+     * @param $information
+     * @return $this
+     */
     public function info($information)
     {
         $this->information = <<<EOF
@@ -42,6 +54,12 @@ EOF;
         return $this;
     }
 
+    /**
+     * @param $title
+     * @param array $params
+     * @param string $callback
+     * @return $this
+     */
     public function button($title, $params = [], $callback = 'function(response){if(response.code!==0){_component.alert(response.message,3);}else{window.location.reload();}}')
     {
         $params = json_encode($params);

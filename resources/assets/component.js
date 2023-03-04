@@ -1343,6 +1343,7 @@ window.ComponentPlane = class {
     CONTENT;
     DELAY_BIND = [];
     PARENT_DOM = null;
+    XEvent;
 
     constructor(content, options = {
         width: 0.8,
@@ -1434,6 +1435,7 @@ window.ComponentPlane = class {
                 if (document.getElementById('kvFileinputModal') instanceof HTMLElement) {
                     document.getElementById('kvFileinputModal').remove();
                 }
+                if(typeof this.XEvent === 'function')this.XEvent(this);
             }, false);
             this.DOM.querySelector('.plane-header').append(X);
             window.addEventListener("popstate", () => {
@@ -1535,6 +1537,10 @@ window.ComponentPlane = class {
     bindEvent(selector, trigger = 'click', event = null, params = {}) {
         this.DELAY_BIND.push({selector: selector, trigger: trigger, event: event, params: params});
         return this;
+    }
+
+    bindXEvent(callback = null){
+        this.XEvent = callback;
     }
 
     setParentDom(document) {

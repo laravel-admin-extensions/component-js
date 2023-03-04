@@ -7,7 +7,13 @@ class Dialog
     private $trigger;
     private $button;
     private $information;
-    private $options = ['width'=>'320px','height'=>'93px'];
+    private $options = ['width' => '420px', 'height' => '93px', 'f' => false];
+    private $xhr = ['url' => '', 'method' => 'POST'];
+
+    public function __construct(array $xhr = ['url' => '', 'method' => 'POST'])
+    {
+        $this->xhr = json_encode(array_merge($this->xhr, $xhr));
+    }
 
     public function trigger($selector, $event = 'click')
     {
@@ -21,7 +27,7 @@ EOF;
 
     public function options(array $options)
     {
-        $this->options = array_merge($this->options,$options);
+        $this->options = array_merge($this->options, $options);
     }
 
     public function info($information)
@@ -35,15 +41,22 @@ EOF;
         return $this;
     }
 
-    public function button($title,$style='')
+    public function button($title, $style = '', $params = [], $callback = 'function(response){if(response.code!==0){_component.alert(response.message,3);}else{window.location.reload();}}')
     {
+
         $this->button .= <<<EOF
 button = document.createElement('button');
 button.type = "button";
-button.className = "dlp-btn";
+button.className = "dlp-button";
 button.style = '{$style}';
 button.innerText = "{$title}";
 operates.append(button);
+XHR = {$this->xhr};
+XHR.callback = {$callback};
+button.addEventListener('click', function () {
+    button.setAttribute('disabled','disabled');
+    _component.request(XHR);
+});
 EOF;
         return $this;
     }
@@ -51,11 +64,11 @@ EOF;
     public function compile()
     {
         $this->options = json_encode($this->options);
-        $func = 'dialog'.mt_rand(0,1000000);
         $content = <<<EOF
-function {$func}(){
+new ComponentPlane(function(){
     let buttoon;
     let info;
+    let XHR;
     let dialog = document.createElement('div');
     let operates = document.createElement('div');
     operates.style = 'display:flex;justify-content: center;align-items: center;height:50px';
@@ -64,10 +77,9 @@ function {$func}(){
     {$this->button}
     dialog.append(operates);
     return dialog;
-}
-new ComponentPlane({$func}(),$this->options).make();
+}(),$this->options).make();
 EOF;
-        if(!$this->trigger) return $content;
-        return sprintf($this->trigger,$content);
+        if (!$this->trigger) return $content;
+        return sprintf($this->trigger, $content);
     }
 }

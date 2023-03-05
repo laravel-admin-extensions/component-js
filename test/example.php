@@ -140,7 +140,7 @@ class ExampleController extends AdminController
         /*辅助表单内容组装器 FormPanel 参考以下*/
         $panel = new Wing();
         $panel->display('id')->label('序号');
-        $panel->section('布局',function ($panel){
+        $panel->section(function ($panel){
             $panel->text('title1')->label('标题1');
             $panel->text('title2')->label('标题2');
             $panel->text('title3')->label('标题3');

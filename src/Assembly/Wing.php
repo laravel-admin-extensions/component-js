@@ -220,13 +220,13 @@ EOF;
     }
 
     /**
-     * @param $title
      * @param \Closure $closure
      * @param int $cols
+     * @param string $style
      */
-    public function section($title, \Closure $closure, $cols = 2)
+    public function section(\Closure $closure, $cols = 2, $style = '')
     {
-        $this->layout = new Section($title, $cols);
+        $this->layout = new Section($cols, $style);
         $closure($this);
         $this->documents[] = $this->layout;
         $this->layout = null;

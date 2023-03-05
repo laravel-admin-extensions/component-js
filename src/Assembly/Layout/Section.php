@@ -7,19 +7,19 @@ use DLP\Assembly\Abs\Widget;
 
 class Section
 {
-    private $name;
     private $cols = 2;
+    private $style = '';
     private $documents = [];
 
-    public function __construct($name,$cols)
+    public function __construct($cols, $style)
     {
-        $this->name = $name;
         $this->cols = $cols;
+        $this->style = $style;
     }
 
     public function append($document)
     {
-        if($document instanceof Input || $document instanceof Widget) $this->documents[] = $document;
+        if ($document instanceof Input || $document instanceof Widget) $this->documents[] = $document;
     }
 
     public function __invoke()
@@ -28,7 +28,7 @@ class Section
         foreach ($this->documents as $document) {
             $html .= $document();
         }
-        $cols = str_repeat(" 1fr ",$this->cols);
-        return sprintf("<div class='dlp-section' style='grid-template-columns:{$cols}'>%s</div>",$html);
+        $cols = str_repeat(" 1fr ", $this->cols);
+        return sprintf("<div class='dlp-section' style='grid-template-columns:{$cols};{$this->style}'>%s</div>", $html);
     }
 }

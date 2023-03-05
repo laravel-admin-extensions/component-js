@@ -18,7 +18,7 @@ class Hidden
         $this->value = $value;
     }
 
-    public function compile()
+    public function __invoke()
     {
         return <<<EOF
 <input type="hidden" name="{$this->column}" value="{$this->value}" />

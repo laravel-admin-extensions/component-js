@@ -18,7 +18,7 @@ class FileInput
     private $settings = [];
     private $initialPreview;
     private $attributes;
-    public $fileType = [
+    private $fileType = [
         'image' => '/^(gif|png|jpe?g|svg|webp)$/i',
         'html' => '/^(htm|html)$/i',
         'office' => '/^(docx?|xlsx?|pptx?|pps|potx?)$/i',
@@ -137,7 +137,7 @@ class FileInput
         return json_encode(array_merge($file_input_settings, $this->settings));
     }
 
-    public function compile()
+    public function __invoke()
     {
         $settings = $this->setInit();
         $content = <<<EOF

@@ -10,13 +10,13 @@ use DLP\Assembly\Abs\Widget;
  */
 class Select extends Widget
 {
-    protected $select;
-    protected $selected = '[]';
-    protected $limit = 1;
-    protected $placeholder = '未选择';
-    protected $menuHeight = '150px';
-    protected $useSearch = false;
-    protected $useHiddenInput = true;
+    private $select;
+    private $selected = '[]';
+    private $limit = 1;
+    private $placeholder = '未选择';
+    private $menuHeight = '150px';
+    private $useSearch = false;
+    private $useHiddenInput = true;
 
     public function __construct(string $column, array $select)
     {
@@ -82,7 +82,7 @@ class Select extends Widget
         return $this;
     }
 
-    public function compile()
+    public function __invoke()
     {
         $this->annotate();
         $execute = ".mod({mode:true,placeholder: '{$this->placeholder}',height:'{$this->menuHeight}'})";

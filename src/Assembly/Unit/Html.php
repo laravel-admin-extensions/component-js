@@ -29,7 +29,7 @@ class Html
         return $this;
     }
 
-    public function compile()
+    public function __invoke()
     {
         if(!$this->label) return $this->content;
 

@@ -10,14 +10,14 @@ use DLP\Assembly\Abs\Widget;
  */
 class Linear extends Widget
 {
-    protected $columns;
-    protected $options = [
+    private $columns;
+    private $options = [
         'sortable' => true,
         'delete' => true,
         'insert' => true,
     ];
-    protected $data;
-    protected $useHiddenInput = true;
+    private $data;
+    private $useHiddenInput = true;
 
     public function __construct(string $column)
     {
@@ -65,7 +65,7 @@ class Linear extends Widget
         return $this;
     }
 
-    public function compile()
+    public function __invoke()
     {
         $this->annotate();
         $this->options = json_encode($this->options);

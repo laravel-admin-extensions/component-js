@@ -22,6 +22,7 @@ use DLP\Tool\Assistant;
  */
 class Wing
 {
+    private $layout = [];
     private $form;
     private $documents = [];
 
@@ -173,11 +174,16 @@ EOF;
         return $this;
     }
 
+    public function section($title,\Closure $closure)
+    {
+        $this->layout[] = $closure($this);
+    }
+
     public function compile()
     {
         $html = "";
         foreach ($this->documents as $document) {
-            $html .= $document->compile();
+            $html .= $document();
         }
         if ($this->form) $html = sprintf($this->form, $html);
 

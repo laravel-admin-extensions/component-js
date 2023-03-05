@@ -11,11 +11,11 @@ use DLP\Assembly\Abs\Widget;
  */
 class CascadeDot extends Widget
 {
-    protected $select;
-    protected $selected = [];
-    protected $limit = 0;
-    protected $useSearch = false;
-    protected $useHiddenInput = true;
+    private $select;
+    private $selected = [];
+    private $limit = 0;
+    private $useSearch = false;
+    private $useHiddenInput = true;
 
     public function __construct(string $column, array $select)
     {
@@ -61,7 +61,7 @@ class CascadeDot extends Widget
         return $this;
     }
 
-    public function compile()
+    public function __invoke()
     {
         $this->selected = json_encode($this->selected);
         $this->annotate();

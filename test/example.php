@@ -52,7 +52,7 @@ class ExampleController extends AdminController
          *          alert(response);
          *      }
          */
-        $grid->tools->append(Plane::headAction('新增',  $url . '/create', $url, 'POST'));
+        $grid->tools->append(Plane::headAction('新增', $url . '/create', $url, 'POST'));
 
         /**
          * 弹窗模式:设置列表-行操作方法
@@ -65,10 +65,10 @@ class ExampleController extends AdminController
          *          alert(response);
          *      }
          */
-        $grid->actions(function ($actions)use($url){
+        $grid->actions(function ($actions) use ($url) {
             $actions->disableEdit();
-            $actions->add(Plane::rowAction('编辑',$url . "/{$actions->row->id}/edit",$url . "/{$actions->row->id}"));
-            $actions->add(Plane::rowAction('自定义页',$url . "/{$actions->row->id}/blank"));
+            $actions->add(Plane::rowAction('编辑', $url . "/{$actions->row->id}/edit", $url . "/{$actions->row->id}"));
+            $actions->add(Plane::rowAction('自定义页', $url . "/{$actions->row->id}/blank"));
         });
         return $grid;
     }
@@ -86,7 +86,7 @@ class ExampleController extends AdminController
         $request = Request::capture();
         $data = $request->all();
         try {
-           //TODO
+            //TODO
         } catch (\Exception $e) {
             DB::rollBack();
             return Assistant::result(false, $e->getMessage());
@@ -130,45 +130,50 @@ class ExampleController extends AdminController
             ->columns([
                 'url' => ['name' => '名称', 'type' => 'input'],
                 'type' => ['name' => '分辨率', 'type' => 'select', 'select' => ['1' => '720p', '2' => '1080p'], 'limit' => 1, 'style' => 'width:60px']
-            ])->setStyle(['height'=>'240px'])->compile(),'视频资源');
+            ])->setStyle(['height' => '240px'])->compile(), '视频资源');
         return $form;
     }
 
     public function blank()
     {
-            $title = '<h1>松下紗栄子</h1>';
-            /*辅助表单内容组装器 FormPanel 参考以下*/
-                $panel = new Wing();
-                $panel->display('id')->label('序号');
-                $panel->textarea('description')->label('描述');
-                $panel->select('status',[0=>'开启',1=>'关闭',2=>'删除'])->useSearch(false)->label('状态');
-                $panel->datepicker('time')->label('时间');
-                $panel->html('test','<p>松下紗栄子</p>')->label('自定义html');
-                /*多图上传样例*/
+        $title = '<h1>松下紗栄子</h1>';
+        /*辅助表单内容组装器 FormPanel 参考以下*/
+        $panel = new Wing();
+        $panel->display('id')->label('序号');
+        $panel->section('布局',function ($panel){
+            $panel->text('title1')->label('标题1');
+            $panel->text('title2')->label('标题2');
+            $panel->text('title3')->label('标题3');
+        });
+        $panel->textarea('description')->label('描述');
+        $panel->select('status', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch(false)->label('状态');
+        $panel->datepicker('time')->label('时间');
+        $panel->html('test', '<p>松下紗栄子</p>')->label('自定义html');
+        /*多图上传样例*/
 
-                $images = ['/image1...','/image2...','/image3...'];
-                $panel->fileInput('photo')
-                    ->label('艳照')
-                    ->settings([
-                        'uploadUrl' => 'https://...upload.file.url...',
-                        'uploadExtraData' => [
-                            '_token' => csrf_token(),
-                            'uploadAsync' => true,
-                            /*自定义加传参*/
-                        ],
-                        'deleteUrl' => 'https://...delete.file.url...',
-                        'deleteExtraData' => [
-                            '_token' => csrf_token(),
-                            'uploadAsync' => true,
-                            /*自定义加传参*/
-                        ],
-                        'maxFileCount' => 10,
-                        'maxFileSize' => 800 //单图限制800kb
-                    ])
-                    ->initialPreview(['files' => $images, 'url' => '/image.server...']);
-                $html = $panel->compile();
-            /*弹窗模式 渲染自定义页模板 调用Plane::html*/
-            return $panel->compile();
+        $images = ['/image1...', '/image2...', '/image3...'];
+        $panel->fileInput('photo')
+            ->label('艳照')
+            ->settings([
+                'uploadUrl' => 'https://...upload.file.url...',
+                'uploadExtraData' => [
+                    '_token' => csrf_token(),
+                    'uploadAsync' => true,
+                    /*自定义加传参*/
+                ],
+                'deleteUrl' => 'https://...delete.file.url...',
+                'deleteExtraData' => [
+                    '_token' => csrf_token(),
+                    'uploadAsync' => true,
+                    /*自定义加传参*/
+                ],
+                'maxFileCount' => 10,
+                'maxFileSize' => 800 //单图限制800kb
+            ])
+            ->initialPreview(['files' => $images, 'url' => '/image.server...']);
+        $html = $panel->compile();
+        /*弹窗模式 渲染自定义页模板 调用Plane::html*/
+        return $panel->compile();
     }
 
     private function cascadeExampleData()

@@ -137,11 +137,12 @@
     color: rgba(0,0,0,1);
 }
 .dlp-section{
-    display: flex;
+    display: grid;
     margin: 10px;
     background: #ffffff;
     border-radius: 3px 3px 0 0;
     box-shadow: 0 .1rem 0.5rem rgba(0,0,0,.2)!important;
+    grid-template-columns:1fr 1fr;
 }
 .dlp-scroll{overflow-y: auto;overflow-x: hidden;}
 .dlp-scroll::-webkit-scrollbar{width: 3px;}
@@ -350,7 +351,6 @@
     justify-content:left;
     align-items: baseline;
     margin: 15px 10px;
-    width: 100%;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
     color: #0c0c0c;

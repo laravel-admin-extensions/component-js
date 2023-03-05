@@ -8,11 +8,13 @@ use DLP\Assembly\Abs\Widget;
 class Section
 {
     private $name;
+    private $cols = 2;
     private $documents = [];
 
-    public function __construct($name)
+    public function __construct($name,$cols)
     {
         $this->name = $name;
+        $this->cols = $cols;
     }
 
     public function append($document)
@@ -26,7 +28,7 @@ class Section
         foreach ($this->documents as $document) {
             $html .= $document();
         }
-
-        return sprintf("<div class='dlp-section'>%s</div>",$html);
+        $cols = str_repeat(" 1fr ",$this->cols);
+        return sprintf("<div class='dlp-section' style='grid-template-columns:{$cols}'>%s</div>",$html);
     }
 }

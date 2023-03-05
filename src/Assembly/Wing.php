@@ -33,9 +33,9 @@ class Wing
     public function text(string $column)
     {
         $doc = new Text($column);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -49,9 +49,9 @@ class Wing
     {
         $doc = new Text($column);
         $doc->disabled()->setStyle(['background' => '#e7e7e7']);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -65,9 +65,9 @@ class Wing
     public function hidden(string $column, string $value)
     {
         $doc = new Hidden($column, $value);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -80,9 +80,9 @@ class Wing
     public function textarea(string $column)
     {
         $doc = new Textarea($column);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -97,9 +97,9 @@ class Wing
     {
         $doc = new Dot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '220px']);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -114,9 +114,9 @@ class Wing
     {
         $doc = new CascadeDot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -131,9 +131,9 @@ class Wing
     {
         $doc = new CascadeLine($column, $data);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -148,9 +148,9 @@ class Wing
     {
         $doc = new Select($column, $select);
         $doc->setStyle(['width' => '240px']);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -163,9 +163,9 @@ class Wing
     public function datepicker(string $column)
     {
         $doc = new Datetime($column);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -179,9 +179,9 @@ class Wing
     {
         $doc = new FileInput($column);
         $doc->setStyle([]);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -195,9 +195,9 @@ class Wing
     public function html(string $column, string $content)
     {
         $doc = new Html($column, $content);
-        if($this->layout instanceof Section){
+        if ($this->layout instanceof Section) {
             $this->layout->append($doc);
-        }else {
+        } else {
             $this->documents[] = $doc;
         }
         return $doc;
@@ -209,7 +209,7 @@ class Wing
      */
     public function form(array $attributes = [])
     {
-        $attributes = array_merge(['accept-charset'=>'UTF-8','enctype'=>'multipart/form-data'],$attributes);
+        $attributes = array_merge(['accept-charset' => 'UTF-8', 'enctype' => 'multipart/form-data'], $attributes);
         $attrs = Assistant::arrayKv2String($attributes, '=', ' ');
         $this->form = <<<EOF
 <form class="dlp" {$attrs}>
@@ -219,9 +219,14 @@ EOF;
         return $this;
     }
 
-    public function section($title,\Closure $closure)
+    /**
+     * @param $title
+     * @param \Closure $closure
+     * @param int $cols
+     */
+    public function section($title, \Closure $closure, $cols = 2)
     {
-        $this->layout = new Section($title);
+        $this->layout = new Section($title, $cols);
         $closure($this);
         $this->documents[] = $this->layout;
         $this->layout = null;

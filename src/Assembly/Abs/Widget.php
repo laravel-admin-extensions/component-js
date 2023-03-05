@@ -70,5 +70,5 @@ abstract class Widget
         $this->annotation = "{$attribute} {$enumerate} style=\"{$style}\"";
     }
 
-    abstract public function compile();
+    abstract public function __invoke();
 }

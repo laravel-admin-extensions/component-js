@@ -3,6 +3,7 @@
 namespace DLP\Assembly;
 
 
+use DLP\Assembly\Layout\Section;
 use DLP\Assembly\Unit\CascadeDot;
 use DLP\Assembly\Unit\CascadeLine;
 use DLP\Assembly\Unit\Datetime;
@@ -22,8 +23,8 @@ use DLP\Tool\Assistant;
  */
 class Wing
 {
-    private $layout = [];
     private $form;
+    private $layout;
     private $documents = [];
 
     /**
@@ -32,7 +33,11 @@ class Wing
     public function text(string $column)
     {
         $doc = new Text($column);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -44,7 +49,11 @@ class Wing
     {
         $doc = new Text($column);
         $doc->disabled()->setStyle(['background' => '#e7e7e7']);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -56,7 +65,11 @@ class Wing
     public function hidden(string $column, string $value)
     {
         $doc = new Hidden($column, $value);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -67,7 +80,11 @@ class Wing
     public function textarea(string $column)
     {
         $doc = new Textarea($column);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -80,7 +97,11 @@ class Wing
     {
         $doc = new Dot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '220px']);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -93,7 +114,11 @@ class Wing
     {
         $doc = new CascadeDot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -106,7 +131,11 @@ class Wing
     {
         $doc = new CascadeLine($column, $data);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -119,7 +148,11 @@ class Wing
     {
         $doc = new Select($column, $select);
         $doc->setStyle(['width' => '240px']);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -130,7 +163,11 @@ class Wing
     public function datepicker(string $column)
     {
         $doc = new Datetime($column);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -142,7 +179,11 @@ class Wing
     {
         $doc = new FileInput($column);
         $doc->setStyle([]);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -154,7 +195,11 @@ class Wing
     public function html(string $column, string $content)
     {
         $doc = new Html($column, $content);
-        $this->documents[] = $doc;
+        if($this->layout instanceof Section){
+            $this->layout->append($doc);
+        }else {
+            $this->documents[] = $doc;
+        }
         return $doc;
     }
 
@@ -176,10 +221,13 @@ EOF;
 
     public function section($title,\Closure $closure)
     {
-        $this->layout[] = $closure($this);
+        $this->layout = new Section($title);
+        $closure($this);
+        $this->documents[] = $this->layout;
+        $this->layout = null;
     }
 
-    public function compile()
+    public function __invoke()
     {
         $html = "";
         foreach ($this->documents as $document) {

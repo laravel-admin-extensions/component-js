@@ -20,7 +20,7 @@
 }
 .dlp label{
     display: inline-block!important;
-    margin: 0!important;
+    margin: 0 3px!important;
     font-weight: 700!important;
 }
 .dlp textarea{
@@ -136,7 +136,13 @@
     background-color: #ffffff;
     color: rgba(0,0,0,1);
 }
-
+.dlp-section{
+    display: flex;
+    margin: 10px;
+    background: #ffffff;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 .1rem 0.5rem rgba(0,0,0,.2)!important;
+}
 .dlp-scroll{overflow-y: auto;overflow-x: hidden;}
 .dlp-scroll::-webkit-scrollbar{width: 3px;}
 .dlp-scroll::-webkit-scrollbar-thumb{border-radius: 5px;-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);background: #e1e1e1;}
@@ -344,6 +350,7 @@
     justify-content:left;
     align-items: baseline;
     margin: 15px 10px;
+    width: 100%;
 }
 .dlp-form-row>input,.dlp-form-row>textarea{
     color: #0c0c0c;
@@ -352,8 +359,7 @@
     height: auto!important;
 }
 .dlp-form-row>label{
-    min-width: 7em!important;
-    max-width: 7em!important;
+    width: 10em!important;
     text-align: center!important;
 }
 .dlp-table{

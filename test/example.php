@@ -138,42 +138,46 @@ class ExampleController extends AdminController
     {
         $title = '<h1>松下紗栄子</h1>';
         /*辅助表单内容组装器 FormPanel 参考以下*/
-        $panel = new Wing();
-        $panel->display('id')->label('序号');
-        $panel->section(function ($panel){
-            $panel->text('title1')->label('标题1');
-            $panel->text('title2')->label('标题2');
-            $panel->text('title3')->label('标题3');
+        $W = new Wing();
+        $W->display('id')->label('序号');
+        $W->section('布局',function ($W){
+            $W->text('title1')->label('标题1');
+            $W->text('title2')->label('标题2');
+            $W->text('title3')->label('标题3');
         });
-        $panel->textarea('description')->label('描述');
-        $panel->select('status', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch(false)->label('状态');
-        $panel->datepicker('time')->label('时间');
-        $panel->html('test', '<p>松下紗栄子</p>')->label('自定义html');
-        /*多图上传样例*/
+        $W->textarea('description')->label('描述');
+        $W->select('status', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch(false)->label('状态');
+        $W->datepicker('time')->label('时间');
+        $W->html('test', '<p>松下紗栄子</p>')->label('自定义html');
 
-        $images = ['/image1...', '/image2...', '/image3...'];
-        $panel->fileInput('photo')
-            ->label('艳照')
-            ->settings([
-                'uploadUrl' => 'https://...upload.file.url...',
-                'uploadExtraData' => [
-                    '_token' => csrf_token(),
-                    'uploadAsync' => true,
-                    /*自定义加传参*/
-                ],
-                'deleteUrl' => 'https://...delete.file.url...',
-                'deleteExtraData' => [
-                    '_token' => csrf_token(),
-                    'uploadAsync' => true,
-                    /*自定义加传参*/
-                ],
-                'maxFileCount' => 10,
-                'maxFileSize' => 800 //单图限制800kb
-            ])
-            ->initialPreview(['files' => $images, 'url' => '/image.server...']);
-        $html = $panel->compile();
-        /*弹窗模式 渲染自定义页模板 调用Plane::html*/
-        return $panel->compile();
+        $W->section(function ($W){
+            $W->select('status0', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch(false)->label('状态0');
+            $W->dot('status1', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch(false)->label('状态1');
+
+            /*多图上传样例*/
+            $images = ['/image1...', '/image2...', '/image3...'];
+            $W->fileInput('photo')
+                ->label('艳照')
+                ->settings([
+                    'uploadUrl' => 'https://...upload.file.url...',
+                    'uploadExtraData' => [
+                        '_token' => csrf_token(),
+                        'uploadAsync' => true,
+                        /*自定义加传参*/
+                    ],
+                    'deleteUrl' => 'https://...delete.file.url...',
+                    'deleteExtraData' => [
+                        '_token' => csrf_token(),
+                        'uploadAsync' => true,
+                        /*自定义加传参*/
+                    ],
+                    'maxFileCount' => 10,
+                    'maxFileSize' => 800 //单图限制800kb
+                ])
+                ->initialPreview(['files' => $images, 'url' => '/image.server...']);
+        },2);
+
+        return $W->form()();
     }
 
     private function cascadeExampleData()

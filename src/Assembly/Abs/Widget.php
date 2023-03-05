@@ -9,7 +9,7 @@ use DLP\Tool\Assistant;
  * Class Widget
  * @package DLP\Assembly\Abs
  */
-abstract class Widget
+abstract class Widget extends Component
 {
     protected $column;
     protected $label;

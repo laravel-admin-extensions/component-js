@@ -209,11 +209,11 @@ class Wing
      */
     public function form(array $attributes = [])
     {
-        $attributes = array_merge(['accept-charset' => 'UTF-8', 'enctype' => 'multipart/form-data'], $attributes);
+        $attributes = array_merge(['accept-charset' => 'UTF-8', 'enctype' => 'multipart/form-data','class'=>'"dlp dlp-form"'], $attributes);
         $attrs = Assistant::arrayKv2String($attributes, '=', ' ');
         $this->form = <<<EOF
-<form class="dlp" {$attrs}>
-    <div>%s</div>
+<form {$attrs}>
+    %s
 </form>
 EOF;
         return $this;
@@ -226,6 +226,7 @@ EOF;
      */
     public function section(\Closure $closure, $cols = 2, $style = '')
     {
+        if($this->layout != null)throw new \Exception('layout has already been declared');
         $this->layout = new Section($cols, $style);
         $closure($this);
         $this->documents[] = $this->layout;

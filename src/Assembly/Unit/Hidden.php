@@ -3,11 +3,13 @@
 
 namespace DLP\Assembly\Unit;
 
+use DLP\Assembly\Abs\Component;
+
 /**
  * Class Hidden
  * @package DLP\Assembly\Unit
  */
-class Hidden
+class Hidden extends Component
 {
     private $column;
     private $value;

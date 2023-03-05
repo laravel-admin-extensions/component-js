@@ -3,11 +3,13 @@
 
 namespace DLP\Assembly\Unit;
 
+use DLP\Assembly\Abs\Component;
+
 /**
  * Class Html
  * @package DLP\Assembly\Unit
  */
-class Html
+class Html extends Component
 {
     private $column;
     private $label;

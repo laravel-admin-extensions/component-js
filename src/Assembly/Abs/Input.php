@@ -9,7 +9,7 @@ use DLP\Tool\Assistant;
  * Class Input
  * @package DLP\Assembly\Abs
  */
-abstract class Input
+abstract class Input extends Component
 {
     protected $type = 'text';
     protected $column;

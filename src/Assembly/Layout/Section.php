@@ -2,6 +2,7 @@
 
 namespace DLP\Assembly\Layout;
 
+use DLP\Assembly\Abs\Component;
 use DLP\Assembly\Abs\Input;
 use DLP\Assembly\Abs\Widget;
 
@@ -19,7 +20,7 @@ class Section
 
     public function append($document)
     {
-        if ($document instanceof Input || $document instanceof Widget) $this->documents[] = $document;
+        if ($document instanceof Component) $this->documents[] = $document;
     }
 
     public function __invoke()

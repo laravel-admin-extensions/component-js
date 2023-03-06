@@ -49,7 +49,7 @@ EOF;
         $this->information = <<<EOF
 info = document.createElement('div');
 info.className = 'dlp-scroll';
-info.style = 'justify-content: center;display: flex;align-items: center;color:white;';
+info.style = 'justify-content: center;display: flex;align-items: center;';
 info.innerText = "{$information}";
 dialog.append(info);
 EOF;

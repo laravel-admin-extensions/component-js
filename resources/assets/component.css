@@ -417,7 +417,7 @@
     vertical-align: bottom;
 }
 .plane-body,.dot-cascade-panel>.plane-body{
-    background-color: #404040;
+    background-color: #f4f4f4;
     padding: 0;
     overflow-y: auto;
     border-radius: 0 0 3px 3px;

@@ -23,9 +23,11 @@ class Dialog
     public function trigger($selector, $event = 'click')
     {
         $this->trigger = <<<EOF
-document.querySelector('$selector').addEventListener('$event', function () {
-    %s
-});
+if(document.querySelector('$selector')){
+    document.querySelector('$selector').addEventListener('$event', function () {
+        %s
+    });
+}
 EOF;
         return $this;
     }
@@ -47,7 +49,7 @@ EOF;
         $this->information = <<<EOF
 info = document.createElement('div');
 info.className = 'dlp-scroll';
-info.style = 'justify-content: center;display: flex;align-items: center;';
+info.style = 'justify-content: center;display: flex;align-items: center;color:white;';
 info.innerText = "{$information}";
 dialog.append(info);
 EOF;
@@ -66,8 +68,8 @@ EOF;
         $this->button .= <<<EOF
 button = document.createElement('button');
 button.type = "button";
-button.className = "dlp-button";
-button.style = 'margin:0 10px;';
+button.className = "dlp dlp-button";
+button.style = 'margin:0 20px;';
 button.innerText = "{$title}";
 operates.append(button);
 button.addEventListener('click', function (e) {

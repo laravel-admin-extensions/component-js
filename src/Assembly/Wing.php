@@ -3,6 +3,7 @@
 namespace DLP\Assembly;
 
 
+use DLP\Assembly\Abs\Component;
 use DLP\Assembly\Layout\Section;
 use DLP\Assembly\Unit\CascadeDot;
 use DLP\Assembly\Unit\CascadeLine;
@@ -24,7 +25,7 @@ use DLP\Tool\Assistant;
 class Wing
 {
     private $form;
-    private $layout;
+    private $section;
     private $documents = [];
 
     /**
@@ -33,11 +34,7 @@ class Wing
     public function text(string $column)
     {
         $doc = new Text($column);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -49,11 +46,7 @@ class Wing
     {
         $doc = new Text($column);
         $doc->disabled()->setStyle(['background' => '#e7e7e7']);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -65,11 +58,7 @@ class Wing
     public function hidden(string $column, string $value)
     {
         $doc = new Hidden($column, $value);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -80,11 +69,7 @@ class Wing
     public function textarea(string $column)
     {
         $doc = new Textarea($column);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -97,11 +82,7 @@ class Wing
     {
         $doc = new Dot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '220px']);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -114,11 +95,7 @@ class Wing
     {
         $doc = new CascadeDot($column, $select);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -131,11 +108,7 @@ class Wing
     {
         $doc = new CascadeLine($column, $data);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -148,11 +121,7 @@ class Wing
     {
         $doc = new Select($column, $select);
         $doc->setStyle(['width' => '240px']);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -163,11 +132,7 @@ class Wing
     public function datepicker(string $column)
     {
         $doc = new Datetime($column);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -179,11 +144,7 @@ class Wing
     {
         $doc = new FileInput($column);
         $doc->setStyle([]);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -195,11 +156,7 @@ class Wing
     public function html(string $column, string $content)
     {
         $doc = new Html($column, $content);
-        if ($this->layout instanceof Section) {
-            $this->layout->append($doc);
-        } else {
-            $this->documents[] = $doc;
-        }
+        $this->layout($doc);
         return $doc;
     }
 
@@ -209,7 +166,7 @@ class Wing
      */
     public function form(array $attributes = [])
     {
-        $attributes = array_merge(['accept-charset' => 'UTF-8', 'enctype' => 'multipart/form-data','class'=>'"dlp dlp-form"'], $attributes);
+        $attributes = array_merge(['accept-charset' => 'UTF-8', 'enctype' => 'multipart/form-data', 'class' => '"dlp dlp-form"'], $attributes);
         $attrs = Assistant::arrayKv2String($attributes, '=', ' ');
         $this->form = <<<EOF
 <form {$attrs}>
@@ -226,11 +183,23 @@ EOF;
      */
     public function section(\Closure $closure, $cols = 2, $style = '')
     {
-        if($this->layout != null)throw new \Exception('layout has already been declared');
-        $this->layout = new Section($cols, $style);
+        if ($this->section != null) throw new \Exception('section has already been declared');
+        $this->section = new Section($cols, $style);
         $closure($this);
-        $this->documents[] = $this->layout;
-        $this->layout = null;
+        $this->documents[] = $this->section;
+        $this->section = null;
+    }
+
+    /**
+     * @param Component $doc
+     */
+    private function layout(Component $doc)
+    {
+        if ($this->section instanceof Section) {
+            $this->section->append($doc);
+        } else {
+            $this->documents[] = $doc;
+        }
     }
 
     public function __invoke()

@@ -62,7 +62,7 @@ EOF;
      * @param string $callback
      * @return $this
      */
-    public function button($title, $params = [], $callback = 'function(response){if(response.code!==0){_component.alert(response.message,3);}else{window.location.reload();}}')
+    public function button($title, $params = [], $callback = 'function(response){if(response.code!==0){_component.alert(response.message,3,function(){window.location.reload();});}else{window.location.reload();}}')
     {
         $params = json_encode($params);
         $this->button .= <<<EOF

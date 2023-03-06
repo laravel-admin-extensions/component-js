@@ -577,7 +577,6 @@
     width: 34px;
     top: 35px;
 }
-
 @keyframes dlpSpin {
     0%, 15% {
         transform: rotate(0);

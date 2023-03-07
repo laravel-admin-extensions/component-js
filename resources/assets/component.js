@@ -981,7 +981,8 @@ window.ComponentLine = class {
     constructor(selector, columns, options = {
         sortable: true,
         delete: true,
-        insert: true
+        insert: true,
+        isomer:false
     }) {
         if (selector instanceof HTMLElement) {
             this.DOM = selector;
@@ -995,7 +996,8 @@ window.ComponentLine = class {
         this.OPTIONS = Object.assign({
             sortable: true,
             delete: true,
-            insert: true
+            insert: true,
+            isomer:false
         }, options);
 
         this._makeHead = function () {
@@ -1065,7 +1067,6 @@ window.ComponentLine = class {
                 let v = values[name];
                 let td = document.createElement('td');
                 if (this.rowH) td.style.height = this.rowH;
-                if (column.type === 'select' && Array.isArray(values[name]) === false) v = [parseInt(v)];
 
                 this._makeTd(td, name, column, v);
                 record[name] = v;
@@ -1076,6 +1077,14 @@ window.ComponentLine = class {
             this._operateButton(td);
             tr.appendChild(td);
             this.TBODY_DOM.appendChild(tr);
+            if(this.OPTIONS.isomer !== false){
+                for (let name in values){
+                    if(!values.hasOwnProperty(name))continue;
+                    if(record[name] === undefined){
+                        record[name] = values[name];
+                    }
+                }
+            }
             return record;
         };
 

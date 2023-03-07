@@ -15,6 +15,7 @@ class Linear extends Widget
         'sortable' => true,
         'delete' => true,
         'insert' => true,
+        'isomer' => false
     ];
     private $data;
     private $useHiddenInput = true;
@@ -37,7 +38,7 @@ class Linear extends Widget
 
     /**
      * @param $options
-     * @example ['sortable' => true,'delete' => true,'insert' => true,]
+     * @example ['sortable' => true,'delete' => true,'insert' => true,'isomer' => false]
      * @return $this
      */
     public function options(array $options)

@@ -295,6 +295,9 @@ window.ComponentDot = class {
             e.preventDefault();
         });
 
+        selected = selected.map(function(elem) {
+            return elem.toString();
+        });
         selected = selected.filter(d => {
             if (select[d] === undefined) return false;
             return true;
@@ -315,7 +318,7 @@ window.ComponentDot = class {
             clone.addEventListener('click', () => this._tagCancel(clone), false);
             this.SELECTED_DOM.appendChild(clone);
             element.remove();
-            this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.insert);
+            this._tagCal(element.getAttribute('data-id'), this.MODE.insert);
             this.SELECTED_DOM.scrollTop = this.SELECTED_DOM.scrollHeight;
         };
 
@@ -324,7 +327,7 @@ window.ComponentDot = class {
             clone.addEventListener('click', () => this._tagSelect(clone), false);
             this.CONTENT_DOM.appendChild(clone);
             element.remove();
-            this._tagCal(parseInt(element.getAttribute('data-id')), this.MODE.delete);
+            this._tagCal(element.getAttribute('data-id'), this.MODE.delete);
         };
 
         this._tagCal = function (id, operate) {
@@ -432,7 +435,7 @@ window.ComponentDot = class {
             setTimeout(() => {
                 let queue = [];
                 this.CONTENT_DOM.childNodes.forEach((D) => {
-                    let id = parseInt(D.getAttribute('data-id'));
+                    let id = D.getAttribute('data-id');
                     if (this.selected_data.indexOf(id) !== -1) {
                         queue.push(D);
                     }
@@ -474,9 +477,9 @@ window.ComponentDot = class {
 
     useHiddenInput(name) {
         this.DOM.insertAdjacentHTML('beforeend', `<input name="${name}[select]" value='[]' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`)
-        this.selectInputDOM = document.querySelector(`input[name='${name}[select]']`);
-        this.insertInputDOM = document.querySelector(`input[name='${name}[insert]']`);
-        this.deleteInputDOM = document.querySelector(`input[name='${name}[delete]']`);
+        this.selectInputDOM = this.DOM.querySelector(`input[name='${name}[select]']`);
+        this.insertInputDOM = this.DOM.querySelector(`input[name='${name}[insert]']`);
+        this.deleteInputDOM = this.DOM.querySelector(`input[name='${name}[delete]']`);
         return this;
     }
 
@@ -506,7 +509,6 @@ window.ComponentDot = class {
                 option.setAttribute('data-id', id);
                 option.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text" data-v="${id}">${select[id]}</div><div></div>`);
                 option.addEventListener('click', () => {
-                    id = parseInt(id);
                     if (this.select_data.indexOf(id) !== -1) {
                         /*cancel*/
                         this._tagCal(id, this.MODE.delete);
@@ -670,7 +672,7 @@ window.ComponentCascadeDot = class {
         };
 
         this._select = function (element, stack) {
-            let id = parseInt(element.getAttribute('data-id'));
+            let id = element.getAttribute('data-id');
             let k = parseInt(element.getAttribute('data-k'));
             let data = this.dimensional_data[stack][k];
             let currentStackDocuments = this.STACKS[stack].childNodes;

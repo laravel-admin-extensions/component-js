@@ -220,13 +220,14 @@
 }
 .dlp-dot-menu>.menu-list{
     position: absolute;
-    z-index: 10000;
+    z-index: 1000000;
     display: none;
     height: unset;
     flex-wrap: wrap;
     padding: 0;
     border-radius: 3px;
-    background: #ededed;
+    background: #f7f7f7;
+    border: 1px solid #ccc;
     width: 100%;
 }
 .dlp-dot-menu>.menu-list .dot-search{height: 24px}
@@ -235,18 +236,19 @@
     display: flex;
     margin: 0 2px 0 2px;
     align-items: center;
-    height: 22px;
+    height: 28px;
     cursor: pointer;
     border-bottom: 1px solid #d9d9d9;
 }
 .dlp-dot-menu>.menu-list .option>div:first-child{width: 100%;}
 .dlp-dot-menu>.menu-list .option>div:last-child{
-    width: 14px;
+    margin-right: 4px;
+    width: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.dlp-dot-menu>.menu-list .option:hover,.dlp-dot-menu>.menu-list .option-active{background: #dbdbdb}
+.dlp-dot-menu>.menu-list .option:hover,.dlp-dot-menu>.menu-list .option-active{background: rgb(0 0 0 / 8%)}
 .dlp-dot-menu .search-box{width: 100%;height: 26px;padding: 2px}
 .dlp-dot-menu .search-box>input{
     border: 1px solid #bdbdbd;

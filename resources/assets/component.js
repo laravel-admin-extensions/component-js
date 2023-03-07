@@ -497,7 +497,6 @@ window.ComponentDot = class {
             list.className = 'list dlp-scroll';
             list.style.maxHeight = this._modSettings.height;
             let check = _component.check;
-            check = check.replace(`width="16" height="16"`, `width="12" height="12"`);
             this.id_line_hash = [];
             let line = 0;
             for (let id in select) {

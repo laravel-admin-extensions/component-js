@@ -4,6 +4,9 @@
 namespace DLP\Assembly\Unit;
 
 use DLP\Assembly\Abs\Widget;
+use DLP\Assembly\Layout\Swing;
+use DLP\Assembly\Wing;
+
 /**
  * Class Select
  * @package DLP\Assembly\Unit
@@ -17,6 +20,8 @@ class Select extends Widget
     private $menuHeight = '150px';
     private $useSearch = false;
     private $useHiddenInput = true;
+    private Wing $wing;
+    private $swing = [];
 
     public function __construct(string $column, array $select)
     {
@@ -79,6 +84,21 @@ class Select extends Widget
     public function withoutHiddenInput()
     {
         $this->useHiddenInput = false;
+        return $this;
+    }
+
+    public function setWing(Wing $wing)
+    {
+        $this->wing = $wing;
+    }
+
+    public function when($condition,\Closure $closure)
+    {
+        if(!is_array($condition)){
+            $condition = [(int)$condition];
+        }
+        $condition = json_encode($condition);
+        $this->wing->swing(new Swing($this->column),$closure);
         return $this;
     }
 

@@ -1,22 +1,20 @@
 <?php
 
+
 namespace DLP\Assembly\Layout;
 
-use DLP\Assembly\Abs\Component;
-use DLP\Assembly\Abs\Input;
-use DLP\Assembly\Abs\Layout;
-use DLP\Assembly\Abs\Widget;
 
-class Section implements Layout
+use DLP\Assembly\Abs\Component;
+use DLP\Assembly\Abs\Layout;
+
+class Swing implements Layout
 {
-    private $cols = 2;
-    private $style = '';
+    private $column;
     private $documents = [];
 
-    public function __construct($cols, $style)
+    public function __construct($column)
     {
-        $this->cols = $cols;
-        $this->style = $style;
+        $this->column = $column;
     }
 
     public function append($document)
@@ -30,7 +28,7 @@ class Section implements Layout
         foreach ($this->documents as $document) {
             $html .= $document();
         }
-        $cols = str_repeat(" 1fr ", $this->cols);
-        return sprintf("<div class='dlp-section' style='grid-template-columns:{$cols};{$this->style}'>%s</div>", $html);
+
+        return sprintf("<div id='dlp-swing-{$this->column}'>%s</div>", $html);
     }
 }

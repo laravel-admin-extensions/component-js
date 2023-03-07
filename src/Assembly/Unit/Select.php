@@ -95,10 +95,12 @@ class Select extends Widget
     public function when($condition,\Closure $closure)
     {
         if(!is_array($condition)){
-            $condition = [(int)$condition];
+            $condition = [$condition];
         }
-        $condition = json_encode($condition);
-        $this->wing->swing(new Swing($this->column),$closure);
+        $condition = join('.',$condition);
+        $swing = new Swing($this->column);
+        $this->wing->swing($swing,$closure);
+        $this->swing[$condition] = $swing();
         return $this;
     }
 
@@ -112,12 +114,25 @@ class Select extends Widget
         if($this->useHiddenInput){
             $execute .= ".useHiddenInput('{$this->column}')";
         }
+        if(!empty($this->swing)){
+            $swing = json_encode($this->swing);
+            $execute .= <<<EOF
+.trigger(function (select) {
+    let swing = {$swing};
+    if(swing[select.join('.')] !== undefined){
+        let aim = document.querySelector('#{$this->column}');
+        if(aim.parentNode.classList.contains("dlp-form-row")) aim = aim.parentNode;
+        let fragment = document.createRange().createContextualFragment(swing[select.join('.')]);
+        if(document.querySelector('#dlp-swing-{$this->column}'))document.querySelector('#dlp-swing-{$this->column}').remove();
+        aim.parentNode.insertBefore(fragment, aim.nextSibling);
+    }
+})
+EOF;
+        }
         $execute .= '.make()';
         $content = <<<EOF
 <div id="{$this->column}" {$this->annotation}></div>
-<script>
-new ComponentDot("#{$this->column}",{$this->select},{$this->selected},{$this->limit}){$execute};
-</script>
+<script>new ComponentDot("#{$this->column}",{$this->select},{$this->selected},{$this->limit}){$execute};</script>
 EOF;
         if(!$this->label) return $content;
 

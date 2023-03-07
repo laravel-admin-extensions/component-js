@@ -204,7 +204,6 @@ class Wing implements Layout
         $prevNode = $this->node;
         $this->node = $swing;
         $closure($this);
-        $prevNode->append($this->node);
         $this->node = $prevNode;
     }
 

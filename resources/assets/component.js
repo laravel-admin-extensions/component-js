@@ -1488,6 +1488,11 @@ window.ComponentPlane = class {
                 }
             }
             if (flag) return;
+            if(typeof xhr.data === 'object' && Object.keys(xhr.data).length !== 0){
+                for (let k in xhr.data){
+                    if(xhr.data.hasOwnProperty(k)) formdata.append(k,xhr.data[k]);
+                }
+            }
             element.setAttribute('disabled', 'disabled');
             element.innerText = '提交中...';
             _component.request({

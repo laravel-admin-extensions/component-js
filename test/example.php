@@ -130,7 +130,7 @@ class ExampleController extends AdminController
             ->columns([
                 'url' => ['name' => '名称', 'type' => 'input'],
                 'type' => ['name' => '分辨率', 'type' => 'select', 'select' => ['1' => '720p', '2' => '1080p'], 'limit' => 1, 'style' => 'width:60px']
-            ])->setStyle(['height' => '240px'])->compile(), '视频资源');
+            ])->load([])->setStyle(['height' => '240px'])(), '视频资源');
         return $form;
     }
 

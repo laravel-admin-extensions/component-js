@@ -671,17 +671,16 @@ window.ComponentCascadeDot = class {
         };
 
         this._select = function (element, stack) {
-            let id = element.getAttribute('data-id');
             let k = parseInt(element.getAttribute('data-k'));
             let data = this.dimensional_data[stack][k];
             let currentStackDocuments = this.STACKS[stack].childNodes;
             let parentNode = data.parentNodes[data.parentNodes.length - 1];
             if (data.checked === true) {
                 data.checked = false;
-                this._tagCal(id, this.MODE.delete);
+                this._tagCal(data.key, this.MODE.delete);
                 if (data.nodes === null) element.querySelector('i.right').innerHTML = '';
                 for (let D of this.SELECTED_DOM.childNodes) {
-                    if (parseInt(D.getAttribute('data-id')) === id) {
+                    if (parseInt(D.getAttribute('data-id')) === data.key) {
                         D.remove();
                         break;
                     }
@@ -699,7 +698,7 @@ window.ComponentCascadeDot = class {
                         this.SELECTED_DOM.firstChild.click();
                     }
                     data.checked = true;
-                    this._tagCal(id, this.MODE.insert);
+                    this._tagCal(data.key, this.MODE.insert);
                     element.classList.remove('dlp-label-silence');
                     element.querySelector('i.right').insertAdjacentHTML('afterbegin', _component.check);
                     this._selectToChildren(stack + 1, data.nodes);

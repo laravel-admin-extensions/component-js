@@ -21,20 +21,10 @@ class Linear extends Widget
     private $data;
     private $useHiddenInput = true;
 
-    public function __construct(string $column)
+    public function __construct(string $column,array $columnSetting)
     {
         parent::__construct($column);
-
-    }
-
-    /**
-     * @param array $columns
-     * @return $this
-     */
-    public function columns(array $columns)
-    {
-        $this->columns = json_encode($columns, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_FORCE_OBJECT);
-        return $this;
+        $this->columns = json_encode($columnSetting, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_FORCE_OBJECT);
     }
 
     /**

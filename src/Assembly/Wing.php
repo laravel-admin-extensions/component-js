@@ -14,6 +14,7 @@ use DLP\Assembly\Unit\FileInput;
 use DLP\Assembly\Unit\Hidden;
 use DLP\Assembly\Unit\Html;
 use DLP\Assembly\Unit\Input;
+use DLP\Assembly\Unit\Linear;
 use DLP\Assembly\Unit\Select;
 use DLP\Assembly\Unit\Dot;
 use DLP\Assembly\Unit\Text;
@@ -84,45 +85,6 @@ class Wing implements Layout
     /**
      * @param string $column
      * @param array $select
-     * @return Dot
-     */
-    public function dot(string $column, array $select)
-    {
-        $doc = new Dot($column, $select);
-        $doc->setStyle(['width' => '100%', 'height' => '220px']);
-        $this->node->append($doc);
-        return $doc;
-    }
-
-    /**
-     * @param string $column
-     * @param array $select
-     * @return Dot
-     */
-    public function cascadeDot(string $column, array $select)
-    {
-        $doc = new CascadeDot($column, $select);
-        $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        $this->node->append($doc);
-        return $doc;
-    }
-
-    /**
-     * @param string $column
-     * @param array $data
-     * @return CascadeLine
-     */
-    public function cascadeLine(string $column, array $data)
-    {
-        $doc = new CascadeLine($column, $data);
-        $doc->setStyle(['width' => '100%', 'height' => '240px']);
-        $this->node->append($doc);
-        return $doc;
-    }
-
-    /**
-     * @param string $column
-     * @param array $select
      * @return Select
      */
     public function select(string $column, array $select)
@@ -165,6 +127,58 @@ class Wing implements Layout
     public function html(string $column, string $content)
     {
         $doc = new Html($column, $content);
+        $this->node->append($doc);
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param array $select
+     * @return Dot
+     */
+    public function dot(string $column, array $select)
+    {
+        $doc = new Dot($column, $select);
+        $doc->setStyle(['width' => '100%', 'height' => '220px']);
+        $this->node->append($doc);
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param array $select
+     * @return Dot
+     */
+    public function cascadeDot(string $column, array $select)
+    {
+        $doc = new CascadeDot($column, $select);
+        $doc->setStyle(['width' => '100%', 'height' => '240px']);
+        $this->node->append($doc);
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param array $data
+     * @return CascadeLine
+     */
+    public function cascadeLine(string $column, array $data)
+    {
+        $doc = new CascadeLine($column, $data);
+        $doc->setStyle(['width' => '100%', 'height' => '240px']);
+        $this->node->append($doc);
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param array $columnSetting
+     * @return Linear
+     */
+    public function linear(string $column, array $columnSetting)
+    {
+        $doc = new Linear($column, $columnSetting);
+        $doc->setStyle(['width' => '100%', 'height' => '240px']);
         $this->node->append($doc);
         return $doc;
     }

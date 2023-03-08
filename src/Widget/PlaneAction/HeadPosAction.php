@@ -19,7 +19,7 @@ class HeadPosAction extends RowAction
         unset($xhr['callback']);
         $xhr = json_encode($xhr);
         $options = json_encode($options);
-        $this->document_id = substr(md5($title . $url), 16);
+        $this->document_id = "button_".substr(md5($this->title.microtime().mt_rand(0,10000)),16);
 
         $this->binding = ".bindRequest('button[type=\"submit\"]','click',XHR)";
         $this->url = $url;
@@ -30,7 +30,7 @@ class HeadPosAction extends RowAction
 
     public function bindEvent($bind)
     {
-        $bind = array_merge(['selector'=>'','event'=>'click','params'=>'{}'],$bind);
+        $bind = array_merge(['selector'=>'','event'=>'click','params'=>[]],$bind);
         $params = json_encode($bind['params']);
         $this->binding = ".bindEvent('{$bind['selector']}','click',{$bind['event']}, {$params})";
         return $this;

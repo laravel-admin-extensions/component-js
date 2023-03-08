@@ -16,6 +16,23 @@ class Dialog
     }
 
     /**
+     * @param $selector
+     * @param string $event
+     * @return $this
+     */
+    public function trigger($selector, $event = 'click')
+    {
+        $this->trigger = <<<EOF
+if(document.querySelector('$selector')){
+    document.querySelector('$selector').addEventListener('$event', function () {
+        %s
+    });
+}
+EOF;
+        return $this;
+    }
+
+    /**
      * @param array $options
      */
     public function options(array $options)

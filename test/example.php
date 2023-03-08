@@ -124,11 +124,21 @@ class ExampleController extends AdminController
     protected function form($id)
     {
         $form = new Form(new Model());
-        $form->html((new Linear('source'))
-            ->columns([
-                'url' => ['name' => '名称', 'type' => 'input'],
-                'type' => ['name' => '分辨率', 'type' => 'select', 'select' => ['1' => '720p', '2' => '1080p'], 'limit' => 1, 'style' => 'width:60px']
-            ])->load([])->setStyle(['height' => '240px'])(), '视频资源');
+        $form->html((new Linear('source',
+            [
+                'id' => ['name' => 'ID', 'type' => 'text'],
+                'title' => ['name' => '标题', 'type' => 'input'],
+                'url' => ['name' => '图片', 'type' => 'image','insert_type'=>'hidden'],
+                'type' => ['name' => '类型', 'type' => 'select', 'select' => ['1' => '开启', '2' => '关闭'], 'limit' => 1, 'style' => 'width:60px'],
+                'time' => ['name' => '时间', 'type'=>'datetime']
+            ]))
+            ->load([
+                ["id"=>1,"title" => "ごめんなさい、もう別れたいの…別れを拒む彼氏と結んだ《愛人》と言う名の従順契約 美乃すずめ","url" => "https://img.9618599.com/resources/javdb.com/6180fad2d93894236f287bb2/small_cover.jpg", "type" => 1,"time" => "2021-05-14 00:00:00"],
+                ["id"=>2,"title" => "母姉W相姦 木下あずみ 沖田杏梨","url" => "https://img.9618599.com/resources//d41d8cd98f00b204e9800998ecf8427e/1eeef553b3a975f5.jpg","type" => 1, "time" => "2021-05-14 00:00:00",],
+                ["id"=>3,"title" => "ヌードモデルNTR監督『ながえ』作品！！×『新作』寝取られドラマ！！武藤あやか","url" => "https://img.9618599.com/resources//d41d8cd98f00b204e9800998ecf8427e/07737929ec75781e.jpeg","type" => 2, "time" => "2021-12-14 13:24:46"],
+                ["id"=>4,"title" => "妻晒し 表の顔は貞淑妻、裏の顔は変態妻の公開記録―。 木下凛々子", "url" => "https://img.9618599.com/resources//d41d8cd98f00b204e9800998ecf8427e/b1a3cffd40eca68c.jpg",  "type" => 1, "time" => "2021-12-14 13:24:46"],
+                ["id"=>5,"title" => "担任教師に3年分の妄想・愛・性欲をぶち撒けた卒業式前夜 miru （ブルーレイディスク）","url" => "https://img.9618599.com/resources/javdb.com/61e1171d16a76b11f7375cde/small_cover.jpg", "type" => 2, "time" => "2021-12-14 13:24:46"]])
+            ->setStyle(['height' => '240px'])(), '列表组件');
         return $form;
     }
 

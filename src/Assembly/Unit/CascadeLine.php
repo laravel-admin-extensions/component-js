@@ -12,7 +12,6 @@ use DLP\Assembly\Abs\Widget;
 class CascadeLine extends Widget
 {
     private $data;
-    private $limit = 0;
     private $useSearch = false;
     private $useHiddenInput = true;
     private $url;

@@ -18,6 +18,7 @@ class Select extends Widget
     private $limit = 1;
     private $placeholder = '未选择';
     private $menuHeight = '150px';
+    private $direction = 'down';
     private $useSearch = false;
     private $useHiddenInput = true;
     private Wing $wing;
@@ -70,6 +71,16 @@ class Select extends Widget
     }
 
     /**
+     * @param string $direction   up | down | middle
+     * @return $this
+     */
+    public function direction($direction)
+    {
+        $this->direction = $direction;
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function useSearch()
@@ -115,7 +126,7 @@ class Select extends Widget
     public function __invoke()
     {
         $this->annotate();
-        $execute = ".mod({mode:true,placeholder: '{$this->placeholder}',height:'{$this->menuHeight}'})";
+        $execute = ".mod({mode:true,placeholder: '{$this->placeholder}',height:'{$this->menuHeight}',direction:'{$this->direction}'})";
         if($this->useSearch){
             $execute .= '.useSearch()';
         }

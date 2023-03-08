@@ -451,41 +451,9 @@ window.ComponentDot = class {
                 }, 500);
             });
         };
-        return this;
-    }
 
-    mod(settings = {mode: false, placeholder: '未选择', height: '150px'}) {
-        this._modSettings = Object.assign({
-            mode: false,
-            placeholder: '未选择',
-            height: '150px',
-            useSearch: true
-        }, settings);
-        return this;
-    }
-
-    useSearch() {
-        this._useSearchMod = true;
-        return this;
-    }
-
-    trigger(f = function () {
-    }) {
-        this._triggerEvent = f;
-        return this;
-    }
-
-    useHiddenInput(name) {
-        this.DOM.insertAdjacentHTML('beforeend', `<input name="${name}[select]" value='[]' type="hidden"><input name="${name}[insert]" value="[]" type="hidden"><input name="${name}[delete]" value="[]" type="hidden">`)
-        this.selectInputDOM = this.DOM.querySelector(`input[name='${name}[select]']`);
-        this.insertInputDOM = this.DOM.querySelector(`input[name='${name}[insert]']`);
-        this.deleteInputDOM = this.DOM.querySelector(`input[name='${name}[delete]']`);
-        return this;
-    }
-
-    make() {
-        let select = this.select;
-        if (this._modSettings.mode === true) {
+        this._menuMaker = function () {
+            let select = this.select;
             let menu = document.createElement('div');
             menu.className = 'dlp-dot-menu';
             let menu_select = document.createElement('div');
@@ -542,6 +510,12 @@ window.ComponentDot = class {
             menu.append(menu_list);
             menu.addEventListener('click', () => {
                 menu_list.style.display = 'flex';
+                if(this._modSettings.direction === 'up'){
+                    menu_list.style.top = `-${menu_list.clientHeight+2.5}px`;
+                    menu_list.style.flexDirection = 'column-reverse';
+                }else if(this._modSettings.direction === 'middle'){
+                    menu_list.style.top = `-${menu_list.clientHeight / 2}px`;
+                }
             });
             menu.addEventListener('mouseleave', () => {
                 menu_list.style.display = 'none';
@@ -554,7 +528,46 @@ window.ComponentDot = class {
             this.DOM.append(menu);
             this.SELECTED_DOM = this.DOM.querySelector(`.dlp-dot-menu-select`).firstElementChild;
             this.CONTENT_DOM = this.DOM.querySelector(`.list`);
+        };
+
+        return this;
+    }
+
+    mod(settings = {mode: false, placeholder: '未选择', height: '150px'}) {
+        this._modSettings = Object.assign({
+            mode: false,
+            placeholder: '未选择',
+            height: '150px',
+            useSearch: true,
+            direction:'down'
+        }, settings);
+        return this;
+    }
+
+    useSearch() {
+        this._useSearchMod = true;
+        return this;
+    }
+
+    trigger(f = function () {
+    }) {
+        this._triggerEvent = f;
+        return this;
+    }
+
+    useHiddenInput(name) {
+        this.DOM.insertAdjacentHTML('beforeend', `<input name="${name}[select]" value="[]" type="hidden" /><input name="${name}[insert]" value="[]" type="hidden" /><input name="${name}[delete]" value="[]" type="hidden" />`);
+        this.selectInputDOM = this.DOM.querySelector(`input[name='${name}[select]']`);
+        this.insertInputDOM = this.DOM.querySelector(`input[name='${name}[insert]']`);
+        this.deleteInputDOM = this.DOM.querySelector(`input[name='${name}[delete]']`);
+        return this;
+    }
+
+    make() {
+        if (this._modSettings.mode === true) {
+           this._menuMaker();
         } else {
+            let select = this.select;
             let select_dom = '';
             for (let i in select) {
                 if (!select.hasOwnProperty(i)) continue;

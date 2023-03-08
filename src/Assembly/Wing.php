@@ -53,7 +53,7 @@ class Wing implements Layout
     public function display(string $column)
     {
         $doc = new Text($column);
-        $doc->disabled()->setStyle(['background' => '#e7e7e7']);
+        $doc->disabled()->setStyle(['background' => '#ffffff', 'cursor' => 'not-allowed']);
         $this->node->append($doc);
         return $doc;
     }
@@ -110,7 +110,7 @@ class Wing implements Layout
     /**
      * @param string $column
      * @param array $data
-     * @return Dot
+     * @return CascadeLine
      */
     public function cascadeLine(string $column, array $data)
     {
@@ -199,7 +199,7 @@ class Wing implements Layout
     /**
      * @param Swing $swing
      */
-    public function swing(Swing $swing,\Closure $closure)
+    public function swing(Swing $swing, \Closure $closure)
     {
         $prevNode = $this->node;
         $this->node = $swing;

@@ -17,6 +17,9 @@ class Swing implements Layout
         $this->column = $column;
     }
 
+    /**
+     * @param Component|Layout $document
+     */
     public function append($document)
     {
         if ($document instanceof Component || $document instanceof Layout) $this->documents[] = $document;

@@ -208,11 +208,11 @@ class Wing implements Layout
     }
 
     /**
-     * @param $document Component | Layout
+     * @param Component|Layout $document
      */
     public function append($document)
     {
-        $this->documents[] = $document;
+        if ($document instanceof Component || $document instanceof Layout) $this->documents[] = $document;
     }
 
     public function __invoke()

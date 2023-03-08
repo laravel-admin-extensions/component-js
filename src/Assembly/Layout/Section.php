@@ -19,6 +19,9 @@ class Section implements Layout
         $this->style = $style;
     }
 
+    /**
+     * @param Component|Layout $document
+     */
     public function append($document)
     {
         if ($document instanceof Component || $document instanceof Layout) $this->documents[] = $document;

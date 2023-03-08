@@ -137,9 +137,12 @@
     border-radius: 3px;
     box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 20%);
 }
+.dlp-swing{
+    animation-name: dlpFadeIn;
+    animation-duration: .2s;
+}
 .dlp-section{
     display: grid;
-    margin: 10px;
     grid-template-columns:1fr 1fr;
 }
 .dlp-scroll{overflow-y: auto;overflow-x: hidden;}

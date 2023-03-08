@@ -148,9 +148,9 @@ class ExampleController extends AdminController
         $W = new Wing();
         $W->display('id')->label('序号');
         $W->section('布局',function ($W){
-            $W->text('title1')->label('布局1');
-            $W->text('title2')->label('布局2');
-            $W->text('title3')->label('布局3');
+            $W->select('status0', [0 => '开启', 1 => '关闭', 2 => '删除'])->label('状态0');
+            $W->select('status1', [0 => '开启', 1 => '关闭', 2 => '删除'])->direction('up')->useSearch()->label('状态1');
+            $W->select('status2', [0 => '开启', 1 => '关闭', 2 => '删除'])->direction('middle')->useSearch()->label('状态2');
         },2);
         $W->textarea('description')->label('描述');
         $W->select('status', [0 => '开启', 1 => '关闭', 2 => '删除'])->limit(1)->label('状态');

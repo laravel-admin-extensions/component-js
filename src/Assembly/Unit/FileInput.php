@@ -3,13 +3,14 @@
 
 namespace DLP\Assembly\Unit;
 
+use DLP\Assembly\Abs\Component;
 use DLP\Tool\Assistant;
 
 /**
  * Class FileInput
  * @package DLP\Assembly\Unit
  */
-class FileInput
+class FileInput implements Component
 {
     private $column;
     private $label;

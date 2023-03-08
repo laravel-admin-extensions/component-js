@@ -87,11 +87,19 @@ class Select extends Widget
         return $this;
     }
 
+    /**
+     * @param Wing $wing
+     */
     public function setWing(Wing $wing)
     {
         $this->wing = $wing;
     }
 
+    /**
+     * @param $condition integer | array
+     * @param \Closure $closure
+     * @return $this
+     */
     public function when($condition,\Closure $closure)
     {
         if(!is_array($condition)){
@@ -119,11 +127,11 @@ class Select extends Widget
             $execute .= <<<EOF
 .trigger(function (select) {
     let swing = {$swing};
+    if(document.querySelector('#dlp-swing-{$this->column}'))document.querySelector('#dlp-swing-{$this->column}').remove();
     if(swing[select.join('.')] !== undefined){
         let aim = document.querySelector('#{$this->column}');
         if(aim.parentNode.classList.contains("dlp-form-row")) aim = aim.parentNode;
         let fragment = document.createRange().createContextualFragment(swing[select.join('.')]);
-        if(document.querySelector('#dlp-swing-{$this->column}'))document.querySelector('#dlp-swing-{$this->column}').remove();
         aim.parentNode.insertBefore(fragment, aim.nextSibling);
     }
 })

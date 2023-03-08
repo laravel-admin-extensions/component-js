@@ -4,8 +4,9 @@
 namespace DLP\Assembly\Unit;
 
 use DLP\Assembly\Abs\Widget;
+
 /**
- * Class Dot
+ * Class Linear
  * @package DLP\Assembly\Unit
  */
 class Linear extends Widget

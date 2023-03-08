@@ -4,8 +4,9 @@
 namespace DLP\Assembly\Unit;
 
 use DLP\Assembly\Abs\Input;
+
 /**
- * Class Input
+ * Class Text
  * @package DLP\Assembly\Unit
  */
 class Text extends Input

@@ -9,7 +9,7 @@ use DLP\Assembly\Abs\Component;
  * Class Hidden
  * @package DLP\Assembly\Unit
  */
-class Hidden extends Component
+class Hidden implements Component
 {
     private $column;
     private $value;

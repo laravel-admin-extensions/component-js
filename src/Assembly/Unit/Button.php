@@ -6,10 +6,10 @@ namespace DLP\Assembly\Unit;
 use DLP\Assembly\Abs\Component;
 
 /**
- * Class Html
+ * Class Button
  * @package DLP\Assembly\Unit
  */
-class Html implements Component
+class Button implements Component
 {
     private $column;
     private $label;

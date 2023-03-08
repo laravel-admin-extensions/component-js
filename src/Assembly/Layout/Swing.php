@@ -29,6 +29,6 @@ class Swing implements Layout
             $html .= $document();
         }
 
-        return sprintf("<div id='dlp-swing-{$this->column}'>%s</div>", $html);
+        return sprintf("<div id='dlp-swing-{$this->column}' class='dlp-swing'>%s</div>", $html);
     }
 }

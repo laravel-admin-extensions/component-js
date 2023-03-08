@@ -207,6 +207,9 @@ class Wing implements Layout
         $this->node = $prevNode;
     }
 
+    /**
+     * @param $document Component | Layout
+     */
     public function append($document)
     {
         $this->documents[] = $document;

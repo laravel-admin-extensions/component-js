@@ -4,7 +4,7 @@
 namespace DLP\Assembly\Abs;
 
 
-abstract class Component
+interface Component
 {
-    public abstract function __invoke();
+    public function __invoke();
 }

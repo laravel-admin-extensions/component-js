@@ -27,11 +27,11 @@ class Section implements Layout
         if ($document instanceof Component || $document instanceof Layout) $this->documents[] = $document;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $html = "";
         foreach ($this->documents as $document) {
-            $html .= $document();
+            $html .= $document;
         }
         $cols = str_repeat(" 1fr ", $this->cols);
         return sprintf("<div class='dlp-section' style='grid-template-columns:{$cols};{$this->style}'>%s</div>", $html);

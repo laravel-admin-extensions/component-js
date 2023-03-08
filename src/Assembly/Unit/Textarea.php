@@ -36,7 +36,7 @@ class Textarea extends Input
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->annotate();
         $content = <<<EOF

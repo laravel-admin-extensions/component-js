@@ -57,7 +57,7 @@ class Linear extends Widget
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->annotate();
         $this->options = json_encode($this->options);

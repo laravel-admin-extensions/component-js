@@ -39,7 +39,7 @@ class Datetime extends Input
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $pickerSettings = json_encode(array_merge(['format' => 'YYYY-MM-DD HH:mm:ss', 'locale' => 'zh-CN'], $this->pickerSettings));
         $this->annotate();

@@ -117,7 +117,7 @@ class FileInput implements Component
             foreach ($this->initialPreview['files'] as $file) {
                 $filetype = 'other';
                 $ext = strtok(strtolower(pathinfo($file, PATHINFO_EXTENSION)), '?');
-                foreach ($this->fileTypes as $type => $pattern) {
+                foreach ($this->fileType as $type => $pattern) {
                     if (preg_match($pattern, $ext) === 1) {
                         $filetype = $type;
                         break;
@@ -138,7 +138,7 @@ class FileInput implements Component
         return json_encode(array_merge($file_input_settings, $this->settings));
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $settings = $this->setInit();
         $content = <<<EOF

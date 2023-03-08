@@ -61,7 +61,7 @@ class CascadeDot extends Widget
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->selected = json_encode($this->selected);
         $this->annotate();

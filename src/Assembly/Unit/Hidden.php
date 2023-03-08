@@ -20,7 +20,7 @@ class Hidden implements Component
         $this->value = $value;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         return <<<EOF
 <input type="hidden" name="{$this->column}" value="{$this->value}" />

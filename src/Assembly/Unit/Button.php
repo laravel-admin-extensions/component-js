@@ -31,14 +31,13 @@ class Button implements Component
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         if(!$this->label) return $this->content;
 
         return <<<EOF
 <div class="dlp dlp-form-row">
-    <label class="dlp-text" for="{$this->column}">{$this->label}</label>
-    {$this->content}
+    <label class="dlp-text" for="{$this->column}">{$this->label}</label>{$this->content}
 </div>
 EOF;
     }

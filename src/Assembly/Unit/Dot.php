@@ -60,7 +60,7 @@ class Dot extends Widget
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->selected = json_encode($this->selected, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_APOS);
         $this->annotate();

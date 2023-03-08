@@ -119,11 +119,11 @@ class Select extends Widget
         $condition = join('.',$condition);
         $swing = new Swing($this->column);
         $this->wing->swing($swing,$closure);
-        $this->swing[$condition] = $swing();
+        $this->swing[$condition] = (string)$swing;
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->annotate();
         $execute = ".mod({mode:true,placeholder: '{$this->placeholder}',height:'{$this->menuHeight}',direction:'{$this->direction}'})";

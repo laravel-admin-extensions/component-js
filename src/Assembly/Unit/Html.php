@@ -31,7 +31,7 @@ class Html implements Component
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         if(!$this->label) return $this->content;
 

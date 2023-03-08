@@ -28,7 +28,7 @@ class CascadeLine extends Widget
         return $this;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->annotate();
         $content = <<<EOF

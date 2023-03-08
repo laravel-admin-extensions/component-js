@@ -70,5 +70,5 @@ abstract class Widget implements Component
         $this->annotation = "{$attribute} {$enumerate} style=\"{$style}\"";
     }
 
-    abstract public function __invoke();
+    abstract public function __toString();
 }

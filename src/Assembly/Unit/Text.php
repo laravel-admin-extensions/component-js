@@ -16,7 +16,7 @@ class Text extends Input
         parent::__construct($column);
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $this->annotate();
         $content = <<<EOF

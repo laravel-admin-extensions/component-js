@@ -10,5 +10,5 @@ interface Layout
      * @param Component|Layout $document
      */
     public function append($document);
-    public function __invoke();
+    public function __toString();
 }

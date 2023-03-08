@@ -80,7 +80,7 @@ EOF;
         return $this;
     }
 
-    public function compile()
+    public function __toString()
     {
         $this->options = json_encode($this->options);
         $content = <<<EOF

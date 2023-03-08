@@ -25,11 +25,11 @@ class Swing implements Layout
         if ($document instanceof Component || $document instanceof Layout) $this->documents[] = $document;
     }
 
-    public function __invoke()
+    public function __toString()
     {
         $html = "";
         foreach ($this->documents as $document) {
-            $html .= $document();
+            $html .= $document;
         }
 
         return sprintf("<div id='dlp-swing-{$this->column}' class='dlp-swing'>%s</div>", $html);

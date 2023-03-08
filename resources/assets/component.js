@@ -533,12 +533,11 @@ window.ComponentDot = class {
         return this;
     }
 
-    mod(settings = {mode: false, placeholder: '未选择', height: '150px'}) {
+    mod(settings = {mode: false, placeholder: '未选择', height: '150px',direction:'down'}) {
         this._modSettings = Object.assign({
             mode: false,
             placeholder: '未选择',
             height: '150px',
-            useSearch: true,
             direction:'down'
         }, settings);
         return this;

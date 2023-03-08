@@ -133,7 +133,7 @@ abstract class Input implements Component
         return $this;
     }
 
-    public function annotate()
+    protected function annotate()
     {
         $style = Assistant::arrayKv2String($this->style);
         $attribute = Assistant::arrayKv2String($this->attribute,'=',' ');

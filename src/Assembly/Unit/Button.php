@@ -3,42 +3,88 @@
 
 namespace DLP\Assembly\Unit;
 
-use DLP\Assembly\Abs\Component;
+use DLP\Assembly\Abs\Input;
+use DLP\Tool\Assistant;
 
 /**
  * Class Button
  * @package DLP\Assembly\Unit
  */
-class Button implements Component
+class Button extends Input
 {
-    private $column;
-    private $label;
-    private $content;
+    private $domId;
+    private $title;
+    private $trigger;
 
-    public function __construct(string $column,string $content)
+    public function __construct(string $title)
     {
-        $this->column = $column;
-        $this->content = $content;
+        $this->title = $title;
+        $this->domId = "button_".substr(md5($this->title.microtime().mt_rand(0,10000)),16);
     }
 
     /**
-     * @param $title
-     * @return $this
+     * @param array $xhr
+     * @param string $formSelector
      */
-    public function label($title)
+    public function bindRequest($xhr = ['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$formSelector = '')
     {
-        $this->label = $title;
+        $xhr = array_merge(['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$xhr);
+        $data = json_encode($xhr['data']);
+        $form = '';
+        if($formSelector !== ''){
+            $form = <<<EOF
+let form = document.querySelector('{$formSelector}');
+let formdata = new FormData(form);
+let flag = false;
+for (let pair of formdata.entries()) {
+    let key = pair[0];
+    let val = pair[1];
+    let input;
+    try {
+        input = form.querySelector(`[name="`+key+`"]`);
+    } catch (e) {
+        continue;
+    }
+    if (input.hasAttribute('required') && input.value === '') {
+        flag = true;
+        input.focus();
+    }
+    if (/\[.*\]/.test(key) && /^\[.*\]$/.test(val) && (typeof val === 'string')) {
+        val = JSON.parse(val);
+        if (Array.isArray(val) && val.length > 0) {
+            val.forEach((v) => {
+                formdata.append(key+`[]`, v);
+            });
+        } else {
+            formdata.append(key, '');
+        }
+    }
+}
+if (flag) return;
+if(typeof xhr.data === 'object' && Object.keys(xhr.data).length !== 0){
+    for (let k in xhr.data){
+        if(xhr.data.hasOwnProperty(k)) formdata.append(k,xhr.data[k]);
+    }
+}
+EOF;
+        }
+        $this->trigger = <<<EOF
+document.querySelector('#{$this->domId}').addEventListener('click', function (e) {
+    let xhr = {url:'{$xhr['url']}',method:'{$xhr['method']}',data:{$data},callback:{$xhr['callback']}};
+    {$form}
+    e.target.setAttribute('disabled','disabled');
+    _component.request(xhr);
+});
+EOF;
         return $this;
     }
 
     public function __toString()
     {
-        if(!$this->label) return $this->content;
-
-        return <<<EOF
-<div class="dlp dlp-form-row">
-    <label class="dlp-text" for="{$this->column}">{$this->label}</label>{$this->content}
-</div>
+        $content = <<<EOF
+<button type="{$this->type}" id="{$this->domId}" class="dlp dlp-button" {$this->annotation}>{$this->title}</button>
+<script>{$this->trigger}</script>
 EOF;
+        return $content;
     }
 }

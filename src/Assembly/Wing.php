@@ -7,6 +7,7 @@ use DLP\Assembly\Abs\Component;
 use DLP\Assembly\Abs\Layout;
 use DLP\Assembly\Layout\Section;
 use DLP\Assembly\Layout\Swing;
+use DLP\Assembly\Unit\Button;
 use DLP\Assembly\Unit\CascadeDot;
 use DLP\Assembly\Unit\CascadeLine;
 use DLP\Assembly\Unit\Datetime;
@@ -179,6 +180,18 @@ class Wing implements Layout
     {
         $doc = new Linear($column, $columnSetting);
         $doc->setStyle(['width' => '100%', 'height' => '240px']);
+        $this->node->append($doc);
+        return $doc;
+    }
+
+    /**
+     * @param $title
+     * @return Button
+     */
+    public function button($title)
+    {
+        $doc = new Button($title);
+        $doc->setType('button');
         $this->node->append($doc);
         return $doc;
     }

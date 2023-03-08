@@ -8,9 +8,27 @@ class Window
     private $content;
     private $options = ['width' => '0.8', 'height' => '0.8'];
 
-    public function __construct(array $xhr = ['url' => '', 'method' => 'POST'])
+    /**
+     * Window constructor.
+     * @param string|array $content
+     */
+    public function __construct($content)
     {
-        $this->xhr = json_encode(array_merge($this->xhr, $xhr));
+        $this->content = $content;
+        if(is_string($content)){
+            $this->content = <<<EOF
+function(){
+    let window = document.createElement('div');
+    let fragment = document.createRange().createContextualFragment("{$this->content}");
+    window.appendChild(fragment);
+    return window;
+}()
+EOF;
+            return;
+        }
+        $xhr = array_merge(['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$content);
+        $data = json_encode($xhr['data']);
+        $this->content = "{url:'{$xhr['url']}',method:'{$xhr['method']}',data:{$data},callback:{$xhr['callback']}}";
     }
 
     /**
@@ -36,28 +54,6 @@ EOF;
     public function options(array $options)
     {
         $this->options = array_merge($this->options, $options);
-    }
-
-    /**
-     * @param string|array $data
-     */
-    public function content($data)
-    {
-        $this->content = $data;
-        if(is_string($data)){
-            $this->content = <<<EOF
-function(){
-    let window = document.createElement('div');
-    let fragment = document.createRange().createContextualFragment(response);
-    window.appendChild(fragment);
-    return window;
-}()
-EOF;
-            return;
-        }
-        $xhr = array_merge(['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$data);
-        $data = json_encode($xhr['data']);
-        $this->content = "{url:'{$xhr['url']}',method:'{$xhr['method']}',data:{$data},callback:{$xhr['callback']}}";
     }
 
     public function __toString()

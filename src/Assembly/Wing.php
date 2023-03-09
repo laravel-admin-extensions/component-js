@@ -31,7 +31,7 @@ class Wing implements Layout
     private $form;
     private $layout;
     private $documents = [];
-    private Layout $node;
+    private $node;
 
     public function __construct()
     {

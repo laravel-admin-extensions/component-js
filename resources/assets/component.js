@@ -275,17 +275,13 @@ window.ComponentDot = class {
         delete: 'delete'
     };
 
-    constructor(selector, select, selected, limit = 0) {
-        if (!Array.isArray(selected)) {
-            console.error('Dot param selected must be array!');
-            return;
-        }
+    constructor(selector, select) {
         if (Array.isArray(select) || typeof select !== 'object') {
             console.error('Dot param select must be object such as {key:val,key2:val2,...} !');
             return;
         }
         this.select = select;
-        this.limit = limit;
+        this.limit = 0;
         if (selector instanceof HTMLElement) {
             this.DOM = selector;
         } else {
@@ -295,24 +291,19 @@ window.ComponentDot = class {
             e.preventDefault();
         });
 
-        selected = selected.map(function(elem) {
-            return elem.toString();
-        });
-        selected = selected.filter(d => {
-            if (select[d] === undefined) return false;
-            return true;
-        });
-        this.selected_data = selected;
+        this.selected_data = [];
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
         this._modSettings = {mode: false};
         this._useSearchMod = false;
-        this._triggerEvent = null;
+        this._triggerEvent = {func:null,enable:false};
 
         this._tagSelect = function (element) {
             if (this.limit > 0 && this.select_data.length >= this.limit && this.SELECTED_DOM.firstChild instanceof HTMLElement) {
+                this._triggerEvent.enable = false;
                 this.SELECTED_DOM.firstChild.click();
+                this._triggerEvent.enable = true;
             }
             let clone = element.cloneNode(true);
             clone.addEventListener('click', () => this._tagCancel(clone), false);
@@ -361,7 +352,8 @@ window.ComponentDot = class {
                     if (this.insertInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
-            if (typeof this._triggerEvent == 'function') this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
+            if (typeof this._triggerEvent.func == 'function' && this._triggerEvent.enable === true)
+                this._triggerEvent.func(this.select_data, this.insert_data, this.delete_data);
         };
 
         this._search = function (search) {
@@ -433,14 +425,14 @@ window.ComponentDot = class {
 
         this._bind = function () {
             setTimeout(() => {
-                let queue = [];
                 this.CONTENT_DOM.childNodes.forEach((D) => {
                     let id = D.getAttribute('data-id');
                     if (this.selected_data.indexOf(id) !== -1) {
-                        queue.push(D);
+                        this._triggerEvent.enable = false;
+                        D.click();
+                        this._triggerEvent.enable = true;
                     }
                 });
-                queue.forEach((D) => D.click());
                 if (this._modSettings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
             });
             if (this._useSearchMod === false) return;
@@ -486,7 +478,9 @@ window.ComponentDot = class {
                         return;
                     }
                     if (this.limit > 0 && this.select_data.length >= this.limit) {
+                        this._triggerEvent.enable = false;
                         list.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
+                        this._triggerEvent.enable = true;
                     }
                     option.classList.add('option-active');
                     this._tagCal(id, this.MODE.insert);
@@ -533,6 +527,27 @@ window.ComponentDot = class {
         return this;
     }
 
+    selected(selected){
+        if (!Array.isArray(selected)) {
+            console.error('Dot param selected must be array [key1,key2...]!');
+            return this;
+        }
+        selected = selected.map(function(elem) {
+            return elem.toString();
+        });
+        selected = selected.filter(d => {
+            if (this.select[d] === undefined) return false;
+            return true;
+        });
+        this.selected_data = selected;
+        return this;
+    }
+
+    limitNum(num){
+        this.limit = num;
+        return this;
+    }
+
     mod(settings = {mode: false, placeholder: '未选择', height: '150px',direction:'down'}) {
         this._modSettings = Object.assign({
             mode: false,
@@ -550,7 +565,7 @@ window.ComponentDot = class {
 
     trigger(f = function () {
     }) {
-        this._triggerEvent = f;
+        this._triggerEvent = {func:f,enable:true};
         return this;
     }
 
@@ -594,11 +609,7 @@ window.ComponentCascadeDot = class {
         delete: 'delete'
     };
 
-    constructor(selector, select, selected, limit = 0) {
-        if (!Array.isArray(selected)) {
-            console.error('CascadeDot param selected must be array!');
-            return;
-        }
+    constructor(selector, select) {
         if (!Array.isArray(select) || typeof select[0] !== 'object') {
             console.error('CascadeDot param select must be object such as [{"key":1,"val":"root-node","nodes":[]},...] !');
             return;
@@ -609,9 +620,9 @@ window.ComponentCascadeDot = class {
         } else {
             this.DOM = document.querySelector(selector);
         }
-        this.limit = limit;
+        this.limit = 0;
         this.select = select;
-        this.selected_data = selected;
+        this.selected_data = [];
         this.select_data = [];
         this.insert_data = [];
         this.delete_data = [];
@@ -957,6 +968,20 @@ window.ComponentCascadeDot = class {
     trigger(f = function () {
     }) {
         this._triggerEvent = f;
+        return this;
+    }
+
+    selected(selected){
+        if (!Array.isArray(selected)) {
+            console.error('CascadeDot param selected must be array!');
+            return this;
+        }
+        this.selected_data = selected;
+        return this;
+    }
+
+    limitNum(num){
+        this.limit = num;
         return this;
     }
 

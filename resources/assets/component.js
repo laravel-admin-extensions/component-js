@@ -620,6 +620,7 @@ window.ComponentCascadeDot = class {
         } else {
             this.DOM = document.querySelector(selector);
         }
+        this._triggerEvent = {func:null,enable:false};
         this.limit = 0;
         this.select = select;
         this.selected_data = [];
@@ -718,7 +719,9 @@ window.ComponentCascadeDot = class {
                 });
                 if (data.checked === false) {
                     if (this.limit > 0 && this.select_data.length >= this.limit && (this.SELECTED_DOM.firstChild instanceof HTMLElement)) {
+                        this._triggerEvent.enable = false;
                         this.SELECTED_DOM.firstChild.click();
+                        this._triggerEvent.enable = true;
                     }
                     data.checked = true;
                     this._tagCal(data.key, this.MODE.insert);
@@ -856,7 +859,7 @@ window.ComponentCascadeDot = class {
                     if (this.insertInputDOM instanceof HTMLElement) this.insertInputDOM.value = JSON.stringify(this.insert_data);
                 }
             }
-            if (typeof this._triggerEvent == 'function') this._triggerEvent(this.select_data, this.insert_data, this.delete_data);
+            if (typeof this._triggerEvent.func == 'function' && this._triggerEvent.enable === true) this._triggerEvent.func(this.select_data, this.insert_data, this.delete_data);
         };
 
         this._search = function (search) {
@@ -945,7 +948,9 @@ window.ComponentCascadeDot = class {
         this._bind = function () {
             setTimeout(() => {
                 this.selected_label_dom.forEach((D) => {
+                    this._triggerEvent.enable = false;
                     D.click();
+                    this._triggerEvent.enable = true;
                 });
             });
             if (this.selectInputDOM instanceof HTMLElement) this.selectInputDOM.value = JSON.stringify(this.select_data);
@@ -967,7 +972,7 @@ window.ComponentCascadeDot = class {
 
     trigger(f = function () {
     }) {
-        this._triggerEvent = f;
+        this._triggerEvent = {func:f,enable:true};
         return this;
     }
 

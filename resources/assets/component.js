@@ -599,8 +599,8 @@ window.ComponentCascadeDot = class {
             console.error('CascadeDot param selected must be array!');
             return;
         }
-        if (!Array.isArray(select) || (typeof select[0] !== 'object' || Array.isArray(select[0]))) {
-            console.error('CascadeDot param select must be object such as [{"key":1,"val":"北京","nodes":[]},...] !');
+        if (!Array.isArray(select) || typeof select[0] !== 'object') {
+            console.error('CascadeDot param select must be object such as [{"key":1,"val":"root-node","nodes":[]},...] !');
             return;
         }
 

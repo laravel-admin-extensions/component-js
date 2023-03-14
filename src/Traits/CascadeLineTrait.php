@@ -44,6 +44,7 @@ trait CascadeLineTrait
     public function create()
     {
         $wing = new Wing();
+        $wing->hidden('_method','POST');
         $this->createForm($wing);
         return $wing;
     }
@@ -76,6 +77,7 @@ trait CascadeLineTrait
     public function edit($id)
     {
         $wing = new Wing();
+        $wing->hidden('_method','PUT');
         $this->editForm($wing,$id);
         return $wing;
     }

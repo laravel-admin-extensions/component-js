@@ -1874,7 +1874,6 @@ window.ComponentCascadeLine = class {
             this.PLANE_DOM = new ComponentPlane({
                 url: this.URL + '/create',
                 method: 'GET',
-                data: {},
             }).setParentDom(this.DOM).setTitle(`<span class="dlp-text title">根添加</span>`);
             this.PLANE_DOM.bindRequest('button[type="submit"]','click',{
                     url:object.URL,
@@ -1889,6 +1888,7 @@ window.ComponentCascadeLine = class {
                             expand: false,
                             key: key,
                             val: val,
+                            stack:0,
                             nodes: null,
                             parentNodes: []
                         });
@@ -2155,15 +2155,16 @@ window.ComponentCascadeLine = class {
     }
 
     nodeUpdate(dom, data) {
-        let title = `<span class="dlp-text title" title="${data.val}">${data.val}</span> 修改`;
+        let title = `<span class="dlp-text title" title="${data.val}">${data.val}  修改</span>`;
         let object = this;
         this.PLANE_DOM = new ComponentPlane({
             url: this.URL + '/' + data.key + '/edit',
-            method: 'GET'
+            method: 'GET',
+            data:data
         }).setParentDom(this.DOM).setTitle(title);
         this.PLANE_DOM.bindRequest('button[type="submit"]','click', {
             url:object.URL + '/' + data.key,
-            method:'PUT',
+            method:'POST',
             data:data,
             callback:function (response) {
                 if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
@@ -2193,7 +2194,6 @@ window.ComponentCascadeLine = class {
             _component.request({
                 url: this.URL + '/' + data.key,
                 method: 'DELETE',
-                data: {},
                 callback: function (response) {
                     object.submit_block = false;
                     if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);

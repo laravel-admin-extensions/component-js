@@ -30,7 +30,7 @@
     margin-right: auto;
     margin-left: auto;
 }
-.dlp i{cursor: pointer!important;}
+.dlp i{cursor: pointer!important;display: flex;line-height: unset;}
 .dlp p,.dlp span{margin: 0!important;padding: 0!important;}
 .dlp .text-white{color: rgba(255,255,255,.9);}
 .dlp-text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
@@ -380,7 +380,7 @@
 .dlp-plane-gauze{
     display: block;
     background: rgba(0,0,0,0.3);
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;

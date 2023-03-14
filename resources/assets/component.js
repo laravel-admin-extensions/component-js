@@ -1431,23 +1431,31 @@ window.ComponentPlane = class {
         }, options);
         this.FULLSCREEN = false;
 
-        let width = this.OPTIONS.width;
-        if (this.OPTIONS.width.toString().indexOf('px') === -1 && this.OPTIONS.width.toString().indexOf('%') === -1) {
-            width = window.innerWidth * this.OPTIONS.width;
-            if (width >= (window.innerWidth - 18)) width = window.innerWidth - 18;
-            width += 'px';
-        }
-        let height = this.OPTIONS.height;
-        if (this.OPTIONS.height.toString().indexOf('px') === -1 && this.OPTIONS.height.toString().indexOf('%') === -1) {
-            height = window.innerHeight * this.OPTIONS.height;
-            if (height >= (window.innerHeight - 25)) height = window.innerHeight - 25;
-            height += 'px';
-        }
-        if(this.OPTIONS.top === 'auto'){
-            this.OPTIONS.top = ((window.innerHeight - parseInt(height) - 25) / 2) + 'px';
-        }
-        this.WIDTH = width;
-        this.HEIGHT = height;
+        this._calcWindowSize = function () {
+            let width = this.OPTIONS.width;
+            let height = this.OPTIONS.height;
+            let windowX = window.innerWidth;
+            let windowY = window.innerHeight;
+            if(this.PARENT_DOM instanceof HTMLElement){
+                windowX = this.PARENT_DOM.clientWidth;
+                windowY = this.PARENT_DOM.clientHeight;
+            }
+            if (this.OPTIONS.width.toString().indexOf('px') === -1 && this.OPTIONS.width.toString().indexOf('%') === -1) {
+                width = windowX * this.OPTIONS.width;
+                if (width >= (windowX - 18)) width = windowX - 18;
+                width += 'px';
+            }
+            if (this.OPTIONS.height.toString().indexOf('px') === -1 && this.OPTIONS.height.toString().indexOf('%') === -1) {
+                height = windowY * this.OPTIONS.height;
+                if (height >= (windowY - 25)) height = windowY - 25;
+                height += 'px';
+            }
+            if(this.OPTIONS.top === 'auto'){
+                this.OPTIONS.top = ((windowY - parseInt(height) - 25) / 2) + 'px';
+            }
+            this.WIDTH = width;
+            this.HEIGHT = height;
+        };
 
         this._appendF = function () {
             let F = document.createElement('i');
@@ -1503,7 +1511,7 @@ window.ComponentPlane = class {
                 div.insertAdjacentHTML('afterbegin',dom);
             }
             this.DOM.querySelector('.plane-header').append(div);
-        }
+        };
 
         this._xhrContent = function () {
             _component.loading(this.MODEL_BODY_DOM);
@@ -1625,6 +1633,7 @@ window.ComponentPlane = class {
     }
 
     make() {
+        this._calcWindowSize();
         let margin = this.OPTIONS.top + ' ' + this.OPTIONS.left;
         let Plane = document.createElement('div');
         Plane.style.width = this.WIDTH;
@@ -1850,6 +1859,7 @@ window.ComponentCascadeLine = class {
         this.DOM.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
+        this.DOM.style.position = 'relative';
         this.HEADER_DOM = this.DOM.querySelector(`.dot-top`);
         this.CONTENT_DOM = this.DOM.querySelector(`.dot-select`);
         this.SEARCH_BOX = this.DOM.querySelector(`.search-box`);
@@ -1865,9 +1875,8 @@ window.ComponentCascadeLine = class {
                 url: this.URL + '/create',
                 method: 'GET',
                 data: {},
-            });
-            this.PLANE_DOM.setParentDom(this.DOM)
-                .bindRequest('button[type="submit"]','click',{
+            }).setParentDom(this.DOM).setTitle(`<span class="dlp-text title">根添加</span>`);
+            this.PLANE_DOM.bindRequest('button[type="submit"]','click',{
                     url:object.URL,
                     method:'POST',
                     data:{key: 0},
@@ -2169,11 +2178,14 @@ window.ComponentCascadeLine = class {
 
     nodeDelete(dom, data, stack) {
         let object = this;
-        let title = `<span class="dlp-text title" title="${data.val}">${data.val}   删除</span>`;
+        let title = `<p class="dlp-text title" title="${data.val}">${data.val}   删除</p>`;
 
+        let P = document.createElement('div');
+        P.style = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;';
         /*D delete node*/
         let D = document.createElement('div');
-        D.className = 'dlp dlp-text dlp-label';
+        D.className = 'dlp dlp-button';
+        D.style.width = '85%';
         D.addEventListener('click', (() => {
             if (object.submit_block) return;
             object.submit_block = true;
@@ -2190,8 +2202,9 @@ window.ComponentCascadeLine = class {
                 }
             });
         }));
-        D.insertAdjacentHTML('afterbegin', `<span>${data.val}</span><i class="right">${_component.trash}</i>`);
-        this.PLANE_DOM = new ComponentPlane(D).setParentDom(this.DOM).setTitle(title);
+        D.insertAdjacentHTML('afterbegin', `<p style="width: 100%;text-align: center">${data.val}</p> <i class="right">${_component.trash}</i>`);
+        P.append(D);
+        this.PLANE_DOM = new ComponentPlane(P,{width:'300px',height:'65px',f:false}).setParentDom(this.DOM).setTitle(title);
         this.PLANE_DOM.make();
     }
 
@@ -2201,37 +2214,39 @@ window.ComponentCascadeLine = class {
         let node_data = this.dimensional_data[stack][index];
         let title = `<span class="dlp-text title" title="${node_data.val}">${node_data.val} 迁移到根</span>`;
 
-        let content = document.createElement('div');
+        let P = document.createElement('div');
+        P.style = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction: column;';
         let M = document.createElement('div');
-        M.className = 'dlp dlp-text dlp-label';
-        M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
-        content.insertAdjacentHTML('afterbegin', `<div class="dlp" style="display: flex">${_component.node}</div>`);
-        content.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
+        M.className = 'dlp dlp-button';
+        M.style.width = '85%';
+        M.insertAdjacentHTML('afterbegin', `<p style="width: 100%;text-align: center">${node_data.val}</p><i class="right">${_component.check_circle}</i>`);
+        P.insertAdjacentHTML('afterbegin', `<div class="dlp" style="display: flex">${_component.node}</div>`);
+        P.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
         let object = this;
-        M.addEventListener('click', (() => {
-            if (node_data.stack === 0) return object.PLANE_DOM.remove();
-            if (object.submit_block) return;
-            object.submit_block = true;
-            M.querySelector('.right').innerHTML = _component.sub_loading;
-            _component.request({
-                url: this.URL,
-                method: 'GET',
-                data: {event: 'root', node_key: node_data.key, node_val: node_data.val},
-                callback: function (response) {
-                    object.submit_block = false;
-                    response = JSON.parse(response);
-                    if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
-                    object.nodeRootExec(dom, node_data);
-                    object.PLANE_DOM.getDom().remove();
-                }, error_callback: function () {
-                    object.submit_block = false;
-                    object.PLANE_DOM.getDom().remove();
-                }
+        P.append(M);
+        this.PLANE_DOM = new ComponentPlane(P,{width:'300px',height:'95px'})
+            .setParentDom(this.DOM).setTitle(title)
+            .bindEvent('div.dlp-button','click',() => {
+                if (node_data.stack === 0) return object.PLANE_DOM.remove();
+                if (object.submit_block) return;
+                object.submit_block = true;
+                M.querySelector('.right').innerHTML = _component.sub_loading;
+                _component.request({
+                    url: this.URL,
+                    method: 'GET',
+                    data: {event: 'root', node_key: node_data.key, node_val: node_data.val},
+                    callback: function (response) {
+                        object.submit_block = false;
+                        response = JSON.parse(response);
+                        if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                        object.nodeRootExec(dom, node_data);
+                        object.PLANE_DOM.getDom().remove();
+                    }, error_callback: function () {
+                        object.submit_block = false;
+                        object.PLANE_DOM.getDom().remove();
+                    }
+                });
             });
-        }));
-        content.append(M);
-
-        this.PLANE_DOM = new ComponentPlane(content).setParentDom(this.DOM).setTitle(title);
         this.PLANE_DOM.make();
     }
 
@@ -2455,49 +2470,55 @@ window.ComponentCascadeLine = class {
         let title = '迁移';
         if (aim_node_data.parentNodes.indexOf(node_data.key) !== -1) {
             event = 'exchange';
-            title = '迁移.交换';
+            title = '交换';
         } else {
             event = 'migrate';
         }
         if (!this.OPTIONS.exchange && event === 'exchange') return;
         aim_node.style.removeProperty('background');
-        this.dialog(`<span class="dlp-text title" title="${node_data.val}">${node_data.val}</span> ${title}`, 90);
+
+        title = `<p class="dlp-text title" title="${node_data.val}">${node_data.val} ${title}</p>`;
+        let P = document.createElement('div');
+        P.style = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction: column;';
         let M = document.createElement('div');
         let object = this;
-        M.className = 'dlp dlp-text dlp-label';
-        M.insertAdjacentHTML('afterbegin', `<span>${node_data.val}</span><i class="right">${_component.check_circle}</i>`);
-        this.PLANE_BODY.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
+        M.className = 'dlp dlp-button';
+        M.style.width = '85%';
+        M.insertAdjacentHTML('afterbegin', `<p style="width: 100%;text-align: center">${node_data.val}</p><i class="right">${_component.check_circle}</i>`);
+        P.insertAdjacentHTML('afterbegin', `<div class="dlp dlp-text dlp-label"><span>${aim_node_data.val}</span></div>`);
         if (event === 'exchange') {
-            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">⇵</div>`);
+            P.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;font-family: cursive;font-weight: bolder;">⇵</div>`);
         } else {
-            this.PLANE_BODY.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;">↑</div>`);
+            P.insertAdjacentHTML('beforeend', `<div style="font-size: 16px!important;font-family: cursive;font-weight: bolder;">↑</div>`);
         }
-        M.addEventListener('click', (() => {
-            if (object.submit_block) return;
-            object.submit_block = true;
-            M.querySelector('.right').innerHTML = _component.sub_loading;
-            _component.request({
-                url: this.URL,
-                method: 'GET',
-                data: {
-                    event: event,
-                    node_key: node_data.key,
-                    node_val: node_data.val,
-                    aim_node_key: aim_node_data.key,
-                    aim_node_val: aim_node_data.val
-                }, callback: function (response) {
-                    object.submit_block = false;
-                    response = JSON.parse(response);
-                    if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
-                    if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
-                    if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
-                    object.PLANE_DOM.remove();
-                }, error_callback: function () {
-                    object.submit_block = false;
-                }
-            });
-        }));
-        this.PLANE_BODY.append(M);
+        P.append(M);
+        this.PLANE_DOM = new ComponentPlane(P,{width:'300px',height:'95px',f:false})
+            .bindEvent('div.dlp-button','click',() => {
+                if (object.submit_block) return;
+                object.submit_block = true;
+                M.querySelector('.right').innerHTML = _component.sub_loading;
+                _component.request({
+                    url: this.URL,
+                    method: 'GET',
+                    data: {
+                        event: event,
+                        node_key: node_data.key,
+                        node_val: node_data.val,
+                        aim_node_key: aim_node_data.key,
+                        aim_node_val: aim_node_data.val
+                    }, callback: function (response) {
+                        object.submit_block = false;
+                        response = JSON.parse(response);
+                        if (response.code !== 0) return _component.alert(response.message, 3, null, object.DOM);
+                        if (event === 'exchange') object.nodeExchangeExec(node, node_data, aim_node, aim_node_data);
+                        if (event === 'migrate') object.nodeMigrateExec(node, node_data, aim_node, aim_node_data);
+                        object.PLANE_DOM.getDom().remove();
+                    }, error_callback: function () {
+                        object.submit_block = false;
+                    }
+                });
+            }).setParentDom(this.DOM).setTitle(title);
+        this.PLANE_DOM.make();
     }
 
     nodeRootExec(node, node_data) {

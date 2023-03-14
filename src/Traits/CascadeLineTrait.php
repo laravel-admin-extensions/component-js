@@ -5,8 +5,6 @@ namespace DLP\Traits;
 use DLP\Assembly\Wing;
 use DLP\Tool\Assistant;
 use DLP\Widget\Plane;
-use Encore\Admin\Admin;
-use Encore\Admin\Layout\Content;
 use Illuminate\Http\Request;
 
 /**
@@ -16,7 +14,7 @@ use Illuminate\Http\Request;
  */
 trait CascadeLineTrait
 {
-    public function index(Content $content)
+    public function index()
     {
         try {
             $this->migrate();
@@ -43,7 +41,7 @@ trait CascadeLineTrait
     */
     abstract function show($id);
 
-    public function create(Content $content)
+    public function create()
     {
         $wing = new Wing();
         $this->createForm($wing);
@@ -75,7 +73,7 @@ trait CascadeLineTrait
      */
     abstract function storeAction(): array;
 
-    public function edit($id,Content $content)
+    public function edit($id)
     {
         $wing = new Wing();
         $this->editForm($wing,$id);

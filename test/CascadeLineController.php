@@ -4,18 +4,16 @@ namespace App\Admin\Controllers;
 use DLP\Assembly\Wing;
 use DLP\Tool\Assistant;
 use DLP\Traits\CascadeLineTrait;
-use Encore\Admin\Controllers\AdminController;
 use Illuminate\Http\Request;
-use Encore\Admin\Layout\Content;
 
-class CascadeLineController extends AdminController
+class CascadeLineController
 {
     /**
      * 实现抽象trait
      */
     use CascadeLineTrait;
 
-    public function show($id, Content $content)
+    public function show($id)
     {
         // 节点详情查看页 例子.
         return "详情查看页";
@@ -28,6 +26,7 @@ class CascadeLineController extends AdminController
     {
         // 节点新增 表单列设置 例子.
         $wing->text('insert_node_val')->label('新增节点 name');
+        $wing->button('新增提交')->setType('submit')->label('');
         return $wing->form();
     }
 
@@ -48,12 +47,14 @@ class CascadeLineController extends AdminController
     /**
      * @inheritDoc
      */
-    function editForm($id,Wing $wing)
+    function editForm(Wing $wing,$id)
     {
         $request = Request::capture();
         $val = $request->input('val');
         // 节点修改 表单列设置 例子.
+        $wing->display('update_node_id')->label('修改节点 ID')->value($id);
         $wing->text('update_node_name')->label('修改节点 name')->value($val);
+        $wing->button('提 交')->setType('submit')->label('');
         return $wing->form();
     }
 

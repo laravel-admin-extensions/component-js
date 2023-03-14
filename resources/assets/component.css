@@ -337,19 +337,6 @@
     display: flex;
     align-items: center;
 }
-.dot-cascade-panel{
-    position: absolute;
-    z-index: 100000;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 100%;
-    background: radial-gradient(rgb(86 86 86 / 60%),#060606);
-    border-radius: 5px;
-    animation-name: dlpFadeIn;
-    animation-duration: .2s;
-}
-
 .dlp-input:focus,.dlp-form-row>textarea:focus{border-color:#66afe9;outline:0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)}
 .dlp-form-row{
     display: flex;
@@ -403,7 +390,7 @@
     -webkit-overflow-scrolling: touch;
     outline: 0;
 }
-.plane-header,.dot-cascade-panel>.plane-header{
+.plane-header{
     background-color: rgb(44 44 44);
     padding: 3px;
     display: flex;
@@ -423,42 +410,13 @@
     display: inline-block;
     vertical-align: bottom;
 }
-.plane-body,.dot-cascade-panel>.plane-body{
+.plane-body{
     background-color: #f4f4f4;
     padding: 0;
     overflow-y: auto;
     border-radius: 0 0 3px 3px;
     box-shadow: 0 .4rem 1.2rem rgba(0,0,0,.4)!important;
     position: relative!important;
-}
-.dot-cascade-panel>.plane-body{
-    height: calc(100% - 23px);
-    background: #484848!important;
-}
-.dot-cascade-panel>.plane-header-dialog{
-    width: 270px;
-    margin: 30px auto 0;
-}
-.dot-cascade-panel>.plane-body-dialog{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 270px;
-    min-height: 50px!important;
-    margin: 0 auto;
-    overflow: hidden;
-}
-
-.plane-body-dialog>.dlp-label{
-    position: relative;
-    width: 220px;
-    max-width: 220px;
-    margin: 0;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 .plane-header>.dlp-submit-btn{
     margin-right: 5px;

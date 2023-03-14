@@ -2,8 +2,8 @@
 namespace DLP\Traits;
 
 
+use DLP\Assembly\Wing;
 use DLP\Tool\Assistant;
-use DLP\Tool\FormPanel;
 use DLP\Widget\Plane;
 use Encore\Admin\Admin;
 use Encore\Admin\Layout\Content;
@@ -39,25 +39,22 @@ trait CascadeLineTrait
     /**
     * detail详情查看界面
     * @param $id
-    * @param Content $content
     * @return mixed
     */
-    abstract function show($id, Content $content);
+    abstract function show($id);
 
     public function create(Content $content)
     {
-        $formPanel = new FormPanel();
-        $this->createForm($formPanel);
-        $content = $content
-            ->body($formPanel->compile());
-        return Plane::form($content);
+        $wing = new Wing();
+        $this->createForm($wing);
+        return $wing;
     }
 
     /**
-     * 表单内容组装 $formPanel->input('column','参数')...
-     * @param FormPanel $formPanel
+     * wing组装器
+     * @param Wing $wing
      */
-    abstract function createForm(FormPanel $formPanel);
+    abstract function createForm(Wing $wing);
 
     public function store()
     {
@@ -78,24 +75,21 @@ trait CascadeLineTrait
      */
     abstract function storeAction(): array;
 
-    public function edit($id, Content $content)
+    public function edit($id,Content $content)
     {
-        $formPanel = new FormPanel();
-        $this->editForm($formPanel,$id);
-        $content = $content
-            ->body($formPanel->compile());
-        return Plane::form($content);
+        $wing = new Wing();
+        $this->editForm($wing,$id);
+        return $wing;
     }
 
     /**
      * request params:
      *      [val] 当前操作节点值
-     * 表单内容组装 $formPanel->input('column','参数',value)...
-     * @param FormPanel $formPanel
+     * @param Wing $wing
      * @param $id
      * @return mixed
      */
-    abstract function editForm(FormPanel $formPanel,$id);
+    abstract function editForm(Wing $wing,$id);
 
     public function update($id)
     {

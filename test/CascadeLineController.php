@@ -1,11 +1,14 @@
 <?php
 namespace App\Admin\Controllers;
 
-use DLP\Tool\FormPanel;
+use DLP\Assembly\Wing;
+use DLP\Tool\Assistant;
 use DLP\Traits\CascadeLineTrait;
+use Encore\Admin\Controllers\AdminController;
 use Illuminate\Http\Request;
+use Encore\Admin\Layout\Content;
 
-class CascadeLineController
+class CascadeLineController extends AdminController
 {
     /**
      * 实现抽象trait
@@ -21,16 +24,17 @@ class CascadeLineController
     /**
      * @inheritDoc
      */
-    function createForm(FormPanel $formPanel)
+    function createForm(Wing $wing)
     {
         // 节点新增 表单列设置 例子.
-        $formPanel->input('insert_node_val','新增节点 name');
+        $wing->text('insert_node_val')->label('新增节点 name');
+        return $wing->form();
     }
 
     /**
      * @inheritDoc
      */
-    function storeAction(): array
+    function storeAction()
     {
         $request = Request::capture();
         $key = (int)$request->input('key');
@@ -44,18 +48,19 @@ class CascadeLineController
     /**
      * @inheritDoc
      */
-    function editForm(FormPanel $formPanel,$id)
+    function editForm($id,Wing $wing)
     {
         $request = Request::capture();
         $val = $request->input('val');
         // 节点修改 表单列设置 例子.
-        $formPanel->input('update_node_name','修改节点 name',$val);
+        $wing->text('update_node_name')->label('修改节点 name')->value($val);
+        return $wing->form();
     }
 
     /**
      * @inheritDoc
      */
-    function updateAction($id): array
+    function updateAction($id)
     {
         $request = Request::capture();
         $val = $request->input('update_node_name');

@@ -7,6 +7,7 @@ class Window
     private $trigger;
     private $content;
     private $options = ['width' => '0.8', 'height' => '0.8'];
+    private $title = '';
 
     /**
      * Window constructor.
@@ -49,6 +50,16 @@ EOF;
     }
 
     /**
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = ".setTitle('$title')";
+        return $this;
+    }
+
+    /**
      * @param array $options
      */
     public function options(array $options)
@@ -60,7 +71,7 @@ EOF;
     {
         $this->options = json_encode($this->options);
         $content = <<<EOF
-new ComponentPlane({$this->content},$this->options).make();
+new ComponentPlane({$this->content},$this->options){$this->title}.make();
 EOF;
         if (!$this->trigger) return $content;
         return sprintf($this->trigger, $content);

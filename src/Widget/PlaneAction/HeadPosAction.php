@@ -50,7 +50,7 @@ class HeadPosAction extends RowAction
                 let XHR = JSON.parse('{$this->xhr}');
                 XHR.url = XHR.url !== undefined ? XHR.url : url;
                 XHR.callback = {$this->callback};
-                new ComponentPlane({url:url},{$this->options}){$this->binding}.make();
+                new ComponentPlane({url:url},{$this->options}){$this->binding}.setTitle('{$this->title}').make();
             });
 EOF
         );

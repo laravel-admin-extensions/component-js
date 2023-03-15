@@ -9,6 +9,7 @@ class Dialog
     private $information;
     private $options = ['width' => '420px', 'height' => '93px', 'f' => false];
     private $xhr = ['url' => '', 'method' => 'POST'];
+    private $title = '';
 
     public function __construct(array $xhr = ['url' => '', 'method' => 'POST'])
     {
@@ -80,6 +81,16 @@ EOF;
         return $this;
     }
 
+    /**
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = ".setTitle('$title')";
+        return $this;
+    }
+
     public function __toString()
     {
         $this->options = json_encode($this->options);
@@ -97,7 +108,7 @@ new ComponentPlane(function(){
     {$this->button}
     dialog.append(operates);
     return dialog;
-}(),$this->options).make();
+}(),$this->options){$this->title}.make();
 EOF;
         if (!$this->trigger) return $content;
         return sprintf($this->trigger, $content);

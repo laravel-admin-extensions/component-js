@@ -34,7 +34,7 @@ class CascadeLine extends Widget
         $content = <<<EOF
 <div id="{$this->column}" {$this->annotation}></div>
 <script>
-new ComponentCascadeLine("#{$this->column}", {$this->data},'{$this->url}');
+new ComponentCascadeLine("#{$this->column}", {$this->data},'{$this->url}').make();
 </script>
 EOF;
         if(!$this->label) return $content;

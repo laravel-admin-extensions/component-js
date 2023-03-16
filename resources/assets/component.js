@@ -1207,8 +1207,14 @@ window.ComponentLine = class {
                         limit: 1,
                         useSearch: false
                     }, column.options);
-                    if (Array.isArray(value) === false) value = [parseInt(value)];
-                    let dot = new ComponentDot(menu, column.select, value, modSettings.limit).mod({
+                    if (Array.isArray(value) === false) {
+                        if(value === '' || value === null) {
+                            value = [];
+                        }else {
+                            value = [parseInt(value)];
+                        }
+                    }
+                    let dot = new ComponentDot(menu, column.select).selected(value).limitNum(modSettings.limit).mod({
                         mode: true,
                         placeholder: modSettings.placeholder,
                         height: modSettings.height

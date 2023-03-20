@@ -76,7 +76,7 @@ class CascadeDot extends Widget
         $content = <<<EOF
 <div id="{$this->column}" {$this->annotation}></div>
 <script>
-new ComponentCascadeDot("#{$this->column}",{$this->select},{$this->selected},{$this->limit}){$execute};
+new ComponentCascadeDot("#{$this->column}",{$this->select}).selected({$this->selected}).limitNum({$this->limit}){$execute};
 </script>
 EOF;
         if(!$this->label) return $content;

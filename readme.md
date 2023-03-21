@@ -1,22 +1,23 @@
 ## 前端组件扩展
 
-    |-表单类组件扩展.Widget
-    |    |-Dot         多选择器
-    |    |-CascadeDot  级联多选择器
-    |    |-CascadeLine 级联管理器
-    |    |-Linear      列表控件  
+    |-表单类组件扩展.Assembly
+    |    |-Layout      布局类 
+    |    |-Unit        组件单元
+    |    Wing.php      组装器
     |
-    |-弹窗组件.Widget
-    |    |-plane       异步弹窗组件
+    |-弹窗组件.Layer (直接调用嵌入到js中产生效果)
     |     
     |-辅助工具.Tool
     |    |-Assistant   数据处理辅助方法  
-    |    |-FormPanel   表单内容生成器
+    |
+    |-Traits
     |    |-CascadeLineTrait   级联管理器的接口抽象类 
+    |
+    |-弹窗组件.Widget (框架Grid中调用)
     |
     |-参考样例.Test
     |    |-example      组件样例
-    |    |-CascadeLineController  级联管理器 接口样例
+    |    |-CascadeLineController  级联管理器 Api接口样例
     
     
 ### [demo样例参见](https://codepen.io/ydtg1993-the-bashful/pen/rNdWade)

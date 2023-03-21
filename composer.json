@@ -1,6 +1,6 @@
 {
     "name": "dlp/component-js",
-    "description": "laravel_admin extension component js",
+    "description": "extension component js",
     "type": "library",
     "keywords": ["laravel", "admin","extension","component-js"],
     "homepage": "https://github.com/ydtg1993/laravel-admin-component-js",

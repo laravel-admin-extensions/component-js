@@ -206,6 +206,15 @@ class ExampleController extends AdminController
         return $W->form();
     }
 
+    /**
+     * 级联线组件
+     * 链表数据结构 [[key=>key1,val=>value1,nodes=>[...]],...]
+     *          链表结构数据辅助组装(例)
+     *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
+     *                $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
+     *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
+     *                Assistant::dimension($select);
+     */
     private function cascadeExampleData()
     {
         return [

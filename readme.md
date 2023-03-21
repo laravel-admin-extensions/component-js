@@ -46,7 +46,7 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider" --force
         <td style="text-align:left;">多(单)选择器 Dot</td>
         <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L156'>->select</a>
         | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>->dot</a></td>
-        <td style="text-align:left;"></td>
+        <td style="text-align:left;">select下拉列表模式 | dot选择器模式</td>
     </tr>
     <tr>
         <td style="text-align:left;">级联多选择器 CascadeDot</td>
@@ -77,3 +77,9 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider" --force
     </tr>
 </table>
 
+### JS调用
+
+        <link rel="stylesheet" href="../component.css">
+        <script src="../component.js"></script>
+
+<a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/index.html#L175'>JS调用示例参见</a>

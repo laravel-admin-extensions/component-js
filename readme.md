@@ -44,29 +44,29 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider" --force
     </tr>
     <tr>
         <td style="text-align:left;">多(单)选择器 Dot</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L156'>->select</a>
-        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>->dot</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>->select</a>
+        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L170'>->dot</a></td>
         <td style="text-align:left;">select下拉列表模式 | dot选择器模式</td>
     </tr>
     <tr>
         <td style="text-align:left;">级联多选择器 CascadeDot</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L189'>->cascadeDot</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L221'>链表数据结构参考</a>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L196'>->cascadeDot</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L227'>链表数据结构参考</a>
          <br/>
-         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L211'>数据辅助组装 步骤方法</a><br/>
+         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L219'>数据辅助组装 步骤方法</a><br/>
          </td></td> 
     </tr>
     <tr>
         <td style="text-align:left;">级联管理器 CascadeLine</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L191'>->cascadeLine</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L221'>链表数据结构参考</a>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L198'>->cascadeLine</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L227'>链表数据结构参考</a>
          <br/>
-         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L211'>数据辅助组装 步骤方法</a><br/>
+         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L219'>数据辅助组装 步骤方法</a><br/>
          </td></td> 
     </tr>
     <tr>
         <td style="text-align:left;">列表控件 Linear</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L193'>->linear</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>->linear</a></td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
     </tr>
     <tr>

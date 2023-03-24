@@ -2,7 +2,9 @@
 
 namespace DLP\Layer;
 
-class Window
+use DLP\Assembly\Abs\Layer;
+
+class Window implements Layer
 {
     private $trigger;
     private $content;
@@ -65,6 +67,7 @@ EOF;
     public function options(array $options)
     {
         $this->options = array_merge($this->options, $options);
+        return $this;
     }
 
     public function __toString()

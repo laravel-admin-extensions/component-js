@@ -2,7 +2,9 @@
 
 namespace DLP\Layer;
 
-class Dialog
+use DLP\Assembly\Abs\Layer;
+
+class Dialog implements Layer
 {
     private $trigger;
     private $button;
@@ -34,11 +36,12 @@ EOF;
     }
 
     /**
-     * @param array $options
+     * @param array $options ['width' => '420px', 'height' => '93px', 'f' => false]
      */
     public function options(array $options)
     {
         $this->options = array_merge($this->options, $options);
+        return $this;
     }
 
     /**

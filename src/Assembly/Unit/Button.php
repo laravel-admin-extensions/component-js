@@ -4,6 +4,8 @@
 namespace DLP\Assembly\Unit;
 
 use DLP\Assembly\Abs\Input;
+use DLP\Assembly\Abs\Layer;
+use DLP\Layer\Dialog;
 use DLP\Tool\Assistant;
 
 /**
@@ -76,6 +78,19 @@ document.querySelector('#{$this->domId}').addEventListener('click', function (e)
     _component.request(xhr);
 });
 EOF;
+        return $this;
+    }
+
+    /**
+     * @param \Closure $closure
+     * @param array $xhr
+     * @return $this
+     */
+    public function bindDialog(\Closure $closure,array $xhr = ['url' => '', 'method' => 'POST'])
+    {
+        $dialog = (new Dialog($xhr))->trigger("#{$this->domId}");
+        $closure($dialog);
+        $this->trigger = $dialog;
         return $this;
     }
 

@@ -2,8 +2,10 @@
 
 namespace App\Admin\Controllers;
 
+use DLP\Assembly\Unit\Button;
 use DLP\Assembly\Unit\Linear;
 use DLP\Assembly\Wing;
+use DLP\Layer\Dialog;
 use DLP\Tool\Assistant;
 use DLP\Widget\Plane;
 use Encore\Admin\Admin;
@@ -124,6 +126,7 @@ class ExampleController extends AdminController
     protected function form($id)
     {
         $form = new Form(new Model());
+        /*在LA的form中使用组件*/
         $form->html((new Linear('source',
             [
                 'id' => ['name' => 'ID', 'type' => 'text'],
@@ -139,12 +142,16 @@ class ExampleController extends AdminController
                 ["id"=>4,"title" => "妻晒し 表の顔は貞淑妻、裏の顔は変態妻の公開記録―。 木下凛々子", "url" => "https://img.9618599.com/resources//d41d8cd98f00b204e9800998ecf8427e/b1a3cffd40eca68c.jpg",  "type" => 1, "time" => "2021-12-14 13:24:46"],
                 ["id"=>5,"title" => "担任教師に3年分の妄想・愛・性欲をぶち撒けた卒業式前夜 miru （ブルーレイディスク）","url" => "https://img.9618599.com/resources/javdb.com/61e1171d16a76b11f7375cde/small_cover.jpg", "type" => 2, "time" => "2021-12-14 13:24:46"]])
             ->setStyle(['height' => '240px']), '列表组件');
+        /*自定义按钮弹窗*/
+        $form->html((new Button('删除'))->bindDialog(function (Dialog $dialog)use($id){
+            $dialog->setTitle('删除')->info('确认删除资源？')->button('确认',['id'=>$id]);
+        },['url'=>'...del']));
         return $form;
     }
 
     public function blank()
     {
-        /*wing辅助控件工具包*/
+        /*wing组装器*/
         $W = new Wing();
         $W->display('id')->label('序号');
         $W->section(function ($W){
@@ -206,15 +213,6 @@ class ExampleController extends AdminController
         return $W->form();
     }
 
-    /**
-     * 级联线组件
-     * 链表数据结构 [[key=>key1,val=>value1,nodes=>[...]],...]
-     *          链表结构数据辅助组装(例)
-     *              1.倒排父节点查询 注:id name parent_id 必须命别名 key val par
-     *                $select = Model::orderBy('parent_id','DESC')->select('id as key','name as val','parent_id as par')->get()->toArray();
-     *              2.辅助函数dimension 组装后的$select结构参考$this->cascadeExampleData()返回数据
-     *                Assistant::dimension($select);
-     */
     private function cascadeExampleData()
     {
         return [

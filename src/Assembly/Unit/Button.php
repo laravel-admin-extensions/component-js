@@ -96,6 +96,7 @@ EOF;
 
     public function __toString()
     {
+        $this->annotate();
         $content = <<<EOF
 <button type="{$this->type}" id="{$this->domId}" class="dlp dlp-button" {$this->annotation}>{$this->title}</button>
 <script>{$this->trigger}</script>

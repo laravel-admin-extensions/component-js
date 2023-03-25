@@ -17,6 +17,7 @@ class Button extends Input
     private $domId;
     private $title;
     private $trigger;
+    private $color;
 
     public function __construct(string $title)
     {
@@ -28,7 +29,7 @@ class Button extends Input
      * @param array $xhr
      * @param string $formSelector
      */
-    public function bindRequest($xhr = ['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$formSelector = '')
+    public function bindRequest(array $xhr = ['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$formSelector = '')
     {
         $xhr = array_merge(['url'=>'','method'=>'','data'=>[],'callback'=>'null'],$xhr);
         $data = json_encode($xhr['data']);
@@ -94,11 +95,36 @@ EOF;
         return $this;
     }
 
+    /**
+     * @param string $color red blue green yellow
+     * @return $this
+     */
+    public function color(string $color)
+    {
+        switch ($color){
+            case 'red':
+                $this->color = '-red';
+                break;
+            case 'blue':
+                $this->color = '-blue';
+                break;
+            case 'green':
+                $this->color = '-green';
+                break;
+            case 'yellow':
+                $this->color = '-yellow';
+                break;
+            default:
+                $this->color = '';
+        }
+        return $this;
+    }
+
     public function __toString()
     {
         $this->annotate();
         $content = <<<EOF
-<button type="{$this->type}" id="{$this->domId}" class="dlp dlp-button" {$this->annotation}>{$this->title}</button>
+<button type="{$this->type}" id="{$this->domId}" class="dlp dlp-button{$this->color}" {$this->annotation}>{$this->title}</button>
 <script>{$this->trigger}</script>
 EOF;
         return $content;

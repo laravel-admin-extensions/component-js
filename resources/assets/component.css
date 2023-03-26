@@ -154,13 +154,13 @@
     color: #dfdfdf;
 }
 .dlp-button-yellow{
-    background: linear-gradient(180deg,#fcff52 0,#faff00 39%,#c8d518 60%,#b6c31d 100%);
+    background: linear-gradient(180deg,#fff74c 0,#faff00 39%,#c2d003 60%,#f3ff6b 100%);
     border: 1px solid #d3e100;
     box-shadow: inset 0 3px 9px #d6e31d, inset 0 3px 12px #deed19, inset 0 15px 9px #efff00, inset 0 3px 3px 0 #c3e906, 0 1px 3px rgb(192 255 37 / 66%);
     color: #00046c;
 }
 .dlp-button-yellow:hover{
-    background: linear-gradient(180deg,#eaff40 0,#d0db22 49%,#c2cf13 59%,#ebff04 100%);
+    background: linear-gradient(180deg,#fff74c 0,#e1ed25 49%,#edff00 100%);
 }
 .dlp-button-yellow:disabled{
     cursor: not-allowed;

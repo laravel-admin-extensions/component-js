@@ -85,7 +85,7 @@
     align-items: center;
 }
 .dlp-button,.dlp-button-red,.dlp-button-green,.dlp-button-blue,.dlp-button-yellow{
-    background: linear-gradient(180deg,#303030 0,#939393 49%,#000 59%,#3e3e3e 100%);
+    background: linear-gradient(180deg,#303030 0,#585858 49%,#000 59%,#3e3e3e 100%);
     border: solid 1px #262626;
     box-shadow: inset 0 3px 9px #232323, inset 0 3px 12px #323232, inset 0 15px 9px #4a4a4a, inset 0 3px 3px 0 #8b8b8b, 0 1px 3px rgb(16 16 16 / 66%);
     border-radius: 3px;
@@ -114,7 +114,7 @@
     box-shadow: inset 0 3px 9px #914242, inset 0 3px 12px #7e2020, inset 0 15px 9px #7c1212, inset 0 3px 3px 0 #5a0404, 0 1px 3px rgb(16 16 16 / 66%);
 }
 .dlp-button-red:hover{
-    background: linear-gradient(180deg,#bf1010 0,#e00000 49%,#a10000 80%,#760000 100%);
+    background: linear-gradient(180deg,#b70a0a 0,#b91d1d 49%,#870d0d 80%,#9f0000 100%);
 }
 .dlp-button-red:disabled{
     cursor: not-allowed;
@@ -129,7 +129,7 @@
     box-shadow: inset 0 3px 9px #148b1f, inset 0 3px 12px #23a92f, inset 0 15px 9px #328f3b, inset 0 3px 3px 0 #18e32b, 0 1px 3px rgb(16 16 16 / 66%);
 }
 .dlp-button-green:hover{
-    background: linear-gradient(180deg,#f95e5e 0,#cb3636 49%,#dd3434 59%,#d95454 100%);
+    background: linear-gradient(180deg,#20942b 0,#2ec33c 49%,#0a9517 59%,#017e0d 100%);
 }
 .dlp-button-green:disabled{
     cursor: not-allowed;
@@ -139,12 +139,12 @@
     color: #f1f1f1;
 }
 .dlp-button-blue{
-    background: linear-gradient(180deg,#0026e1 0,#0c0a9b 49%,#0004a3 59%,#06004e 100%);
+    background: linear-gradient(180deg,#2125bd 0,#5054df 39%,#1c23e9 59%,#0a0c89 100%);
     border: 1px solid #00387a;
     box-shadow: inset 0 3px 9px #001c83, inset 0 3px 12px #0362d7, inset 0 15px 9px #5276f7, inset 0 3px 3px 0 #616dff, 0 1px 3px rgb(83 141 249 / 66%);
 }
 .dlp-button-blue:hover{
-    background: linear-gradient(180deg,#2125bd 0,#1e23b5 49%,#494ed5 59%,#0a0c89 100%);
+    background: linear-gradient(180deg,#091f98 0,#2e32b7 49%,#3133bb 100%);
 }
 .dlp-button-blue:disabled{
     cursor: not-allowed;
@@ -154,9 +154,9 @@
     color: #dfdfdf;
 }
 .dlp-button-yellow{
-    background: linear-gradient(180deg,#fff74c 0,#faff00 39%,#c2d003 60%,#f3ff6b 100%);
+    background: linear-gradient(180deg,#fff980 0,#faff00 39%,#c2d003 60%,#d2e125 100%);
     border: 1px solid #d3e100;
-    box-shadow: inset 0 3px 9px #d6e31d, inset 0 3px 12px #deed19, inset 0 15px 9px #efff00, inset 0 3px 3px 0 #c3e906, 0 1px 3px rgb(192 255 37 / 66%);
+    box-shadow: inset 0 3px 9px #b9c515, inset 0 3px 12px #e3f30f, inset 0 15px 9px #efff00, inset 0 3px 3px 0 #ceed34, 0 1px 3px rgb(192 255 37 / 66%);
     color: #00046c;
 }
 .dlp-button-yellow:hover{
@@ -240,9 +240,9 @@
     display: flex;
     align-items: center;
     border-radius: 5px 5px 0 0;
-    background: #303030;
     border-top: 1px solid rgba(34,36,38,.15);
-    border-bottom: 1px solid rgba(255,255,255,.1);
+    background: linear-gradient(177deg,#303030 0,#2a2a2a 49%,#000 59%,#3e3e3e 100%);
+    box-shadow: inset 0 3px 9px #232323, inset 0 3px 12px #323232, inset 0 15px 9px #4a4a4a, inset 0 3px 3px 0 #8b8b8b, 0 1px 3px rgb(16 16 16 / 66%);
 }
 
 .dlp-dot-menu{position: relative;}
@@ -252,6 +252,8 @@
     border-radius: 3px;
     color: #ffffff;
     border: 1px solid #1e1e1e;
+    background: linear-gradient(177deg,#303030 0,#939393 49%,#000 59%,#3e3e3e 100%);
+    box-shadow: inset 0 3px 9px #232323, inset 0 3px 12px #323232, inset 0 15px 9px #4a4a4a, inset 0 3px 3px 0 #8b8b8b, 0 1px 3px rgb(16 16 16 / 66%);
 }
 .dlp-dot-menu-select>div:first-child{
     width: 100%;
@@ -347,7 +349,9 @@
 }
 .dot-selected{width: 100%!important;height: 100%!important;}
 .dot-selected>.dlp-label{background: white}
-.dot-body{padding:3px 0 3px 0;background: rgb(64 64 64);border-radius: 0 0 5px 5px;position: relative;}
+.dot-body{padding:3px 0 3px 0;border-radius: 0 0 5px 5px;position: relative;
+    background: radial-gradient(#3a3a3a,rgb(64 64 64));
+    box-shadow: inset 0 0 12px 0 #181818;}
 .dot-select{
     position: absolute;
     top:3px;
@@ -371,7 +375,8 @@
     flex-grow:1;
     text-align: center;
     margin:0 3px 0;
-    background: #3a3a3a;
+    background: radial-gradient(#404040,#3a3a3a);
+    box-shadow: inset 0 0 9px 0 #2e2e2e;
 }
 .dot-cascade-stack>.dlp-label{
     display: flex;

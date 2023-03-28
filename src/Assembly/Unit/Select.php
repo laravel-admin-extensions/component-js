@@ -21,6 +21,7 @@ class Select extends Widget
     private $direction = 'down';
     private $useSearch = false;
     private $useHiddenInput = true;
+    private Wing $wing;
     private $swing = [];
 
     public function __construct(string $column, array $select)
@@ -95,6 +96,14 @@ class Select extends Widget
     {
         $this->useHiddenInput = false;
         return $this;
+    }
+
+    /**
+     * @param Wing $wing
+     */
+    public function setWing(Wing $wing)
+    {
+        $this->wing = $wing;
     }
 
     /**

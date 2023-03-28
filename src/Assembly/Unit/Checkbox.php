@@ -18,6 +18,7 @@ class Checkbox extends Widget
     private $limit = 1;
     private $useHiddenInput = true;
     private $color = '';
+    private Wing $wing;
     private $swing = [];
 
     public function __construct(string $column, array $select)
@@ -46,6 +47,11 @@ class Checkbox extends Widget
         return $this;
     }
 
+    /**
+     * @param $color
+     *          red blue green yellow
+     * @return $this
+     */
     public function color($color)
     {
         switch ($color) {
@@ -66,6 +72,14 @@ class Checkbox extends Widget
     {
         $this->useHiddenInput = false;
         return $this;
+    }
+
+    /**
+     * @param Wing $wing
+     */
+    public function setWing(Wing $wing)
+    {
+        $this->wing = $wing;
     }
 
     /**

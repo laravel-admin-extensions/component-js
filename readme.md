@@ -44,35 +44,36 @@ php artisan vendor:publish --provider="DLP\DLPServiceProvider" --force
     </tr>
     <tr>
         <td style="text-align:left;">多(单)选择器 Dot</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L163'>->select</a>
-        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L170'>->dot</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L184'>->select</a>
+        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L188'>->dot</a>
+        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L189'>->checkbox</a></td>
         <td style="text-align:left;">select下拉列表模式 | dot选择器模式</td>
     </tr>
     <tr>
         <td style="text-align:left;">级联多选择器 CascadeDot</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L196'>->cascadeDot</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L227'>链表数据结构参考</a>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L219'>->cascadeDot</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L250'>链表数据结构参考</a>
          <br/>
-         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L219'>数据辅助组装 步骤方法</a><br/>
+         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L242'>数据辅助组装 步骤方法</a><br/>
          </td></td> 
     </tr>
     <tr>
         <td style="text-align:left;">级联管理器 CascadeLine</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L198'>->cascadeLine</a></td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L227'>链表数据结构参考</a>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L221'>->cascadeLine</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L250'>链表数据结构参考</a>
          <br/>
-         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L219'>数据辅助组装 步骤方法</a><br/>
+         <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L243'>数据辅助组装 步骤方法</a><br/>
          </td></td> 
     </tr>
     <tr>
         <td style="text-align:left;">列表控件 Linear</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L200'>->linear</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L223'>->linear</a></td>
         <td style="text-align:left;">二维数组<br/>[[col=>val,col2=>val2,...],...]</td>
     </tr>
     <tr>
         <td style="text-align:left;">弹出层组件</td>
-        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L55'>Plane::headAction</a> 
-        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L70'>Plane::rowAction</a></td>
+        <td style="text-align:left;"><a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L76'>Plane::headAction</a> 
+        | <a target="_blank" href='https://github.com/laravel-admin-extensions/component-js/blob/main/test/example.php#L91'>Plane::rowAction</a></td>
         <td style="text-align:left;"></td>
     </tr>
 </table>

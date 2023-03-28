@@ -441,8 +441,8 @@
 .dlp-tr>th,.dlp-tr>td{padding: 3px;text-align: left;height: 38px;}
 .dlp-table .dlp-thead>.dlp-tr{
     height: 45px;
-    background: linear-gradient(179deg,#040404 0,#343434 49%,#0a0a0a 59%,#262626 100%);
-    box-shadow: inset 0 3px 9px #232323, inset 0 3px 12px #323232, inset 0 15px 9px #4a4a4a, inset 0 3px 3px 0 #484848, 0 1px 3px rgb(16 16 16 / 66%);
+    background: linear-gradient(178deg,#040404 0,#343434 49%,#282828 59%,#2e2e2e 100%);
+    box-shadow: inset 0 3px 9px #232323, inset 0 3px 12px #323232, inset 0 15px 9px #4a4a4a, inset 0 3px 3px 0 #484848;
     border-radius: 5px;
 }
 .dlp-table .dlp-tbody>.dlp-tr{background:#393939;box-shadow: inset 0 0 6px 0 #222222;}
@@ -450,8 +450,8 @@
 .dlp-table .dlp-tfoot>.dlp-tr{
     max-height: 40px;
     min-height: 5px;
-    background: linear-gradient(182deg,#0a0a0a 0,#303030 49%,#141414 59%,#262626 100%);
-    box-shadow: inset 0 3px 9px #1c1c1c, inset 0 3px 12px #222222, inset 0 15px 9px #181818, inset 0 3px 3px 0 #1a1a1a;
+    background: linear-gradient(182deg,#222222 0,#2e2e2e 49%,#1a1a1a 59%,#4a4a4a 100%);
+    box-shadow: inset 0 3px 9px #2a2a2a, inset 0 3px 12px #404040, inset 0 15px 9px #3e3e3e, inset 0 3px 3px 0 #262626;
     border-radius: 5px;}
 .dlp-table .operate-column{width:45px;text-align: center;line-height: 9px;}
 .dlp-table .operate-column>div{display: flex;width: 100%;height: 100%;align-items:center;justify-content: space-around}

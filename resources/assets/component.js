@@ -357,7 +357,7 @@ window.ComponentDot = class {
         };
 
         this._search = function (search) {
-            if (this._modSettings.mode) {
+            if (this._modSettings.mode === 'menu') {
                 if (search.value === '') {
                     for (let node of this.CONTENT_DOM.childNodes) {
                         node.style.display = 'flex';
@@ -424,17 +424,16 @@ window.ComponentDot = class {
         };
 
         this._bind = function () {
-            setTimeout(() => {
-                this.CONTENT_DOM.childNodes.forEach((D) => {
-                    let id = D.getAttribute('data-id');
-                    if (this.selected_data.indexOf(id) !== -1) {
-                        this._triggerEvent.enable = false;
-                        D.click();
-                        this._triggerEvent.enable = true;
-                    }
-                });
-                if (this._modSettings.mode === true) this.DOM.querySelector('.menu-list').style.display = 'none';
+            this.CONTENT_DOM.childNodes.forEach((D) => {
+                let id = D.getAttribute('data-id');
+                if (this.selected_data.indexOf(id) !== -1) {
+                    this._triggerEvent.enable = false;
+                    D.click();
+                    this._triggerEvent.enable = true;
+                }
             });
+            if (this._modSettings.mode === 'menu') this.DOM.querySelector('.menu-list').style.display = 'none';
+
             if (this._useSearchMod === false) return;
             let search = this.DOM.querySelector(`.dot-search`);
             search.addEventListener('input', () => {
@@ -524,6 +523,43 @@ window.ComponentDot = class {
             this.CONTENT_DOM = this.DOM.querySelector(`.list`);
         };
 
+        this._switchMaker = function () {
+            let select = this.select;
+            let menu = document.createElement('div');
+            menu.className = 'dlp-dot-switch';
+            this.id_line_hash = [];
+            let line = 0;
+            for (let id in select) {
+                if (!select.hasOwnProperty(id)) continue;
+                this.id_line_hash[id] = line;
+                line++;
+                let option = document.createElement('button');
+                option.setAttribute('data-id', id);
+                option.className = `dlp-button${this._modSettings.color}`;
+                option.textContent = select[id];
+                option.addEventListener('click', () => {
+                    if (this.select_data.indexOf(id) !== -1) {
+                        /*cancel*/
+                        this._tagCal(id, this.MODE.delete);
+                        option.classList.remove(`dlp-button${this._modSettings.color}-active`);
+                        option.classList.add(`dlp-button${this._modSettings.color}`);
+                        return;
+                    }
+                    if (this.limit > 0 && this.select_data.length >= this.limit) {
+                        this._triggerEvent.enable = false;
+                        menu.childNodes[this.id_line_hash[this.select_data[0].toString()]].click();
+                        this._triggerEvent.enable = true;
+                    }
+                    option.classList.remove(`dlp-button${this._modSettings.color}`);
+                    option.classList.add(`dlp-button${this._modSettings.color}-active`);
+                    this._tagCal(id, this.MODE.insert);
+                }, false);
+                menu.append(option);
+            }
+            this.DOM.append(menu);
+            this.CONTENT_DOM = menu;
+        };
+
         return this;
     }
 
@@ -548,15 +584,36 @@ window.ComponentDot = class {
         return this;
     }
 
-    mod(settings = {mode: false, placeholder: '未选择', height: '150px', direction: 'down'}) {
+    menuMod(settings = {placeholder: '未选择', height: '150px', direction: 'down'}) {
         this._modSettings = Object.assign({
-            mode: false,
             placeholder: '未选择',
             height: '150px',
             direction: 'down'
         }, settings);
+        this._modSettings.mode = 'menu';
         return this;
     }
+
+    switchMod(settings = {cols:0,color:''}){
+        this._modSettings = Object.assign({
+            cols: 0,
+            color:'',
+        }, settings);
+        this._modSettings.mode = 'switch';
+        switch (this._modSettings.color) {
+            case "red":
+            case "blue":
+            case "green":
+            case "yellow":
+                this._modSettings.color = '-'+this._modSettings.color;
+                break;
+            default:
+                this._modSettings.color = '';
+                break;
+        }
+        return this;
+    }
+
 
     useSearch() {
         this._useSearchMod = true;
@@ -578,8 +635,11 @@ window.ComponentDot = class {
     }
 
     make() {
-        if (this._modSettings.mode === true) {
+        if (this._modSettings.mode === 'menu') {
             this._menuMaker();
+        }else if(this._modSettings.mode === 'switch'){
+            this._switchMaker();
+            this._useSearchMod = false;
         } else {
             let select = this.select;
             let select_dom = '';
@@ -1203,7 +1263,7 @@ window.ComponentLine = class {
                     td.append(menu);
                     let modSettings = Object.assign({
                         placeholder: '未选择',
-                        height: '120px',
+                        height: '150px',
                         limit: 1,
                         useSearch: false
                     }, column.options);
@@ -1214,8 +1274,7 @@ window.ComponentLine = class {
                             value = [parseInt(value)];
                         }
                     }
-                    let dot = new ComponentDot(menu, column.select).selected(value).limitNum(modSettings.limit).mod({
-                        mode: true,
+                    let dot = new ComponentDot(menu, column.select).selected(value).limitNum(modSettings.limit).menuMod({
                         placeholder: modSettings.placeholder,
                         height: modSettings.height
                     });

@@ -84,7 +84,8 @@
     font: inherit;
     align-items: center;
 }
-.dlp-button,.dlp-button-red,.dlp-button-green,.dlp-button-blue,.dlp-button-yellow{
+.dlp-button,.dlp-button-red,.dlp-button-green,.dlp-button-blue,.dlp-button-yellow,
+.dlp-button-active,.dlp-button-red-active,.dlp-button-green-active,.dlp-button-blue-active,.dlp-button-yellow-active{
     background: linear-gradient(180deg,#303030 0,#585858 49%,#000 59%,#3e3e3e 100%);
     border: solid 1px #262626;
     box-shadow: inset 0 3px 9px #232323, inset 0 3px 12px #323232, inset 0 15px 9px #4a4a4a, inset 0 3px 3px 0 #8b8b8b, 0 1px 3px rgb(16 16 16 / 66%);
@@ -101,11 +102,11 @@
 .dlp-button:hover{
     background: linear-gradient(180deg,#222222 0,#444 49%,#242424 59%,#3e3e3e 100%);
 }
-.dlp-button:disabled{
+.dlp-button:disabled,.dlp-button-active{
     cursor: not-allowed;
     background: #545454;
     border: solid 1px #262626;
-    box-shadow: inset 0 2px 5px #141414, inset -2px 0 3px #444444, 0 0 3px #141414;
+    box-shadow: inset 0 2px 5px #141414, inset -2px 0 3px #444444;
     color: #ccc;
 }
 .dlp-button-red{
@@ -116,11 +117,11 @@
 .dlp-button-red:hover{
     background: linear-gradient(180deg,#b70a0a 0,#b91d1d 49%,#870d0d 80%,#9f0000 100%);
 }
-.dlp-button-red:disabled{
+.dlp-button-red:disabled,.dlp-button-red-active{
     cursor: not-allowed;
     background: #b32a2a;
     border: solid 1px #262626;
-    box-shadow: inset 0 2px 5px #3e0303, inset 0 0 3px #320202, 0 0 3px #a70000;
+    box-shadow: inset 0 2px 5px #3e0303, inset 0 0 3px #320202;
     color: #ccc;
 }
 .dlp-button-green{
@@ -131,11 +132,11 @@
 .dlp-button-green:hover{
     background: linear-gradient(180deg,#20942b 0,#2ec33c 49%,#0a9517 59%,#017e0d 100%);
 }
-.dlp-button-green:disabled{
+.dlp-button-green:disabled,.dlp-button-green-active{
     cursor: not-allowed;
     background: #00c57c;
     border: solid 1px #006641;
-    box-shadow: inset 0 2px 5px #006a39, inset 0 0 3px #006235, 0 0 3px #00fdc2;
+    box-shadow: inset 0 2px 5px #006a39, inset 0 0 3px #006235;
     color: #f1f1f1;
 }
 .dlp-button-blue{
@@ -146,11 +147,11 @@
 .dlp-button-blue:hover{
     background: linear-gradient(180deg,#091f98 0,#2e32b7 49%,#3133bb 100%);
 }
-.dlp-button-blue:disabled{
+.dlp-button-blue:disabled,.dlp-button-blue-active{
     cursor: not-allowed;
     background: #1b7adb;
     border: solid 1px #006641;
-    box-shadow: inset 0 2px 5px #00036a, inset 0 0 3px #0300b5, 0 0 3px #636fff;
+    box-shadow: inset 0 2px 5px #00036a, inset 0 0 3px #0300b5;
     color: #dfdfdf;
 }
 .dlp-button-yellow{
@@ -162,13 +163,14 @@
 .dlp-button-yellow:hover{
     background: linear-gradient(180deg,#fff74c 0,#e1ed25 49%,#edff00 100%);
 }
-.dlp-button-yellow:disabled{
+.dlp-button-yellow:disabled,.dlp-button-yellow-active{
     cursor: not-allowed;
     background: #efff01;
-    box-shadow: inset 0 2px 5px #cbd70f, inset 0 0 3px #d6ef0a, 0 0 3px #fff938;
+    box-shadow: inset 0 2px 5px #cbd70f, inset 0 0 3px #d6ef0a;
     color: #b1b4fb;
     border: 1px solid #d3e100;
 }
+.dlp-button-active,.dlp-button-red-active,.dlp-button-green-active,.dlp-button-blue-active,.dlp-button-yellow-active{cursor: pointer}
 .dlp-alert{
     z-index: 1000000;
     background-color: rgba(0, 0, 0, 0.6);

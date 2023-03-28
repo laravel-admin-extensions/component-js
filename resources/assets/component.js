@@ -526,7 +526,7 @@ window.ComponentDot = class {
         this._switchMaker = function () {
             let select = this.select;
             let menu = document.createElement('div');
-            menu.className = 'dlp-dot-switch';
+            menu.className = 'dlp dlp-dot-switch';
             this.id_line_hash = [];
             let line = 0;
             for (let id in select) {
@@ -535,7 +535,7 @@ window.ComponentDot = class {
                 line++;
                 let option = document.createElement('div');
                 option.setAttribute('data-id', id);
-                option.className = `dlp-button${this._modSettings.color}`;
+                option.className = `dlp dlp-button${this._modSettings.color}`;
                 option.textContent = select[id];
                 option.addEventListener('click', () => {
                     if (this.select_data.indexOf(id) !== -1) {

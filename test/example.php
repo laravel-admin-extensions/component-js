@@ -37,6 +37,25 @@ class ExampleController extends AdminController
         $grid->model()->where('status', 1);
         $grid->column('id', __('ID'))->sortable();
         $grid->column('name', '名称');
+
+        /*图片懒加载 zoom放大器*/
+        Admin::script("_component.imgDelay('.cover',{zoom:true});");
+        $grid->column('cover', '封面')->display(function ($src) {
+            return "<div style='width:100px;height:60px'><img data-src='{$src}' class='cover img img-thumbnail' style='max-width:100px;height: 100%;' /></div>";
+        });
+
+        /*询问框弹窗*/
+        $grid->column('status', '审核状态')->display(function ()use($url) {
+            $dialog = (new Dialog(['url'=>"{$url}.verify/{$this->mediaId}"]))
+                ->info('确认审核？')
+                ->trigger(".verify-{$this->mediaId}")
+                ->button('失 败',['status'=>0])
+                ->button('通 过',['status'=>1]);
+            return <<<EOF
+<button class='verify-{$this->mediaId}' class='btn btn-sm btn-default verify'>审核</button>
+<script>{$dialog}</script>
+EOF;
+        });
         $grid->column('created_at', __('创建时间'))->sortable();
         $grid->column('updated_at', __('更新时间'))->sortable();
 
@@ -100,7 +119,7 @@ class ExampleController extends AdminController
     {
         $content = $content
             ->body($this->form($id)->edit($id));
-        /*弹窗模式 渲染form表单模板 Plane::form*/
+        /*弹窗模式 渲染form表单模板方法 Plane::form*/
         return Plane::form($content);
     }
 
@@ -154,49 +173,53 @@ class ExampleController extends AdminController
         /*wing组装器*/
         $W = new Wing();
         $W->display('id')->label('序号');
-        $W->section(function ($W){
-            $W->select('status0', [0 => '开启', 1 => '关闭', 2 => '删除'])->label('状态0');
-            $W->select('status1', [0 => '开启', 1 => '关闭', 2 => '删除'])->direction('up')->useSearch()->label('状态1');
-            $W->select('status2', [0 => '开启', 1 => '关闭', 2 => '删除'])->direction('middle')->useSearch()->label('状态2');
-        },2);
+        $W->text('title')->label('标题');
         $W->textarea('description')->label('描述');
-        $W->select('status', [0 => '开启', 1 => '关闭', 2 => '删除'])->limit(1)->label('状态');
-        $W->datepicker('time')->label('时间');
+        $W->datepicker('time')->label('时间选择器');
         $W->html('test', '<p>松下紗栄子</p>')->label('自定义html');
+        /*section 布局*/
+        $W->section(function ($W){
+            /*下拉菜单 选择器*/
+            $W->select('status0', [0 => '开启', 1 => '关闭', 2 => '暂停'])->limit(1)->label('下拉菜单 单选limit:1');
+            $W->select('status1', [0 => '开启', 1 => '关闭', 2 => '暂停'])->direction('up')->useSearch()->label('下拉菜单-向上');
+            $W->select('status2', [0 => '开启', 1 => '关闭', 2 => '暂停'])->direction('middle')->useSearch()->label('下拉菜单-正中');
+        },2);
+        /*点 选择器*/
+        $W->dot('dot', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch()->label('点选择器');
+        $W->checkbox('status2', [0 => '开启', 1 => '关闭', 2 => '暂停'])->label('checkbox选择器');
+        /*多图上传样例*/
+        $images = ['/image1...', '/image2...', '/image3...'];
+        $W->fileInput('photo')
+            ->label('艳照')
+            ->settings([
+                'uploadUrl' => 'https://...upload.file.url...',
+                'uploadExtraData' => [
+                    '_token' => csrf_token(),
+                    'uploadAsync' => true,
+                    /*自定义加传参*/
+                ],
+                'deleteUrl' => 'https://...delete.file.url...',
+                'deleteExtraData' => [
+                    '_token' => csrf_token(),
+                    'uploadAsync' => true,
+                    /*自定义加传参*/
+                ],
+                'maxFileCount' => 10,
+                'maxFileSize' => 800 //单图限制800kb
+            ])
+            ->initialPreview(['files' => $images, 'url' => '/image.server...']);
 
-        $W->select('switch',[0=>'左',1=>'右'])
+        $W->select('switch',[0=>'切左',1=>'切右'])
             ->when(0,function (Wing $W){
                 $W->display('left')->label( '左');
-                $W->dot('dot', [0 => '开启', 1 => '关闭', 2 => '删除'])->useSearch()->label('点组件dot示例');})
-            ->when(1,function (Wing $W){
+            })->when(1,function (Wing $W){
                 $W->display('right')->label( '右');
-                /*多图上传样例*/
-                $images = ['/image1...', '/image2...', '/image3...'];
-                $W->fileInput('photo')
-                    ->label('艳照')
-                    ->settings([
-                        'uploadUrl' => 'https://...upload.file.url...',
-                        'uploadExtraData' => [
-                            '_token' => csrf_token(),
-                            'uploadAsync' => true,
-                            /*自定义加传参*/
-                        ],
-                        'deleteUrl' => 'https://...delete.file.url...',
-                        'deleteExtraData' => [
-                            '_token' => csrf_token(),
-                            'uploadAsync' => true,
-                            /*自定义加传参*/
-                        ],
-                        'maxFileCount' => 10,
-                        'maxFileSize' => 800 //单图限制800kb
-                    ])
-                    ->initialPreview(['files' => $images, 'url' => '/image.server...']);})
-            ->withoutHiddenInput()->label('切换');
-
+            })->withoutHiddenInput()->label('切换');
+        /*级联点 选择器*/
         $W->cascadeDot('clothes',$this->cascadeExampleData())->limit(3)->useSearch()->label('级联选择器');
-
+        /*级联 管理器*/
         $W->cascadeLine('clothes_manager',$data)->label('级联管理器');
-
+        
         $W->linear('linear',[
             'id' => ['name' => 'ID', 'type' => 'text'],
             'title' => ['name' => '标题', 'type' => 'input'],

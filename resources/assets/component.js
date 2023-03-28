@@ -533,7 +533,7 @@ window.ComponentDot = class {
                 if (!select.hasOwnProperty(id)) continue;
                 this.id_line_hash[id] = line;
                 line++;
-                let option = document.createElement('button');
+                let option = document.createElement('div');
                 option.setAttribute('data-id', id);
                 option.className = `dlp-button${this._modSettings.color}`;
                 option.textContent = select[id];
@@ -594,9 +594,8 @@ window.ComponentDot = class {
         return this;
     }
 
-    switchMod(settings = {cols:0,color:''}){
+    switchMod(settings = {color:''}){
         this._modSettings = Object.assign({
-            cols: 0,
             color:'',
         }, settings);
         this._modSettings.mode = 'switch';

@@ -8,19 +8,16 @@ use DLP\Assembly\Layout\Swing;
 use DLP\Assembly\Wing;
 
 /**
- * Class Select
+ * Class Checkbox
  * @package DLP\Assembly\Unit
  */
-class Select extends Widget
+class Checkbox extends Widget
 {
     private $select;
     private $selected = '[]';
     private $limit = 1;
-    private $placeholder = '未选择';
-    private $menuHeight = '150px';
-    private $direction = 'down';
-    private $useSearch = false;
     private $useHiddenInput = true;
+    private $color = '';
     private $swing = [];
 
     public function __construct(string $column, array $select)
@@ -49,42 +46,16 @@ class Select extends Widget
         return $this;
     }
 
-    /**
-     * @param $placeholder
-     * @return $this
-     */
-    public function placeholder($placeholder)
+    public function color($color)
     {
-        $this->placeholder = $placeholder;
-        return $this;
-    }
-
-    /**
-     * @param $height
-     * @return $this
-     */
-    public function menuHeight($height)
-    {
-        $this->menuHeight = $height;
-        return $this;
-    }
-
-    /**
-     * @param string $direction   up | down | middle
-     * @return $this
-     */
-    public function direction($direction)
-    {
-        $this->direction = $direction;
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function useSearch()
-    {
-        $this->useSearch = true;
+        switch ($color) {
+            case "red":
+            case "blue":
+            case "green":
+            case "yellow":
+            $this->color = '-'.$color;
+                break;
+        }
         return $this;
     }
 
@@ -117,10 +88,7 @@ class Select extends Widget
     public function __toString()
     {
         $this->annotate();
-        $execute = ".menuMod({placeholder: '{$this->placeholder}',height:'{$this->menuHeight}',direction:'{$this->direction}'})";
-        if($this->useSearch){
-            $execute .= '.useSearch()';
-        }
+        $execute = ".switchMod({color:'{$this->color}'})";
         if($this->useHiddenInput){
             $execute .= ".useHiddenInput('{$this->column}')";
         }

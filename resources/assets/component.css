@@ -323,10 +323,10 @@
 }
 
 .dlp-dot-switch{display: flex}
-.dlp-dot-switch>button{border-radius: unset}
-.dlp-dot-switch>button:first-child{border-radius: 5px 0 0 5px}
-.dlp-dot-switch>button:last-child{border-radius: 0 5px 5px 0}
-.dlp-dot-switch>button:disabled{cursor: pointer}
+.dlp-dot-switch>div{border-radius: unset}
+.dlp-dot-switch>div:first-child{border-radius: 5px 0 0 5px}
+.dlp-dot-switch>div:last-child{border-radius: 0 5px 5px 0}
+.dlp-dot-switch>div:disabled{cursor: pointer}
 
 .dlp-cascadeLine{
     position: relative!important;

@@ -10,6 +10,7 @@ use DLP\Assembly\Layout\Swing;
 use DLP\Assembly\Unit\Button;
 use DLP\Assembly\Unit\CascadeDot;
 use DLP\Assembly\Unit\CascadeLine;
+use DLP\Assembly\Unit\Checkbox;
 use DLP\Assembly\Unit\Datetime;
 use DLP\Assembly\Unit\FileInput;
 use DLP\Assembly\Unit\Hidden;
@@ -91,6 +92,20 @@ class Wing implements Layout
     public function select(string $column, array $select)
     {
         $doc = new Select($column, $select);
+        $doc->setWing($this);
+        $doc->setStyle(['width' => '240px']);
+        $this->node->append($doc);
+        return $doc;
+    }
+
+    /**
+     * @param string $column
+     * @param array $select
+     * @return Select
+     */
+    public function checkbox(string $column, array $select)
+    {
+        $doc = new Checkbox($column, $select);
         $doc->setWing($this);
         $doc->setStyle(['width' => '240px']);
         $this->node->append($doc);

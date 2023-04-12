@@ -46,7 +46,7 @@ EOF;
 
         return <<<EOF
 <div class="dlp dlp-form-row">
-    <label class="dlp-text" for="{$this->column}">{$this->label}</label>
+    <div class="dlp-form-label dlp-text" for="{$this->column}">{$this->label}</div>
     {$content}
 </div>
 EOF;

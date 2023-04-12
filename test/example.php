@@ -174,8 +174,8 @@ EOF;
         $W = new Wing();
         $W->display('id')->label('序号');
         $W->text('title')->label('标题');
-        $W->textarea('description')->label('描述');
         $W->datepicker('time')->label('时间选择器');
+        $W->textarea('description')->label('描述');
         $W->html('test', '<p>松下紗栄子</p>')->label('自定义html');
         /*section 布局*/
         $W->section(function ($W){

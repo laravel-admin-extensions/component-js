@@ -44,7 +44,7 @@ class Datetime extends Input
         $pickerSettings = json_encode(array_merge(['format' => 'YYYY-MM-DD HH:mm:ss', 'locale' => 'zh-CN'], $this->pickerSettings));
         $this->annotate();
         $content = <<<EOF
-<input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->annotation}/>
+<div style="position: relative"><input type="{$this->type}" name="{$this->column}" value="{$this->value}" class="dlp-input" placeholder="输入 {$this->label}" {$this->annotation}/></div>
 <script>$('input[name="{$this->column}"]').datetimepicker({$pickerSettings});</script>
 EOF;
         if(!$this->label) return $content;

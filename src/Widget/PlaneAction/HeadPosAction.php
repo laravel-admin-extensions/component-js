@@ -21,7 +21,7 @@ class HeadPosAction extends RowAction
         $options = json_encode($options);
         $this->document_id = "button_".substr(md5($this->title.microtime().mt_rand(0,10000)),16);
 
-        $this->binding = ".bindRequest('button[type=\"submit\"]','click',XHR)";
+        $this->binding = ".bindRequest('.box-footer button[type=\"submit\"]','click',XHR)";
         $this->url = $url;
         $this->xhr = $xhr;
         $this->callback = $callback;
